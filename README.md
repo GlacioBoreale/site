@@ -21,7 +21,7 @@ Sito web personale con sistema multilingua (IT/EN)
 ## ✅ Implementato
 
 - [x] Sistema multilingua (Italiano/Inglese)
-- [x] Navbar modulare e riutilizzabile
+- [x] Navbar e footer modulari e riutilizzabili
 - [x] Design nero con effetti glassmorphism
 - [x] Memorizzazione lingua preferita (localStorage)
 - [x] Struttura pagine base (Home, Chi sono, Progetti, VTPedia, Socials, Contatti)
@@ -55,7 +55,9 @@ Sito web personale con sistema multilingua (IT/EN)
 ```
 site/
 ├── language/          # Traduzioni IT/EN
-├── components/navbar/ # Navbar modulare
+├── components/
+├──── /navbar/ # Navbar modulare
+├──── /footer/ # Footer modulare
 ├── *.html            # Pagine del sito
 ├── style.css         # Stili globali
 └── script.js         # Logica principale

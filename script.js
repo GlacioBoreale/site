@@ -43,6 +43,7 @@ function getNestedTranslation(key) {
 async function init() {
   console.log('Inizializzazione...');
   await loadNavbar();
+  await loadFooter();
   await loadTranslations(currentLang);
   console.log('Inizializzazione completata');
 }

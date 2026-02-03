@@ -27,5 +27,16 @@
   "contact": {
     "title": "Contact me",
     "description": "WORK IN PROGRESS"
+  },
+  "footer": {
+    "social_title": "Follow Me",
+    "discord_label": "Discord:",
+    "quick_links": "Quick Links",
+    "info_title": "Info",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "rights": "All rights reserved.",
+    "made_with": "Made with",
+    "and": "and"
   }
 }

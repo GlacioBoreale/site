@@ -27,5 +27,16 @@
   "contact": {
     "title": "Contattami",
     "description": "WORK IN PROGRESS"
+  },
+  "footer": {
+    "social_title": "Seguimi",
+    "discord_label": "Discord:",
+    "quick_links": "Link Rapidi",
+    "info_title": "Info",
+    "privacy": "Privacy Policy",
+    "terms": "Termini di Servizio",
+    "rights": "Tutti i diritti riservati.",
+    "made_with": "Fatto con",
+    "and": "e"
   }
 }

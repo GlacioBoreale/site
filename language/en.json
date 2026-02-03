@@ -38,5 +38,12 @@
     "rights": "All rights reserved.",
     "made_with": "Made with",
     "and": "and"
+  },
+  "404": {
+    "message": "Brosquito, how did you reach this side of the site?",
+    "description": "Broklahoma, go back to where you came from",
+    "home_button": "home",
+    "back": "Go back to Home",
+    "report": "Report an issue"
   }
 }

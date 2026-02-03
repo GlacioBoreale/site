@@ -38,5 +38,12 @@
     "rights": "Tutti i diritti riservati.",
     "made_with": "Fatto con",
     "and": "e"
+  },
+  "404": {
+    "message": "Brosquito, come hai raggiunto questo lato del sito",
+    "description": "Broklahoma, torna da dove sei venuto",
+    "home_button": "home",
+    "back": "Vai alla Home",
+    "report": "Segnala un problema"
   }
 }

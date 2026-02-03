@@ -32,6 +32,7 @@ Sito web personale con sistema multilingua (IT/EN)
 
 ## 🚧 In Sviluppo
 
+- [ ] Pagina 404
 - [ ] Responsive design per mobile/tablet
 - [ ] Contenuti effettivi delle pagine
 - [ ] Sezione progetti con portfolio
@@ -39,6 +40,13 @@ Sito web personale con sistema multilingua (IT/EN)
 - [ ] Form di contatto
 - [ ] Menu hamburger per mobile
 - [ ] SEO e meta tags
+
+---
+
+## 🛠️ Idee
+
+- Mettere in "Chi sono" l'immagine di "Who is this?" (chiedi a fleim per maggiori info)
+- Implementare un sistema di achievement che salva quali sono stati ottenuti tramite cache e creare una zona apposita
 
 ---
 
@@ -55,9 +63,11 @@ Sito web personale con sistema multilingua (IT/EN)
 ```
 site/
 ├── language/          # Traduzioni IT/EN
+├── assets/
+├──── images/          # Immagini del sito
 ├── components/
-├──── /navbar/ # Navbar modulare
-├──── /footer/ # Footer modulare
+├──── navbar/ # Navbar modulare
+├──── footer/ # Footer modulare
 ├── *.html            # Pagine del sito
 ├── style.css         # Stili globali
 └── script.js         # Logica principale

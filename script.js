@@ -3,9 +3,14 @@ let translations = {};
 
 // Carica le traduzioni
 async function loadTranslations(lang) {
-  const response = await fetch(`/locales/${lang}.json`);
-  translations = await response.json();
-  updatePage();
+  try {
+    const response = await fetch(`./language/${lang}.json`); 
+    if (!response.ok) throw new Error('Errore nel caricamento traduzioni');
+    translations = await response.json();
+    updatePage();
+  } catch (error) {
+    console.error('Errore traduzioni:', error);
+  }
 }
 
 // Aggiorna tutti i testi nella pagina
@@ -18,7 +23,7 @@ function updatePage() {
     }
   });
   
-  // Aggiorna anche il tag <title>
+  // Aggiorna il tag <title>
   const titleElement = document.querySelector('title[data-i18n]');
   if (titleElement) {
     const key = titleElement.getAttribute('data-i18n');
@@ -26,7 +31,6 @@ function updatePage() {
     if (translation) document.title = translation;
   }
   
-  // Aggiorna l'attributo lang dell'HTML
   document.documentElement.lang = currentLang;
 }
 
@@ -37,13 +41,11 @@ function getNestedTranslation(key) {
 
 // Inizializza tutto quando il DOM è pronto
 async function init() {
+  console.log('Inizializzazione...');
   await loadNavbar();
   await loadTranslations(currentLang);
+  console.log('Inizializzazione completata');
 }
 
 // Aspetta che il DOM sia caricato
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
-}
+window.addEventListener('DOMContentLoaded', init);

@@ -20,7 +20,7 @@
   gap: 2rem;
 }
 
-/* Brand/Logo - A SINISTRA */
+/* Logo - A SINISTRA */
 .navbar-brand a {
   color: white;
   font-size: 1.5rem;
@@ -86,7 +86,7 @@
   font-weight: 500;
   transition: all 0.3s ease;
   outline: none;
-  margin-left: auto; /* Spinge a destra */
+  margin-left: auto;
 }
 
 .lang-selector:hover {
@@ -105,7 +105,7 @@
   border-color: rgba(255, 255, 255, 0.4);
 }
 
-/* Link attivo (opzionale) */
+/* Link attivo */
 .navbar-menu li a.active {
   background: rgba(255, 255, 255, 0.15);
   color: white;

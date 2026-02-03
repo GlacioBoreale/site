@@ -1,11 +1,16 @@
-// Funzione per caricare la navbar
 async function loadNavbar() {
-  const response = await fetch('/components/navbar/nav.html');
-  const navbarHTML = await response.text();
-  document.getElementById('navbar-placeholder').innerHTML = navbarHTML;
-  
-  // Inizializza il selettore lingua dopo aver caricato la navbar
-  initLangSelector();
+  try {
+    console.log('Caricamento navbar...');
+    const response = await fetch('./components/navbar/nav.html');
+    if (!response.ok) throw new Error('Errore nel caricamento navbar');
+    const navbarHTML = await response.text();
+    document.getElementById('navbar-placeholder').innerHTML = navbarHTML;
+    console.log('Navbar caricata!');
+    
+    initLangSelector();
+  } catch (error) {
+    console.error('Errore navbar:', error);
+  }
 }
 
 function initLangSelector() {
@@ -17,5 +22,8 @@ function initLangSelector() {
       localStorage.setItem('language', currentLang);
       loadTranslations(currentLang);
     });
+    console.log('Selettore lingua inizializzato');
+  } else {
+    console.error('Selettore lingua non trovato!');
   }
 }

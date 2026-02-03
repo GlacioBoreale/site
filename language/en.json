@@ -1,0 +1,34 @@
+{
+  "pagina": {
+    "title": "Coldest Site In Da Hous"
+  },
+  "nav": {
+    "brand": "My Website",
+    "home": "Home",
+    "about": "About me",
+    "projects": "Projects",
+    "VTPedia": "VTPedia",
+    "socials": "Socials",
+    "contact": "Contact"
+  },
+  "home": {
+    "title": "Welcome",
+    "description": "WORK IN PROGRESS"
+  },
+  "about": {
+    "title": "About me",
+    "description": "WORK IN PROGRESS"
+  },
+  "projects": {
+    "title": "My projects",
+    "description": "WORK IN PROGRESS"
+  },
+  "socials": {
+    "title": "My socials",
+    "description": "WORK IN PROGRESS"
+  },
+  "contact": {
+    "title": "Contact me",
+    "description": "WORK IN PROGRESS"
+  }
+}

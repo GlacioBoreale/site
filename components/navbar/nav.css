@@ -1,0 +1,187 @@
+.navbar {
+  background: #000000;
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  margin: 1rem;
+  overflow: hidden;
+}
+
+.navbar-container {
+  max-width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  gap: 2rem;
+}
+
+/* Brand/Logo - A SINISTRA */
+.navbar-brand a {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+  padding: 0.6rem 1.3rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: inline-block;
+}
+
+.navbar-brand a:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+/* Menu - ALLINEATO A SINISTRA */
+.navbar-menu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0.5rem;
+  flex: 1;
+  justify-content: flex-start;
+  margin-left: 1rem;
+}
+
+.navbar-menu li a {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  padding: 0.6rem 1.3rem;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.05); /* Sfondo leggero aggiunto */
+  border: 1px solid rgba(255, 255, 255, 0.08); /* Bordo sottile */
+  display: block;
+}
+
+.navbar-menu li a:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.navbar-menu li a:active {
+  transform: translateY(0);
+}
+
+/* Selettore lingua - A DESTRA */
+.lang-selector {
+  padding: 0.6rem 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  outline: none;
+  margin-left: auto; /* Spinge a destra */
+}
+
+.lang-selector:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+.lang-selector option {
+  background: #1a1a1a;
+  color: white;
+  padding: 0.5rem;
+}
+
+/* Effetto focus */
+.lang-selector:focus {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Link attivo (opzionale) */
+.navbar-menu li a.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .navbar {
+    margin: 0.5rem;
+    border-radius: 15px;
+  }
+  
+  .navbar-container {
+    padding: 0.8rem 1.5rem;
+  }
+  
+  .navbar-menu {
+    gap: 0.3rem;
+    margin-left: 0.5rem;
+  }
+  
+  .navbar-menu li a {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    margin: 0;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+  
+  .navbar-container {
+    flex-wrap: wrap;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .navbar-brand {
+    order: 1;
+  }
+  
+  .lang-selector {
+    order: 2;
+    margin-left: 0;
+  }
+  
+  .navbar-menu {
+    order: 3;
+    width: 100%;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-left: 0;
+  }
+  
+  .navbar-menu li a {
+    text-align: left;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-brand a {
+    font-size: 1.2rem;
+    padding: 0.5rem 1rem;
+  }
+  
+  .lang-selector {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+  }
+  
+  .navbar-menu li a {
+    font-size: 0.85rem;
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "pagina": {
+    "title": "Il Sito Più Figo"
+  },
+  "nav": {
+    "brand": "Il Mio Sito",
+    "home": "Home",
+    "about": "Chi sono",
+    "projects": "Progetti",
+    "VTPedia": "VTPedia",
+    "socials": "Socials",
+    "contact": "Contatti"
+  },
+  "home": {
+    "title": "Benvenuto",
+    "description": "WORK IN PROGRESS"
+  },
+  "about": {
+    "title": "Chi sono",
+    "description": "WORK IN PROGRESS"
+  },
+  "projects": {
+    "title": "I miei progetti",
+    "description": "WORK IN PROGRESS"
+  },
+  "socials": {
+    "title": "I miei social",
+    "description": "WORK IN PROGRESS"
+  },
+  "contact": {
+    "title": "Contattami",
+    "description": "WORK IN PROGRESS"
+  }
+}

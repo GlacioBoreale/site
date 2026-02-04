@@ -11,10 +11,10 @@ Sito web personale con sistema multilingua (IT/EN)
 **Attualmente funzionante solo su:**
 - ✅ Desktop/PC (browser)
 - ✅ Mobile
+- ✅ Tablet
 
 **Non ancora ottimizzato per:**
-- ❓ Tablet
-- ❌ Schermi piccoli
+- 🥀 Schermi piccoli
 
 ---
 

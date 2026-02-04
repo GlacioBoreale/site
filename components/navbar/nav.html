@@ -7,18 +7,18 @@
       </a>
     </div>
     
-    <!-- Menu Desktop -->
-    <ul class="navbar-menu desktop-menu">
-      <li><a href="index.html" data-i18n="nav.home">Home</a></li>
-      <li><a href="about.html" data-i18n="nav.about">Chi sono</a></li>
-      <li><a href="projects.html" data-i18n="nav.projects">Progetti</a></li>
-      <li><a href="vtpedia.html" data-i18n="nav.VTPedia">VTPedia</a></li>
-      <li><a href="socials.html" data-i18n="nav.socials">Socials</a></li>
-      <li><a href="contact.html" data-i18n="nav.contact">Contatti</a></li>
+    <!-- Menu principale -->
+    <ul class="navbar-menu">
+      <li class="always-visible"><a href="index.html" data-i18n="nav.home">Home</a></li>
+      <li class="always-visible"><a href="about.html" data-i18n="nav.about">Chi sono</a></li>
+      <li class="always-visible"><a href="projects.html" data-i18n="nav.projects">Progetti</a></li>
+      <li class="tablet-hidden"><a href="vtpedia.html" data-i18n="nav.VTPedia">VTPedia</a></li>
+      <li class="tablet-hidden"><a href="socials.html" data-i18n="nav.socials">Socials</a></li>
+      <li class="tablet-hidden"><a href="contact.html" data-i18n="nav.contact">Contatti</a></li>
     </ul>
     
-    <!-- Hamburger Button Mobile -->
-    <button class="hamburger-btn" id="hamburger-btn" aria-label="Menu">
+    <!-- Hamburger per elementi nascosti (tablet only) -->
+    <button class="hamburger-btn tablet-only" id="hamburger-btn" aria-label="Menu">
       <span></span>
       <span></span>
       <span></span>
@@ -31,19 +31,16 @@
     </select>
   </div>
   
-  <!-- Menu Mobile Dropdown -->
+  <!-- Menu Mobile/Tablet Dropdown (solo elementi nascosti) -->
   <div class="mobile-menu" id="mobile-menu">
     <ul>
-      <li><a href="index.html" data-i18n="nav.home">Home</a></li>
-      <li><a href="about.html" data-i18n="nav.about">Chi sono</a></li>
-      <li><a href="projects.html" data-i18n="nav.projects">Progetti</a></li>
       <li><a href="vtpedia.html" data-i18n="nav.VTPedia">VTPedia</a></li>
       <li><a href="socials.html" data-i18n="nav.socials">Socials</a></li>
       <li><a href="contact.html" data-i18n="nav.contact">Contatti</a></li>
     </ul>
     
-    <!-- Selettore lingua Mobile (dentro il dropdown) -->
-    <div class="mobile-lang-container">
+    <!-- Selettore lingua Mobile -->
+    <div class="mobile-lang-container mobile-only">
       <select id="lang-selector-mobile" class="lang-selector mobile-lang">
         <option value="it">🇮🇹 Italiano</option>
         <option value="en">🇬🇧 English</option>

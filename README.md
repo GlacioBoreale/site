@@ -10,10 +10,10 @@ Sito web personale con sistema multilingua (IT/EN)
 
 **Attualmente funzionante solo su:**
 - ✅ Desktop/PC (browser)
+- ✅ Mobile
 
 **Non ancora ottimizzato per:**
-- ❌ Mobile
-- ❌ Tablet
+- ❓ Tablet
 - ❌ Schermi piccoli
 
 ---
@@ -27,18 +27,18 @@ Sito web personale con sistema multilingua (IT/EN)
 - [x] Struttura pagine base (Home, Chi sono, Progetti, VTPedia, Socials, Contatti)
 - [x] Animazioni e transizioni
 - [x] Hosting su GitHub Pages
+- [x] Pagina 404
+- [x] Responsive design per mobile/tablet
+- [x] Menu hamburger per mobile
 
 ---
 
 ## 🚧 In Sviluppo
 
-- [ ] Pagina 404
-- [ ] Responsive design per mobile/tablet
 - [ ] Contenuti effettivi delle pagine
 - [ ] Sezione progetti con portfolio
 - [ ] Pagina social con link funzionanti
 - [ ] Form di contatto
-- [ ] Menu hamburger per mobile
 - [ ] SEO e meta tags
 
 ---

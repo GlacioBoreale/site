@@ -13,7 +13,7 @@
     <div class="container-404">
         <div class=content-404>
             <div class="image-container">
-                 <img src="assets/images/404.png" alt="404 Error" class="error-image">
+                 <img src="assets/images/404/coin1.png" alt="404 Error" class="error-image">
             </div>
             <div class="text-container">
                 <h1 data-i18n="404.errorCode" class="error-code">404</h1>
@@ -40,6 +40,8 @@
         </div>
     </div>
 
+    
+    <!-- Konami code -->
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
         let konamiCode = [];
@@ -55,6 +57,108 @@
             }
         });
     </script>
+    
+    <!-- Coin flip -->
+    <script>
+    let coinUnlocked = false;
+    let typedText = '';
+    const secretCode = 'coin';
+    let coinImages = [];
+    let isFlipping = false;
+
+    async function loadCoinImages() {
+        try {
+            const response = await fetch('./assets/data/coin_images.json');
+            const data = await response.json();
+            coinImages = data.images;
+        } catch (error) {
+            coinImages = [
+                'assets/images/coin1.png',
+                'assets/images/coin2.png',
+                'assets/images/coin3.png',
+                'assets/images/coin4.png',
+                'assets/images/coin5.png'
+            ];
+        }
+    }
+
+    document.addEventListener('keypress', (e) => {
+        typedText += e.key.toLowerCase();
+        
+        if (typedText.length > secretCode.length) {
+            typedText = typedText.slice(-secretCode.length);
+        }
+        
+        if (typedText === secretCode && !coinUnlocked) {
+            unlockCoinFeature();
+        }
+    });
+
+    function unlockCoinFeature() {
+        coinUnlocked = true;
+        const imageContainer = document.querySelector('.image-container');
+        const errorImage = document.querySelector('.error-image');
+        
+        if (!imageContainer || !errorImage) return;
+        
+        imageContainer.classList.add('coin-unlocked');
+        
+        const tooltip = document.createElement('div');
+        tooltip.className = 'coin-tooltip-hint';
+        tooltip.textContent = 'Click to flip!';
+        imageContainer.appendChild(tooltip);
+        
+        setTimeout(() => {
+            tooltip.classList.add('show');
+        }, 100);
+        
+        setTimeout(() => {
+            tooltip.classList.remove('show');
+        }, 3000);
+        
+        imageContainer.addEventListener('click', flipCoin);
+    }
+
+    function flipCoin() {
+        if (isFlipping || !coinUnlocked) return;
+        
+        isFlipping = true;
+        const errorImage = document.querySelector('.error-image');
+        const imageContainer = document.querySelector('.image-container');
+        
+        imageContainer.classList.add('flipping');
+        
+        let flipCount = 0;
+        const maxFlips = 20;
+        const flipInterval = setInterval(() => {
+            const randomImage = coinImages[Math.floor(Math.random() * coinImages.length)];
+            errorImage.src = randomImage;
+            flipCount++;
+            
+            if (flipCount >= maxFlips) {
+                clearInterval(flipInterval);
+                
+                const finalImage = coinImages[Math.floor(Math.random() * coinImages.length)];
+                errorImage.src = finalImage;
+                
+                setTimeout(() => {
+                    imageContainer.classList.remove('flipping');
+                    imageContainer.classList.add('landing');
+                    
+                    setTimeout(() => {
+                        imageContainer.classList.remove('landing');
+                        isFlipping = false;
+                    }, 500);
+                }, 500);
+            }
+        }, 100);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadCoinImages();
+    });
+    </script>
+
     <script src="script.js"></script>
     <script>
     window.addEventListener('DOMContentLoaded', () => {

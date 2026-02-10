@@ -40,6 +40,7 @@ body {
   min-width: 300px;
   max-width: 500px;
   animation: fadeInLeft 0.8s ease-out;
+  position: relative;
 }
 
 .error-image {
@@ -48,11 +49,127 @@ body {
   border-radius: 50%;
   border: 3px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, filter 0.3s ease;
 }
 
 .error-image:hover {
   transform: scale(1.05) rotate(2deg);
+}
+
+.image-container.coin-unlocked {
+  cursor: pointer;
+  animation: none;
+}
+
+.image-container.coin-unlocked:hover .error-image {
+  filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+}
+
+.coin-tooltip-hint {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 215, 0, 0.95);
+  color: #000;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.coin-tooltip-hint::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid rgba(255, 215, 0, 0.95);
+}
+
+.coin-tooltip-hint.show {
+  opacity: 1;
+}
+
+.image-container.coin-unlocked:hover .coin-tooltip-hint {
+  opacity: 1;
+}
+
+.image-container.flipping {
+  animation: coinFlipSpin 2s ease-in-out !important;
+  pointer-events: none;
+}
+
+.image-container.landing {
+  animation: coinLanding 0.5s ease-out !important;
+}
+
+.image-container.coin-unlocked::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.image-container.coin-unlocked:hover::after {
+  opacity: 1;
+  animation: pulse 2s infinite;
+}
+
+@keyframes coinFlipSpin {
+  0% {
+    transform: translateY(0) rotateY(0deg) scale(1);
+  }
+  25% {
+    transform: translateY(-100px) rotateY(900deg) scale(1.2);
+  }
+  50% {
+    transform: translateY(-50px) rotateY(1800deg) scale(1.1);
+  }
+  75% {
+    transform: translateY(-100px) rotateY(2700deg) scale(1.2);
+  }
+  100% {
+    transform: translateY(0) rotateY(3600deg) scale(1);
+  }
+}
+
+@keyframes coinLanding {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
 }
 
 .text-container {
@@ -203,6 +320,30 @@ body {
   
   .image-container {
     max-width: 300px;
+  }
+  
+  .coin-tooltip-hint {
+    font-size: 14px;
+    padding: 8px 15px;
+    top: -50px;
+  }
+  
+  @keyframes coinFlipSpin {
+    0% {
+      transform: translateY(0) rotateY(0deg) scale(1);
+    }
+    25% {
+      transform: translateY(-50px) rotateY(900deg) scale(1.15);
+    }
+    50% {
+      transform: translateY(-25px) rotateY(1800deg) scale(1.1);
+    }
+    75% {
+      transform: translateY(-50px) rotateY(2700deg) scale(1.15);
+    }
+    100% {
+      transform: translateY(0) rotateY(3600deg) scale(1);
+    }
   }
 }
 

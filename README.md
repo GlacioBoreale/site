@@ -30,13 +30,13 @@ Sito web personale con sistema multilingua (IT/EN)
 - [x] Pagina 404
 - [x] Responsive design per mobile/tablet
 - [x] Menu hamburger per mobile
+- [x] Pagina VTPedia
 
 ---
 
 ## 🚧 In Sviluppo
 
 - [ ] Contenuti effettivi delle pagine
-- [ ] Pagina VTPedia
 - [ ] Achievement del sito
 - [ ] Sezione progetti con portfolio
 - [ ] Pagina social con link funzionanti

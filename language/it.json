@@ -45,5 +45,24 @@
     "home_button": "home",
     "back": "Vai alla Home",
     "report": "Segnala un problema"
+  },
+  "vtpedia": {
+    "title": "VTuberPedia",
+    "subtitle": "Enciclopedia dei VTuber",
+    "description": "Scopri i VTuber che hanno chiesto di partecipare a questa enciclopedia!",
+    "submit": "Invia un VTuber",
+    "showMore": "Mostra di più",
+    "bannerText": "Funzione non ancora implementata",
+    "popupName": "Nome:",
+    "popupDebut": "Debutto:",
+    "popupHashtags": "Hashtags:",
+    "popupChannel": "Canale:",
+    "popupDescription": "Descrizione"  
+  },
+  "vtubers": {
+    "glacio": {
+      "shortDesc": "VTuber italiano brainrotten e creatore di questo sito...",
+      "longDesc": "Glacio Boreale è il creatore di questo bellissimo sito che vi sta parlando direttamente da una descrizione... Beh si non so cos'altro scrivere qui."
+    }
   }
 }

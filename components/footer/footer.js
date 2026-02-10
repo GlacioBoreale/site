@@ -1,4 +1,3 @@
-// Funzione per caricare il footer
 async function loadFooter() {
   try {
     console.log('Caricamento footer...');
@@ -7,19 +6,13 @@ async function loadFooter() {
     const footerHTML = await response.text();
     document.getElementById('footer-placeholder').innerHTML = footerHTML;
     console.log('Footer caricato!');
-    
-    // Imposta l'anno corrente
     setCurrentYear();
-    
-    // Aggiungi funzionalità copia username Discord
-    addDiscordCopyFeature();
-    
+    copy();
   } catch (error) {
     console.error('Errore footer:', error);
   }
 }
 
-// Imposta l'anno corrente nel copyright
 function setCurrentYear() {
   const yearElement = document.getElementById('current-year');
   if (yearElement) {
@@ -27,14 +20,12 @@ function setCurrentYear() {
   }
 }
 
-// Funzionalità per copiare username Discord
-function addDiscordCopyFeature() {
+function copy() {
   const usernameElement = document.querySelector('.discord-username .username');
   if (usernameElement) {
     usernameElement.addEventListener('click', () => {
       const username = usernameElement.textContent;
       navigator.clipboard.writeText(username).then(() => {
-        // Feedback visivo
         const originalText = usernameElement.textContent;
         usernameElement.textContent = '✓ Copiato!';
         setTimeout(() => {

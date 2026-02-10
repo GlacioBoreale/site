@@ -20,6 +20,19 @@
     "title": "My projects",
     "description": "WORK IN PROGRESS"
   },
+  "vtpedia": {
+    "title": "VTuberPedia",
+    "subtitle": "VTuber Encyclopedia",
+    "description": "Discover the VTubers that have asked to be part of this encyclopedia!",
+    "submit": "Submit a VTuber",
+    "showMore": "Show More",
+    "bannerText": "Feature not implemented yet",
+    "popupName": "Name:",
+    "popupDebut": "Debut:",
+    "popupHashtags": "Hashtags:",
+    "popupChannel": "Channel:",
+    "popupDescription": "Description"
+  },
   "socials": {
     "title": "My socials",
     "description": "WORK IN PROGRESS"
@@ -45,5 +58,11 @@
     "home_button": "home",
     "back": "Go back to Home",
     "report": "Report an issue"
+  },
+  "vtubers": {
+    "glacio": {
+      "shortDesc": "Italian brainrotten VTuber and creator of this website...",
+      "longDesc": "Glacio Boreale is the creator of this beautiful website that is speaking directly to you from a description... Well, I don't know what else to write here."
+    }
   }
 }

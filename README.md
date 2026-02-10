@@ -36,6 +36,8 @@ Sito web personale con sistema multilingua (IT/EN)
 ## 🚧 In Sviluppo
 
 - [ ] Contenuti effettivi delle pagine
+- [ ] Pagina VTPedia
+- [ ] Achievement del sito
 - [ ] Sezione progetti con portfolio
 - [ ] Pagina social con link funzionanti
 - [ ] Form di contatto

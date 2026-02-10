@@ -1,0 +1,20 @@
+{
+  "vtubers": [
+    {
+      "id": 1,
+      "name": "Glacio Boreale",
+      "fullName": "Glacio Boreale",
+      "shortDescKey": "vtubers.glacio.shortDesc",
+      "longDescKey": "vtubers.glacio.longDesc",
+      "images": [
+        "assets/images/vtubers/glacio/glacio1.png",
+        "assets/images/vtubers/glacio/glacio2.png",
+        "assets/images/vtubers/glacio/glacio3.png"
+      ],
+      "addedDate": "05/02/2025",
+      "debut": "19/11/2020",
+      "hashtag": "GlacioBorealeArt, #GlacioBorealeVtuber, #GlacioBoreale",
+      "channel": "https://twitch.tv/glacioborealevt"
+    }
+  ]
+}

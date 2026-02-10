@@ -3,33 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glaciopia</title>
+    <title>VTPedia - Glacio Boreale</title>
+    
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
-    
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="components/navbar/nav.css">
     <link rel="stylesheet" href="components/footer/footer.css">
-    
-    <!-- JavaScript -->
+    <link rel="stylesheet" href="vtpedia.css">
+
     <script src="components/navbar/nav.js"></script>
     <script src="components/footer/footer.js"></script>
     <script src="script.js"></script>
+    <script src="vtpedia.js"></script>
 </head>
 <body>
     <div id="navbar-placeholder"></div>
+    
+    <div class="avviso" id="avviso">
+        <span data-i18n="vtpedia.bannerText" class="banner-text">Funzione non ancora implementata</span>
+    </div>
 
-    <main>
-        <section class="hero">
-            <h1>VTPedia</h1>
-            <p data-i18n="vtpedia.description">WORK IN PROGRESS</p>
+    <main class="vtpedia-main">
+        <section class="vtpedia-hero">
+            <h1 data-i18n="vtpedia.title">VTuberPedia</h1>
+            <p class="subtitle" data-i18n="vtpedia.subtitle">Enciclopedia dei VTuber</p>
+            <p class="description" data-i18n="vtpedia.description">Scopri i VTuber che hanno chiesto di partecipare a questa enciclopedia!</p>
+            
+            <button class="submit-btn" id="submit-vtuber-btn">
+                <i class="fas fa-plus"></i>
+                <span data-i18n="vtpedia.submit">Invia un VTuber</span>
+            </button>
+        </section>
+        <section class="vtuber-grid" id="vtuber-grid">
         </section>
     </main>
-    
-    <!-- Footer placeholder -->
+
+    <div class="popup" id="vtuber-popup">
+        <div class="popup-overlay" id="popup-overlay"></div>
+        <div class="popup-content">
+            <button class="popup-close" id="popup-close">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="popup-body">
+                <div class="popup-gallery" id="popup-gallery">
+                    <div class="gallery-counter" id="gallery-counter">1 / 1</div>
+                    
+                    <div class="gallery-container">
+                        <div class="gallery-slides" id="gallery-slides"></div>
+                    </div>
+
+                    <button class="gallery-nav prev" id="gallery-prev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+
+                    <button class="gallery-nav next" id="gallery-next">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <div class="gallery-indicators" id="gallery-indicators"></div>
+                </div>
+                <div class="popup-info">
+                    <h2 id="popup-name"></h2>
+                    <div class="popup-details">
+                        <div class="detail-item">
+                            <i class="fas fa-user"></i>
+                            <span><strong data-i18n="vtpedia.popupName">Nome:</strong> <span id="popup-full-name"></span></span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <i class="fas fa-calendar"></i>
+                            <span><strong data-i18n="vtpedia.popupDebut">Debut:</strong> <span id="popup-debut"></span></span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <i class="fas fa-hashtag"></i>
+                            <span><strong data-i18n="vtpedia.popupHashtags">Hashtags:</strong> <span id="popup-hashtag"></span></span>
+                        </div>
+                        
+                        <div class="detail-item">
+                            <i class="fab fa-twitch"></i>
+                            <span><strong data-i18n="vtpedia.popupChannel">Canale:</strong> <a id="popup-channel" href="" target="_blank"></a></span>
+                        </div>
+                    </div>
+                    <div class="popup-description">
+                        <h3 data-i18n="vtpedia.popupDescription">Descrizione</h3>
+                        <p id="popup-long-desc"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="footer-placeholder"></div>
 </body>
 </html>

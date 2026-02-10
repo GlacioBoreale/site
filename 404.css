@@ -35,7 +35,6 @@ body {
   flex-wrap: wrap;
 }
 
-/* Immagine */
 .image-container {
   flex: 1;
   min-width: 300px;
@@ -56,7 +55,6 @@ body {
   transform: scale(1.05) rotate(2deg);
 }
 
-/* Testo */
 .text-container {
   flex: 1;
   min-width: 300px;
@@ -88,7 +86,6 @@ body {
   margin-bottom: 2rem;
 }
 
-/* Pulsante principale */
 .home-button {
   display: inline-flex;
   align-items: center;
@@ -114,7 +111,6 @@ body {
   font-size: 1.3rem;
 }
 
-/* Link extra */
 .extra-links {
   display: flex;
   gap: 1rem;
@@ -142,7 +138,6 @@ body {
   color: white;
 }
 
-/* Footer minimale */
 .mini-footer {
   margin-top: 4rem;
   padding-top: 2rem;
@@ -152,7 +147,6 @@ body {
   font-size: 0.9rem;
 }
 
-/* Animazioni */
 @keyframes fadeInLeft {
   from {
     opacity: 0;
@@ -175,13 +169,11 @@ body {
   }
 }
 
-/* Easter egg rainbow */
 @keyframes rainbow {
   0% { filter: hue-rotate(0deg); }
   100% { filter: hue-rotate(360deg); }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .content-404 {
     flex-direction: column;

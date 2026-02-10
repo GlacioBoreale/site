@@ -20,6 +20,19 @@
     "title": "I miei progetti",
     "description": "WORK IN PROGRESS"
   },
+  "vtpedia": {
+    "title": "VTuberPedia",
+    "subtitle": "Enciclopedia dei VTuber",
+    "description": "Scopri i VTuber che hanno chiesto di partecipare a questa enciclopedia!",
+    "submit": "Invia un VTuber",
+    "showMore": "Mostra di più",
+    "bannerText": "Funzione non ancora implementata",
+    "popupName": "Nome:",
+    "popupDebut": "Debutto:",
+    "popupHashtags": "Hashtags:",
+    "popupChannel": "Canale:",
+    "popupDescription": "Descrizione"  
+  },
   "socials": {
     "title": "I miei social",
     "description": "WORK IN PROGRESS"
@@ -45,19 +58,6 @@
     "home_button": "home",
     "back": "Vai alla Home",
     "report": "Segnala un problema"
-  },
-  "vtpedia": {
-    "title": "VTuberPedia",
-    "subtitle": "Enciclopedia dei VTuber",
-    "description": "Scopri i VTuber che hanno chiesto di partecipare a questa enciclopedia!",
-    "submit": "Invia un VTuber",
-    "showMore": "Mostra di più",
-    "bannerText": "Funzione non ancora implementata",
-    "popupName": "Nome:",
-    "popupDebut": "Debutto:",
-    "popupHashtags": "Hashtags:",
-    "popupChannel": "Canale:",
-    "popupDescription": "Descrizione"  
   },
   "vtubers": {
     "glacio": {

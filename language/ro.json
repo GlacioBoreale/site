@@ -1,0 +1,68 @@
+{
+  "nav": {
+    "brand": "Site-ul meu",
+    "home": "Acasă",
+    "about": "Despre mine",
+    "projects": "Proiecte",
+    "VTPedia": "VTPedia",
+    "socials": "Socials",
+    "contact": "Contact"
+  },
+  "home": {
+    "title": "Welcome",
+    "description": "WORK IN PROGRESS"
+  },
+  "about": {
+    "title": "Despre mine",
+    "description": "ÎN CURS DE REALIZARE"
+  },
+  "projects": {
+    "title": "Proiectele mele",
+    "description": "ÎN CURS DE REALIZARE"
+  },
+  "vtpedia": {
+    "title": "VTuberPedia",
+    "subtitle": "Enciclopedia VTubers",
+    "description": "Descoperă VTubers care au solicitat să participe la această enciclopedie!",
+    "submit": "Trimite un VTuber",
+    "showMore": "Afișează mai multe",
+    "bannerText": "Funcție încă neimplementată",
+    "popupName": "Nume:",
+    "popupDebut": "Debut:",
+    "popupHashtags": "Hashtaguri:",
+    "popupChannel": "Canal:",
+    "popupDescription": "Descriere"  
+  },
+  "socials": {
+    "title": "Rețelele mele sociale",
+    "description": "ÎN CURS DE REALIZARE"
+  },
+  "contact": {
+    "title": "Contactează-mă",
+    "description": "ÎN CURS DE REALIZARE"
+  },
+  "footer": {
+    "social_title": "Urmărește-mă",
+    "discord_label": "Discord:",
+    "quick_links": "Linkuri rapide",
+    "info_title": "Informații",
+    "privacy": "Politica de confidențialitate",
+    "terms": "Termeni și condiții",
+    "rights": "Toate drepturile rezervate",
+    "made_with": "Realizat cu",
+    "and": "și"
+  },
+    "404": {
+    "message": "Brosquito, cum ai ajuns în această parte a site-ului?",
+    "description": "Broklahoma, întoarce-te de unde ai venit",
+    "home_button": "home",
+    "back": "Mergi la pagina principală",
+    "report": "Raportează o problemă"
+  },
+  "vtubers": {
+    "glacio": {
+      "shortDesc": "VTuber italian cu creierul putred și creatorul acestui site...",
+      "longDesc": "Glacio Boreale este creatorul acestui site frumos, care îți vorbește direct dintr-o descriere... Ei bine, nu știu ce altceva să scriu aici."
+  }
+}
+}

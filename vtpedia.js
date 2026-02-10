@@ -29,6 +29,10 @@ function displayVTubers() {
         const card = createVTuberCard(vtuber);
         grid.appendChild(card);
     });
+    
+    if (typeof updateContent === 'function') {
+        updateContent();
+    }
 }
 
 function createVTuberCard(vtuber) {
@@ -37,6 +41,7 @@ function createVTuberCard(vtuber) {
     const firstImage = vtuber.images && vtuber.images.length > 0 ? vtuber.images[0] : 'assets/images/vtubers/placeholder.png';
     
     const shortDesc = getNestedTranslation(vtuber.shortDescKey) || vtuber.shortDescKey;
+    const showMoreText = getNestedTranslation('vtpedia.showMore') || 'Mostra di più';
     
     card.innerHTML = `
         <div class="card-image">
@@ -48,7 +53,8 @@ function createVTuberCard(vtuber) {
             <p class="vtuber-desc">${shortDesc}</p>
             <button class="show-more-btn">
                 <i class="fas fa-chevron-down"></i>
-                <span data-i18n="vtpedia.showMore">Mostra di più</span>
+                <span data-i18n="vtpedia.showMore">${showMoreText}</span>
+                <i class="fas fa-chevron-down"></i>
             </button>
         </div>
     `;

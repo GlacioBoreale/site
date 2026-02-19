@@ -54,7 +54,22 @@
   },
   "socials": {
     "title": "My socials",
-    "description": "This page is still under construction. Come back soon!"
+    "subtitle": "Where to find me online",
+    "description": "This page is still under construction. Come back soon!",
+    "followers": "followers",
+    "subscribers": "subscribers",
+    "topClips": "Top Clips",
+    "popularClips": "Popular Clips",
+    "liveNow": "LIVE",
+    "offline": "OFFLINE",
+    "offlineDesc": "Not streaming right now",
+    "streamTitle": "Title",
+    "streamCategory": "Category",
+    "discordDesc": "Join the community",
+    "joinDiscord": "Join the server",
+    "instagramDesc": "Follow me on Instagram",
+    "tiktokDesc": "Follow me on TikTok",
+    "follow": "Follow"
   },
   "wip": {
     "badge": "Coming soon",

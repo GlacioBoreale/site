@@ -7,31 +7,176 @@
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="wip.css">
+    <link rel="stylesheet" href="socials.css">
     <link rel="stylesheet" href="components/navbar/nav.css">
     <link rel="stylesheet" href="components/footer/footer.css">
     <script src="components/navbar/nav.js"></script>
     <script src="components/footer/footer.js"></script>
     <script src="script.js"></script>
+    <script src="socials.js"></script>
 </head>
 <body>
     <div id="navbar-placeholder"></div>
-    <main>
-        <section class="wip-hero">
-            <div class="wip-content">
-                <p class="wip-label" data-i18n="nav.socials">Socials</p>
-                <h1 class="wip-title" data-i18n="socials.title">I miei social</h1>
-                <div class="wip-badge">
-                    <span class="dot"></span>
-                    <span data-i18n="wip.badge">In arrivo</span>
+    <main class="socials-main">
+
+        <section class="socials-hero">
+            <p class="socials-label" data-i18n="nav.socials">Socials</p>
+            <h1 class="socials-title" data-i18n="socials.title">I miei social</h1>
+            <p class="socials-subtitle" data-i18n="socials.subtitle">Dove trovarmi su internet</p>
+        </section>
+
+        <!-- TWITCH -->
+        <section class="platform-section twitch-section">
+
+            <!-- Header: avatar + nome + stato live -->
+            <div class="platform-header">
+                <div class="platform-identity">
+                    <img id="twitch-avatar" src="" alt="Glacio" class="platform-avatar twitch-avatar">
+                    <div>
+                        <a id="twitch-name" href="https://twitch.tv/glacioborealevt" target="_blank" class="platform-name twitch-name"></a>
+                        <div class="platform-meta">
+                            <i class="fab fa-twitch"></i>
+                            <span id="twitch-followers"></span>
+                            <span data-i18n="socials.followers">followers</span>
+                        </div>
+                    </div>
                 </div>
-                <p class="wip-desc" data-i18n="socials.description">Questa pagina è ancora in costruzione. Torna presto!</p>
-                <a href="index.html" class="wip-back">
-                    <i class="fas fa-arrow-left"></i>
-                    <span data-i18n="wip.back">Torna alla home</span>
+                <!-- Stato live nell'header -->
+                <div class="twitch-live-status">
+                    <span class="status-dot" id="twitch-status-dot"></span>
+                    <span class="status-label" id="twitch-status-label"></span>
+                    <span id="live-uptime" class="live-uptime"></span>
+                </div>
+            </div>
+
+            <!-- Riga centrale: player/immagine a sinistra, info a destra -->
+            <div class="twitch-main-row" id="twitch-main-row">
+                <!-- Sinistra: player o immagine offline -->
+                <div class="twitch-media">
+                    <!-- Live embed -->
+                    <div id="twitch-live-embed" class="twitch-media-inner" style="display:none;">
+                        <iframe id="twitch-embed" src="" allowfullscreen class="twitch-embed"></iframe>
+                    </div>
+                    <!-- Offline image -->
+                    <div id="twitch-offline-media" class="twitch-media-inner offline-image-wrapper">
+                        <img id="twitch-offline-img" src="" alt="Offline" class="offline-img">
+                        <div class="offline-overlay">
+                            <span class="offline-badge"><i class="fas fa-circle"></i> OFFLINE</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Destra: titolo + categoria (visibili solo se live) -->
+                <div class="twitch-side-info" id="twitch-side-info">
+                    <div class="stream-info-box" id="box-title">
+                        <span class="info-box-label" data-i18n="socials.streamTitle">Titolo</span>
+                        <p id="live-title" class="info-box-value"></p>
+                    </div>
+                    <div class="stream-info-box" id="box-category">
+                        <span class="info-box-label" data-i18n="socials.streamCategory">Categoria</span>
+                        <div class="stream-category-row">
+                            <img id="live-game-box" src="" alt="" class="game-box-art">
+                            <div>
+                                <span id="live-game" class="game-name"></span>
+                                <div class="stream-stats">
+                                    <span id="live-viewers" class="stat-chip"><i class="fas fa-eye"></i> <span></span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clip in basso, sempre visibili -->
+            <div class="twitch-clips-section">
+                <h4 class="clips-section-title" data-i18n="socials.popularClips">Clip Popolari</h4>
+                <div id="twitch-clips-grid" class="clips-grid"></div>
+            </div>
+
+        </section>
+
+        <!-- YOUTUBE -->
+        <section class="platform-section youtube-section">
+            <div class="platform-header">
+                <div class="platform-identity">
+                    <img id="yt-avatar" src="" alt="YouTube" class="platform-avatar yt-avatar">
+                    <div>
+                        <a id="yt-name" href="https://www.youtube.com/@glacioborealevt" target="_blank" class="platform-name yt-name"></a>
+                        <div class="platform-meta">
+                            <i class="fab fa-youtube"></i>
+                            <span id="yt-subscribers"></span>
+                            <span data-i18n="socials.subscribers">iscritti</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="yt-videos" class="yt-videos-grid"></div>
+        </section>
+
+        <!-- DISCORD -->
+        <section class="platform-section discord-section">
+            <div class="platform-header">
+                <div class="platform-identity">
+                    <div class="platform-icon-circle discord-icon">
+                        <i class="fab fa-discord"></i>
+                    </div>
+                    <div>
+                        <span class="platform-name discord-name">Discord</span>
+                        <div class="platform-meta">
+                            <span data-i18n="socials.discordDesc">Unisciti alla community</span>
+                        </div>
+                    </div>
+                </div>
+                <a href="https://discord.gg/nsdCYSxzuR" target="_blank" class="join-btn discord-btn">
+                    <i class="fab fa-discord"></i>
+                    <span data-i18n="socials.joinDiscord">Entra nel server</span>
                 </a>
             </div>
         </section>
+
+        <!-- INSTAGRAM + TIKTOK -->
+        <div class="small-platforms">
+            <section class="platform-section instagram-section small-platform">
+                <div class="platform-header" style="margin-bottom:0;">
+                    <div class="platform-identity">
+                        <div class="platform-icon-circle instagram-icon">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                        <div>
+                            <span class="platform-name instagram-name">glacioboreale_vt</span>
+                            <div class="platform-meta">
+                                <span data-i18n="socials.instagramDesc">Seguimi su Instagram</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="https://www.instagram.com/glacioboreale_vt/" target="_blank" class="join-btn instagram-btn">
+                        <i class="fab fa-instagram"></i>
+                        <span data-i18n="socials.follow">Segui</span>
+                    </a>
+                </div>
+            </section>
+
+            <section class="platform-section tiktok-section small-platform">
+                <div class="platform-header" style="margin-bottom:0;">
+                    <div class="platform-identity">
+                        <div class="platform-icon-circle tiktok-icon">
+                            <i class="fab fa-tiktok"></i>
+                        </div>
+                        <div>
+                            <span class="platform-name tiktok-name">@glacioborealevt</span>
+                            <div class="platform-meta">
+                                <span data-i18n="socials.tiktokDesc">Seguimi su TikTok</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="https://www.tiktok.com/@glacioborealevt" target="_blank" class="join-btn tiktok-btn">
+                        <i class="fab fa-tiktok"></i>
+                        <span data-i18n="socials.follow">Segui</span>
+                    </a>
+                </div>
+            </section>
+        </div>
+
     </main>
     <div id="footer-placeholder"></div>
 </body>

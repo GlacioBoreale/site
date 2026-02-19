@@ -31,13 +31,14 @@ jobs:
           CLIENT_ID="${{ secrets.TWITCH_CLIENT_ID }}"
           USER="glacioborealevt"
 
-          # Dati utente (follower)
+          # Dati utente (follower + offline image)
           USER_DATA=$(curl -s -H "Client-ID: $CLIENT_ID" -H "Authorization: Bearer $TOKEN" \
             "https://api.twitch.tv/helix/users?login=$USER")
 
           USER_ID=$(echo $USER_DATA | python3 -c "import sys,json; print(json.load(sys.stdin)['data'][0]['id'])")
           DISPLAY_NAME=$(echo $USER_DATA | python3 -c "import sys,json; print(json.load(sys.stdin)['data'][0]['display_name'])")
           PROFILE_IMG=$(echo $USER_DATA | python3 -c "import sys,json; print(json.load(sys.stdin)['data'][0]['profile_image_url'])")
+          OFFLINE_IMG=$(echo $USER_DATA | python3 -c "import sys,json; print(json.load(sys.stdin)['data'][0].get('offline_image_url', ''))")
 
           # Follower count
           FOLLOWER_DATA=$(curl -s -H "Client-ID: $CLIENT_ID" -H "Authorization: Bearer $TOKEN" \
@@ -50,7 +51,9 @@ jobs:
           IS_LIVE=$(echo $STREAM_DATA | python3 -c "import sys,json; d=json.load(sys.stdin)['data']; print('true' if len(d)>0 else 'false')")
           STREAM_TITLE=$(echo $STREAM_DATA | python3 -c "import sys,json; d=json.load(sys.stdin)['data']; print(d[0]['title'] if len(d)>0 else '')")
           STREAM_GAME=$(echo $STREAM_DATA | python3 -c "import sys,json; d=json.load(sys.stdin)['data']; print(d[0]['game_name'] if len(d)>0 else '')")
+          STREAM_GAME_ID=$(echo $STREAM_DATA | python3 -c "import sys,json; d=json.load(sys.stdin)['data']; print(d[0]['game_id'] if len(d)>0 else '')")
           STREAM_VIEWERS=$(echo $STREAM_DATA | python3 -c "import sys,json; d=json.load(sys.stdin)['data']; print(d[0]['viewer_count'] if len(d)>0 else 0)")
+          STREAM_STARTED=$(echo $STREAM_DATA | python3 -c "import sys,json; d=json.load(sys.stdin)['data']; print(d[0]['started_at'] if len(d)>0 else '')")
           STREAM_THUMBNAIL=$(echo $STREAM_DATA | python3 -c "
           import sys,json
           d=json.load(sys.stdin)['data']
@@ -60,28 +63,41 @@ jobs:
             print('')
           ")
 
-          # Top 2 clip di sempre
-          CLIPS_DATA=$(curl -s -H "Client-ID: $CLIENT_ID" -H "Authorization: Bearer $TOKEN" \
-            "https://api.twitch.tv/helix/clips?broadcaster_id=$USER_ID&first=2&sort=VIEWS")
+          # Box art della categoria (solo se live)
+          GAME_BOX_ART=""
+          if [ -n "$STREAM_GAME_ID" ] && [ "$STREAM_GAME_ID" != "0" ]; then
+            GAME_DATA=$(curl -s -H "Client-ID: $CLIENT_ID" -H "Authorization: Bearer $TOKEN" \
+              "https://api.twitch.tv/helix/games?id=$STREAM_GAME_ID")
+            GAME_BOX_ART=$(echo $GAME_DATA | python3 -c "
+import sys,json
+d=json.load(sys.stdin)['data']
+if len(d)>0:
+  print(d[0]['box_art_url'].replace('{width}','144').replace('{height}','192'))
+else:
+  print('')
+")
+          fi
 
-          # Clip più recente
-          RECENT_CLIP_DATA=$(curl -s -H "Client-ID: $CLIENT_ID" -H "Authorization: Bearer $TOKEN" \
-            "https://api.twitch.tv/helix/clips?broadcaster_id=$USER_ID&first=1")
+          # Top 3 clip per views
+          CLIPS_DATA=$(curl -s -H "Client-ID: $CLIENT_ID" -H "Authorization: Bearer $TOKEN" \
+            "https://api.twitch.tv/helix/clips?broadcaster_id=$USER_ID&first=20")
 
           # Salva in variabili d'ambiente
           echo "USER_ID=$USER_ID" >> $GITHUB_ENV
           echo "TWITCH_DISPLAY_NAME=$DISPLAY_NAME" >> $GITHUB_ENV
           echo "TWITCH_PROFILE_IMG=$PROFILE_IMG" >> $GITHUB_ENV
+          echo "TWITCH_OFFLINE_IMG=$OFFLINE_IMG" >> $GITHUB_ENV
           echo "TWITCH_FOLLOWERS=$FOLLOWERS" >> $GITHUB_ENV
           echo "TWITCH_IS_LIVE=$IS_LIVE" >> $GITHUB_ENV
           echo "TWITCH_STREAM_TITLE=$STREAM_TITLE" >> $GITHUB_ENV
           echo "TWITCH_STREAM_GAME=$STREAM_GAME" >> $GITHUB_ENV
+          echo "TWITCH_STREAM_GAME_BOX=$GAME_BOX_ART" >> $GITHUB_ENV
           echo "TWITCH_STREAM_VIEWERS=$STREAM_VIEWERS" >> $GITHUB_ENV
+          echo "TWITCH_STREAM_STARTED=$STREAM_STARTED" >> $GITHUB_ENV
           echo "TWITCH_STREAM_THUMBNAIL=$STREAM_THUMBNAIL" >> $GITHUB_ENV
 
-          # Salva clips come JSON separato per gestirle dopo
-          echo $CLIPS_DATA > /tmp/top_clips.json
-          echo $RECENT_CLIP_DATA > /tmp/recent_clip.json
+          # Salva clips per gestirle dopo
+          echo $CLIPS_DATA > /tmp/all_clips.json
 
       # ── YOUTUBE ───────────────────────────────────────────────────────────
       - name: Fetch YouTube Data
@@ -120,16 +136,41 @@ jobs:
           YT_SUBS=$(echo $CHANNEL_DATA | python3 -c "import sys,json; print(json.load(sys.stdin)['items'][0]['statistics']['subscriberCount'])")
           YT_THUMB=$(echo $CHANNEL_DATA | python3 -c "import sys,json; print(json.load(sys.stdin)['items'][0]['snippet']['thumbnails']['default']['url'])")
 
-          # Ultimi 3 video
-          VIDEOS_DATA=$(curl -s \
-            "https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&maxResults=3&order=date&type=video&key=${API_KEY}")
+          # Ultimi video (ne prendiamo 10 per poi filtrare gli Shorts)
+          SEARCH_DATA=$(curl -s \
+            "https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&maxResults=10&order=date&type=video&key=${API_KEY}")
+
+          # Estrai gli ID dei video per controllare la durata
+          VIDEO_IDS=$(echo $SEARCH_DATA | python3 -c "
+import sys, json
+items = json.load(sys.stdin).get('items', [])
+ids = [i['id']['videoId'] for i in items if i.get('id', {}).get('videoId')]
+print(','.join(ids))
+")
+
+          # Chiedi i dettagli (inclusa la durata ISO 8601) per filtrare gli Shorts
+          DETAILS_DATA=$(curl -s \
+            "https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&id=${VIDEO_IDS}&key=${API_KEY}")
+
+          # Combina search + details, filtra Shorts (durata <= 60s), prendi i primi 3
+          python3 << 'PYEOF'
+import json, re
+
+with open('/dev/stdin') as f:
+    pass  # stdin non disponibile qui, usiamo variabili
+PYEOF
+
+          # Salva entrambi i file per il processing Python successivo
+          echo $SEARCH_DATA > /tmp/yt_search.json
+          echo $DETAILS_DATA > /tmp/yt_details.json
 
           echo "CHANNEL_ID=$CHANNEL_ID" >> $GITHUB_ENV
           echo "YT_NAME=$YT_NAME" >> $GITHUB_ENV
           echo "YT_SUBS=$YT_SUBS" >> $GITHUB_ENV
           echo "YT_THUMB=$YT_THUMB" >> $GITHUB_ENV
 
-          echo $VIDEOS_DATA > /tmp/yt_videos.json
+          # Compatibilità col passo successivo
+          echo $SEARCH_DATA > /tmp/yt_videos.json
 
       # ── GENERA JSON FINALE ────────────────────────────────────────────────
       - name: Generate api_cache.json
@@ -137,28 +178,13 @@ jobs:
           python3 << 'EOF'
           import json, os
 
-          # Twitch clips
-          with open('/tmp/top_clips.json') as f:
-              top_clips_raw = json.load(f).get('data', [])
-          with open('/tmp/recent_clip.json') as f:
-              recent_clip_raw = json.load(f).get('data', [])
+          # Twitch clips: top 3 per views + 3 random dal pool di 20
+          import random
+          with open('/tmp/all_clips.json') as f:
+              all_clips_raw = json.load(f).get('data', [])
 
-          top_clips = [
-              {
-                  'title': c['title'],
-                  'url': c['url'],
-                  'thumbnail': c['thumbnail_url'],
-                  'views': c['view_count'],
-                  'duration': c['duration'],
-                  'creator': c['creator_name']
-              }
-              for c in top_clips_raw[:2]
-          ]
-
-          recent_clip = None
-          if recent_clip_raw:
-              c = recent_clip_raw[0]
-              recent_clip = {
+          def clip_obj(c):
+              return {
                   'title': c['title'],
                   'url': c['url'],
                   'thumbnail': c['thumbnail_url'],
@@ -167,20 +193,59 @@ jobs:
                   'creator': c['creator_name']
               }
 
-          # YouTube videos
-          with open('/tmp/yt_videos.json') as f:
-              yt_raw = json.load(f).get('items', [])
+          # Ordina per views e prendi le top 3
+          sorted_clips = sorted(all_clips_raw, key=lambda c: c['view_count'], reverse=True)
+          top_clips = [clip_obj(c) for c in sorted_clips[:3]]
 
-          yt_videos = [
-              {
-                  'title': v['snippet']['title'],
-                  'videoId': v['id']['videoId'],
-                  'thumbnail': v['snippet']['thumbnails']['medium']['url'],
-                  'publishedAt': v['snippet']['publishedAt'],
-                  'url': f"https://www.youtube.com/watch?v={v['id']['videoId']}"
-              }
-              for v in yt_raw
-          ]
+          # 3 clip random dal pool (escludi quelle già nelle top 3)
+          top_urls = {c['url'] for c in sorted_clips[:3]}
+          remaining = [c for c in all_clips_raw if c['url'] not in top_urls]
+          random_clips = [clip_obj(c) for c in random.sample(remaining, min(3, len(remaining)))]
+
+          # YouTube videos - filtra Shorts (durata <= 60 secondi)
+          import re as _re
+
+          def parse_duration(iso):
+              # ISO 8601 duration: PT1M30S, PT45S, PT2H, ecc.
+              h = int(_re.search(r'(\d+)H', iso).group(1)) if _re.search(r'(\d+)H', iso) else 0
+              m = int(_re.search(r'(\d+)M', iso).group(1)) if _re.search(r'(\d+)M', iso) else 0
+              s = int(_re.search(r'(\d+)S', iso).group(1)) if _re.search(r'(\d+)S', iso) else 0
+              return h * 3600 + m * 60 + s
+
+          import os as _os
+          yt_details_path = '/tmp/yt_details.json'
+          yt_videos = []
+
+          if _os.path.exists(yt_details_path):
+              with open(yt_details_path) as f:
+                  details_raw = json.load(f).get('items', [])
+              for v in details_raw:
+                  duration_iso = v.get('contentDetails', {}).get('duration', 'PT0S')
+                  duration_sec = parse_duration(duration_iso)
+                  if duration_sec > 60:  # escludi Shorts
+                      yt_videos.append({
+                          'title': v['snippet']['title'],
+                          'videoId': v['id'],
+                          'thumbnail': v['snippet']['thumbnails'].get('medium', v['snippet']['thumbnails'].get('default', {})).get('url', ''),
+                          'publishedAt': v['snippet']['publishedAt'],
+                          'url': f"https://www.youtube.com/watch?v={v['id']}",
+                          'duration': duration_sec
+                      })
+                      if len(yt_videos) >= 3:
+                          break
+          else:
+              with open('/tmp/yt_videos.json') as f:
+                  yt_raw = json.load(f).get('items', [])
+              yt_videos = [
+                  {
+                      'title': v['snippet']['title'],
+                      'videoId': v['id']['videoId'],
+                      'thumbnail': v['snippet']['thumbnails']['medium']['url'],
+                      'publishedAt': v['snippet']['publishedAt'],
+                      'url': f"https://www.youtube.com/watch?v={v['id']['videoId']}"
+                  }
+                  for v in yt_raw
+              ]
 
           # JSON finale
           data = {
@@ -194,11 +259,14 @@ jobs:
                   'stream': {
                       'title': os.environ.get('TWITCH_STREAM_TITLE', ''),
                       'game': os.environ.get('TWITCH_STREAM_GAME', ''),
+                      'gameBoxArt': os.environ.get('TWITCH_STREAM_GAME_BOX', ''),
                       'viewers': int(os.environ.get('TWITCH_STREAM_VIEWERS', 0)),
+                      'startedAt': os.environ.get('TWITCH_STREAM_STARTED', ''),
                       'thumbnail': os.environ.get('TWITCH_STREAM_THUMBNAIL', '')
                   },
+                  'offlineImage': os.environ.get('TWITCH_OFFLINE_IMG', ''),
                   'topClips': top_clips,
-                  'recentClip': recent_clip
+                  'randomClips': random_clips
               },
               'youtube': {
                   'displayName': os.environ.get('YT_NAME', ''),

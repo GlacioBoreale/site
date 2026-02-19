@@ -54,7 +54,22 @@
   },
   "socials": {
     "title": "I miei social",
-    "description": "Questa pagina è ancora in costruzione. Torna presto!"
+    "subtitle": "Dove trovare le mie tracce sull'internet",
+    "description": "Questa pagina è ancora in costruzione. Torna presto!",
+    "followers": "follower",
+    "subscribers": "iscritti",
+    "topClips": "Top Clips",
+    "popularClips": "Clip Popolari",
+    "liveNow": "LIVE",
+    "offline": "OFFLINE",
+    "offlineDesc": "Non sono in live al momento",
+    "streamTitle": "Titolo",
+    "streamCategory": "Categoria",
+    "discordDesc": "Unisciti alla community",
+    "joinDiscord": "Entra nel server",
+    "instagramDesc": "Seguimi su Instagram",
+    "tiktokDesc": "Seguimi su TikTok",
+    "follow": "Segui"
   },
   "wip": {
     "badge": "In arrivo",

@@ -23,6 +23,7 @@
                     <i class="fa-solid fa-house"></i>
                     home
                 </a>
+                <span data-i18n="404.coinText" style="display:none;">Clicca per lanciare!</span>
                 <div class="extra-links">
                     <a href="index.html" class="link-button">
                         <i class="fa-solid fa-arrow-left"></i>
@@ -66,20 +67,30 @@
     let coinImages = [];
     let isFlipping = false;
 
-    async function loadCoinImages() {
-        try {
-            const response = await fetch('./assets/data/coin_images.json');
-            const data = await response.json();
-            coinImages = data.images;
-        } catch (error) {
-            coinImages = [
-                'assets/images/coin1.png',
-                'assets/images/coin2.png',
-                'assets/images/coin3.png',
-                'assets/images/coin4.png',
-                'assets/images/coin5.png'
-            ];
-        }
+    function loadCoinImages() {
+        coinImages = [
+            'assets/images/404/coin1.png',
+            'assets/images/404/coin2.png',
+            'assets/images/404/coin3.png',
+            'assets/images/404/coin4.png',
+            'assets/images/404/coin5.png',
+            'assets/images/404/coin6.png',
+            'assets/images/404/coin7.png',
+            'assets/images/404/coin8.png',
+            'assets/images/404/coin9.png',
+            'assets/images/404/coin10.png',
+            'assets/images/404/coin11.png',
+            'assets/images/404/coin12.png',
+            'assets/images/404/coin13.png',
+            'assets/images/404/coin14.png',
+            'assets/images/404/coin15.png',
+            'assets/images/404/coin16.png',
+            'assets/images/404/coin17.png',
+            'assets/images/404/coin18.png',
+            'assets/images/404/coin19.png',
+            'assets/images/404/coin20.png',
+            'assets/images/404/coin21.png'
+        ];
     }
 
     document.addEventListener('keypress', (e) => {
@@ -105,7 +116,7 @@
         
         const tooltip = document.createElement('div');
         tooltip.className = 'coin-tooltip-hint';
-        tooltip.textContent = 'Click to flip!';
+        tooltip.textContent = document.querySelector('[data-i18n="404.coinText"]').textContent;
         imageContainer.appendChild(tooltip);
         
         setTimeout(() => {

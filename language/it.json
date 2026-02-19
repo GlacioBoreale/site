@@ -2,23 +2,42 @@
   "nav": {
     "brand": "Il Mio Sito",
     "home": "Home",
-    "about": "Chi sono",
+    "about": "Chi siamo",
     "projects": "Progetti",
     "VTPedia": "VTPedia",
     "socials": "Socials",
     "contact": "Contatti"
   },
   "home": {
-    "title": "Benvenuto",
-    "description": "WORK IN PROGRESS"
+    "title": "Benvenuto su Glaciopia",
+    "subtitle": "Il sito di Glacio Boreale - VTuber italiano, content creator e sviluppatore di questo sito.",
+    "ctaVtpedia": "Esplora la VTPedia",
+    "ctaAbout": "Chi siamo",
+    "aboutLabel": "Chi siamo",
+    "aboutTitle": "Glacio Boreale",
+    "aboutDesc": "VTuber italiano, streamer su Twitch e creatore di questo pezzo di internet. Questo sito è il quartier generale dove puoi trovare tutto quello che riguarda Glacio e i suoi progetti.",
+    "aboutCta": "Scopri di più",
+    "quickLabel": "Esplora",
+    "quickTitle": "Cosa trovi qui",
+    "quickVtpediaDesc": "L'enciclopedia dei VTuber che fanno parte di questa community.",
+    "quickSocialsDesc": "Twitch, Youtube, Discord e molti altri!",
+    "quickProjectsDesc": "Siti, tool e altre cose nerdologiche costruite nel tempo libero.",
+    "quickAboutDesc": "La storia dietro Glaciopia e chi c'è dall'altra parte dello schermo.",
+    "quickVisit": "Visita",
+    "socialLabel": "Seguimi",
+    "socialTitle": "Trovami sui social",
+    "socialDesc": "Stream, aggiornamenti e molto altro.",
+    "vtLabel": "VTPedia",
+    "vtTitle": "VTuber in evidenza",
+    "vtCta": "Vedi tutti"
   },
   "about": {
-    "title": "Chi sono",
-    "description": "WORK IN PROGRESS"
+    "title": "Chi siamo",
+    "description": "Questa pagina è ancora in costruzione. Torna presto!"
   },
   "projects": {
     "title": "I miei progetti",
-    "description": "WORK IN PROGRESS"
+    "description": "Questa pagina è ancora in costruzione. Torna presto!"
   },
   "vtpedia": {
     "title": "VTuberPedia",
@@ -35,7 +54,11 @@
   },
   "socials": {
     "title": "I miei social",
-    "description": "WORK IN PROGRESS"
+    "description": "Questa pagina è ancora in costruzione. Torna presto!"
+  },
+  "wip": {
+    "badge": "In arrivo",
+    "back": "Torna alla home"
   },
   "contact": {
     "title": "Contattami",
@@ -57,12 +80,21 @@
     "description": "Broklahoma, torna da dove sei venuto",
     "home_button": "home",
     "back": "Vai alla Home",
-    "report": "Segnala un problema"
+    "report": "Segnala un problema",
+    "coinText": "Clicca per lanciare!"
   },
   "vtubers": {
     "glacio": {
       "shortDesc": "VTuber italiano brainrotten e creatore di questo sito...",
       "longDesc": "Glacio Boreale è il creatore di questo bellissimo sito che vi sta parlando direttamente da una descrizione... Beh si non so cos'altro scrivere qui."
+    },
+    "placeholder1": {
+      "shortDesc": "Prossimamente...",
+      "longDesc": "Questo VTuber non è ancora stato aggiunto. Resta sintonizzato!"
+    },
+    "placeholder2": {
+      "shortDesc": "Prossimamente...",
+      "longDesc": "Questo VTuber non è ancora stato aggiunto. Resta sintonizzato!"
     }
   }
 }

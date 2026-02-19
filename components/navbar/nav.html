@@ -7,39 +7,43 @@
     </div>
     <ul class="navbar-menu desktop-menu">
       <li><a href="index.html" data-i18n="nav.home">Home</a></li>
-      <li><a href="about.html" data-i18n="nav.about">Chi sono</a></li>
+      <li><a href="about.html" data-i18n="nav.about">Chi siamo</a></li>
       <li><a href="projects.html" data-i18n="nav.projects">Progetti</a></li>
       <li class="hide-on-tablet"><a href="vtpedia.html" data-i18n="nav.VTPedia">VTPedia</a></li>
       <li class="hide-on-tablet"><a href="socials.html" data-i18n="nav.socials">Socials</a></li>
-      <li class="hide-on-tablet"><a href="contact.html" data-i18n="nav.contact">Contatti</a></li>
     </ul>
+
     <button class="hamburger-btn" id="hamburger-btn" aria-label="Menu">
       <span></span>
       <span></span>
       <span></span>
     </button>
-    <select id="lang-selector" class="lang-selector desktop-lang">
-      <option value="it">🇮🇹 IT</option>
-      <option value="en">🇬🇧 EN</option>
-      <option value="ro">🇷🇴 RO</option>
-    </select>
+
+    <!-- Lang dropdown - popolato da JS -->
+    <div class="lang-dropdown desktop-lang" id="lang-dropdown-desktop">
+      <button class="lang-dropdown-btn" id="lang-btn-desktop" aria-haspopup="listbox">
+        <span id="lang-flag-desktop"></span>
+        <span id="lang-code-desktop"></span>
+        <svg class="lang-chevron" viewBox="0 0 10 6" fill="none">
+          <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <ul class="lang-dropdown-menu" id="lang-menu-desktop" role="listbox"></ul>
+    </div>
   </div>
-  
+
   <div class="mobile-menu" id="mobile-menu">
     <ul>
       <li class="show-on-mobile"><a href="index.html" data-i18n="nav.home">Home</a></li>
-      <li class="show-on-mobile"><a href="about.html" data-i18n="nav.about">Chi sono</a></li>
+      <li class="show-on-mobile"><a href="about.html" data-i18n="nav.about">Chi siamo</a></li>
       <li class="show-on-mobile"><a href="projects.html" data-i18n="nav.projects">Progetti</a></li>
       <li><a href="vtpedia.html" data-i18n="nav.VTPedia">VTPedia</a></li>
       <li><a href="socials.html" data-i18n="nav.socials">Socials</a></li>
-      <li><a href="contact.html" data-i18n="nav.contact">Contatti</a></li>
-    </ul>    
+    </ul>
+
+    <!-- Lang switcher mobile - popolato da JS -->
     <div class="mobile-lang-container show-on-mobile">
-      <select id="lang-selector-mobile" class="lang-selector mobile-lang">
-        <option value="it">🇮🇹 Italiano</option>
-        <option value="en">🇬🇧 English</option>
-        <option value="ro">🇷🇴 Română</option>
-      </select>
+      <ul class="lang-dropdown-menu lang-menu-mobile" id="lang-menu-mobile" role="listbox"></ul>
     </div>
   </div>
 </nav>

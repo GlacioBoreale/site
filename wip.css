@@ -1,0 +1,126 @@
+/* nuovo font per titoli e testi */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+  --accent: #5b9cf6;
+  --accent2: #a78bfa;
+  --glass: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
+}
+
+/*                    WIP HERO                    */
+.wip-hero {
+  min-height: calc(100vh - 90px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.wip-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 0%, rgba(91,156,246,0.1) 0%, transparent 70%),
+    radial-gradient(ellipse 30% 30% at 85% 85%, rgba(167,139,250,0.07) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.wip-content {
+  text-align: center;
+  max-width: 600px;
+  position: relative;
+}
+
+.wip-label {
+  font-family: 'Syne', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1rem;
+  animation: fadeDown 0.8s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+.wip-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1.5rem;
+  animation: fadeDown 0.8s 0.08s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+/*                    BADGE COMING SOON                    */
+.wip-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1.4rem;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 2rem;
+  animation: fadeDown 0.8s 0.16s cubic-bezier(0.16,1,0.3,1) both;
+}
+.wip-badge .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2s infinite;
+}
+
+.wip-desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.75;
+  margin-bottom: 2.5rem;
+  animation: fadeDown 0.8s 0.22s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+.wip-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1.6rem;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+  animation: fadeDown 0.8s 0.28s cubic-bezier(0.16,1,0.3,1) both;
+}
+.wip-back:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(91,156,246,0.4);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/*                    ANIMAZIONI                    */
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.8); }
+}

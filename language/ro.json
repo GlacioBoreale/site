@@ -2,23 +2,42 @@
   "nav": {
     "brand": "Site-ul meu",
     "home": "Acasă",
-    "about": "Despre mine",
+    "about": "Despre noi",
     "projects": "Proiecte",
     "VTPedia": "VTPedia",
     "socials": "Socials",
     "contact": "Contact"
   },
   "home": {
-    "title": "Welcome",
-    "description": "WORK IN PROGRESS"
+    "title": "Bun venit pe Glaciopia",
+    "subtitle": "Site-ul lui Glacio Boreale - VTuber italian, content creator si dezvoltator al acestui site.",
+    "ctaVtpedia": "Exploreaza VTPedia",
+    "ctaAbout": "Despre noi",
+    "aboutLabel": "Despre noi",
+    "aboutTitle": "Glacio Boreale",
+    "aboutDesc": "VTuber italian, streamer pe Twitch si creatorul acestei bucati de internet. Acest site este cartierul general unde poti gasi tot ce tine de Glacio si proiectele sale.",
+    "aboutCta": "Afla mai multe",
+    "quickLabel": "Exploreaza",
+    "quickTitle": "Ce gasesti aici",
+    "quickVtpediaDesc": "Enciclopedia VTuber-ilor care fac parte din aceasta comunitate.",
+    "quickSocialsDesc": "Twitch, Youtube, Discord si multi altii!",
+    "quickProjectsDesc": "Site-uri, tool-uri si alte chestii nerdologice construite in timpul liber.",
+    "quickAboutDesc": "Povestea din spatele Glaciopia si cine se afla de cealalta parte a ecranului.",
+    "quickVisit": "Viziteaza",
+    "socialLabel": "Urmareste-ma",
+    "socialTitle": "Gaseste-ma pe social media",
+    "socialDesc": "Stream-uri, update-uri si multe altele.",
+    "vtLabel": "VTPedia",
+    "vtTitle": "VTubers in evidenta",
+    "vtCta": "Vezi toti"
   },
   "about": {
-    "title": "Despre mine",
-    "description": "ÎN CURS DE REALIZARE"
+    "title": "Despre noi",
+    "description": "Aceasta pagina este inca in constructie. Revino curand!"
   },
   "projects": {
     "title": "Proiectele mele",
-    "description": "ÎN CURS DE REALIZARE"
+    "description": "Aceasta pagina este inca in constructie. Revino curand!"
   },
   "vtpedia": {
     "title": "VTuberPedia",
@@ -34,8 +53,12 @@
     "popupDescription": "Descriere"  
   },
   "socials": {
-    "title": "Rețelele mele sociale",
-    "description": "ÎN CURS DE REALIZARE"
+    "title": "Retelele mele sociale",
+    "description": "Aceasta pagina este inca in constructie. Revino curand!"
+  },
+  "wip": {
+    "badge": "In curand",
+    "back": "Inapoi la pagina principala"
   },
   "contact": {
     "title": "Contactează-mă",
@@ -57,12 +80,21 @@
     "description": "Broklahoma, întoarce-te de unde ai venit",
     "home_button": "home",
     "back": "Mergi la pagina principală",
-    "report": "Raportează o problemă"
+    "report": "Raportează o problemă",
+    "coinText": "Click pentru a arunca!"
   },
   "vtubers": {
     "glacio": {
       "shortDesc": "VTuber italian cu creierul putred și creatorul acestui site...",
       "longDesc": "Glacio Boreale este creatorul acestui site frumos, care îți vorbește direct dintr-o descriere... Ei bine, nu știu ce altceva să scriu aici."
+    },
+    "placeholder1": {
+      "shortDesc": "În curând...",
+      "longDesc": "Acest VTuber nu a fost încă adăugat. Stai pe fază!"
+    },
+    "placeholder2": {
+      "shortDesc": "În curând...",
+      "longDesc": "Acest VTuber nu a fost încă adăugat. Stai pe fază!"
+    }
   }
-}
 }

@@ -64,15 +64,46 @@ Sito web personale con sistema multilingua (IT/EN)
 ## 📁 Struttura
 ```
 site/
-├── language/          # Traduzioni IT/EN
+├── language/
+│   ├── en.json
+│   ├── it.json
+│   └── ro.json
 ├── assets/
-├──── images/          # Immagini del sito
+│   ├── data/
+│   │   ├── coin_images.json
+│   │   └── vtubers.json
+│   └── images/
+│       ├── 404/        (coin1-21.png)
+│       ├── vtubers/
+│       │   ├── glacio/ (glacio1-3.png)
+│       │   └── placeholder.png
+│       ├── favicon.ico
+│       ├── logo.png
+│       ├── mirage.png
+│       └── tabLogo.png
 ├── components/
-├──── navbar/ # Navbar modulare
-├──── footer/ # Footer modulare
-├── *.html            # Pagine del sito
-├── style.css         # Stili globali
-└── script.js         # Logica principale
+│   ├── navbar/
+│   │   ├── nav.html
+│   │   ├── nav.css
+│   │   └── nav.js
+│   └── footer/
+│       ├── footer.html
+│       ├── footer.css
+│       └── footer.js
+├── index.html
+├── about.html
+├── contact.html
+├── projects.html
+├── socials.html
+├── vtpedia.html
+├── vtpedia.css
+├── vtpedia.js
+├── 404.html
+├── 404.css
+├── style.css      ← stili globali
+├── script.js      ← logica principale (i18n + init)
+├── README.md
+└── .nojekyll
 ```
 
 ---

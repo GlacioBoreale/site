@@ -8,6 +8,7 @@
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="components/navbar/nav.css">
     <link rel="stylesheet" href="components/footer/footer.css">
 
@@ -17,12 +18,168 @@
 </head>
 <body>
     <div id="navbar-placeholder"></div>
+
     <main>
-    <section class="hero">
-      <h1 data-i18n="home.title">Benvenuto</h1>
-      <p data-i18n="home.description">WORK IN PROGRESS</p>
-    </section>
-  </main>
+
+      <!-- ── HERO ── -->
+      <section class="home-hero">
+        <img src="assets/images/logo.png" alt="Glaciopia" class="hero-logo">
+        <h1 data-i18n="home.title">Benvenuto su Glaciopia</h1>
+        <p class="hero-sub" data-i18n="home.subtitle">Il sito di Glacio Boreale - VTuber italiano, content creator e sviluppatore di questo sito.</p>
+        <div class="hero-cta-row">
+          <a href="vtpedia.html" class="btn-primary">
+            <i class="fas fa-book-open" style="margin-right:0.5rem"></i>
+            <span data-i18n="home.ctaVtpedia">Esplora la VTPedia</span>
+          </a>
+          <a href="about.html" class="btn-ghost" data-i18n="home.ctaAbout">Chi siamo</a>
+        </div>
+        <div class="hero-scroll-hint">
+          <i class="fas fa-chevron-down"></i>
+        </div>
+      </section>
+
+      <!-- ── SEZIONI ── -->
+      <div class="home-sections">
+
+        <!-- CHI SIAMO -->
+        <section class="fade-in-up">
+          <div class="about-row">
+            <div class="about-image-wrap">
+              <img src="assets/images/vtubers/glacio/glacio1.png" alt="Glacio Boreale">
+            </div>
+            <div class="about-text">
+              <p class="section-label" data-i18n="home.aboutLabel">Chi siamo</p>
+              <h2 class="section-title" data-i18n="home.aboutTitle">Glacio Boreale</h2>
+              <p class="section-desc" data-i18n="home.aboutDesc">VTuber italiano, streamer su Twitch e creatore di questo angolo di internet. Questo sito è il quartier generale dove puoi trovare tutto quello che riguarda Glacio e i suoi progetti.</p>
+              <a href="about.html" class="btn-ghost" data-i18n="home.aboutCta">Scopri di più</a>
+            </div>
+          </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- LINK RAPIDI -->
+        <section class="fade-in-up">
+          <p class="section-label" data-i18n="home.quickLabel">Esplora</p>
+          <h2 class="section-title" data-i18n="home.quickTitle">Cosa trovi qui</h2>
+          <div class="quicklinks-grid" style="margin-top:2rem">
+
+            <a href="vtpedia.html" class="quicklink-card">
+              <div class="quicklink-icon"><i class="fas fa-book-open"></i></div>
+              <div class="quicklink-title" data-i18n="nav.VTPedia">VTPedia</div>
+              <div class="quicklink-desc" data-i18n="home.quickVtpediaDesc">L'enciclopedia dei VTuber che fanno parte di questa community.</div>
+              <div class="quicklink-arrow"><i class="fas fa-arrow-right"></i> <span data-i18n="home.quickVisit">Visita</span></div>
+            </a>
+
+            <a href="socials.html" class="quicklink-card">
+              <div class="quicklink-icon"><i class="fas fa-share-nodes"></i></div>
+              <div class="quicklink-title" data-i18n="nav.socials">Socials</div>
+              <div class="quicklink-desc" data-i18n="home.quickSocialsDesc">Twitch, Youtube, Discord e molti altri!</div>
+              <div class="quicklink-arrow"><i class="fas fa-arrow-right"></i> <span data-i18n="home.quickVisit">Visita</span></div>
+            </a>
+
+            <a href="projects.html" class="quicklink-card">
+              <div class="quicklink-icon"><i class="fas fa-code"></i></div>
+              <div class="quicklink-title" data-i18n="nav.projects">Progetti</div>
+              <div class="quicklink-desc" data-i18n="home.quickProjectsDesc">Siti, tool e altre cose nerdologiche costruite nel tempo libero.</div>
+              <div class="quicklink-arrow"><i class="fas fa-arrow-right"></i> <span data-i18n="home.quickVisit">Visita</span></div>
+            </a>
+
+            <a href="about.html" class="quicklink-card">
+              <div class="quicklink-icon"><i class="fas fa-user"></i></div>
+              <div class="quicklink-title" data-i18n="nav.about">Chi siamo</div>
+              <div class="quicklink-desc" data-i18n="home.quickAboutDesc">La storia dietro Glaciopia e chi c'è dall'altra parte dello schermo.</div>
+              <div class="quicklink-arrow"><i class="fas fa-arrow-right"></i> <span data-i18n="home.quickVisit">Visita</span></div>
+            </a>
+
+          </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- SOCIAL -->
+        <section class="fade-in-up">
+          <p class="section-label" data-i18n="home.socialLabel">Seguimi</p>
+          <h2 class="section-title" data-i18n="home.socialTitle">Trovami sui social</h2>
+          <p class="section-desc" data-i18n="home.socialDesc" style="margin-bottom:2rem">Stream, aggiornamenti e molto altro!.</p>
+          <div class="social-cards">
+            <a href="https://twitch.tv/glacioborealevt" target="_blank" rel="noopener" class="social-card twitch">
+              <i class="fab fa-twitch"></i> Twitch
+            </a>
+            <a href="https://discord.gg/nsdCYSxzuR" target="_blank" rel="noopener" class="social-card discord">
+              <i class="fab fa-discord"></i> Discord
+            </a>
+            <a href="https://github.com/GlacioBoreale" target="_blank" rel="noopener" class="social-card github">
+              <i class="fab fa-github"></i> GitHub
+            </a>
+          </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- ULTIMI VTUBER -->
+        <section class="fade-in-up" id="vtubers-preview-section">
+          <p class="section-label" data-i18n="home.vtLabel">VTPedia</p>
+          <h2 class="section-title" data-i18n="home.vtTitle">VTuber in evidenza</h2>
+          <div class="vtubers-preview-grid" id="vtubers-preview-grid">
+            <!-- popolato da JS -->
+          </div>
+          <div class="vtubers-cta">
+            <a href="vtpedia.html" class="btn-ghost">
+              <i class="fas fa-arrow-right" style="margin-right:0.5rem"></i>
+              <span data-i18n="home.vtCta">Vedi tutti</span>
+            </a>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
     <div id="footer-placeholder"></div>
+
+    <script>
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
+
+    // VTubers preview
+    async function loadVTubersPreview() {
+      try {
+        const res = await fetch('./assets/data/vtubers.json');
+        const data = await res.json();
+        const grid = document.getElementById('vtubers-preview-grid');
+        if (!grid) return;
+
+        const toShow = data.vtubers.slice(0, 4);
+        toShow.forEach(vt => {
+          const img = vt.images?.[0] || 'assets/images/vtubers/placeholder.png';
+          const card = document.createElement('a');
+          card.href = 'vtpedia.html';
+          card.className = 'vtuber-preview-card';
+          card.innerHTML = `
+            <img src="${img}" alt="${vt.name}" onerror="this.src='assets/images/vtubers/placeholder.png'">
+            <div class="vtuber-preview-info">
+              <div class="name">${vt.name}</div>
+              <div class="desc" data-i18n="${vt.shortDescKey}"></div>
+            </div>`;
+          grid.appendChild(card);
+        });
+
+        if (typeof updateContent === 'function') updateContent();
+      } catch(e) {
+        console.error('Errore caricamento VTubers preview:', e);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadVTubersPreview);
+    </script>
 </body>
 </html>

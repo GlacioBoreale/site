@@ -16,5 +16,34 @@
       "hashtag": "#GlacioBorealeArt | #GlacioBorealeVt | #GlacioBoreale | #JohnBoreale | #SirGlacioBoreale",
       "channel": "https://twitch.tv/glacioborealevt"
     }
+    ,
+    {
+      "id": 2,
+      "name": "???",
+      "fullName": "???",
+      "shortDescKey": "vtubers.placeholder1.shortDesc",
+      "longDescKey": "vtubers.placeholder1.longDesc",
+      "images": [
+        "assets/images/vtubers/placeholder.png"
+      ],
+      "addedDate": "??/??/????",
+      "debut": "??/??/????",
+      "hashtag": "???",
+      "channel": "#"
+    },
+    {
+      "id": 3,
+      "name": "???",
+      "fullName": "???",
+      "shortDescKey": "vtubers.placeholder2.shortDesc",
+      "longDescKey": "vtubers.placeholder2.longDesc",
+      "images": [
+        "assets/images/vtubers/placeholder.png"
+      ],
+      "addedDate": "??/??/????",
+      "debut": "??/??/????",
+      "hashtag": "???",
+      "channel": "#"
+    }
   ]
 }

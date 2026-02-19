@@ -2,23 +2,42 @@
   "nav": {
     "brand": "My Website",
     "home": "Home",
-    "about": "About me",
+    "about": "About us",
     "projects": "Projects",
     "VTPedia": "VTPedia",
     "socials": "Socials",
     "contact": "Contact"
   },
   "home": {
-    "title": "Welcome",
-    "description": "WORK IN PROGRESS"
+    "title": "Welcome to Glaciopia",
+    "subtitle": "Glacio Boreale's site - Italian VTuber, content creator and developer of this site.",
+    "ctaVtpedia": "Explore VTPedia",
+    "ctaAbout": "About us",
+    "aboutLabel": "About us",
+    "aboutTitle": "Glacio Boreale",
+    "aboutDesc": "Italian VTuber, Twitch streamer and creator of this piece of the internet. This site is the headquarters where you can find everything about Glacio and his projects.",
+    "aboutCta": "Learn more",
+    "quickLabel": "Explore",
+    "quickTitle": "What you'll find here",
+    "quickVtpediaDesc": "The encyclopedia of VTubers that are part of this community.",
+    "quickSocialsDesc": "Twitch, Youtube, Discord and many more!",
+    "quickProjectsDesc": "Websites, tools and other nerdological stuff built in free time.",
+    "quickAboutDesc": "The story behind Glaciopia and who's on the other side of the screen.",
+    "quickVisit": "Visit",
+    "socialLabel": "Follow me",
+    "socialTitle": "Find me on socials",
+    "socialDesc": "Streams, updates and much more.",
+    "vtLabel": "VTPedia",
+    "vtTitle": "Featured VTubers",
+    "vtCta": "See all"
   },
   "about": {
-    "title": "About me",
-    "description": "WORK IN PROGRESS"
+    "title": "About us",
+    "description": "This page is still under construction. Come back soon!"
   },
   "projects": {
     "title": "My projects",
-    "description": "WORK IN PROGRESS"
+    "description": "This page is still under construction. Come back soon!"
   },
   "vtpedia": {
     "title": "VTuberPedia",
@@ -35,7 +54,11 @@
   },
   "socials": {
     "title": "My socials",
-    "description": "WORK IN PROGRESS"
+    "description": "This page is still under construction. Come back soon!"
+  },
+  "wip": {
+    "badge": "Coming soon",
+    "back": "Back to home"
   },
   "contact": {
     "title": "Contact me",
@@ -57,12 +80,21 @@
     "description": "Broklahoma, go back to where you came from",
     "home_button": "home",
     "back": "Go back to Home",
-    "report": "Report an issue"
+    "report": "Report an issue",
+    "coinText": "Click to flip!"
   },
   "vtubers": {
     "glacio": {
       "shortDesc": "Italian brainrotten VTuber and creator of this website...",
       "longDesc": "Glacio Boreale is the creator of this beautiful website that is speaking directly to you from a description... Well, I don't know what else to write here."
+    },
+    "placeholder1": {
+      "shortDesc": "Coming soon...",
+      "longDesc": "This VTuber hasn't been added yet. Stay tuned!"
+    },
+    "placeholder2": {
+      "shortDesc": "Coming soon...",
+      "longDesc": "This VTuber hasn't been added yet. Stay tuned!"
     }
   }
 }

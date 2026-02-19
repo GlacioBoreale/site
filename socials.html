@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glaciopia</title>
-    
+    <title>Glaciopia - Socials</title>
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="wip.css">
     <link rel="stylesheet" href="components/navbar/nav.css">
     <link rel="stylesheet" href="components/footer/footer.css">
-    
     <script src="components/navbar/nav.js"></script>
     <script src="components/footer/footer.js"></script>
     <script src="script.js"></script>
@@ -18,11 +17,19 @@
 <body>
     <div id="navbar-placeholder"></div>
     <main>
-        <section class="hero">
-            <h1 data-i18n="socials.title">I miei social</h1>
-            <p data-i18n="socials.description">WORK IN PROGRESS</p>
-            
-            <div class="social-links">
+        <section class="wip-hero">
+            <div class="wip-content">
+                <p class="wip-label" data-i18n="nav.socials">Socials</p>
+                <h1 class="wip-title" data-i18n="socials.title">I miei social</h1>
+                <div class="wip-badge">
+                    <span class="dot"></span>
+                    <span data-i18n="wip.badge">In arrivo</span>
+                </div>
+                <p class="wip-desc" data-i18n="socials.description">Questa pagina è ancora in costruzione. Torna presto!</p>
+                <a href="index.html" class="wip-back">
+                    <i class="fas fa-arrow-left"></i>
+                    <span data-i18n="wip.back">Torna alla home</span>
+                </a>
             </div>
         </section>
     </main>

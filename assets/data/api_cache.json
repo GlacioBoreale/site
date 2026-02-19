@@ -1,9 +1,9 @@
 {
-  "updatedAt": "1970-01-01T00:00:00Z",
+  "updatedAt": "2026-02-19T15:54:48Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
-    "profileImage": "",
-    "followers": 0,
+    "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
+    "followers": 1187,
     "url": "https://twitch.tv/glacioborealevt",
     "isLive": false,
     "stream": {
@@ -12,15 +12,61 @@
       "viewers": 0,
       "thumbnail": ""
     },
-    "topClips": [],
-    "recentClip": null
+    "topClips": [
+      {
+        "title": "he fell off (AAAAAAAAAAHHHH)",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/GleamingGiantLardCoolStoryBob-z_Je0V6Hh3Bdm_VD",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CL-BTvM_yXtFeh4dwXZv1Qw-preview-480x272.jpg",
+        "views": 108,
+        "duration": 14,
+        "creator": "dabidet87"
+      },
+      {
+        "title": "momento cacaggio",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/IgnorantAggressiveKeyboardSuperVinlin-pWI6hwJWET9Oa06g",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/7FWZDaViOocCVhE_TmtOoA/AT-cm%7C7FWZDaViOocCVhE_TmtOoA-preview-480x272.jpg",
+        "views": 76,
+        "duration": 17.9,
+        "creator": "rhaastbabygirl"
+      }
+    ],
+    "recentClip": {
+      "title": "he fell off (AAAAAAAAAAHHHH)",
+      "url": "https://www.twitch.tv/glacioborealevt/clip/GleamingGiantLardCoolStoryBob-z_Je0V6Hh3Bdm_VD",
+      "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CL-BTvM_yXtFeh4dwXZv1Qw-preview-480x272.jpg",
+      "views": 108,
+      "duration": 14,
+      "creator": "dabidet87"
+    }
   },
   "youtube": {
-    "displayName": "GlacioBoreale",
-    "thumbnail": "",
-    "subscribers": 0,
+    "displayName": "Glacio Boreale",
+    "thumbnail": "https://yt3.ggpht.com/ouF6Phe2YjqSFMP7YdxYFTm5l9tyT0-MfdrfDJCcUt2mecJe8JV8h96luOECIiI9vtCjj9pX=s88-c-k-c0x00ffffff-no-rj",
+    "subscribers": 152,
     "url": "https://www.youtube.com/@glacioborealevt",
-    "recentVideos": []
+    "recentVideos": [
+      {
+        "title": "Double Baron is INSANE!... (Part 2)",
+        "videoId": "vbBI9g_UUkg",
+        "thumbnail": "https://i.ytimg.com/vi/vbBI9g_UUkg/mqdefault.jpg",
+        "publishedAt": "2026-02-17T13:21:06Z",
+        "url": "https://www.youtube.com/watch?v=vbBI9g_UUkg"
+      },
+      {
+        "title": "Double Baron is INSANE!... (Part 1)",
+        "videoId": "LqjGUPkDZqg",
+        "thumbnail": "https://i.ytimg.com/vi/LqjGUPkDZqg/mqdefault.jpg",
+        "publishedAt": "2026-02-17T13:20:53Z",
+        "url": "https://www.youtube.com/watch?v=LqjGUPkDZqg"
+      },
+      {
+        "title": "Non Pensavo che 2 Baroni Fossero Così FORTI [Reupload]",
+        "videoId": "MKUd3bB70Ko",
+        "thumbnail": "https://i.ytimg.com/vi/MKUd3bB70Ko/mqdefault.jpg",
+        "publishedAt": "2026-02-17T07:30:09Z",
+        "url": "https://www.youtube.com/watch?v=MKUd3bB70Ko"
+      }
+    ]
   },
   "discord": {
     "url": "https://discord.gg/nsdCYSxzuR"

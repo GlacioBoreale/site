@@ -88,11 +88,32 @@ jobs:
         id: youtube
         run: |
           API_KEY="${{ secrets.YOUTUBE_API_KEY }}"
-          CHANNEL_HANDLE="glacioborealevt"
 
-          # Cerca il channel ID dall'handle
+          # Prima prova con forHandle
           CHANNEL_DATA=$(curl -s \
-            "https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&forHandle=@${CHANNEL_HANDLE}&key=${API_KEY}")
+            "https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&forHandle=@glacioborealevt&key=${API_KEY}")
+          echo "DEBUG forHandle response: $CHANNEL_DATA"
+
+          # Se items è vuoto, prova con forUsername
+          ITEMS_COUNT=$(echo $CHANNEL_DATA | python3 -c "import sys,json; print(len(json.load(sys.stdin).get('items', [])))")
+
+          if [ "$ITEMS_COUNT" = "0" ]; then
+            echo "forHandle fallito, provo forUsername..."
+            CHANNEL_DATA=$(curl -s \
+              "https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&forUsername=glacioborealevt&key=${API_KEY}")
+            echo "DEBUG forUsername response: $CHANNEL_DATA"
+            ITEMS_COUNT=$(echo $CHANNEL_DATA | python3 -c "import sys,json; print(len(json.load(sys.stdin).get('items', [])))")
+          fi
+
+          if [ "$ITEMS_COUNT" = "0" ]; then
+            echo "Entrambi falliti, provo search..."
+            SEARCH_DATA=$(curl -s \
+              "https://www.googleapis.com/youtube/v3/search?part=snippet&q=GlacioBoreale&type=channel&maxResults=1&key=${API_KEY}")
+            echo "DEBUG search response: $SEARCH_DATA"
+            CHANNEL_ID=$(echo $SEARCH_DATA | python3 -c "import sys,json; print(json.load(sys.stdin)['items'][0]['id']['channelId'])")
+            CHANNEL_DATA=$(curl -s \
+              "https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${CHANNEL_ID}&key=${API_KEY}")
+          fi
 
           CHANNEL_ID=$(echo $CHANNEL_DATA | python3 -c "import sys,json; print(json.load(sys.stdin)['items'][0]['id'])")
           YT_NAME=$(echo $CHANNEL_DATA | python3 -c "import sys,json; print(json.load(sys.stdin)['items'][0]['snippet']['title'])")

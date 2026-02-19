@@ -180,16 +180,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     const submitBtn = document.getElementById('submit-vtuber-btn');
-    const banner = document.getElementById('avviso');
+    const submitPopup = document.getElementById('submit-popup');
+    const submitClose = document.getElementById('submit-popup-close');
+    const submitOverlay = document.getElementById('submit-popup-overlay');
 
-    if (submitBtn && banner) {
-        submitBtn.addEventListener('click', () => {
-            if (banner) {
-                banner.classList.add('active');
-                setTimeout(() => {
-                    banner.classList.remove('active');
-                }, 5000);
-            }
-        });
+    function openSubmitPopup() {
+        submitPopup.classList.add('active');
+        document.body.style.overflow = 'hidden';
     }
+    function closeSubmitPopup() {
+        submitPopup.classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    if (submitBtn) submitBtn.addEventListener('click', openSubmitPopup);
+    if (submitClose) submitClose.addEventListener('click', closeSubmitPopup);
+    if (submitOverlay) submitOverlay.addEventListener('click', closeSubmitPopup);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeSubmitPopup();
+    });
 });

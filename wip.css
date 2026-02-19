@@ -1,5 +1,4 @@
-/* nuovo font per titoli e testi */
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Fredoka:wght@300;400;500;600;700&display=swap');
 
 :root {
   --accent: #5b9cf6;
@@ -36,7 +35,7 @@
 }
 
 .wip-label {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Fredoka One', sans-serif;
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.15em;
@@ -47,7 +46,7 @@
 }
 
 .wip-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Fredoka One', sans-serif;
   font-size: clamp(2.5rem, 6vw, 4rem);
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -68,7 +67,7 @@
   background: var(--glass);
   border: 1px solid var(--border);
   border-radius: 100px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Fredoka', sans-serif;
   font-size: 0.9rem;
   color: rgba(255,255,255,0.5);
   margin-bottom: 2rem;
@@ -83,7 +82,7 @@
 }
 
 .wip-desc {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Fredoka', sans-serif;
   font-size: 1rem;
   color: rgba(255,255,255,0.45);
   line-height: 1.75;
@@ -99,7 +98,7 @@
   background: var(--glass);
   border: 1px solid var(--border);
   border-radius: 10px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Fredoka', sans-serif;
   font-size: 0.9rem;
   font-weight: 500;
   color: rgba(255,255,255,0.6);

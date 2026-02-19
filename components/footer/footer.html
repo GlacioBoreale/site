@@ -38,8 +38,8 @@
       <h3 data-i18n="footer.info_title">Info</h3>
       <ul class="footer-links">
         <li><a href="mailto:glacioborealebusiness@outlook.com"><i class="fa-solid fa-envelope"></i> Email</a></li>
-        <li><a href="#"><i class="fa-solid fa-shield-halved"></i> <span data-i18n="footer.privacy">Privacy Policy</span></a></li>
-        <li><a href="#"><i class="fa-solid fa-file-contract"></i> <span data-i18n="footer.terms">Termini di Servizio</span></a></li>
+        <li><a href="#" onclick="openFooterPopup('privacy'); return false;"><i class="fa-solid fa-shield-halved"></i> <span data-i18n="footer.privacy">Privacy Policy</span></a></li>
+        <li><a href="#" onclick="openFooterPopup('terms'); return false;"><i class="fa-solid fa-file-contract"></i> <span data-i18n="footer.terms">Termini di Servizio</span></a></li>
       </ul>
     </div>
   </div>
@@ -53,3 +53,11 @@
     </p>
   </div>
 </footer>
+
+<!-- ── POPUP PRIVACY / TERMS ── -->
+<div class="footer-popup-overlay" id="footer-popup-overlay" onclick="closeFooterPopup()">
+  <div class="footer-popup" id="footer-popup" onclick="event.stopPropagation()">
+    <button class="footer-popup-close" onclick="closeFooterPopup()"><i class="fas fa-times"></i></button>
+    <div class="footer-popup-body" id="footer-popup-body"></div>
+  </div>
+</div>

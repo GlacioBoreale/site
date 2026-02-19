@@ -143,7 +143,10 @@ function renderYouTube(youtube) {
                 <img src="${v.thumbnail}" alt="${v.title}" class="yt-thumb" onerror="this.style.display='none'">
                 <div class="yt-video-info">
                     <div class="yt-video-title">${v.title}</div>
-                    <div class="yt-video-date">${formatDate(v.publishedAt)}</div>
+                    <div class="yt-video-meta">
+                        ${v.viewCount ? `<span class="yt-views"><i class="fas fa-eye"></i> ${formatNumber(v.viewCount)}</span>` : ''}
+                        <span class="yt-video-date">${formatDate(v.publishedAt)}</span>
+                    </div>
                 </div>
             </a>
         `).join('');

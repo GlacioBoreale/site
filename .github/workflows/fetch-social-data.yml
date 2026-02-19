@@ -150,7 +150,7 @@ print(','.join(ids))
 
           # Chiedi i dettagli (inclusa la durata ISO 8601) per filtrare gli Shorts
           DETAILS_DATA=$(curl -s \
-            "https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet&id=${VIDEO_IDS}&key=${API_KEY}")
+            "https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet,statistics&id=${VIDEO_IDS}&key=${API_KEY}")
 
           # Combina search + details, filtra Shorts (durata <= 60s), prendi i primi 3
           python3 << 'PYEOF'
@@ -222,14 +222,15 @@ PYEOF
               for v in details_raw:
                   duration_iso = v.get('contentDetails', {}).get('duration', 'PT0S')
                   duration_sec = parse_duration(duration_iso)
-                  if duration_sec > 60:  # escludi Shorts
+                  if duration_sec > 150:  # escludi Shorts (max 2m30s)
                       yt_videos.append({
                           'title': v['snippet']['title'],
                           'videoId': v['id'],
                           'thumbnail': v['snippet']['thumbnails'].get('medium', v['snippet']['thumbnails'].get('default', {})).get('url', ''),
                           'publishedAt': v['snippet']['publishedAt'],
                           'url': f"https://www.youtube.com/watch?v={v['id']}",
-                          'duration': duration_sec
+                          'duration': duration_sec,
+                          'viewCount': int(v.get('statistics', {}).get('viewCount', 0))
                       })
                       if len(yt_videos) >= 3:
                           break

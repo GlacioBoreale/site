@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Fredoka:wght@300;400;500;600;700&display=swap');
 
 :root {
   --accent: #5b9cf6;
@@ -32,10 +32,10 @@
 }
 
 .vtpedia-hero h1 {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Fredoka One', sans-serif;
   font-size: clamp(2.2rem, 5vw, 3.5rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-weight: 400;
+  letter-spacing: 0.01em;
   margin-bottom: 0.8rem;
   background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
   -webkit-background-clip: text;
@@ -45,7 +45,7 @@
 }
 
 .vtpedia-hero .subtitle {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Fredoka', sans-serif;
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.15em;
@@ -56,7 +56,7 @@
 }
 
 .vtpedia-hero .description {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Fredoka', sans-serif;
   font-size: 1rem;
   color: rgba(255,255,255,0.5);
   margin-bottom: 2rem;
@@ -74,9 +74,9 @@
   color: #fff;
   border: none;
   border-radius: 12px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Fredoka', sans-serif;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
   display: inline-flex;
@@ -158,8 +158,8 @@
   color: rgba(255,255,255,0.7);
   padding: 0.25rem 0.6rem;
   border-radius: 6px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.7rem;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.75rem;
   backdrop-filter: blur(4px);
   border: 1px solid rgba(255,255,255,0.1);
 }
@@ -169,7 +169,7 @@
 }
 
 .vtuber-name {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Fredoka One', sans-serif;
   font-size: 1.1rem;
   font-weight: 700;
   color: white;
@@ -177,7 +177,7 @@
 }
 
 .vtuber-desc {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Fredoka', sans-serif;
   color: rgba(255,255,255,0.5);
   font-size: 0.875rem;
   line-height: 1.6;
@@ -197,8 +197,8 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s, color 0.2s;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.82rem;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -227,7 +227,7 @@
   transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   max-width: 400px;
   width: 90%;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Fredoka', sans-serif;
 }
 .avviso.active {
   transform: translateX(-50%) translateY(0) scale(1);
@@ -411,8 +411,8 @@
   color: rgba(255,255,255,0.8);
   padding: 0.3rem 0.7rem;
   border-radius: 6px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.8rem;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.85rem;
   z-index: 10;
   backdrop-filter: blur(4px);
 }
@@ -428,9 +428,9 @@
 }
 
 .popup-info h2 {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Fredoka One', sans-serif;
   font-size: 1.9rem;
-  font-weight: 800;
+  font-weight: 400;
   margin: 0;
   background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
   -webkit-background-clip: text;
@@ -453,7 +453,7 @@
   align-items: flex-start;
   gap: 0.8rem;
   color: rgba(255,255,255,0.85);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Fredoka', sans-serif;
   font-size: 0.9rem;
   line-height: 1.5;
 }
@@ -480,14 +480,14 @@
   flex: 1;
 }
 .popup-description h3 {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Fredoka One', sans-serif;
   font-size: 1.1rem;
   font-weight: 700;
   color: white;
   margin-bottom: 0.8rem;
 }
 .popup-description p {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Fredoka', sans-serif;
   color: rgba(255,255,255,0.65);
   line-height: 1.75;
   font-size: 0.95rem;
@@ -498,6 +498,145 @@
   from { opacity: 0; transform: translateY(-20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+/* ── SUBMIT POPUP ── */
+.submit-popup-content {
+  max-width: 580px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.submit-popup-body {
+  padding: 2rem;
+  overflow-y: auto;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+.submit-popup-header {
+  text-align: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.submit-icon {
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.8rem;
+  display: block;
+}
+
+.submit-popup-header h2 {
+  font-size: 1.6rem;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.submit-popup-header p {
+  color: rgba(255,255,255,0.45);
+  font-size: 0.9rem;
+}
+
+.submit-rules h3,
+.submit-how h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 1rem;
+}
+
+.submit-rules ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.submit-rules li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.5;
+  padding: 0.6rem 0.8rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 8px;
+}
+
+.submit-rules li::before {
+  content: '✔';
+  color: #667eea;
+  font-size: 0.75rem;
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+}
+
+.submit-how p {
+  color: rgba(255,255,255,0.45);
+  font-size: 0.85rem;
+  margin-bottom: 0.8rem;
+}
+
+.submit-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.submit-field {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.6);
+  padding: 0.5rem 0.8rem;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+}
+
+.submit-field i {
+  color: rgba(102, 126, 234, 0.8);
+  width: 14px;
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+.submit-email-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  padding: 0.85rem 2rem;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(102,126,234,0.35);
+  width: 100%;
+}
+
+.submit-email-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(102,126,234,0.5);
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }

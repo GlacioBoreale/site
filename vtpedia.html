@@ -39,6 +39,50 @@
         </section>
     </main>
 
+    <!-- POPUP INVIA VTUBER -->
+    <div class="popup submit-popup" id="submit-popup">
+        <div class="popup-overlay" id="submit-popup-overlay"></div>
+        <div class="popup-content submit-popup-content">
+            <button class="popup-close" id="submit-popup-close"><i class="fas fa-times"></i></button>
+            <div class="submit-popup-body">
+                <div class="submit-popup-header">
+                    <i class="fas fa-paper-plane submit-icon"></i>
+                    <h2 data-i18n="vtpedia.submitTitle">Invia il tuo VTuber</h2>
+                    <p data-i18n="vtpedia.submitSubtitle">Vuoi far parte della VTPedia? Leggi le regole e contattaci!</p>
+                </div>
+
+                <div class="submit-rules">
+                    <h3 data-i18n="vtpedia.rulesTitle"><i class="fas fa-list-check"></i> Requisiti</h3>
+                    <ul id="submit-rules-list">
+                        <li data-i18n="vtpedia.rule1">Devi essere un VTuber attivo da almeno 3 mesi</li>
+                        <li data-i18n="vtpedia.rule2">Devi avere almeno un canale attivo (Twitch, YouTube o simili)</li>
+                        <li data-i18n="vtpedia.rule3">Devi fornire almeno un'immagine del tuo avatar/modello</li>
+                        <li data-i18n="vtpedia.rule4">I contenuti del tuo canale devono essere adatti a un pubblico generale o chiaramente indicare i limiti d'età</li>
+                        <li data-i18n="vtpedia.rule5">La richiesta deve essere inviata dal diretto interessato o con sua autorizzazione esplicita</li>
+                        <li data-i18n="vtpedia.rule6">Ci riserviamo il diritto di rifiutare richieste senza obbligo di motivazione</li>
+                    </ul>
+                </div>
+
+                <div class="submit-how">
+                    <h3 data-i18n="vtpedia.howTitle"><i class="fas fa-envelope"></i> Come inviare la richiesta</h3>
+                    <p data-i18n="vtpedia.howDesc">Invia una email con i seguenti dati:</p>
+                    <div class="submit-fields">
+                        <div class="submit-field"><i class="fas fa-user"></i> <span data-i18n="vtpedia.fieldName">Nome del VTuber</span></div>
+                        <div class="submit-field"><i class="fas fa-link"></i> <span data-i18n="vtpedia.fieldChannel">Link al canale principale</span></div>
+                        <div class="submit-field"><i class="fas fa-hashtag"></i> <span data-i18n="vtpedia.fieldHashtag">Hashtag ufficiali</span></div>
+                        <div class="submit-field"><i class="fas fa-calendar"></i> <span data-i18n="vtpedia.fieldDebut">Data di debut</span></div>
+                        <div class="submit-field"><i class="fas fa-image"></i> <span data-i18n="vtpedia.fieldImage">1-3 immagini dell'avatar (max 2MB ciascuna)</span></div>
+                        <div class="submit-field"><i class="fas fa-align-left"></i> <span data-i18n="vtpedia.fieldDesc">Breve descrizione (max 300 caratteri)</span></div>
+                    </div>
+                    <a href="mailto:glacioborealebusiness@outlook.com?subject=VTPedia%20-%20Richiesta%20aggiunta%20VTuber" class="submit-email-btn">
+                        <i class="fas fa-envelope"></i>
+                        <span data-i18n="vtpedia.sendEmail">Invia richiesta via email</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="popup" id="vtuber-popup">
         <div class="popup-overlay" id="popup-overlay"></div>
         <div class="popup-content">

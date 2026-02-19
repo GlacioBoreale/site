@@ -1,5 +1,4 @@
-/* Nuovo font per titoli e testi */
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Fredoka:wght@300;400;500;600;700&display=swap');
 
 :root {
   --accent: #5b9cf6;
@@ -39,10 +38,10 @@
 }
 
 .home-hero h1 {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Fredoka One', sans-serif;
   font-size: clamp(2.2rem, 5vw, 4rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-weight: 400;
+  letter-spacing: 0.01em;
   background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -52,8 +51,9 @@
 }
 
 .home-hero .hero-sub {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Fredoka', sans-serif;
   font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 400;
   color: rgba(255,255,255,0.55);
   max-width: 520px;
   line-height: 1.7;
@@ -75,9 +75,9 @@
   color: #fff;
   border: none;
   border-radius: 12px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Fredoka', sans-serif;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   text-decoration: none;
   transition: transform 0.2s, box-shadow 0.2s;
@@ -94,7 +94,7 @@
   color: rgba(255,255,255,0.8);
   border: 1px solid var(--border);
   border-radius: 12px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Fredoka', sans-serif;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
@@ -129,7 +129,7 @@
 }
 
 .section-label {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Fredoka', sans-serif;
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.15em;
@@ -139,16 +139,17 @@
 }
 
 .section-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Fredoka One', sans-serif;
   font-size: clamp(1.6rem, 3vw, 2.4rem);
-  font-weight: 800;
+  font-weight: 400;
   color: #fff;
   margin-bottom: 1rem;
   line-height: 1.2;
 }
 
 .section-desc {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 400;
   color: rgba(255,255,255,0.55);
   font-size: 1rem;
   line-height: 1.7;
@@ -242,14 +243,15 @@
 }
 
 .quicklink-title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Fredoka One', sans-serif;
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .quicklink-desc {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.875rem;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 400;
   color: rgba(255,255,255,0.45);
   line-height: 1.5;
 }
@@ -257,7 +259,7 @@
 .quicklink-arrow {
   margin-top: auto;
   color: rgba(255,255,255,0.25);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   transition: color 0.2s, transform 0.2s;
 }
 .quicklink-card:hover .quicklink-arrow {
@@ -282,7 +284,7 @@
   border-radius: 14px;
   text-decoration: none;
   color: rgba(255,255,255,0.85);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Fredoka', sans-serif;
   font-weight: 500;
   transition: all 0.25s;
   min-width: 160px;
@@ -308,6 +310,7 @@
   padding: 1px;
   background: linear-gradient(-45deg, #ec0e53, #04bbc7);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
@@ -347,14 +350,15 @@
   padding: 0.8rem 1rem;
 }
 .vtuber-preview-info .name {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Fredoka One', sans-serif;
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: 400;
   color: #fff;
 }
 .vtuber-preview-info .desc {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.78rem;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 400;
   color: rgba(255,255,255,0.4);
   margin-top: 0.2rem;
   white-space: nowrap;

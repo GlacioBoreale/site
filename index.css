@@ -290,9 +290,13 @@
 .social-card i { font-size: 1.4rem; }
 .social-card:hover { transform: translateY(-3px); color: #fff; }
 
-.social-card.twitch:hover  { background: rgba(145,70,255,0.15); border-color: #9146FF; color: #9146FF; }
-.social-card.discord:hover { background: rgba(88,101,242,0.15); border-color: #5865F2; color: #5865F2; }
-.social-card.github:hover  { background: rgba(255,255,255,0.1); border-color: #fff; color: #fff; }
+.social-card.twitch:hover    { background: rgba(145,70,255,0.15);  border-color: #9146FF; color: #9146FF; }
+.social-card.youtube:hover   { background: rgba(255,0,0,0.15);      border-color: #FF0000; color: #FF0000; }
+.social-card.discord:hover   { background: rgba(88,101,242,0.15);   border-color: #5865F2; color: #5865F2; }
+.social-card.instagram:hover { background: rgba(225,48,108,0.15);   border-color: #E1306C; color: #E1306C; }
+.social-card.tiktok:hover    { background: rgba(255,255,255,0.08);  border-color: rgba(255,255,255,0.5); color: #fff; }
+.social-card.x:hover         { background: rgba(255,255,255,0.08);  border-color: rgba(255,255,255,0.5); color: #fff; }
+.social-card.github:hover    { background: rgba(255,255,255,0.1);   border-color: #fff; color: #fff; }
 
 /*                    PREVIEW VTUBERS                    */
 .vtubers-preview-grid {

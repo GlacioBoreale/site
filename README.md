@@ -1,53 +1,57 @@
 # Personal Website
 
-Sito web personale con sistema multilingua (IT/EN)
+Benvenuto nel caos TOTALMENTE organizzato di Glacio Boreale
 
-🌐 **Live**: [glacioboreale.github.io/site](https://glacioboreale.github.io/site/)
+🌐 **Live**: [www.glaciopia.com](https://www.glaciopia.com/)
 
 ---
 
 ## ⚠️ Stato del Progetto
 
-**Attualmente funzionante solo su:**
+**Funzionante su:**
 - ✅ Desktop/PC (browser)
 - ✅ Mobile
 - ✅ Tablet
+- ✅ Schermi molto piccoli
 
 **Non ancora ottimizzato per:**
-- 🥀 Schermi piccoli
+- 🥀 Microonde, Televisori
 
 ---
 
 ## ✅ Implementato
 
-- [x] Sistema multilingua (Italiano/Inglese)
+- [x] Sistema multilingua (Italiano / English / Română)
+- [x] Dropdown lingua custom e scalabile (aggiungere una lingua = 1 riga di JS)
 - [x] Navbar e footer modulari e riutilizzabili
 - [x] Design nero con effetti glassmorphism
 - [x] Memorizzazione lingua preferita (localStorage)
-- [x] Struttura pagine base (Home, Chi sono, Progetti, VTPedia, Socials, Contatti)
-- [x] Animazioni e transizioni
+- [x] Animazioni e transizioni (scroll reveal, fade-in)
 - [x] Hosting su GitHub Pages
-- [x] Pagina 404
-- [x] Responsive design per mobile/tablet
-- [x] Menu hamburger per mobile
-- [x] Pagina VTPedia
+- [x] Responsive design per mobile/tablet con menu hamburger
+- [x] Homepage completa con hero, sezioni e anteprima VTPedia
+- [x] Pagina VTPedia con galleria immagini e popup
+- [x] Pagine WIP con estetica coerente (about, projects, socials)
+- [x] Pagina 404 con easter egg coin flip (digita "coin") e Konami code
+- [x] Easter egg miraggio (5 click veloci sul logo della navbar)
+- [x] Link social nel footer (Twitch, YouTube, Discord, GitHub)
+- [x] wip.css condiviso per le pagine in costruzione
 
 ---
 
 ## 🚧 In Sviluppo
 
-- [ ] Contenuti effettivi delle pagine
-- [ ] Achievement del sito
+- [ ] Contenuti effettivi delle pagine (about, projects, socials)
+- [ ] Sistema di achievement con salvataggio in cache
 - [ ] Sezione progetti con portfolio
-- [ ] Pagina social con link funzionanti
-- [ ] Form di contatto
+- [ ] Form di invio VTuber
 - [ ] SEO e meta tags
 
 ---
 
 ## 🛠️ Idee
 
-- Mettere in "Chi sono" l'immagine di "Who is this?" (chiedi a fleim per maggiori info)
+- Mettere in "Chi siamo" l'immagine di "Who is this?" (chiedi a fleim per maggiori info)
 - Implementare un sistema di achievement che salva quali sono stati ottenuti tramite cache e creare una zona apposita
 
 ---
@@ -65,8 +69,8 @@ Sito web personale con sistema multilingua (IT/EN)
 ```
 site/
 ├── language/
-│   ├── en.json
 │   ├── it.json
+│   ├── en.json
 │   └── ro.json
 ├── assets/
 │   ├── data/
@@ -90,18 +94,19 @@ site/
 │       ├── footer.html
 │       ├── footer.css
 │       └── footer.js
-├── index.html
-├── about.html
-├── contact.html
-├── projects.html
-├── socials.html
-├── vtpedia.html
+├── index.html       ← homepage
+├── about.html       ← chi siamo (WIP)
+├── projects.html    ← progetti (WIP)
+├── socials.html     ← social (WIP)
+├── vtpedia.html     ← enciclopedia VTuber
 ├── vtpedia.css
 ├── vtpedia.js
 ├── 404.html
 ├── 404.css
-├── style.css      ← stili globali
-├── script.js      ← logica principale (i18n + init)
+├── style.css        ← stili globali
+├── index.css        ← stili homepage
+├── wip.css          ← stili pagine WIP condivisi
+├── script.js        ← logica principale (i18n + init)
 ├── README.md
 └── .nojekyll
 ```
@@ -116,7 +121,7 @@ git clone https://github.com/GlacioBoreale/site.git
 # Avvia server locale
 python -m http.server 8000
 
-# Aprire http://localhost:8000
+# Apri http://localhost:8000
 ```
 
 ---

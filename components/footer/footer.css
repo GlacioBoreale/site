@@ -75,6 +75,30 @@
   color: #9146FF;
 }
 
+.social-link.youtube:hover {
+  background: rgba(255, 0, 0, 0.15);
+  border-color: #FF0000;
+  color: #FF0000;
+}
+
+.social-link.instagram:hover {
+  background: rgba(225, 48, 108, 0.15);
+  border-color: #E1306C;
+  color: #E1306C;
+}
+
+.social-link.tiktok:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255,255,255,0.6);
+  color: #fff;
+}
+
+.social-link.x:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255,255,255,0.6);
+  color: #fff;
+}
+
 .discord-username {
   padding: 1rem;
   background: rgba(88, 101, 242, 0.1);

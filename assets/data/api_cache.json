@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2026-02-19T15:54:48Z",
+  "updatedAt": "2026-02-19T19:32:52Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
-    "followers": 1187,
+    "followers": 1186,
     "url": "https://twitch.tv/glacioborealevt",
-    "isLive": false,
+    "isLive": true,
     "stream": {
-      "title": "",
-      "game": "",
-      "viewers": 0,
-      "thumbnail": ""
+      "title": "We're so back! | ► Vtuber ITA ◄ | !ds !ig",
+      "game": "Just Chatting",
+      "viewers": 3,
+      "thumbnail": "https://static-cdn.jtvnw.net/previews-ttv/live_user_glacioborealevt-1280x720.jpg"
     },
     "topClips": [
       {

@@ -54,6 +54,15 @@ function renderTwitch(twitch) {
     const liveEmbed = document.getElementById('twitch-live-embed');
     const offlineMedia = document.getElementById('twitch-offline-media');
 
+    // Controllo freschezza dati
+    if (window._socialsCache?.updatedAt) {
+        const ageMin = (Date.now() - new Date(window._socialsCache.updatedAt)) / 60000;
+        if (ageMin > 90) {
+            const dot = document.getElementById('twitch-status-dot');
+            if (dot) dot.title = 'Dati potrebbero non essere aggiornati (cache > 90 min)';
+        }
+    }
+
     if (twitch.isLive) {
         liveEmbed.style.display = 'block';
         offlineMedia.style.display = 'none';

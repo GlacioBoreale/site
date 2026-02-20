@@ -296,13 +296,11 @@
 .social-card.youtube:hover   { background: rgba(255,0,0,0.15);      border-color: #FF0000; color: #FF0000; }
 .social-card.discord:hover   { background: rgba(88,101,242,0.15);   border-color: #5865F2; color: #5865F2; }
 .social-card.instagram:hover { background: rgba(225,48,108,0.15);   border-color: #E1306C; color: #E1306C; }
-.social-card.tiktok          { position: relative; }
-.social-card.tiktok:hover    {
-  background: linear-gradient(-45deg, rgba(236,14,83,0.3), rgba(4,187,199,0.3));
-  border-color: transparent;
-  color: #fff;
+.social-card.tiktok {
+  position: relative;
+  overflow: visible;
 }
-.social-card.tiktok:hover::before {
+.social-card.tiktok::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -314,6 +312,16 @@
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.social-card.tiktok:hover {
+  background: linear-gradient(-45deg, rgba(236,14,83,0.15), rgba(4,187,199,0.15));
+  border-color: transparent;
+  color: #fff;
+}
+.social-card.tiktok:hover::before {
+  opacity: 1;
 }
 .social-card.x:hover         { background: rgba(255,255,255,0.08);  border-color: rgba(255,255,255,0.3); color: #fff; }
 .social-card.github:hover    { background: rgba(255,255,255,0.1);   border-color: #fff; color: #fff; }

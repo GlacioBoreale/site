@@ -13,6 +13,18 @@ async function loadTranslations(lang) {
 }
 
 function updatePage() {
+  // Blocca Google Translate impostando la lingua corretta
+  document.documentElement.lang = currentLang;
+  document.documentElement.setAttribute('translate', 'no');
+  // Rimuovi eventuali meta di Google Translate
+  let noTranslateMeta = document.querySelector('meta[name="google"]');
+  if (!noTranslateMeta) {
+    noTranslateMeta = document.createElement('meta');
+    noTranslateMeta.name = 'google';
+    noTranslateMeta.content = 'notranslate';
+    document.head.appendChild(noTranslateMeta);
+  }
+
   document.querySelectorAll('[data-i18n]').forEach(element => {
     const key = element.getAttribute('data-i18n');
     const translation = getNestedTranslation(key);
@@ -27,7 +39,6 @@ function updatePage() {
     const translation = getNestedTranslation(key);
     if (translation) document.title = translation;
   }
-  document.documentElement.lang = currentLang;
   window.dispatchEvent(new Event('languageChanged'));
 }
 

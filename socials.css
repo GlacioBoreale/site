@@ -106,12 +106,24 @@
 
 .twitch-name:hover { color: var(--twitch); }
 .yt-name:hover { color: var(--youtube); }
-.discord-name { cursor: default; }
+.discord-name { cursor: default; transition: color 0.2s; }
 .discord-name:hover { color: var(--discord); }
-.instagram-name { cursor: default; user-select: none; }
+.instagram-name { cursor: default; user-select: none; transition: color 0.2s; }
 .instagram-name:hover { color: var(--instagram); }
-.tiktok-name { cursor: default; user-select: none; }
-.tiktok-name:hover { color: rgba(255,255,255,0.8); }
+.tiktok-name {
+  cursor: default;
+  user-select: none;
+  transition: background 0.2s;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.tiktok-name:hover {
+  background-image: linear-gradient(-45deg, #ec0e53, #04bbc7);
+  -webkit-text-fill-color: transparent;
+}
+.instagram-section .platform-meta,
+.tiktok-section .platform-meta,
+.discord-section .platform-meta { cursor: default; user-select: none; }
 
 .platform-meta {
   display: flex;
@@ -759,8 +771,8 @@
 }
 
 .discord-icon  { background: rgba(88,101,242,0.15); color: var(--discord); border: 1px solid rgba(88,101,242,0.3); }
-.instagram-icon { background: rgba(225,48,108,0.15); color: var(--instagram); border: 1px solid rgba(225,48,108,0.3); }
-.tiktok-icon   { background: linear-gradient(-45deg, rgba(236,14,83,0.15), rgba(4,187,199,0.15)); color: #fff; border: 1px solid transparent; position: relative; }
+.instagram-icon { background: rgba(225,48,108,0.15); color: var(--instagram); border: 1px solid rgba(225,48,108,0.3); cursor: default; }
+.tiktok-icon   { background: linear-gradient(-45deg, rgba(236,14,83,0.15), rgba(4,187,199,0.15)); color: #fff; border: 1px solid transparent; position: relative; cursor: default; }
 .tiktok-icon::before {
   content: '';
   position: absolute;

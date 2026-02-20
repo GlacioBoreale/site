@@ -337,6 +337,74 @@
   .logo-image { height: 38px; }
 }
 
+/* ── FLAG IMAGES ─────────────────────────────────── */
+.flag-img {
+  width: 20px;
+  height: auto;
+  border-radius: 2px;
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* ── NAVBAR LIVE BADGE ────────────────────────────── */
+.nav-live-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.38rem 0.9rem;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.05);
+}
+.nav-live-btn:hover {
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.nav-live-btn.is-live {
+  background: rgba(255,50,50,0.15);
+  border-color: rgba(255,80,80,0.35);
+  color: #ff7070;
+  box-shadow: 0 0 12px rgba(255,50,50,0.15);
+}
+.nav-live-btn.is-live:hover {
+  background: rgba(255,50,50,0.25);
+  box-shadow: 0 0 20px rgba(255,50,50,0.25);
+  transform: translateY(-1px);
+}
+
+.nav-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  flex-shrink: 0;
+}
+.nav-live-btn.is-live .nav-live-dot {
+  background: #ff4444;
+  box-shadow: 0 0 0 2px rgba(255,68,68,0.25);
+  animation: navDotPulse 1.5s infinite;
+}
+@keyframes navDotPulse {
+  0%,100% { box-shadow: 0 0 0 2px rgba(255,68,68,0.25); }
+  50%      { box-shadow: 0 0 0 5px rgba(255,68,68,0.05); }
+}
+
+/* nascondo su tablet/mobile, rimane solo hamburger */
+@media (max-width: 900px) {
+  .nav-live-btn { display: none; }
+}
+
 /* ── MIRAGE ───────────────────────────────────────── */
 #mirage-overlay {
   display: none;

@@ -1,0 +1,22 @@
+{
+  "name": "Glaciopia",
+  "short_name": "Glaciopia",
+  "description": "Il sito ufficiale di Glacio Boreale — VTuber italiano",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#0a0a0a",
+  "theme_color": "#5b9cf6",
+  "icons": [
+    {
+      "src": "assets/images/tabLogo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/images/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}

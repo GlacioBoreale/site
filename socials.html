@@ -46,8 +46,6 @@
 
         <!-- TWITCH -->
         <section class="platform-section twitch-section">
-
-            <!-- Header: avatar + nome + stato live -->
             <div class="platform-header">
                 <div class="platform-identity">
                     <img id="twitch-avatar" src="" alt="Glacio" class="platform-avatar twitch-avatar">
@@ -60,23 +58,16 @@
                         </div>
                     </div>
                 </div>
-                <!-- Stato live nell'header -->
-                <div class="twitch-live-status">
-                    <span class="status-dot" id="twitch-status-dot"></span>
-                    <span class="status-label" id="twitch-status-label"></span>
-                    <span id="live-uptime" class="live-uptime"></span>
-                </div>
+                <a href="https://twitch.tv/glacioborealevt" target="_blank" rel="noopener" class="join-btn twitch-btn">
+                    <i class="fab fa-twitch"></i>
+                    <span data-i18n="socials.visitChannel">Visita il canale</span>
+                </a>
             </div>
-
-            <!-- Riga centrale: player/immagine a sinistra, info a destra -->
             <div class="twitch-main-row" id="twitch-main-row">
-                <!-- Sinistra: player o immagine offline -->
                 <div class="twitch-media">
-                    <!-- Live embed -->
                     <div id="twitch-live-embed" class="twitch-media-inner" style="display:none;">
                         <iframe id="twitch-embed" src="" allowfullscreen class="twitch-embed"></iframe>
                     </div>
-                    <!-- Offline image -->
                     <div id="twitch-offline-media" class="twitch-media-inner offline-image-wrapper">
                         <img id="twitch-offline-img" src="" alt="Offline" class="offline-img">
                         <div class="offline-overlay">
@@ -85,7 +76,6 @@
                     </div>
                 </div>
 
-                <!-- Destra: titolo + categoria (visibili solo se live) -->
                 <div class="twitch-side-info" id="twitch-side-info">
                     <div class="stream-info-box" id="box-title">
                         <span class="info-box-label" data-i18n="socials.streamTitle">Titolo</span>
@@ -106,7 +96,6 @@
                 </div>
             </div>
 
-            <!-- Clip in basso, sempre visibili -->
             <div class="twitch-clips-section">
                 <h4 class="clips-section-title" data-i18n="socials.popularClips">Clip Popolari</h4>
                 <div id="twitch-clips-grid" class="clips-grid"></div>
@@ -128,6 +117,10 @@
                         </div>
                     </div>
                 </div>
+                <a href="https://www.youtube.com/@glacioborealevt" target="_blank" rel="noopener" class="join-btn youtube-btn">
+                    <i class="fab fa-youtube"></i>
+                    <span data-i18n="socials.visitChannel">Visita il canale</span>
+                </a>
             </div>
             <h4 class="yt-section-title" data-i18n="socials.recentVideos">Video più recenti</h4>
             <div id="yt-videos" class="yt-videos-grid"></div>
@@ -141,7 +134,7 @@
                         <i class="fab fa-discord"></i>
                     </div>
                     <div>
-                        <span class="platform-name discord-name">Discord</span>
+                        <a href="https://discord.gg/nsdCYSxzuR" target="_blank" rel="noopener" class="platform-name discord-name">Discord</a>
                         <div class="platform-meta">
                             <span data-i18n="socials.discordDesc">Unisciti alla community</span>
                         </div>
@@ -163,7 +156,7 @@
                             <i class="fab fa-instagram"></i>
                         </div>
                         <div>
-                            <span class="platform-name instagram-name">glacioboreale_vt</span>
+                            <a href="https://www.instagram.com/glacioboreale_vt/" target="_blank" rel="noopener" class="platform-name instagram-name">glacioboreale_vt</a>
                             <div class="platform-meta">
                                 <span data-i18n="socials.instagramDesc">Seguimi su Instagram</span>
                             </div>
@@ -183,7 +176,7 @@
                             <i class="fab fa-tiktok"></i>
                         </div>
                         <div>
-                            <span class="platform-name tiktok-name">@glacioborealevt</span>
+                            <a href="https://www.tiktok.com/@glacioborealevt" target="_blank" rel="noopener" class="platform-name tiktok-name">@glacioborealevt</a>
                             <div class="platform-meta">
                                 <span data-i18n="socials.tiktokDesc">Seguimi su TikTok</span>
                             </div>

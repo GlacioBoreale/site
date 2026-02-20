@@ -10,6 +10,7 @@ async function loadNavbar() {
     initLangSelector();
     initMobileMenu();
     initMirage();
+    initNavLiveBadge();
     
   } catch (error) {
     console.error('Errore navbar:', error);
@@ -19,9 +20,9 @@ async function loadNavbar() {
 // ── UNICA FONTE DI VERITÀ ─────────────────────────
 // Per aggiungere una lingua: aggiungi un oggetto qui.
 const languages = [
-  { value: 'it', flag: '🇮🇹', code: 'IT', label: 'Italiano' },
-  { value: 'en', flag: '🇬🇧', code: 'EN', label: 'English'  },
-  { value: 'ro', flag: '🇷🇴', code: 'RO', label: 'Română'   },
+  { value: 'it', flag: 'https://flagcdn.com/w20/it.png', flag2x: 'https://flagcdn.com/w40/it.png', code: 'IT', label: 'Italiano' },
+  { value: 'en', flag: 'https://flagcdn.com/w20/gb.png', flag2x: 'https://flagcdn.com/w40/gb.png', code: 'EN', label: 'English'  },
+  { value: 'ro', flag: 'https://flagcdn.com/w20/ro.png', flag2x: 'https://flagcdn.com/w40/ro.png', code: 'RO', label: 'Română'   },
 ];
 
 function initLangSelector() {
@@ -47,7 +48,7 @@ function buildMenus() {
       li.className = 'lang-option';
       li.dataset.value = lang.value;
       li.role = 'option';
-      li.innerHTML = `${lang.flag} <span>${lang.code}</span>`;
+      li.innerHTML = `<img src="${lang.flag}" srcset="${lang.flag2x} 2x" alt="${lang.label}" class="flag-img"> <span>${lang.code}</span>`;
       menuDesktop.appendChild(li);
     }
     if (menuMobile) {
@@ -55,7 +56,7 @@ function buildMenus() {
       li.className = 'lang-option lang-option-mobile';
       li.dataset.value = lang.value;
       li.role = 'option';
-      li.innerHTML = `${lang.flag} <span>${lang.label}</span>`;
+      li.innerHTML = `<img src="${lang.flag}" srcset="${lang.flag2x} 2x" alt="${lang.label}" class="flag-img"> <span>${lang.label}</span>`;
       menuMobile.appendChild(li);
     }
   });
@@ -110,7 +111,7 @@ function updateDropdownUI(lang) {
 
   const flagD = document.getElementById('lang-flag-desktop');
   const codeD = document.getElementById('lang-code-desktop');
-  if (flagD) flagD.textContent = meta.flag;
+  if (flagD) flagD.innerHTML = `<img src="${meta.flag}" srcset="${meta.flag2x} 2x" alt="${meta.label}" class="flag-img">`;
   if (codeD) codeD.textContent = meta.code;
 
   document.querySelectorAll('.lang-option').forEach(opt => {
@@ -161,6 +162,37 @@ function showMirage() {
       overlay.classList.remove('active', 'dissolve');
     }, 1400);
   }, 2800);
+}
+
+async function initNavLiveBadge() {
+  const btn  = document.getElementById('nav-live-btn');
+  const text = document.getElementById('nav-live-text');
+  if (!btn || !text) return;
+
+  // Determina il path base (funziona sia in root che in sottocartelle)
+  const depth = (window.location.pathname.match(/\//g) || []).length - 1;
+  const base  = depth > 0 ? '../'.repeat(depth) : './';
+
+  try {
+    const res = await fetch(`${base}assets/data/api_cache.json`);
+    if (!res.ok) return;
+    const data = await res.json();
+    const isLive = data?.twitch?.isLive;
+
+    if (isLive) {
+      btn.href = 'https://twitch.tv/glacioborealevt';
+      btn.target = '_blank';
+      btn.rel = 'noopener';
+      btn.classList.add('is-live');
+      text.textContent = 'Glacio è in LIVE!';
+    } else {
+      btn.href = `${base}socials.html`;
+      btn.target = '';
+      text.textContent = 'Glacio è Offline';
+    }
+  } catch(e) {
+    // la navbar funziona lo stesso senza cache
+  }
 }
 
 function initMobileMenu() {

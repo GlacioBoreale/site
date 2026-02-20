@@ -106,13 +106,22 @@
 
 .twitch-name:hover { color: var(--twitch); }
 .yt-name:hover { color: var(--youtube); }
-.discord-name { cursor: default; transition: color 0.2s; }
-.discord-name:hover { color: var(--discord); }
-.instagram-name { cursor: default; user-select: none; transition: color 0.2s; }
+/* tutti i nomi social ora sono <a>: sottolineatura + pointer */
+.platform-name {
+  text-decoration: none;
+}
+.platform-name:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.discord-name  { transition: color 0.2s; }
+.discord-name:hover  { color: var(--discord); }
+
+.instagram-name { transition: color 0.2s; }
 .instagram-name:hover { color: var(--instagram); }
+
 .tiktok-name {
-  cursor: default;
-  user-select: none;
   transition: background 0.2s;
   -webkit-background-clip: text;
   background-clip: text;
@@ -120,10 +129,50 @@
 .tiktok-name:hover {
   background-image: linear-gradient(-45deg, #ec0e53, #04bbc7);
   -webkit-text-fill-color: transparent;
+  text-decoration: none; /* il gradient clip non funziona con underline */
 }
 .instagram-section .platform-meta,
 .tiktok-section .platform-meta,
 .discord-section .platform-meta { cursor: default; user-select: none; }
+
+/* ── STATUS BUTTON (Twitch/YouTube) ────────────────── */
+.status-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1rem;
+  border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  flex-shrink: 0;
+}
+.status-btn:hover {
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(255,255,255,0.2);
+  transform: translateY(-1px);
+}
+
+/* quando è live diventa rosso/viola */
+.status-btn.is-live {
+  background: rgba(145,70,255,0.15);
+  border-color: rgba(145,70,255,0.4);
+}
+.status-btn.is-live:hover {
+  background: rgba(145,70,255,0.25);
+}
+
+/* bottone YouTube */
+.status-btn-yt {
+  color: rgba(255,255,255,0.55);
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.status-btn-yt i { color: var(--youtube); font-size: 1rem; }
+.status-btn-yt:hover { color: #fff; }
 
 .platform-meta {
   display: flex;
@@ -802,6 +851,8 @@
 
 .join-btn:hover { transform: translateY(-2px); opacity: 0.9; }
 
+.twitch-btn    { background: var(--twitch); color: #fff; }
+.youtube-btn   { background: var(--youtube); color: #fff; }
 .discord-btn   { background: var(--discord); color: #fff; }
 .instagram-btn { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; }
 .tiktok-btn    { background: linear-gradient(-45deg, rgba(236,14,83,0.3), rgba(4,187,199,0.3)); color: #fff; border: 1px solid transparent; position: relative; }

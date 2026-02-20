@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-02-20T18:02:53Z",
+  "updatedAt": "2026-02-20T19:06:22Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,20 +43,20 @@
     ],
     "randomClips": [
       {
-        "title": "\"Perché non finisce?\"💀",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/InspiringCuriousWolfFrankerZ-x0jLKt-ggFr_O2mw",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/qNW9YMdIyyrfoIBa_ztpsA/AT-cm%7CqNW9YMdIyyrfoIBa_ztpsA-preview-480x272.jpg",
-        "views": 43,
-        "duration": 18.4,
-        "creator": "dabidet87"
-      },
-      {
         "title": "no scope memento🗿 (bello il no scope btw)",
         "url": "https://www.twitch.tv/glacioborealevt/clip/ElegantRelievedSashimiPJSugar-dkfv5Z1lAz_BQPEY",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/eiNtTXZH7-WdZQM_wUDxGA/AT-cm%7CeiNtTXZH7-WdZQM_wUDxGA-preview-480x272.jpg",
         "views": 29,
         "duration": 12.6,
         "creator": "dabidet87"
+      },
+      {
+        "title": "wtf is that sound",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/CuriousAdventurousDadHeyGuys-oDbHErbl88zzZ2WY",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/-4fptaA2xxK25fPM82dlmA/vod-1997814363-offset-5294-preview-480x272.jpg",
+        "views": 39,
+        "duration": 30,
+        "creator": "antokekt"
       },
       {
         "title": "L'anklebraking, il faking, la finta. ",
@@ -96,7 +96,7 @@
         "thumbnail": "https://i.ytimg.com/vi/62vl_jn_POY/mqdefault.jpg",
         "publishedAt": "2025-12-27T09:44:38Z",
         "url": "https://www.youtube.com/watch?v=62vl_jn_POY",
-        "viewCount": 143
+        "viewCount": 144
       }
     ]
   },

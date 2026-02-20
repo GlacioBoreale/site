@@ -2,8 +2,8 @@ name: Fetch Social Data
 
 on:
   schedule:
-    - cron: '*/15 * * * *'   # ogni 15 minuti
-  workflow_dispatch:           # avvio manuale dal pannello GitHub Actions
+    - cron: '0,15,30,45 * * * *'
+  workflow_dispatch:
 
 jobs:
   fetch-data:
@@ -13,293 +13,171 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ── TWITCH ────────────────────────────────────────────────────────────
-      - name: Get Twitch Access Token
-        id: twitch_token
+      - name: Fetch all data and generate cache
+        env:
+          TWITCH_CLIENT_ID: ${{ secrets.TWITCH_CLIENT_ID }}
+          TWITCH_CLIENT_SECRET: ${{ secrets.TWITCH_CLIENT_SECRET }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: |
-          RESPONSE=$(curl -s -X POST "https://id.twitch.tv/oauth2/token" \
-            -d "client_id=${{ secrets.TWITCH_CLIENT_ID }}" \
-            -d "client_secret=${{ secrets.TWITCH_CLIENT_SECRET }}" \
-            -d "grant_type=client_credentials")
-          TOKEN=$(echo $RESPONSE | python3 -c "import sys,json; print(json.load(sys.stdin)['access_token'])")
-          echo "token=$TOKEN" >> $GITHUB_OUTPUT
+          python3 - << 'PYEOF'
+import json, os, random, re, subprocess
+import urllib.request, urllib.parse
 
-      - name: Fetch Twitch Data
-        id: twitch
-        run: |
-          TOKEN="${{ steps.twitch_token.outputs.token }}"
-          CLIENT_ID="${{ secrets.TWITCH_CLIENT_ID }}"
-          USER="glacioborealevt"
+TWITCH_CLIENT_ID     = os.environ['TWITCH_CLIENT_ID']
+TWITCH_CLIENT_SECRET = os.environ['TWITCH_CLIENT_SECRET']
+YOUTUBE_API_KEY      = os.environ['YOUTUBE_API_KEY']
 
-          # Dati utente (follower + offline image)
-          USER_DATA=$(curl -s -H "Client-ID: $CLIENT_ID" -H "Authorization: Bearer $TOKEN" \
-            "https://api.twitch.tv/helix/users?login=$USER")
+def get(url, headers=None):
+    req = urllib.request.Request(url, headers=headers or {})
+    with urllib.request.urlopen(req) as r:
+        return json.loads(r.read())
 
-          USER_ID=$(echo $USER_DATA | python3 -c "import sys,json; print(json.load(sys.stdin)['data'][0]['id'])")
-          DISPLAY_NAME=$(echo $USER_DATA | python3 -c "import sys,json; print(json.load(sys.stdin)['data'][0]['display_name'])")
-          PROFILE_IMG=$(echo $USER_DATA | python3 -c "import sys,json; print(json.load(sys.stdin)['data'][0]['profile_image_url'])")
-          OFFLINE_IMG=$(echo $USER_DATA | python3 -c "import sys,json; print(json.load(sys.stdin)['data'][0].get('offline_image_url', ''))")
+def post(url, data):
+    encoded = urllib.parse.urlencode(data).encode()
+    req = urllib.request.Request(url, data=encoded, method='POST')
+    with urllib.request.urlopen(req) as r:
+        return json.loads(r.read())
 
-          # Follower count
-          FOLLOWER_DATA=$(curl -s -H "Client-ID: $CLIENT_ID" -H "Authorization: Bearer $TOKEN" \
-            "https://api.twitch.tv/helix/channels/followers?broadcaster_id=$USER_ID")
-          FOLLOWERS=$(echo $FOLLOWER_DATA | python3 -c "import sys,json; print(json.load(sys.stdin)['total'])")
+# ── TWITCH TOKEN ──────────────────────────────────────────────────────
+token_data = post('https://id.twitch.tv/oauth2/token', {
+    'client_id': TWITCH_CLIENT_ID,
+    'client_secret': TWITCH_CLIENT_SECRET,
+    'grant_type': 'client_credentials'
+})
+TOKEN = token_data['access_token']
+TH = {'Client-ID': TWITCH_CLIENT_ID, 'Authorization': 'Bearer ' + TOKEN}
 
-          # Stato live
-          STREAM_DATA=$(curl -s -H "Client-ID: $CLIENT_ID" -H "Authorization: Bearer $TOKEN" \
-            "https://api.twitch.tv/helix/streams?user_login=$USER")
-          IS_LIVE=$(echo $STREAM_DATA | python3 -c "import sys,json; d=json.load(sys.stdin)['data']; print('true' if len(d)>0 else 'false')")
-          STREAM_TITLE=$(echo $STREAM_DATA | python3 -c "import sys,json; d=json.load(sys.stdin)['data']; print(d[0]['title'] if len(d)>0 else '')")
-          STREAM_GAME=$(echo $STREAM_DATA | python3 -c "import sys,json; d=json.load(sys.stdin)['data']; print(d[0]['game_name'] if len(d)>0 else '')")
-          STREAM_GAME_ID=$(echo $STREAM_DATA | python3 -c "import sys,json; d=json.load(sys.stdin)['data']; print(d[0]['game_id'] if len(d)>0 else '')")
-          STREAM_VIEWERS=$(echo $STREAM_DATA | python3 -c "import sys,json; d=json.load(sys.stdin)['data']; print(d[0]['viewer_count'] if len(d)>0 else 0)")
-          STREAM_STARTED=$(echo $STREAM_DATA | python3 -c "import sys,json; d=json.load(sys.stdin)['data']; print(d[0]['started_at'] if len(d)>0 else '')")
-          STREAM_THUMBNAIL=$(echo $STREAM_DATA | python3 -c "
-          import sys,json
-          d=json.load(sys.stdin)['data']
-          if len(d)>0:
-            print(d[0]['thumbnail_url'].replace('{width}','1280').replace('{height}','720'))
-          else:
-            print('')
-          ")
+# ── TWITCH USER ───────────────────────────────────────────────────────
+user = get('https://api.twitch.tv/helix/users?login=glacioborealevt', TH)['data'][0]
+USER_ID      = user['id']
+DISPLAY_NAME = user['display_name']
+PROFILE_IMG  = user['profile_image_url']
+OFFLINE_IMG  = user.get('offline_image_url', '')
 
-          # Box art della categoria (solo se live)
-          GAME_BOX_ART=""
-          if [ -n "$STREAM_GAME_ID" ] && [ "$STREAM_GAME_ID" != "0" ]; then
-            GAME_DATA=$(curl -s -H "Client-ID: $CLIENT_ID" -H "Authorization: Bearer $TOKEN" \
-              "https://api.twitch.tv/helix/games?id=$STREAM_GAME_ID")
-            GAME_BOX_ART=$(echo $GAME_DATA | python3 -c "
-import sys,json
-d=json.load(sys.stdin)['data']
-if len(d)>0:
-  print(d[0]['box_art_url'].replace('{width}','144').replace('{height}','192'))
+followers_data = get('https://api.twitch.tv/helix/channels/followers?broadcaster_id=' + USER_ID, TH)
+FOLLOWERS = followers_data['total']
+
+# ── TWITCH STREAM ─────────────────────────────────────────────────────
+stream_data = get('https://api.twitch.tv/helix/streams?user_login=glacioborealevt', TH)['data']
+IS_LIVE = len(stream_data) > 0
+
+stream = {}
+if IS_LIVE:
+    s = stream_data[0]
+    game_id = s.get('game_id', '')
+    box_art = ''
+    if game_id and game_id != '0':
+        game_data = get('https://api.twitch.tv/helix/games?id=' + game_id, TH)['data']
+        if game_data:
+            box_art = game_data[0]['box_art_url'].replace('{width}','144').replace('{height}','192')
+    stream = {
+        'title':      s['title'],
+        'game':       s['game_name'],
+        'gameBoxArt': box_art,
+        'viewers':    s['viewer_count'],
+        'startedAt':  s['started_at'],
+        'thumbnail':  s['thumbnail_url'].replace('{width}','1280').replace('{height}','720')
+    }
 else:
-  print('')
-")
-          fi
+    stream = {'title':'','game':'','gameBoxArt':'','viewers':0,'startedAt':'','thumbnail':''}
 
-          # Top 3 clip per views
-          CLIPS_DATA=$(curl -s -H "Client-ID: $CLIENT_ID" -H "Authorization: Bearer $TOKEN" \
-            "https://api.twitch.tv/helix/clips?broadcaster_id=$USER_ID&first=20")
+# ── TWITCH CLIPS ──────────────────────────────────────────────────────
+clips_raw = get('https://api.twitch.tv/helix/clips?broadcaster_id=' + USER_ID + '&first=20', TH).get('data', [])
 
-          # Salva in variabili d'ambiente
-          echo "USER_ID=$USER_ID" >> $GITHUB_ENV
-          echo "TWITCH_DISPLAY_NAME=$DISPLAY_NAME" >> $GITHUB_ENV
-          echo "TWITCH_PROFILE_IMG=$PROFILE_IMG" >> $GITHUB_ENV
-          echo "TWITCH_OFFLINE_IMG=$OFFLINE_IMG" >> $GITHUB_ENV
-          echo "TWITCH_FOLLOWERS=$FOLLOWERS" >> $GITHUB_ENV
-          echo "TWITCH_IS_LIVE=$IS_LIVE" >> $GITHUB_ENV
-          echo "TWITCH_STREAM_TITLE=$STREAM_TITLE" >> $GITHUB_ENV
-          echo "TWITCH_STREAM_GAME=$STREAM_GAME" >> $GITHUB_ENV
-          echo "TWITCH_STREAM_GAME_BOX=$GAME_BOX_ART" >> $GITHUB_ENV
-          echo "TWITCH_STREAM_VIEWERS=$STREAM_VIEWERS" >> $GITHUB_ENV
-          echo "TWITCH_STREAM_STARTED=$STREAM_STARTED" >> $GITHUB_ENV
-          echo "TWITCH_STREAM_THUMBNAIL=$STREAM_THUMBNAIL" >> $GITHUB_ENV
+def clip_obj(c):
+    return {'title': c['title'], 'url': c['url'], 'thumbnail': c['thumbnail_url'],
+            'views': c['view_count'], 'duration': c['duration'], 'creator': c['creator_name']}
 
-          # Salva clips per gestirle dopo
-          echo $CLIPS_DATA > /tmp/all_clips.json
+sorted_clips = sorted(clips_raw, key=lambda c: c['view_count'], reverse=True)
+top_clips    = [clip_obj(c) for c in sorted_clips[:3]]
+top_urls     = {c['url'] for c in sorted_clips[:3]}
+remaining    = [c for c in clips_raw if c['url'] not in top_urls]
+random_clips = [clip_obj(c) for c in random.sample(remaining, min(3, len(remaining)))]
 
-      # ── YOUTUBE ───────────────────────────────────────────────────────────
-      - name: Fetch YouTube Data
-        id: youtube
-        run: |
-          API_KEY="${{ secrets.YOUTUBE_API_KEY }}"
+# ── YOUTUBE ───────────────────────────────────────────────────────────
+def yt(path):
+    sep = '&' if '?' in path else '?'
+    return get('https://www.googleapis.com/youtube/v3/' + path + sep + 'key=' + YOUTUBE_API_KEY)
 
-          # Prima prova con forHandle
-          CHANNEL_DATA=$(curl -s \
-            "https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&forHandle=@glacioborealevt&key=${API_KEY}")
-          echo "DEBUG forHandle response: $CHANNEL_DATA"
+channel_data = yt('channels?part=snippet,statistics&forHandle=@glacioborealevt')
+if not channel_data.get('items'):
+    channel_data = yt('channels?part=snippet,statistics&forUsername=glacioborealevt')
+if not channel_data.get('items'):
+    s = yt('search?part=snippet&q=GlacioBoreale&type=channel&maxResults=1')
+    cid = s['items'][0]['id']['channelId']
+    channel_data = yt('channels?part=snippet,statistics&id=' + cid)
 
-          # Se items è vuoto, prova con forUsername
-          ITEMS_COUNT=$(echo $CHANNEL_DATA | python3 -c "import sys,json; print(len(json.load(sys.stdin).get('items', [])))")
+ch       = channel_data['items'][0]
+YT_NAME  = ch['snippet']['title']
+YT_SUBS  = int(ch['statistics']['subscriberCount'])
+YT_THUMB = ch['snippet']['thumbnails']['default']['url']
+CH_ID    = ch['id']
 
-          if [ "$ITEMS_COUNT" = "0" ]; then
-            echo "forHandle fallito, provo forUsername..."
-            CHANNEL_DATA=$(curl -s \
-              "https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&forUsername=glacioborealevt&key=${API_KEY}")
-            echo "DEBUG forUsername response: $CHANNEL_DATA"
-            ITEMS_COUNT=$(echo $CHANNEL_DATA | python3 -c "import sys,json; print(len(json.load(sys.stdin).get('items', [])))")
-          fi
+search = yt('search?part=snippet&channelId=' + CH_ID + '&maxResults=10&order=date&type=video')
+video_ids = ','.join(i['id']['videoId'] for i in search.get('items', []) if i.get('id', {}).get('videoId'))
 
-          if [ "$ITEMS_COUNT" = "0" ]; then
-            echo "Entrambi falliti, provo search..."
-            SEARCH_DATA=$(curl -s \
-              "https://www.googleapis.com/youtube/v3/search?part=snippet&q=GlacioBoreale&type=channel&maxResults=1&key=${API_KEY}")
-            echo "DEBUG search response: $SEARCH_DATA"
-            CHANNEL_ID=$(echo $SEARCH_DATA | python3 -c "import sys,json; print(json.load(sys.stdin)['items'][0]['id']['channelId'])")
-            CHANNEL_DATA=$(curl -s \
-              "https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id=${CHANNEL_ID}&key=${API_KEY}")
-          fi
+details = yt('videos?part=contentDetails,snippet,statistics&id=' + video_ids).get('items', [])
 
-          CHANNEL_ID=$(echo $CHANNEL_DATA | python3 -c "import sys,json; print(json.load(sys.stdin)['items'][0]['id'])")
-          YT_NAME=$(echo $CHANNEL_DATA | python3 -c "import sys,json; print(json.load(sys.stdin)['items'][0]['snippet']['title'])")
-          YT_SUBS=$(echo $CHANNEL_DATA | python3 -c "import sys,json; print(json.load(sys.stdin)['items'][0]['statistics']['subscriberCount'])")
-          YT_THUMB=$(echo $CHANNEL_DATA | python3 -c "import sys,json; print(json.load(sys.stdin)['items'][0]['snippet']['thumbnails']['default']['url'])")
+def parse_duration(iso):
+    h = int(re.search(r'(\d+)H', iso).group(1)) if re.search(r'(\d+)H', iso) else 0
+    m = int(re.search(r'(\d+)M', iso).group(1)) if re.search(r'(\d+)M', iso) else 0
+    s = int(re.search(r'(\d+)S', iso).group(1)) if re.search(r'(\d+)S', iso) else 0
+    return h * 3600 + m * 60 + s
 
-          # Ultimi video (ne prendiamo 10 per poi filtrare gli Shorts)
-          SEARCH_DATA=$(curl -s \
-            "https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&maxResults=10&order=date&type=video&key=${API_KEY}")
+yt_videos = []
+for v in details:
+    if parse_duration(v.get('contentDetails', {}).get('duration', 'PT0S')) > 150:
+        yt_videos.append({
+            'title':       v['snippet']['title'],
+            'videoId':     v['id'],
+            'thumbnail':   v['snippet']['thumbnails'].get('medium', v['snippet']['thumbnails'].get('default', {})).get('url', ''),
+            'publishedAt': v['snippet']['publishedAt'],
+            'url':         'https://www.youtube.com/watch?v=' + v['id'],
+            'viewCount':   int(v.get('statistics', {}).get('viewCount', 0))
+        })
+        if len(yt_videos) >= 3:
+            break
 
-          # Estrai gli ID dei video per controllare la durata
-          VIDEO_IDS=$(echo $SEARCH_DATA | python3 -c "
-import sys, json
-items = json.load(sys.stdin).get('items', [])
-ids = [i['id']['videoId'] for i in items if i.get('id', {}).get('videoId')]
-print(','.join(ids))
-")
+# ── SCRIVI JSON ───────────────────────────────────────────────────────
+updated_at = subprocess.check_output(['date', '-u', '+%Y-%m-%dT%H:%M:%SZ']).decode().strip()
 
-          # Chiedi i dettagli (inclusa la durata ISO 8601) per filtrare gli Shorts
-          DETAILS_DATA=$(curl -s \
-            "https://www.googleapis.com/youtube/v3/videos?part=contentDetails,snippet,statistics&id=${VIDEO_IDS}&key=${API_KEY}")
+data = {
+    'updatedAt': updated_at,
+    'twitch': {
+        'displayName':  DISPLAY_NAME,
+        'profileImage': PROFILE_IMG,
+        'followers':    FOLLOWERS,
+        'url':          'https://twitch.tv/glacioborealevt',
+        'isLive':       IS_LIVE,
+        'stream':       stream,
+        'offlineImage': OFFLINE_IMG,
+        'topClips':     top_clips,
+        'randomClips':  random_clips
+    },
+    'youtube': {
+        'displayName': YT_NAME,
+        'thumbnail':   YT_THUMB,
+        'subscribers': YT_SUBS,
+        'url':         'https://www.youtube.com/@glacioborealevt',
+        'recentVideos': yt_videos
+    },
+    'discord':   {'url': 'https://discord.gg/nsdCYSxzuR'},
+    'instagram': {'url': 'https://www.instagram.com/glacioboreale_vt/'},
+    'tiktok':    {'url': 'https://www.tiktok.com/@glacioborealevt'}
+}
 
-          # Combina search + details, filtra Shorts (durata <= 60s), prendi i primi 3
-          python3 << 'PYEOF'
-import json, re
+with open('assets/data/api_cache.json', 'w') as f:
+    json.dump(data, f, indent=2, ensure_ascii=False)
 
-with open('/dev/stdin') as f:
-    pass  # stdin non disponibile qui, usiamo variabili
+print('api_cache.json generato!')
+print(f"Twitch: live={IS_LIVE}, viewers={stream['viewers']}, followers={FOLLOWERS}")
+print(f"YouTube: {YT_SUBS} iscritti, {len(yt_videos)} video")
 PYEOF
-
-          # Salva entrambi i file per il processing Python successivo
-          echo $SEARCH_DATA > /tmp/yt_search.json
-          echo $DETAILS_DATA > /tmp/yt_details.json
-
-          echo "CHANNEL_ID=$CHANNEL_ID" >> $GITHUB_ENV
-          echo "YT_NAME=$YT_NAME" >> $GITHUB_ENV
-          echo "YT_SUBS=$YT_SUBS" >> $GITHUB_ENV
-          echo "YT_THUMB=$YT_THUMB" >> $GITHUB_ENV
-
-          # Compatibilità col passo successivo
-          echo $SEARCH_DATA > /tmp/yt_videos.json
-
-      # ── GENERA JSON FINALE ────────────────────────────────────────────────
-      - name: Generate api_cache.json
-        run: |
-          python3 << 'EOF'
-          import json, os
-
-          # Twitch clips: top 3 per views + 3 random dal pool di 20
-          import random
-          with open('/tmp/all_clips.json') as f:
-              all_clips_raw = json.load(f).get('data', [])
-
-          def clip_obj(c):
-              return {
-                  'title': c['title'],
-                  'url': c['url'],
-                  'thumbnail': c['thumbnail_url'],
-                  'views': c['view_count'],
-                  'duration': c['duration'],
-                  'creator': c['creator_name']
-              }
-
-          # Ordina per views e prendi le top 3
-          sorted_clips = sorted(all_clips_raw, key=lambda c: c['view_count'], reverse=True)
-          top_clips = [clip_obj(c) for c in sorted_clips[:3]]
-
-          # 3 clip random dal pool (escludi quelle già nelle top 3)
-          top_urls = {c['url'] for c in sorted_clips[:3]}
-          remaining = [c for c in all_clips_raw if c['url'] not in top_urls]
-          random_clips = [clip_obj(c) for c in random.sample(remaining, min(3, len(remaining)))]
-
-          # YouTube videos - filtra Shorts (durata <= 60 secondi)
-          import re as _re
-
-          def parse_duration(iso):
-              # ISO 8601 duration: PT1M30S, PT45S, PT2H, ecc.
-              h = int(_re.search(r'(\d+)H', iso).group(1)) if _re.search(r'(\d+)H', iso) else 0
-              m = int(_re.search(r'(\d+)M', iso).group(1)) if _re.search(r'(\d+)M', iso) else 0
-              s = int(_re.search(r'(\d+)S', iso).group(1)) if _re.search(r'(\d+)S', iso) else 0
-              return h * 3600 + m * 60 + s
-
-          import os as _os
-          yt_details_path = '/tmp/yt_details.json'
-          yt_videos = []
-
-          if _os.path.exists(yt_details_path):
-              with open(yt_details_path) as f:
-                  details_raw = json.load(f).get('items', [])
-              for v in details_raw:
-                  duration_iso = v.get('contentDetails', {}).get('duration', 'PT0S')
-                  duration_sec = parse_duration(duration_iso)
-                  if duration_sec > 150:  # escludi Shorts (max 2m30s)
-                      yt_videos.append({
-                          'title': v['snippet']['title'],
-                          'videoId': v['id'],
-                          'thumbnail': v['snippet']['thumbnails'].get('medium', v['snippet']['thumbnails'].get('default', {})).get('url', ''),
-                          'publishedAt': v['snippet']['publishedAt'],
-                          'url': f"https://www.youtube.com/watch?v={v['id']}",
-                          'duration': duration_sec,
-                          'viewCount': int(v.get('statistics', {}).get('viewCount', 0))
-                      })
-                      if len(yt_videos) >= 3:
-                          break
-          else:
-              with open('/tmp/yt_videos.json') as f:
-                  yt_raw = json.load(f).get('items', [])
-              yt_videos = [
-                  {
-                      'title': v['snippet']['title'],
-                      'videoId': v['id']['videoId'],
-                      'thumbnail': v['snippet']['thumbnails']['medium']['url'],
-                      'publishedAt': v['snippet']['publishedAt'],
-                      'url': f"https://www.youtube.com/watch?v={v['id']['videoId']}"
-                  }
-                  for v in yt_raw
-              ]
-
-          # JSON finale
-          data = {
-              'updatedAt': os.popen('date -u +"%Y-%m-%dT%H:%M:%SZ"').read().strip(),
-              'twitch': {
-                  'displayName': os.environ.get('TWITCH_DISPLAY_NAME', ''),
-                  'profileImage': os.environ.get('TWITCH_PROFILE_IMG', ''),
-                  'followers': int(os.environ.get('TWITCH_FOLLOWERS', 0)),
-                  'url': 'https://twitch.tv/glacioborealevt',
-                  'isLive': os.environ.get('TWITCH_IS_LIVE', 'false') == 'true',
-                  'stream': {
-                      'title': os.environ.get('TWITCH_STREAM_TITLE', ''),
-                      'game': os.environ.get('TWITCH_STREAM_GAME', ''),
-                      'gameBoxArt': os.environ.get('TWITCH_STREAM_GAME_BOX', ''),
-                      'viewers': int(os.environ.get('TWITCH_STREAM_VIEWERS', 0)),
-                      'startedAt': os.environ.get('TWITCH_STREAM_STARTED', ''),
-                      'thumbnail': os.environ.get('TWITCH_STREAM_THUMBNAIL', '')
-                  },
-                  'offlineImage': os.environ.get('TWITCH_OFFLINE_IMG', ''),
-                  'topClips': top_clips,
-                  'randomClips': random_clips
-              },
-              'youtube': {
-                  'displayName': os.environ.get('YT_NAME', ''),
-                  'thumbnail': os.environ.get('YT_THUMB', ''),
-                  'subscribers': int(os.environ.get('YT_SUBS', 0)),
-                  'url': 'https://www.youtube.com/@glacioborealevt',
-                  'recentVideos': yt_videos
-              },
-              'discord': {
-                  'url': 'https://discord.gg/nsdCYSxzuR'
-              },
-              'instagram': {
-                  'url': 'https://www.instagram.com/glacioboreale_vt/'
-              },
-              'tiktok': {
-                  'url': 'https://www.tiktok.com/@glacioborealevt'
-              }
-          }
-
-          with open('assets/data/api_cache.json', 'w') as f:
-              json.dump(data, f, indent=2, ensure_ascii=False)
-
-          print("api_cache.json generato con successo!")
-          print(f"Twitch: {data['twitch']['followers']} followers, live={data['twitch']['isLive']}")
-          print(f"YouTube: {data['youtube']['subscribers']} iscritti, {len(yt_videos)} video")
-          EOF
 
       - name: Commit and push api_cache.json
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add assets/data/api_cache.json
-          # Committa solo se ci sono modifiche
           git diff --staged --quiet || git commit -m "chore: update api_cache.json [skip ci]"
           git push

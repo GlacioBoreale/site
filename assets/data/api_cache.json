@@ -1,17 +1,20 @@
 {
-  "updatedAt": "2026-02-19T19:32:52Z",
+  "updatedAt": "2026-02-20T12:09:47Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
     "followers": 1186,
     "url": "https://twitch.tv/glacioborealevt",
-    "isLive": true,
+    "isLive": false,
     "stream": {
-      "title": "We're so back! | ► Vtuber ITA ◄ | !ds !ig",
-      "game": "Just Chatting",
-      "viewers": 3,
-      "thumbnail": "https://static-cdn.jtvnw.net/previews-ttv/live_user_glacioborealevt-1280x720.jpg"
+      "title": "",
+      "game": "",
+      "gameBoxArt": "",
+      "viewers": 0,
+      "startedAt": "",
+      "thumbnail": ""
     },
+    "offlineImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/101d761a-4950-4c4e-87f7-f81e912529c8-channel_offline_image-1920x1080.png",
     "topClips": [
       {
         "title": "he fell off (AAAAAAAAAAHHHH)",
@@ -28,16 +31,42 @@
         "views": 76,
         "duration": 17.9,
         "creator": "rhaastbabygirl"
+      },
+      {
+        "title": "Nixel Jumpscare",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/PricklySplendidArmadilloFUNgineer-79j1yQy_L145OB57",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/NLDBze_Y9ckMvy9eOTgeew/AT-cm%7CNLDBze_Y9ckMvy9eOTgeew-preview-480x272.jpg",
+        "views": 65,
+        "duration": 6.7,
+        "creator": "ItsMeNickoRin"
       }
     ],
-    "recentClip": {
-      "title": "he fell off (AAAAAAAAAAHHHH)",
-      "url": "https://www.twitch.tv/glacioborealevt/clip/GleamingGiantLardCoolStoryBob-z_Je0V6Hh3Bdm_VD",
-      "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CL-BTvM_yXtFeh4dwXZv1Qw-preview-480x272.jpg",
-      "views": 108,
-      "duration": 14,
-      "creator": "dabidet87"
-    }
+    "randomClips": [
+      {
+        "title": "Mi serve moderazione non Pix",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/PoliteSolidHawkEleGiggle-6wdUnkC3uEyFMwle",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1269549042-preview-480x272.jpg",
+        "views": 28,
+        "duration": 5,
+        "creator": "BrainSedge"
+      },
+      {
+        "title": "L'anklebraking, il faking, la finta. ",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/BoredKawaiiTermiteBatChest-7EJbluOQBVS99ske",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CpOPCe-xCW5bjkAVUvfbJHg-preview-480x272.jpg",
+        "views": 49,
+        "duration": 19.1,
+        "creator": "dabidet87"
+      },
+      {
+        "title": "streamers luck ",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/CrowdedFurryTireWOOP-W-kBSOuRuJ90WPSj",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/wUZHrlvpAUjrkbifdFj0ow/AT-cm%7CwUZHrlvpAUjrkbifdFj0ow-preview-480x272.jpg",
+        "views": 55,
+        "duration": 51.8,
+        "creator": "sachiiscorner"
+      }
+    ]
   },
   "youtube": {
     "displayName": "Glacio Boreale",
@@ -46,25 +75,28 @@
     "url": "https://www.youtube.com/@glacioborealevt",
     "recentVideos": [
       {
-        "title": "Double Baron is INSANE!... (Part 2)",
-        "videoId": "vbBI9g_UUkg",
-        "thumbnail": "https://i.ytimg.com/vi/vbBI9g_UUkg/mqdefault.jpg",
-        "publishedAt": "2026-02-17T13:21:06Z",
-        "url": "https://www.youtube.com/watch?v=vbBI9g_UUkg"
-      },
-      {
-        "title": "Double Baron is INSANE!... (Part 1)",
-        "videoId": "LqjGUPkDZqg",
-        "thumbnail": "https://i.ytimg.com/vi/LqjGUPkDZqg/mqdefault.jpg",
-        "publishedAt": "2026-02-17T13:20:53Z",
-        "url": "https://www.youtube.com/watch?v=LqjGUPkDZqg"
-      },
-      {
         "title": "Non Pensavo che 2 Baroni Fossero Così FORTI [Reupload]",
         "videoId": "MKUd3bB70Ko",
         "thumbnail": "https://i.ytimg.com/vi/MKUd3bB70Ko/mqdefault.jpg",
         "publishedAt": "2026-02-17T07:30:09Z",
-        "url": "https://www.youtube.com/watch?v=MKUd3bB70Ko"
+        "url": "https://www.youtube.com/watch?v=MKUd3bB70Ko",
+        "viewCount": 13
+      },
+      {
+        "title": "Ho Finito L'Atto 1... Ma Ne Valeva VERAMENTE La Pena?",
+        "videoId": "xg3McGnp1tc",
+        "thumbnail": "https://i.ytimg.com/vi/xg3McGnp1tc/mqdefault.jpg",
+        "publishedAt": "2026-02-17T07:30:36Z",
+        "url": "https://www.youtube.com/watch?v=xg3McGnp1tc",
+        "viewCount": 22
+      },
+      {
+        "title": "ODIAVO Expedition 33, Ma Ora Sono Cambiato.",
+        "videoId": "62vl_jn_POY",
+        "thumbnail": "https://i.ytimg.com/vi/62vl_jn_POY/mqdefault.jpg",
+        "publishedAt": "2025-12-27T09:44:38Z",
+        "url": "https://www.youtube.com/watch?v=62vl_jn_POY",
+        "viewCount": 143
       }
     ]
   },

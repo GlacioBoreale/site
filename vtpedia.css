@@ -622,6 +622,123 @@
   box-shadow: 0 6px 25px rgba(102,126,234,0.5);
 }
 
+.submit-sponsor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.submit-sponsor > h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 0.2rem;
+}
+
+.submit-sponsor-desc {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.875rem;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.5;
+  margin-bottom: 0.4rem;
+}
+
+.sponsor-platform {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.07);
+}
+
+.sponsor-platform-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 1rem;
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.twitch-sponsor .sponsor-platform-header  { background: rgba(145,70,255,0.15); color: #a970ff; border-bottom: 1px solid rgba(145,70,255,0.2); }
+.youtube-sponsor .sponsor-platform-header { background: rgba(255,0,0,0.12);     color: #ff5555; border-bottom: 1px solid rgba(255,0,0,0.18); }
+.other-sponsor .sponsor-platform-header   { background: rgba(91,156,246,0.12);  color: var(--accent); border-bottom: 1px solid rgba(91,156,246,0.2); }
+
+.sponsor-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: rgba(255,255,255,0.02);
+}
+
+.sponsor-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.sponsor-option:last-child { border-bottom: none; }
+
+.sponsor-option > i {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.25);
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+  width: 14px;
+  text-align: center;
+}
+
+.sponsor-option > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.sponsor-option strong {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.8);
+}
+
+.sponsor-option span {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.4;
+}
+
+.sponsor-code {
+  font-family: 'Courier New', monospace;
+  font-size: 0.78rem;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.7);
+  padding: 0.2rem 0.5rem;
+  border-radius: 5px;
+  display: inline-block;
+  margin-top: 0.2rem;
+  letter-spacing: 0.02em;
+}
+
+.sponsor-note {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.8rem;
+  color: rgba(255,220,100,0.7);
+  background: rgba(255,200,0,0.06);
+  border: 1px solid rgba(255,200,0,0.15);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  line-height: 1.4;
+}
+
 .stagger-item {
   opacity: 0;
   transform: translateY(24px);

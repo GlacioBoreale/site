@@ -42,7 +42,7 @@
       },
       "eromo": {
         "name": "Eromo",
-        "role": "Producător & Producător Muzical",
+        "role": "Traducător & Producător Muzical",
         "desc": "Producător muzical și traducător român pentru Glaciopia. Majoritatea muncii a fost făcută de un AI, dar îl punem oricum..."
       },
       "rid": {
@@ -95,6 +95,18 @@
     "fieldDebut": "Data debutului",
     "fieldImage": "1-3 imagini cu avatarul (max 2MB fiecare)",
     "fieldDesc": "Scurtă descriere (max 300 caractere)",
+    "fieldSponsor": "Metoda de sponsorizare aleasă și link/dovadă",
+    "sponsorTitle": "Sponsorizare obligatorie",
+    "sponsorDesc": "Pentru a fi inclus în VTPedia trebuie să sponsorizezi Glaciopia pe platforma ta principală. Alege cel puțin o opțiune:",
+    "sponsorTwitchLink": "Link în panou",
+    "sponsorTwitchLinkDesc": "Adaugă un link către glaciopia.com în panoul canalului tău Twitch",
+    "sponsorTwitchCmd": "Comandă chat",
+    "sponsorYtLink": "Link în descriere",
+    "sponsorYtLinkDesc": "Adaugă glaciopia.com în descrierea canalului sau a videoclipurilor tale",
+    "sponsorOther": "Altă platformă",
+    "sponsorOtherLink": "Link în bio / descriere",
+    "sponsorOtherLinkDesc": "Adaugă glaciopia.com în bio sau descrierea platformei tale principale",
+    "sponsorNote": "⚠️ Menționează în email ce metodă ai ales și pe ce platformă, astfel putem verifica.",
     "sendEmail": "Trimite cererea prin email"
   },
   "socials": {

@@ -95,6 +95,18 @@
     "fieldDebut": "Debut date",
     "fieldImage": "1-3 avatar images (max 2MB each)",
     "fieldDesc": "Short description (max 300 characters)",
+    "fieldSponsor": "Chosen sponsorship method and link/proof",
+    "sponsorTitle": "Sponsorship required",
+    "sponsorDesc": "To be included in the VTPedia you must sponsor Glaciopia on your main platform. Choose at least one option:",
+    "sponsorTwitchLink": "Panel link",
+    "sponsorTwitchLinkDesc": "Add a link to glaciopia.com in your Twitch channel panel",
+    "sponsorTwitchCmd": "Chat command",
+    "sponsorYtLink": "Description link",
+    "sponsorYtLinkDesc": "Add glaciopia.com in your channel description or video descriptions",
+    "sponsorOther": "Other platform",
+    "sponsorOtherLink": "Link in bio / description",
+    "sponsorOtherLinkDesc": "Add glaciopia.com in the bio or description of your main platform",
+    "sponsorNote": "⚠️ Include in your email which method you chose and on which platform, so we can verify it.",
     "sendEmail": "Send request via email"
   },
   "socials": {

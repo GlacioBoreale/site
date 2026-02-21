@@ -9,12 +9,15 @@
   --youtube: #FF0000;
   --discord: #5865F2;
   --instagram: #E1306C;
+  --x: #b3b3b3;
 }
 
 .socials-main {
   max-width: 1100px;
   margin: 0 auto;
   padding: 2rem 2rem 4rem;
+  position: relative;
+  z-index: 1;
 }
 
 .socials-hero {
@@ -57,12 +60,17 @@
   border-radius: 20px;
   padding: 2rem;
   margin-bottom: 1.5rem;
-  animation: fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) both;
 }
 
-.platform-section:nth-child(2) { animation-delay: 0.1s; }
-.platform-section:nth-child(3) { animation-delay: 0.2s; }
-.platform-section:nth-child(4) { animation-delay: 0.3s; }
+.stagger-item {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.stagger-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 .platform-header {
   display: flex;
@@ -104,6 +112,7 @@
 .twitch-name:hover { color: var(--twitch); }
 .yt-name:hover { color: var(--youtube); }
 .discord-name:hover { color: var(--discord); }
+.x-name:hover { color: var(--x); }
 .instagram-name:hover { color: var(--instagram); }
 .tiktok-name:hover {
   background-image: linear-gradient(-45deg, #ec0e53, #04bbc7);
@@ -496,6 +505,7 @@
   flex-shrink: 0;
 }
 .discord-icon  { background: rgba(88,101,242,0.15); color: var(--discord); border: 1px solid rgba(88,101,242,0.3); }
+.x-icon  { background: rgba(123, 123, 123, 0.15); color: var(--x); border: 1px solid rgba(255, 255, 255, 0.3); }
 .instagram-icon { background: rgba(225,48,108,0.15); color: var(--instagram); border: 1px solid rgba(225,48,108,0.3); cursor: default; }
 .tiktok-icon {
   background: linear-gradient(-45deg, rgba(236,14,83,0.15), rgba(4,187,199,0.15));
@@ -534,6 +544,7 @@
 .twitch-btn    { background: var(--twitch); color: #fff; }
 .youtube-btn   { background: var(--youtube); color: #fff; }
 .discord-btn   { background: var(--discord); color: #fff; }
+.x-btn   { background: rgba(123, 123, 123, 0.15); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.3);}
 .instagram-btn { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; }
 .tiktok-btn {
   background: linear-gradient(-45deg, rgba(236,14,83,0.3), rgba(4,187,199,0.3));
@@ -564,6 +575,7 @@
 .small-platform { margin-bottom: 0 !important; }
 .small-platform .platform-header { margin-bottom: 0; }
 .discord-section .platform-header { margin-bottom: 0; }
+.x-section .platform-header { margin-bottom: 0; }
 
 @keyframes fadeDown {
   from { opacity: 0; transform: translateY(-16px); }

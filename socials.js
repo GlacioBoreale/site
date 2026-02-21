@@ -15,6 +15,13 @@ function formatDuration(seconds) {
     return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
+function staggerReveal(items, delayStep = 100) {
+    items.forEach((el, i) => {
+        el.classList.add('stagger-item');
+        setTimeout(() => el.classList.add('visible'), i * delayStep);
+    });
+}
+
 function renderTwitch(twitch) {
     const avatar = document.getElementById('twitch-avatar');
     if (avatar && twitch.profileImage) avatar.src = twitch.profileImage;
@@ -25,16 +32,16 @@ function renderTwitch(twitch) {
     const followers = document.getElementById('twitch-followers');
     if (followers) followers.textContent = formatNumber(twitch.followers);
 
-    const liveEmbed = document.getElementById('twitch-live-embed');
+    const liveEmbed   = document.getElementById('twitch-live-embed');
     const offlineMedia = document.getElementById('twitch-offline-media');
 
     if (twitch.isLive) {
-        liveEmbed.style.display = 'block';
+        liveEmbed.style.display   = 'block';
         offlineMedia.style.display = 'none';
         const embed = document.getElementById('twitch-embed');
         if (embed) embed.src = `https://player.twitch.tv/?channel=glacioborealevt&parent=${window.location.hostname}&autoplay=false`;
     } else {
-        liveEmbed.style.display = 'none';
+        liveEmbed.style.display   = 'none';
         offlineMedia.style.display = 'block';
         const offlineImg = document.getElementById('twitch-offline-img');
         if (offlineImg) {
@@ -49,11 +56,11 @@ function renderTwitch(twitch) {
     const sideInfo = document.getElementById('twitch-side-info');
     if (sideInfo) sideInfo.style.display = twitch.isLive ? 'flex' : 'none';
 
-    if (twitch.isLive) {
+    if (twitch.isLive && twitch.stream) {
         const titleEl = document.getElementById('live-title');
         if (titleEl) titleEl.textContent = twitch.stream.title || '';
 
-        const gameEl = document.getElementById('live-game');
+        const gameEl  = document.getElementById('live-game');
         const gameBox = document.getElementById('live-game-box');
         if (gameEl) gameEl.textContent = twitch.stream.game || '';
         if (gameBox && twitch.stream.gameBoxArt) gameBox.src = twitch.stream.gameBoxArt;
@@ -104,7 +111,7 @@ function renderYouTube(youtube) {
     if (subs) subs.textContent = formatNumber(youtube.subscribers);
 
     const videosEl = document.getElementById('yt-videos');
-    if (videosEl && youtube.recentVideos && youtube.recentVideos.length > 0) {
+    if (videosEl && youtube.recentVideos?.length > 0) {
         videosEl.innerHTML = youtube.recentVideos.map(v => `
             <a href="${v.url}" target="_blank" class="yt-video-card">
                 <img src="${v.thumbnail}" alt="${v.title}" class="yt-thumb" onerror="this.style.display='none'">
@@ -120,17 +127,29 @@ function renderYouTube(youtube) {
     }
 }
 
+function revealSections() {
+    const sections = document.querySelectorAll('.platform-section, .small-platforms');
+    staggerReveal([...sections], 120);
+}
+
 window.addEventListener('languageChanged', () => {
-    const cache = window._socialsCache;
+    const cache = window._socialsData;
     if (cache) renderYouTube(cache.youtube);
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const response = await fetch('./assets/data/api_cache.json').catch(() => null);
-    if (response && response.ok) {
+    try {
+        const response = await fetch('./assets/data/api_cache.json');
+        if (!response.ok) throw new Error('api_cache.json non disponibile');
         const data = await response.json();
-        window._socialsCache = data;
+
+        window._socialsData = data;
         renderTwitch(data.twitch);
         renderYouTube(data.youtube);
+        revealSections();
+
+    } catch (e) {
+        console.error('[Socials] Errore caricamento dati:', e);
+        revealSections();
     }
 });

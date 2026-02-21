@@ -17,23 +17,36 @@
   padding: 4rem 2rem 2rem;
   max-width: 800px;
   margin: 0 auto;
+  animation: fadeDown 0.8s cubic-bezier(0.16,1,0.3,1) both;
+  position: relative;
+  z-index: 1;
+}
+
+.about-label {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.8rem;
 }
 
 .about-hero h1 {
-  font-size: 3.5rem;
-  font-weight: bold;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 400;
+  background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: 0.8rem;
-  animation: fadeInUp 0.8s ease-out;
 }
 
 .about-subtitle {
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.6);
-  animation: fadeInUp 0.8s ease-out 0.1s backwards;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .team-section {
@@ -107,19 +120,21 @@
 }
 
 .team-name {
+  font-family: 'Fredoka One', sans-serif;
   font-size: 1.2rem;
-  font-weight: 600;
+  font-weight: 400;
   color: white;
 }
 
 .team-role {
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: rgba(102, 126, 234, 0.9);
-  background: rgba(102, 126, 234, 0.1);
-  border: 1px solid rgba(102, 126, 234, 0.2);
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  background: rgba(91,156,246,0.1);
+  border: 1px solid rgba(91,156,246,0.2);
   padding: 0.2rem 0.6rem;
   border-radius: 6px;
   display: inline-block;
@@ -127,8 +142,10 @@
 }
 
 .team-desc {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.65);
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
   line-height: 1.6;
   margin-top: 0.3rem;
 }
@@ -201,8 +218,8 @@
 }
 
 .join-card {
-  background: rgba(102, 126, 234, 0.06);
-  border: 1px solid rgba(102, 126, 234, 0.2);
+  background: rgba(91,156,246,0.06);
+  border: 1px solid rgba(91,156,246,0.2);
   border-radius: 16px;
   padding: 2.5rem;
   text-align: center;
@@ -213,35 +230,54 @@
 }
 
 .join-card h2 {
+  font-family: 'Fredoka One', sans-serif;
   font-size: 1.8rem;
+  font-weight: 400;
   color: white;
 }
 
 .join-card p {
-  color: rgba(255, 255, 255, 0.65);
+  font-family: 'Fredoka', sans-serif;
+  color: rgba(255, 255, 255, 0.5);
   font-size: 1rem;
   max-width: 500px;
 }
 
-.join-btn {
+.about-join-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.7rem;
-  padding: 0.9rem 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 0.75rem 2rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
   color: white;
   text-decoration: none;
   border-radius: 12px;
+  font-family: 'Fredoka', sans-serif;
   font-size: 1rem;
   font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.35);
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(91,156,246,0.3);
   margin-top: 0.5rem;
 }
 
-.join-btn:hover {
+.about-join-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 25px rgba(102, 126, 234, 0.55);
+  box-shadow: 0 8px 30px rgba(91,156,246,0.45);
+}
+
+.stagger-item {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.stagger-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 600px) {

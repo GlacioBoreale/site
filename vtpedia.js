@@ -19,30 +19,28 @@ async function loadVTubersData() {
 function displayVTubers() {
     const grid = document.getElementById('vtuber-grid');
     grid.innerHTML = '';
-    
+
     if (vtubers.length === 0) {
         grid.innerHTML = '<p style="color: rgba(255,255,255,0.7); text-align: center; grid-column: 1/-1;">Nessun VTuber disponibile.</p>';
         return;
     }
-    
-    vtubers.forEach(vtuber => {
-        const card = createVTuberCard(vtuber);
+
+    vtubers.forEach((vtuber, index) => {
+        const card = createVTuberCard(vtuber, index);
         grid.appendChild(card);
     });
-    
-    if (typeof updateContent === 'function') {
-        updateContent();
-    }
+
+    if (typeof updateContent === 'function') updateContent();
 }
 
-function createVTuberCard(vtuber) {
+function createVTuberCard(vtuber, index) {
     const card = document.createElement('div');
-    card.className = 'vtuber-card';
-    const firstImage = vtuber.images && vtuber.images.length > 0 ? vtuber.images[0] : 'assets/images/vtubers/placeholder.png';
-    
+    card.className = 'vtuber-card stagger-item';
+
+    const firstImage = vtuber.images?.[0] || 'assets/images/vtubers/placeholder.png';
     const shortDesc = getNestedTranslation(vtuber.shortDescKey) || vtuber.shortDescKey;
     const showMoreText = getNestedTranslation('vtpedia.showMore') || 'Mostra di più';
-    
+
     card.innerHTML = `
         <div class="card-image">
             <img src="${firstImage}" alt="${vtuber.name}" onerror="this.src='assets/images/vtubers/placeholder.png'">
@@ -58,16 +56,29 @@ function createVTuberCard(vtuber) {
             </button>
         </div>
     `;
-    
+
     card.addEventListener('click', () => openPopup(vtuber));
-    
+
+    // Aspetta che l'immagine sia caricata, poi fa il fade-in con delay scaglionato
+    const img = card.querySelector('img');
+    const reveal = () => {
+        setTimeout(() => card.classList.add('visible'), index * 80);
+    };
+
+    if (img.complete) {
+        reveal();
+    } else {
+        img.addEventListener('load', reveal, { once: true });
+        img.addEventListener('error', reveal, { once: true });
+    }
+
     return card;
 }
 
 function openPopup(vtuber) {
     const popup = document.getElementById('vtuber-popup');
-    
-    currentImages = vtuber.images && vtuber.images.length > 0 ? vtuber.images : ['assets/images/vtubers/placeholder.png'];
+
+    currentImages = vtuber.images?.length > 0 ? vtuber.images : ['assets/images/vtubers/placeholder.png'];
     currentSlide = 0;
 
     initGallery(currentImages);
@@ -81,7 +92,7 @@ function openPopup(vtuber) {
     document.getElementById('popup-channel').textContent = vtuber.channel;
     document.getElementById('popup-channel').href = vtuber.channel;
     document.getElementById('popup-long-desc').innerText = longDesc;
-    
+
     popup.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
@@ -89,22 +100,22 @@ function openPopup(vtuber) {
 function initGallery(images) {
     const slidesContainer = document.getElementById('gallery-slides');
     const indicatorsContainer = document.getElementById('gallery-indicators');
-    
+
     slidesContainer.innerHTML = '';
     indicatorsContainer.innerHTML = '';
-    
+
     images.forEach((image, index) => {
         const slide = document.createElement('div');
         slide.className = 'gallery-slide';
         slide.innerHTML = `<img src="${image}" alt="Image ${index + 1}" onerror="this.src='assets/images/vtubers/placeholder.png'">`;
         slidesContainer.appendChild(slide);
-        
+
         const indicator = document.createElement('div');
         indicator.className = `gallery-indicator ${index === 0 ? 'active' : ''}`;
         indicator.addEventListener('click', () => goToSlide(index));
         indicatorsContainer.appendChild(indicator);
     });
-    
+
     updateGallery();
 }
 
@@ -133,13 +144,13 @@ function updateGallery() {
     const prevBtn = document.getElementById('gallery-prev');
     const nextBtn = document.getElementById('gallery-next');
     const indicators = document.querySelectorAll('.gallery-indicator');
-    
+
     slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
     counter.textContent = `${currentSlide + 1} / ${currentImages.length}`;
-    
+
     prevBtn.disabled = currentSlide === 0;
     nextBtn.disabled = currentSlide === currentImages.length - 1;
-    
+
     indicators.forEach((indicator, index) => {
         indicator.classList.toggle('active', index === currentSlide);
     });
@@ -159,17 +170,17 @@ window.addEventListener('languageChanged', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
     loadVTubersData();
-    
+
     const popupClose = document.getElementById('popup-close');
     const popupOverlay = document.getElementById('popup-overlay');
     const prevBtn = document.getElementById('gallery-prev');
     const nextBtn = document.getElementById('gallery-next');
-    
+
     if (popupClose) popupClose.addEventListener('click', closePopup);
     if (popupOverlay) popupOverlay.addEventListener('click', closePopup);
     if (prevBtn) prevBtn.addEventListener('click', prevSlide);
     if (nextBtn) nextBtn.addEventListener('click', nextSlide);
-    
+
     document.addEventListener('keydown', (e) => {
         const popup = document.getElementById('vtuber-popup');
         if (popup.classList.contains('active')) {
@@ -178,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'ArrowRight') nextSlide();
         }
     });
-    
+
     const submitBtn = document.getElementById('submit-vtuber-btn');
     const submitPopup = document.getElementById('submit-popup');
     const submitClose = document.getElementById('submit-popup-close');

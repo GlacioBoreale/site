@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glaciopia</title>
+    <title>Chi siamo - Glaciopia</title>
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -19,7 +19,8 @@
 
     <main>
         <section class="about-hero">
-            <h1 data-i18n="about.title">Chi sono</h1>
+            <p class="about-label" data-i18n="nav.about">Chi siamo</p>
+            <h1 data-i18n="about.title">Chi siamo</h1>
             <p class="about-subtitle" data-i18n="about.subtitle">Il team dietro a Glaciopia</p>
         </section>
 
@@ -115,7 +116,7 @@
             <div class="join-card">
                 <h2 data-i18n="about.join.title">Unisciti al Team!</h2>
                 <p data-i18n="about.join.desc">Vuoi far parte di Glaciopia? Mandaci una email con la tua immagine, nome e descrizione.</p>
-                <a href="mailto:coldesticecube@outlook.com" class="join-btn">
+                <a href="mailto:coldesticecube@outlook.com" class="about-join-btn">
                     <i class="fas fa-envelope"></i>
                     <span data-i18n="about.join.button">Invia la tua candidatura</span>
                 </a>
@@ -124,5 +125,21 @@
     </main>
 
     <div id="footer-placeholder"></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.team-card').forEach((card, index) => {
+            card.classList.add('stagger-item');
+            const img = card.querySelector('img');
+            const reveal = () => setTimeout(() => card.classList.add('visible'), index * 100);
+            if (!img) { reveal(); return; }
+            if (img.complete) { reveal(); }
+            else {
+                img.addEventListener('load',  reveal, { once: true });
+                img.addEventListener('error', reveal, { once: true });
+            }
+        });
+    });
+    </script>
 </body>
 </html>

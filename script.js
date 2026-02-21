@@ -3,7 +3,7 @@ let translations = {};
 
 async function loadTranslations(lang) {
   try {
-    const response = await fetch(`./language/${lang}.json`); 
+    const response = await fetch(`./language/${lang}.json`);
     if (!response.ok) throw new Error('Errore nel caricamento traduzioni');
     translations = await response.json();
     updatePage();

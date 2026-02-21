@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-02-21T19:24:49Z",
+  "updatedAt": "2026-02-21T19:43:54Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
     "followers": 1187,
     "url": "https://twitch.tv/glacioborealevt",
-    "isLive": false,
+    "isLive": true,
     "stream": {
-      "title": "",
-      "game": "",
-      "gameBoxArt": "",
-      "viewers": 0,
-      "startedAt": "",
-      "thumbnail": ""
+      "title": "Low cortisol ranking live | ► Vtuber ITA ◄ | !ds !ig",
+      "game": "Just Chatting",
+      "gameBoxArt": "https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg",
+      "viewers": 3,
+      "startedAt": "2026-02-21T19:30:03Z",
+      "thumbnail": "https://static-cdn.jtvnw.net/previews-ttv/live_user_glacioborealevt-1280x720.jpg"
     },
     "offlineImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/101d761a-4950-4c4e-87f7-f81e912529c8-channel_offline_image-1920x1080.png",
     "topClips": [
@@ -43,12 +43,20 @@
     ],
     "randomClips": [
       {
-        "title": "lo ho scammato (ezezezezez111!)",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/AgileFrailHamsterBigBrother-4EpT2lO-Enq1aGJe",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CMjefweBKU9pTvhJ6tWhiXg-preview-480x272.jpg",
-        "views": 27,
-        "duration": 34.9,
+        "title": "Il saving, ez",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/ResourcefulDependableHamBatChest-8RO63Cu2CHD0E6H4",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CaJX_E_ETutwrtghw9BOh-A-preview-480x272.jpg",
+        "views": 53,
+        "duration": 14,
         "creator": "dabidet87"
+      },
+      {
+        "title": "Nixel Fuori Contesto",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/GrossAttractiveHeronANELE-YNXE5gsWGEIkit6p",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/T3ft3WDVxOYLFhhCJIreqQ/AT-cm%7CT3ft3WDVxOYLFhhCJIreqQ-preview-480x272.jpg",
+        "views": 35,
+        "duration": 7.6,
+        "creator": "Gennarix_"
       },
       {
         "title": "Mi serve moderazione non Pix",
@@ -57,14 +65,6 @@
         "views": 28,
         "duration": 5,
         "creator": "BrainSedge"
-      },
-      {
-        "title": "AHAHAAH",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/CoySilkyJuiceKappaRoss-wI0uSDy-6120KAAv",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/JjN_28CNLkg8vutdtCgALw/AT-cm%7CJjN_28CNLkg8vutdtCgALw-preview-480x272.jpg",
-        "views": 31,
-        "duration": 11.3,
-        "creator": "OriginalEromo"
       }
     ]
   },
@@ -88,7 +88,7 @@
         "thumbnail": "https://i.ytimg.com/vi/xg3McGnp1tc/mqdefault.jpg",
         "publishedAt": "2026-02-17T07:30:36Z",
         "url": "https://www.youtube.com/watch?v=xg3McGnp1tc",
-        "viewCount": 31
+        "viewCount": 32
       },
       {
         "title": "ODIAVO Expedition 33, Ma Ora Sono Cambiato.",

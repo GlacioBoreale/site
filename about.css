@@ -9,6 +9,7 @@
   --instagram: #E1306C;
   --x: #b3b3b3;
   --ko-fi: #FF5A16;
+  --gunslol: #fff;
 }
 
 .about-hero {
@@ -166,6 +167,7 @@
 .team-link.x:hover      { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.3); color: #fff; }
 .team-link.github:hover { background: rgba(255,255,255,0.1);  border-color: #fff; color: #fff; }
 .team-link.ko-fi:hover { background: rgba(255,90,22,0.15); border-color: #FF5A16; color: #FF5A16; }
+.team-link.gunslol:hover { background: rgba(255,255,255,0.15); border-color: #fff; color: #fff; }
 .team-link.tiktok {
   position: relative;
   overflow: visible;

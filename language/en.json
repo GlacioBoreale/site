@@ -45,6 +45,11 @@
         "role": "Translator & Music Producer",
         "desc": "Music producer and romanian translator for Glaciopia. Most of the work was done by an AI, but we put him anyway..."
       },
+      "rid": {
+        "name": "its_RID",
+        "role": "Editor",
+        "desc": "Editor and humble servant of the illustrious and majestic Lord GlacioBorealeVT. He is paid with 3 goleador per year for his services."
+      },
       "placeholder": {
         "name": "???",
         "role": "???",

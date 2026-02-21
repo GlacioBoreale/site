@@ -45,6 +45,11 @@
         "role": "Traduttore & Produttore Musicale",
         "desc": "Produttore musicale e traduttore rumeno per Glaciopia. La maggior parte del lavoro è stato fatto da un IA, ma lo mettiamo lo stesso..."
       },
+      "rid": {
+        "name": "its_RID",
+        "role": "Editor",
+        "desc": "Editor e umile servitore del egregio e magestico signor GlacioBorealeVT. Viene pagato con 3 goleador all'anno per i suoi servizi."
+      },
       "placeholder": {
         "name": "???",
         "role": "???",

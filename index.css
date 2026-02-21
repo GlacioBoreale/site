@@ -7,7 +7,6 @@
   --border: rgba(255,255,255,0.08);
 }
 
-/*                    HERO                  */
 .home-hero {
   min-height: calc(100vh - 90px);
   display: flex;
@@ -19,7 +18,6 @@
   position: relative;
   overflow: hidden;
 }
-
 .home-hero::before {
   content: '';
   position: absolute;
@@ -118,7 +116,6 @@
   animation: bounce 2s infinite;
 }
 
-/*                    LAYOUT SEZIONI                    */
 .home-sections {
   max-width: 1200px;
   margin: 0 auto;
@@ -156,7 +153,6 @@
   max-width: 520px;
 }
 
-/*                    CHI SIAMO                    */
 .about-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -172,7 +168,6 @@
   background: var(--glass);
   border: 1px solid var(--border);
 }
-
 .about-image-wrap img {
   width: 100%;
   height: 100%;
@@ -180,11 +175,7 @@
   opacity: 0.85;
   transition: opacity 0.3s, transform 0.4s;
 }
-.about-image-wrap:hover img {
-  opacity: 1;
-  transform: scale(1.03);
-}
-
+.about-image-wrap:hover img { opacity: 1; transform: scale(1.03); }
 .about-image-wrap::after {
   content: '';
   position: absolute;
@@ -192,13 +183,8 @@
   background: linear-gradient(135deg, rgba(91,156,246,0.15), transparent 60%);
   pointer-events: none;
 }
+.about-text .section-desc { max-width: 100%; margin-bottom: 1.8rem; }
 
-.about-text .section-desc {
-  max-width: 100%;
-  margin-bottom: 1.8rem;
-}
-
-/*                    QUICK LINKS                    */
 .quicklinks-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -233,21 +219,10 @@
   border-color: rgba(255,255,255,0.15);
   transform: translateY(-4px);
 }
-.quicklink-card:hover::before {
-  opacity: 1;
-}
+.quicklink-card:hover::before { opacity: 1; }
 
-.quicklink-icon {
-  font-size: 1.6rem;
-  color: var(--accent);
-}
-
-.quicklink-title {
-  font-family: 'Fredoka One', sans-serif;
-  font-size: 1.1rem;
-  font-weight: 400;
-}
-
+.quicklink-icon { font-size: 1.6rem; color: var(--accent); }
+.quicklink-title { font-family: 'Fredoka One', sans-serif; font-size: 1.1rem; font-weight: 400; }
 .quicklink-desc {
   font-family: 'Fredoka', sans-serif;
   font-size: 0.95rem;
@@ -255,19 +230,14 @@
   color: rgba(255,255,255,0.45);
   line-height: 1.5;
 }
-
 .quicklink-arrow {
   margin-top: auto;
   color: rgba(255,255,255,0.25);
   font-size: 0.85rem;
   transition: color 0.2s, transform 0.2s;
 }
-.quicklink-card:hover .quicklink-arrow {
-  color: var(--accent);
-  transform: translateX(4px);
-}
+.quicklink-card:hover .quicklink-arrow { color: var(--accent); transform: translateX(4px); }
 
-/*                    SOCIALS                    */
 .social-cards {
   display: flex;
   gap: 1rem;
@@ -291,7 +261,6 @@
 }
 .social-card i { font-size: 1.4rem; }
 .social-card:hover { transform: translateY(-3px); color: #fff; }
-
 .social-card.twitch:hover    { background: rgba(145,70,255,0.15);  border-color: #9146FF; color: #9146FF; }
 .social-card.youtube:hover   { background: rgba(255,0,0,0.15);      border-color: #FF0000; color: #FF0000; }
 .social-card.discord:hover   { background: rgba(88,101,242,0.15);   border-color: #5865F2; color: #5865F2; }
@@ -320,13 +289,10 @@
   border-color: transparent;
   color: #fff;
 }
-.social-card.tiktok:hover::before {
-  opacity: 1;
-}
-.social-card.x:hover         { background: rgba(255,255,255,0.08);  border-color: rgba(255,255,255,0.3); color: #fff; }
-.social-card.github:hover    { background: rgba(255,255,255,0.1);   border-color: #fff; color: #fff; }
+.social-card.tiktok:hover::before { opacity: 1; }
+.social-card.x:hover      { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.3); color: #fff; }
+.social-card.github:hover { background: rgba(255,255,255,0.1);  border-color: #fff; color: #fff; }
 
-/*                    PREVIEW VTUBERS                    */
 .vtubers-preview-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -346,17 +312,13 @@
   transform: translateY(-5px);
   border-color: rgba(91,156,246,0.4);
 }
-
 .vtuber-preview-card img {
   width: 100%;
   aspect-ratio: 1;
   object-fit: cover;
   display: block;
 }
-
-.vtuber-preview-info {
-  padding: 0.8rem 1rem;
-}
+.vtuber-preview-info { padding: 0.8rem 1rem; }
 .vtuber-preview-info .name {
   font-family: 'Fredoka One', sans-serif;
   font-size: 0.95rem;
@@ -373,27 +335,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.vtubers-cta { margin-top: 1.8rem; }
 
-.vtubers-cta {
-  margin-top: 1.8rem;
-}
-
-/*                    DIVISORE                    */
 .section-divider {
   width: 100%;
   height: 1px;
   background: var(--border);
-}
-
-/*                    ANIMAZIONI                    */
-@keyframes heroFadeDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50%       { transform: translateX(-50%) translateY(8px); }
 }
 
 .fade-in-up {
@@ -401,30 +348,24 @@
   transform: translateY(30px);
   transition: opacity 0.7s ease, transform 0.7s ease;
 }
-.fade-in-up.visible {
-  opacity: 1;
-  transform: translateY(0);
+.fade-in-up.visible { opacity: 1; transform: translateY(0); }
+
+@keyframes heroFadeDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(8px); }
 }
 
-/*                    RESPONSIVE                    */
 @media (max-width: 768px) {
-  .about-row {
-    grid-template-columns: 1fr;
-  }
-  .about-image-wrap {
-    aspect-ratio: 16/9;
-  }
-  .home-sections {
-    gap: 3.5rem;
-    padding-bottom: 4rem;
-  }
+  .about-row { grid-template-columns: 1fr; }
+  .about-image-wrap { aspect-ratio: 16/9; }
+  .home-sections { gap: 3.5rem; padding-bottom: 4rem; }
 }
 
 @media (max-width: 480px) {
-  .social-cards {
-    flex-direction: column;
-  }
-  .social-card {
-    min-width: unset;
-  }
+  .social-cards { flex-direction: column; }
+  .social-card { min-width: unset; }
 }

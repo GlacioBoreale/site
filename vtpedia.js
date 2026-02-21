@@ -80,7 +80,7 @@ function openPopup(vtuber) {
     document.getElementById('popup-hashtag').textContent = vtuber.hashtag;
     document.getElementById('popup-channel').textContent = vtuber.channel;
     document.getElementById('popup-channel').href = vtuber.channel;
-    document.getElementById('popup-long-desc').textContent = longDesc;
+    document.getElementById('popup-long-desc').innerText = longDesc;
     
     popup.classList.add('active');
     document.body.style.overflow = 'hidden';

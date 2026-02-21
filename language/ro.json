@@ -33,7 +33,29 @@
   },
   "about": {
     "title": "Despre noi",
-    "description": "Aceasta pagina este inca in constructie. Revino curand!"
+    "subtitle": "Echipa din spatele Glaciopia",
+    "members": {
+      "glacio": {
+        "name": "Glacio Boreale",
+        "role": "Fondator & Developer",
+        "desc": "VTuber italian brainrotted si creatorul acestui site. A decis sa construiasca totul de la zero pentru ca se plictiseste prea usor."
+      },
+      "eromo": {
+        "name": "Eromo",
+        "role": "Producător & Producător Muzical",
+        "desc": "Producător muzical și traducător de conținut pentru Glaciopia. Majoritatea muncii a fost făcută de un AI, dar îl punem oricum..."
+      },
+      "placeholder": {
+        "name": "???",
+        "role": "???",
+        "desc": "Urmatorul ar putea fi tu! Trimite o candidatura pentru a face parte din echipa."
+      }
+    },
+    "join": {
+      "title": "Alatura-te Echipei!",
+      "desc": "Vrei sa faci parte din Glaciopia? Trimite-ne un email cu poza ta, numele si o descriere.",
+      "button": "Trimite candidatura ta"
+    }
   },
   "projects": {
     "title": "Proiectele mele",
@@ -130,6 +152,10 @@
     "placeholder2": {
       "shortDesc": "În curând...",
       "longDesc": "Acest VTuber nu a fost încă adăugat. Stai pe fază!"
+    },
+    "leo": {
+      "shortDesc": "Un VTuber cu temă de budincă — vibe relaxat, umor sec și un instinct competitiv care apare din senin.",
+      "longDesc": "Leo_Tsonus — un VTuber cu temă de budincă care menține totul calm, cu un strop de haos.\nStreameaz un mix de jocuri cozy, multiplayer și orice mă obsedează în momentul de față. Așteaptă-te la o atmosferă relaxată, umor sec și o latură competitivă care apare din senin.\nEstetic? Da, sunt o budincă. Aspect moale, strat de caramel deasupra, miez surprinzător de încăpățânat.\nDacă îți plac stream-urile fără presiune, conversațiile casual și un creator care nu se ia prea în serios, te vei simți ca acasă."
     }
   }
 }

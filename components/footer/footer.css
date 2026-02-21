@@ -1,18 +1,17 @@
 .footer {
-  background: #000000;
-  color: rgba(255, 255, 255, 0.85);
-  border-top: 2px solid rgba(255, 255, 255, 0.1);
+  background: #000;
+  color: rgba(255,255,255,0.85);
+  border-top: 2px solid rgba(255,255,255,0.1);
   margin-top: 4rem;
   padding: 3rem 2rem 1.5rem;
 }
 
 .footer-container {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 0 auto 2rem;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 3rem;
-  margin-bottom: 2rem;
 }
 
 .footer-section h3 {
@@ -22,7 +21,6 @@
   font-weight: 600;
 }
 
-/* Social Links */
 .social-links {
   display: flex;
   flex-direction: column;
@@ -35,87 +33,45 @@
   align-items: center;
   gap: 0.8rem;
   padding: 0.7rem 1rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 10px;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255,255,255,0.85);
   text-decoration: none;
   transition: all 0.3s ease;
   font-weight: 500;
 }
-
 .social-link:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.2);
   transform: translateX(5px);
   color: white;
 }
+.social-link i { font-size: 1.5rem; width: 24px; text-align: center; }
 
-.social-link i {
-  font-size: 1.5rem;
-  width: 24px;
-  text-align: center;
-}
-
-.social-link.discord:hover {
-  background: rgba(88, 101, 242, 0.15);
-  border-color: #5865F2;
-  color: #5865F2;
-}
-
-.social-link.github:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: #ffffff;
-  color: #ffffff;
-}
-
-.social-link.twitch:hover {
-  background: rgba(145, 70, 255, 0.15);
-  border-color: #9146FF;
-  color: #9146FF;
-}
-
-.social-link.youtube:hover {
-  background: rgba(255, 0, 0, 0.15);
-  border-color: #FF0000;
-  color: #FF0000;
-}
-
-.social-link.instagram:hover {
-  background: rgba(225, 48, 108, 0.15);
-  border-color: #E1306C;
-  color: #E1306C;
-}
-
-.social-link.tiktok:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255,255,255,0.6);
-  color: #fff;
-}
-
-.social-link.x:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255,255,255,0.6);
-  color: #fff;
-}
+.social-link.discord:hover   { background: rgba(88,101,242,0.15);  border-color: #5865F2; color: #5865F2; }
+.social-link.github:hover    { background: rgba(255,255,255,0.15); border-color: #fff;    color: #fff; }
+.social-link.twitch:hover    { background: rgba(145,70,255,0.15);  border-color: #9146FF; color: #9146FF; }
+.social-link.youtube:hover   { background: rgba(255,0,0,0.15);     border-color: #FF0000; color: #FF0000; }
+.social-link.instagram:hover { background: rgba(225,48,108,0.15);  border-color: #E1306C; color: #E1306C; }
+.social-link.tiktok:hover    { background: rgba(255,255,255,0.1);  border-color: rgba(255,255,255,0.6); color: #fff; }
+.social-link.x:hover         { background: rgba(255,255,255,0.1);  border-color: rgba(255,255,255,0.6); color: #fff; }
 
 .discord-username {
   padding: 1rem;
-  background: rgba(88, 101, 242, 0.1);
-  border: 1px solid rgba(88, 101, 242, 0.3);
+  background: rgba(88,101,242,0.1);
+  border: 1px solid rgba(88,101,242,0.3);
   border-radius: 10px;
   margin-top: 1rem;
 }
-
 .discord-username p {
-  margin: 0 0 0.5rem 0;
-  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 0.5rem;
+  color: rgba(255,255,255,0.7);
   font-size: 0.9rem;
 }
-
 .discord-username .username {
   color: #5865F2;
-  background: rgba(88, 101, 242, 0.15);
+  background: rgba(88,101,242,0.15);
   padding: 0.4rem 0.8rem;
   border-radius: 6px;
   font-family: 'Courier New', monospace;
@@ -125,13 +81,11 @@
   transition: all 0.3s ease;
   user-select: all;
 }
-
 .discord-username .username:hover {
-  background: rgba(88, 101, 242, 0.25);
+  background: rgba(88,101,242,0.25);
   transform: scale(1.05);
 }
 
-/* Footer Links */
 .footer-links {
   list-style: none;
   padding: 0;
@@ -140,50 +94,30 @@
   flex-direction: column;
   gap: 0.6rem;
 }
-
 .footer-links a {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255,255,255,0.7);
   text-decoration: none;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
+.footer-links a:hover { color: white; transform: translateX(5px); }
+.footer-links i { width: 20px; text-align: center; }
 
-.footer-links a:hover {
-  color: white;
-  transform: translateX(5px);
-}
-
-.footer-links i {
-  width: 20px;
-  text-align: center;
-}
-
-/* Footer Bottom */
 .footer-bottom {
   max-width: 1200px;
   margin: 0 auto;
   padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255,255,255,0.1);
   text-align: center;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255,255,255,0.5);
   font-size: 0.9rem;
 }
+.footer-bottom p { margin: 0.5rem 0; }
+.made-with { color: rgba(255,255,255,0.6); }
+.made-with i { margin: 0 0.3rem; }
 
-.footer-bottom p {
-  margin: 0.5rem 0;
-}
-
-.made-with {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.made-with i {
-  margin: 0 0.3rem;
-}
-
-/* ── POPUP PRIVACY / TERMS ── */
 .footer-popup-overlay {
   display: none;
   position: fixed;
@@ -195,10 +129,7 @@
   justify-content: center;
   padding: 1.5rem;
 }
-
-.footer-popup-overlay.active {
-  display: flex;
-}
+.footer-popup-overlay.active { display: flex; }
 
 .footer-popup {
   position: relative;
@@ -212,7 +143,6 @@
   padding: 2rem;
   animation: fpSlideUp 0.3s cubic-bezier(0.16,1,0.3,1);
 }
-
 @keyframes fpSlideUp {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -220,13 +150,11 @@
 
 .footer-popup-close {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  top: 1rem; right: 1rem;
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.12);
   color: rgba(255,255,255,0.6);
-  width: 32px;
-  height: 32px;
+  width: 32px; height: 32px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
@@ -234,11 +162,7 @@
   justify-content: center;
   transition: background 0.2s, color 0.2s;
 }
-
-.footer-popup-close:hover {
-  background: rgba(255,255,255,0.15);
-  color: #fff;
-}
+.footer-popup-close:hover { background: rgba(255,255,255,0.15); color: #fff; }
 
 .footer-popup-body h2 {
   font-size: 1.3rem;
@@ -247,49 +171,25 @@
   margin-bottom: 1.2rem;
   padding-right: 2rem;
 }
-
 .footer-popup-body h3 {
   font-size: 0.95rem;
   font-weight: 600;
   color: rgba(255,255,255,0.85);
   margin: 1.2rem 0 0.4rem;
 }
-
 .footer-popup-body p,
 .footer-popup-body li {
   font-size: 0.875rem;
   color: rgba(255,255,255,0.5);
   line-height: 1.7;
 }
-
-.footer-popup-body ul {
-  padding-left: 1.2rem;
-  margin: 0.3rem 0 0.8rem;
-}
-
-.footer-popup-body a {
-  color: #5b9cf6;
-  text-decoration: none;
-}
-
+.footer-popup-body ul { padding-left: 1.2rem; margin: 0.3rem 0 0.8rem; }
+.footer-popup-body a { color: #5b9cf6; text-decoration: none; }
 .footer-popup-body a:hover { text-decoration: underline; }
 
-/* Responsive */
 @media (max-width: 768px) {
-  .footer {
-    padding: 2rem 1rem 1rem;
-  }
-  
-  .footer-container {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-  
-  .social-link:hover {
-    transform: translateX(0);
-  }
-  
-  .footer-links a:hover {
-    transform: translateX(0);
-  }
+  .footer { padding: 2rem 1rem 1rem; }
+  .footer-container { grid-template-columns: 1fr; gap: 2rem; }
+  .social-link:hover { transform: translateX(0); }
+  .footer-links a:hover { transform: translateX(0); }
 }

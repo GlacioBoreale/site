@@ -1,0 +1,267 @@
+:root {
+  --accent: #5b9cf6;
+  --accent2: #a78bfa;
+  --glass: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.08);
+  --twitch: #9146FF;
+  --youtube: #FF0000;
+  --discord: #5865F2;
+  --instagram: #E1306C;
+  --x: #b3b3b3;
+  --ko-fi: #FF5A16;
+}
+
+.about-hero {
+  text-align: center;
+  padding: 4rem 2rem 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.about-hero h1 {
+  font-size: 3.5rem;
+  font-weight: bold;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.8rem;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.about-subtitle {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.6);
+  animation: fadeInUp 0.8s ease-out 0.1s backwards;
+}
+
+.team-section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 2rem 3rem;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(460px, 100%), 1fr));
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.team-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1.8rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.team-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  transform: translateY(-3px);
+}
+
+.team-card--placeholder {
+  border-style: dashed;
+  opacity: 0.6;
+}
+
+.team-card--placeholder:hover {
+  opacity: 0.85;
+}
+
+.team-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.team-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.team-avatar--empty {
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.team-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.team-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: white;
+}
+
+.team-role {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(102, 126, 234, 0.9);
+  background: rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  display: inline-block;
+  width: fit-content;
+}
+
+.team-desc {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.6;
+  margin-top: 0.3rem;
+}
+
+.team-links {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+}
+
+.team-link {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.team-link:hover {
+  color: white;
+  transform: translateY(-2px);
+}
+
+.team-link.twitch:hover    { background: rgba(145,70,255,0.15);  border-color: #9146FF; color: #9146FF; }
+.team-link.youtube:hover   { background: rgba(255,0,0,0.15);      border-color: #FF0000; color: #FF0000; }
+.team-link.discord:hover   { background: rgba(88,101,242,0.15);   border-color: #5865F2; color: #5865F2; }
+.team-link.instagram:hover { background: rgba(225,48,108,0.15);   border-color: #E1306C; color: #E1306C; }
+.team-link.x:hover { background: rgba(179,179,179,0.15); border: 1px solid var(--x); color: var(--x); }
+.team-link.x:hover      { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.3); color: #fff; }
+.team-link.github:hover { background: rgba(255,255,255,0.1);  border-color: #fff; color: #fff; }
+.team-link.ko-fi:hover { background: rgba(255,90,22,0.15); border-color: #FF5A16; color: #FF5A16; }
+.team-link.tiktok {
+  position: relative;
+  overflow: visible;
+}
+.team-link.tiktok::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(-45deg, #ec0e53, #04bbc7);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.team-link.tiktok:hover {
+  background: linear-gradient(-45deg, rgba(236,14,83,0.15), rgba(4,187,199,0.15));
+  border-color: transparent;
+  color: #fff;
+}
+.team-link.tiktok:hover::before { opacity: 1; }
+
+.join-section {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+}
+
+.join-card {
+  background: rgba(102, 126, 234, 0.06);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: 16px;
+  padding: 2.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.join-card h2 {
+  font-size: 1.8rem;
+  color: white;
+}
+
+.join-card p {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 1rem;
+  max-width: 500px;
+}
+
+.join-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.9rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-decoration: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.35);
+  margin-top: 0.5rem;
+}
+
+.join-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 25px rgba(102, 126, 234, 0.55);
+}
+
+@media (max-width: 600px) {
+  .about-hero h1 {
+    font-size: 2.2rem;
+  }
+
+  .team-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .team-role {
+    margin: 0 auto;
+  }
+
+  .team-links {
+    justify-content: center;
+  }
+
+  .join-card {
+    padding: 1.8rem 1.2rem;
+  }
+}

@@ -33,7 +33,29 @@
   },
   "about": {
     "title": "Chi siamo",
-    "description": "Questa pagina è ancora in costruzione. Torna presto!"
+    "subtitle": "Il team dietro a Glaciopia",
+    "members": {
+      "glacio": {
+        "name": "Glacio Boreale",
+        "role": "Fondatore & Developer",
+        "desc": "VTuber italiano brainrotten e creatore di questo sito. Ha deciso di costruire tutto da zero perché si annoia troppo facilmente."
+      },
+      "eromo": {
+        "name": "Eromo",
+        "role": "Traduttore & Produttore Musicale",
+        "desc": "Produttore musicale e traduttore di contenuti per Glaciopia. La maggior parte del lavoro è stato fatto da un IA, ma lo mettiamo lo stesso..."
+      },
+      "placeholder": {
+        "name": "???",
+        "role": "???",
+        "desc": "Il prossimo potresti essere tu! Manda una candidatura per far parte del team."
+      }
+    },
+    "join": {
+      "title": "Unisciti al Team!",
+      "desc": "Vuoi far parte di Glaciopia? Mandaci una email con la tua immagine, nome e descrizione.",
+      "button": "Invia la tua candidatura"
+    }
   },
   "projects": {
     "title": "I miei progetti",
@@ -129,6 +151,10 @@
     "placeholder2": {
       "shortDesc": "Prossimamente...",
       "longDesc": "Questo VTuber non è ancora stato aggiunto. Resta sintonizzato!"
+    },
+    "leo": {
+      "shortDesc": "Un VTuber a tema budino — vibe rilassata, umorismo secco e una vena competitiva che spunta fuori dal nulla.",
+      "longDesc": "Leo_Tsonus — un VTuber a tema budino che mantiene tutto tranquillo, con un pizzico di caos.\nStreammo un mix di giochi confortevoli, multiplayer e qualunque cosa mi stia ossessionando in quel momento. Aspettatevi un'atmosfera rilassata, umorismo secco e una vena competitiva che emerge all'improvviso.\nEsteticamente? Sì, sono un budino. Aspetto morbido, copertura al caramello, anima sorprendentemente testarda.\nSe ti piacciono gli stream senza pressione, le chiacchiere casual e un creator che non si prende troppo sul serio, ti troverai benissimo."
     }
   }
 }

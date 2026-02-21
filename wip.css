@@ -7,7 +7,6 @@
   --border: rgba(255,255,255,0.08);
 }
 
-/*                    WIP HERO                    */
 .wip-hero {
   min-height: calc(100vh - 90px);
   display: flex;
@@ -17,7 +16,6 @@
   position: relative;
   overflow: hidden;
 }
-
 .wip-hero::before {
   content: '';
   position: absolute;
@@ -58,7 +56,6 @@
   animation: fadeDown 0.8s 0.08s cubic-bezier(0.16,1,0.3,1) both;
 }
 
-/*                    BADGE COMING SOON                    */
 .wip-badge {
   display: inline-flex;
   align-items: center;
@@ -113,12 +110,10 @@
   transform: translateY(-2px);
 }
 
-/*                    ANIMAZIONI                    */
 @keyframes fadeDown {
   from { opacity: 0; transform: translateY(-16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
   50%       { opacity: 0.4; transform: scale(0.8); }

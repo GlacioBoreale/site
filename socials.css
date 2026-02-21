@@ -9,7 +9,6 @@
   --youtube: #FF0000;
   --discord: #5865F2;
   --instagram: #E1306C;
-  --tiktok: #ffffff;
 }
 
 .socials-main {
@@ -18,7 +17,6 @@
   padding: 2rem 2rem 4rem;
 }
 
-/* ── HERO ── */
 .socials-hero {
   text-align: center;
   padding: 3rem 0 2.5rem;
@@ -53,7 +51,6 @@
   font-size: 1rem;
 }
 
-/* ── PLATFORM SECTION ── */
 .platform-section {
   background: var(--glass);
   border: 1px solid var(--border);
@@ -103,76 +100,18 @@
   margin-bottom: 0.3rem;
   transition: color 0.2s;
 }
-
+.platform-name:hover { text-decoration: underline; text-underline-offset: 3px; }
 .twitch-name:hover { color: var(--twitch); }
 .yt-name:hover { color: var(--youtube); }
-/* tutti i nomi social ora sono <a>: sottolineatura + pointer */
-.platform-name {
-  text-decoration: none;
-}
-.platform-name:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.discord-name  { transition: color 0.2s; }
-.discord-name:hover  { color: var(--discord); }
-
-.instagram-name { transition: color 0.2s; }
+.discord-name:hover { color: var(--discord); }
 .instagram-name:hover { color: var(--instagram); }
-
-.tiktok-name {
-  transition: background 0.2s;
-  -webkit-background-clip: text;
-  background-clip: text;
-}
 .tiktok-name:hover {
   background-image: linear-gradient(-45deg, #ec0e53, #04bbc7);
+  -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-decoration: none; /* il gradient clip non funziona con underline */
-}
-.instagram-section .platform-meta,
-.tiktok-section .platform-meta,
-.discord-section .platform-meta { cursor: default; user-select: none; }
-
-/* ── STATUS BUTTON (Twitch/YouTube) ────────────────── */
-.status-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 1rem;
-  border-radius: 100px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: rgba(255,255,255,0.04);
   text-decoration: none;
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, transform 0.2s;
-  flex-shrink: 0;
 }
-.status-btn:hover {
-  background: rgba(255,255,255,0.09);
-  border-color: rgba(255,255,255,0.2);
-  transform: translateY(-1px);
-}
-
-/* quando è live diventa rosso/viola */
-.status-btn.is-live {
-  background: rgba(145,70,255,0.15);
-  border-color: rgba(145,70,255,0.4);
-}
-.status-btn.is-live:hover {
-  background: rgba(145,70,255,0.25);
-}
-
-/* bottone YouTube */
-.status-btn-yt {
-  color: rgba(255,255,255,0.55);
-  font-family: 'Fredoka', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 500;
-}
-.status-btn-yt i { color: var(--youtube); font-size: 1rem; }
-.status-btn-yt:hover { color: #fff; }
 
 .platform-meta {
   display: flex;
@@ -182,12 +121,10 @@
   font-size: 0.9rem;
   color: rgba(255,255,255,0.5);
 }
-
 .platform-meta i { font-size: 0.85rem; }
 .platform-meta .fab.fa-twitch { color: var(--twitch); }
 .platform-meta .fab.fa-youtube { color: var(--youtube); }
 
-/* ── TWITCH: stato live nell'header ── */
 .twitch-live-status {
   display: flex;
   align-items: center;
@@ -200,16 +137,12 @@
   border-radius: 50%;
   flex-shrink: 0;
 }
-
 .status-dot.is-live {
   background: #ff4444;
   box-shadow: 0 0 0 3px rgba(255,68,68,0.2);
   animation: pulseDot 1.5s infinite;
 }
-
-.status-dot.is-offline {
-  background: rgba(255,255,255,0.2);
-}
+.status-dot.is-offline { background: rgba(255,255,255,0.2); }
 
 @keyframes pulseDot {
   0%, 100% { box-shadow: 0 0 0 3px rgba(255,68,68,0.25); }
@@ -224,7 +157,6 @@
   text-transform: uppercase;
   color: rgba(255,255,255,0.4);
 }
-
 .status-label.is-live { color: #ff6666; }
 
 .live-uptime {
@@ -233,7 +165,6 @@
   color: rgba(255,255,255,0.25);
 }
 
-/* ── TWITCH: riga centrale ── */
 .twitch-main-row {
   display: grid;
   grid-template-columns: 1fr 340px;
@@ -242,7 +173,6 @@
   align-items: stretch;
 }
 
-/* Media: player o immagine offline */
 .twitch-media {
   border-radius: 12px;
   overflow: hidden;
@@ -250,26 +180,14 @@
   aspect-ratio: 16/9;
   background: #0e0e10;
 }
+.twitch-media-inner { width: 100%; height: 100%; }
+.twitch-embed { width: 100%; height: 100%; border: none; display: block; }
 
-.twitch-media-inner {
-  width: 100%;
-  height: 100%;
-}
-
-.twitch-embed {
-  width: 100%;
-  height: 100%;
-  border: none;
-  display: block;
-}
-
-/* Offline image (riusa offline-image-wrapper) */
 .offline-image-wrapper {
   position: relative;
   width: 100%;
   height: 100%;
 }
-
 .offline-img {
   width: 100%;
   height: 100%;
@@ -277,7 +195,6 @@
   display: block;
   opacity: 0.65;
 }
-
 .offline-overlay {
   position: absolute;
   inset: 0;
@@ -286,7 +203,6 @@
   padding: 1rem;
   background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 55%);
 }
-
 .offline-badge {
   display: inline-flex;
   align-items: center;
@@ -301,10 +217,8 @@
   font-weight: 700;
   letter-spacing: 0.1em;
 }
-
 .offline-badge i { font-size: 0.45rem; }
 
-/* Info panel destra */
 .twitch-side-info {
   display: flex;
   flex-direction: column;
@@ -330,7 +244,6 @@
   text-transform: uppercase;
   color: rgba(255,255,255,0.3);
 }
-
 .info-box-value {
   font-family: 'Fredoka', sans-serif;
   font-size: 0.95rem;
@@ -353,7 +266,6 @@
   object-fit: cover;
   flex-shrink: 0;
 }
-
 .game-name {
   font-family: 'Fredoka', sans-serif;
   font-size: 0.95rem;
@@ -364,144 +276,6 @@
 }
 
 .stream-stats { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-
-.stat-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-family: 'Fredoka', sans-serif;
-  font-size: 0.78rem;
-  color: rgba(255,255,255,0.4);
-}
-
-.stat-chip i { font-size: 0.7rem; color: rgba(255,255,255,0.25); }
-
-/* ── TWITCH: sezione clip in basso ── */
-.twitch-clips-section {
-  border-top: 1px solid rgba(255,255,255,0.06);
-  padding-top: 1.2rem;
-}
-
-.clips-section-title {
-  font-family: 'Fredoka One', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.35);
-  margin-bottom: 0.9rem;
-}
-
-.clips-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 0.7rem;
-}
-
-/* ── STREAM INFO PANEL (condiviso live/offline) ── */
-.stream-info-panel {
-  flex: 0 0 300px;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  min-width: 0;
-}
-
-.stream-status-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.live-dot-red {
-  background: #ff4444;
-  box-shadow: 0 0 6px #ff4444;
-  animation: pulseDot 1.5s infinite;
-}
-
-.offline-dot {
-  background: rgba(255,255,255,0.25);
-}
-
-@keyframes pulseDot {
-  0%, 100% { opacity: 1; box-shadow: 0 0 6px #ff4444; }
-  50%       { opacity: 0.5; box-shadow: 0 0 2px #ff4444; }
-}
-
-.status-label {
-  font-family: 'Fredoka One', sans-serif;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.45);
-}
-
-.live-uptime {
-  font-family: 'Fredoka', sans-serif;
-  font-size: 0.75rem;
-  color: rgba(255,255,255,0.3);
-  margin-left: auto;
-}
-
-.stream-title {
-  font-family: 'Fredoka One', sans-serif;
-  font-size: 1rem;
-  font-weight: 700;
-  color: #fff;
-  margin: 0;
-  line-height: 1.4;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 10px;
-  padding: 0.8rem 1rem;
-}
-
-.offline-title {
-  color: rgba(255,255,255,0.35);
-  font-weight: 400;
-  font-family: 'Fredoka', sans-serif;
-  font-size: 0.9rem;
-}
-
-.stream-category {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 10px;
-  padding: 0.6rem 1rem;
-}
-
-.game-box-art {
-  width: 36px;
-  height: 48px;
-  border-radius: 4px;
-  object-fit: cover;
-  flex-shrink: 0;
-}
-
-.game-name {
-  font-family: 'Fredoka', sans-serif;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--twitch);
-}
-
-.stream-stats {
-  display: flex;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-}
-
 .stat-chip {
   display: inline-flex;
   align-items: center;
@@ -514,103 +288,81 @@
   font-size: 0.82rem;
   color: rgba(255,255,255,0.55);
 }
-
 .stat-chip i { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
 
-.stream-clips-preview {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  flex: 1;
+.twitch-clips-section {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 1.2rem;
 }
-
-.clips-list-mini {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  overflow-y: auto;
-  max-height: 220px;
-}
-
-/* ── TWITCH OFFLINE ── */
-.twitch-offline-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-
-.twitch-offline-left {
-  display: flex;
-  flex-direction: column;
-}
-
-.offline-image-wrapper {
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  aspect-ratio: 16/9;
-  background: #0e0e10;
-  flex: 1;
-}
-
-.offline-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  opacity: 0.7;
-}
-
-.offline-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: flex-end;
-  padding: 1rem;
-  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
-}
-
-.offline-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: rgba(0,0,0,0.7);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: rgba(255,255,255,0.6);
-  padding: 0.3rem 0.8rem;
-  border-radius: 100px;
+.clips-section-title {
+  font-family: 'Fredoka One', sans-serif;
   font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
-}
-
-.offline-badge i {
-  font-size: 0.5rem;
-  color: rgba(255,255,255,0.4);
-}
-
-.twitch-clips-right {
-  display: flex;
-  flex-direction: column;
-}
-
-.clips-title {
-  font-family: 'Fredoka One', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.4);
-  margin-bottom: 1rem;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 0.9rem;
+}
+.clips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.7rem;
 }
 
-.clips-list {
+.clip-card {
   display: flex;
-  flex-direction: column;
   gap: 0.8rem;
+  align-items: center;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.7rem;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+.clip-card:hover {
+  background: rgba(145,70,255,0.1);
+  border-color: rgba(145,70,255,0.3);
+  transform: translateX(4px);
+}
+.clip-thumb {
+  width: 100px;
+  height: 56px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: #111;
+}
+.clip-info { flex: 1; overflow: hidden; }
+.clip-title {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 0.3rem;
+}
+.clip-stats {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.4);
+  display: flex;
+  gap: 0.6rem;
+}
+.clip-card-large {
+  flex-direction: column;
+  align-items: flex-start;
+  height: 100%;
+}
+.clip-thumb-large {
+  width: 100% !important;
+  height: 150px !important;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
-/* ── CLIP MINI (nel pannello info) ── */
 .clip-card-mini {
   display: flex;
   align-items: center;
@@ -664,74 +416,11 @@
 
 .clip-stats-mini i { font-size: 0.65rem; }
 
-.clip-card {
-  display: flex;
-  gap: 0.8rem;
-  align-items: center;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 0.7rem;
-  text-decoration: none;
-  transition: background 0.2s, border-color 0.2s, transform 0.2s;
-}
-
-.clip-card:hover {
-  background: rgba(145,70,255,0.1);
-  border-color: rgba(145,70,255,0.3);
-  transform: translateX(4px);
-}
-
-.clip-thumb {
-  width: 100px;
-  height: 56px;
-  border-radius: 6px;
-  object-fit: cover;
-  flex-shrink: 0;
-  background: #111;
-}
-
-.clip-info { flex: 1; overflow: hidden; }
-
-.clip-title {
-  font-family: 'Fredoka', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: #fff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-bottom: 0.3rem;
-}
-
-.clip-stats {
-  font-family: 'Fredoka', sans-serif;
-  font-size: 0.75rem;
-  color: rgba(255,255,255,0.4);
-  display: flex;
-  gap: 0.6rem;
-}
-
-.clip-card-large {
-  flex-direction: column;
-  align-items: flex-start;
-  height: 100%;
-}
-
-.clip-thumb-large {
-  width: 100% !important;
-  height: 150px !important;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-/* ── YOUTUBE VIDEOS ── */
 .yt-videos-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
 }
-
 .yt-video-card {
   text-decoration: none;
   background: rgba(255,255,255,0.03);
@@ -740,13 +429,11 @@
   overflow: hidden;
   transition: background 0.2s, border-color 0.2s, transform 0.2s;
 }
-
 .yt-video-card:hover {
   background: rgba(255,0,0,0.07);
   border-color: rgba(255,0,0,0.25);
   transform: translateY(-3px);
 }
-
 .yt-thumb {
   width: 100%;
   aspect-ratio: 16/9;
@@ -754,11 +441,7 @@
   display: block;
   background: #111;
 }
-
-.yt-video-info {
-  padding: 0.8rem;
-}
-
+.yt-video-info { padding: 0.8rem; }
 .yt-video-title {
   font-family: 'Fredoka', sans-serif;
   font-size: 0.85rem;
@@ -772,7 +455,6 @@
   margin-bottom: 0.4rem;
   line-height: 1.4;
 }
-
 .yt-section-title {
   font-family: 'Fredoka One', sans-serif;
   font-size: 0.75rem;
@@ -782,14 +464,12 @@
   color: rgba(255,255,255,0.35);
   margin-bottom: 0.9rem;
 }
-
 .yt-video-meta {
   display: flex;
   align-items: center;
   gap: 0.7rem;
   flex-wrap: wrap;
 }
-
 .yt-views {
   font-family: 'Fredoka', sans-serif;
   font-size: 0.75rem;
@@ -798,16 +478,13 @@
   align-items: center;
   gap: 0.3rem;
 }
-
 .yt-views i { font-size: 0.65rem; color: rgba(255,255,255,0.25); }
-
 .yt-video-date {
   font-family: 'Fredoka', sans-serif;
   font-size: 0.75rem;
   color: rgba(255,255,255,0.35);
 }
 
-/* ── DISCORD / INSTAGRAM / TIKTOK ── */
 .platform-icon-circle {
   width: 60px;
   height: 60px;
@@ -818,10 +495,15 @@
   font-size: 1.5rem;
   flex-shrink: 0;
 }
-
 .discord-icon  { background: rgba(88,101,242,0.15); color: var(--discord); border: 1px solid rgba(88,101,242,0.3); }
 .instagram-icon { background: rgba(225,48,108,0.15); color: var(--instagram); border: 1px solid rgba(225,48,108,0.3); cursor: default; }
-.tiktok-icon   { background: linear-gradient(-45deg, rgba(236,14,83,0.15), rgba(4,187,199,0.15)); color: #fff; border: 1px solid transparent; position: relative; cursor: default; }
+.tiktok-icon {
+  background: linear-gradient(-45deg, rgba(236,14,83,0.15), rgba(4,187,199,0.15));
+  color: #fff;
+  border: 1px solid transparent;
+  position: relative;
+  cursor: default;
+}
 .tiktok-icon::before {
   content: '';
   position: absolute;
@@ -846,16 +528,19 @@
   font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
-  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+  transition: transform 0.2s, opacity 0.2s;
 }
-
 .join-btn:hover { transform: translateY(-2px); opacity: 0.9; }
-
 .twitch-btn    { background: var(--twitch); color: #fff; }
 .youtube-btn   { background: var(--youtube); color: #fff; }
 .discord-btn   { background: var(--discord); color: #fff; }
 .instagram-btn { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; }
-.tiktok-btn    { background: linear-gradient(-45deg, rgba(236,14,83,0.3), rgba(4,187,199,0.3)); color: #fff; border: 1px solid transparent; position: relative; }
+.tiktok-btn {
+  background: linear-gradient(-45deg, rgba(236,14,83,0.3), rgba(4,187,199,0.3));
+  color: #fff;
+  border: 1px solid transparent;
+  position: relative;
+}
 .tiktok-btn::before {
   content: '';
   position: absolute;
@@ -870,45 +555,27 @@
   pointer-events: none;
 }
 
-/* ── SMALL PLATFORMS ── */
 .small-platforms {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
   margin-bottom: 1.5rem;
 }
-
-.small-platform {
-  margin-bottom: 0 !important;
-}
-
-.small-platform .platform-header {
-  margin-bottom: 0;
-}
-
-/* ── DISCORD SECTION ── */
+.small-platform { margin-bottom: 0 !important; }
+.small-platform .platform-header { margin-bottom: 0; }
 .discord-section .platform-header { margin-bottom: 0; }
 
-/* ── ANIMAZIONI ── */
 @keyframes fadeDown {
   from { opacity: 0; transform: translateY(-16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%       { opacity: 0.4; transform: scale(0.8); }
-}
-
-/* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   .twitch-main-row { grid-template-columns: 1fr; }
-  .twitch-media { aspect-ratio: 16/9; }
   .clips-grid { grid-template-columns: 1fr; }
   .yt-videos-grid { grid-template-columns: 1fr; }
   .small-platforms { grid-template-columns: 1fr; }

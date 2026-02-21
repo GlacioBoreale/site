@@ -7,11 +7,11 @@
       "shortDescKey": "vtubers.glacio.shortDesc",
       "longDescKey": "vtubers.glacio.longDesc",
       "images": [
-        "assets/images/vtubers/glacio/glacio1.png",
-        "assets/images/vtubers/glacio/glacio2.png",
-        "assets/images/vtubers/glacio/glacio3.png"
+        "assets/images/vtubers/glacioBoreale/glacio1.png",
+        "assets/images/vtubers/glacioBoreale/glacio2.png",
+        "assets/images/vtubers/glacioBoreale/glacio3.png"
       ],
-      "addedDate": "05/02/2025",
+      "addedDate": "05/02/2026",
       "debut": "19/11/2020",
       "hashtag": "#GlacioBorealeArt | #GlacioBorealeVt | #GlacioBoreale | #JohnBoreale | #SirGlacioBoreale",
       "channel": "https://twitch.tv/glacioborealevt"
@@ -19,17 +19,17 @@
     ,
     {
       "id": 2,
-      "name": "???",
-      "fullName": "???",
-      "shortDescKey": "vtubers.placeholder1.shortDesc",
-      "longDescKey": "vtubers.placeholder1.longDesc",
+      "name": "Leo Tsonus",
+      "fullName": "Leo Tsonus",
+      "shortDescKey": "vtubers.leo.shortDesc",
+      "longDescKey": "vtubers.leo.longDesc",
       "images": [
         "assets/images/vtubers/placeholder.png"
       ],
-      "addedDate": "??/??/????",
-      "debut": "??/??/????",
-      "hashtag": "???",
-      "channel": "#"
+      "addedDate": "20/02/2026",
+      "debut": "13/10/2023",
+      "hashtag": "no hashtags yet",
+      "channel": "https://www.twitch.tv/leo_tsonus"
     },
     {
       "id": 3,

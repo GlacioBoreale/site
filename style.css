@@ -6,6 +6,10 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: 'Fredoka', sans-serif;
   line-height: 1.6;
@@ -31,7 +35,7 @@ main {
   align-items: center;
   border-radius: 20px;
   margin: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
 .hero h1 {
@@ -48,31 +52,12 @@ main {
 }
 
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 768px) {
-  .hero {
-    margin: 1rem;
-    padding: 60px 20px;
-  }
-  
-  .hero h1 {
-    font-size: 2rem;
-  }
-  
-  .hero p {
-    font-size: 1.1rem;
-  }
-}
-
-html {
-  scroll-behavior: smooth;
+  .hero { margin: 1rem; padding: 60px 20px; }
+  .hero h1 { font-size: 2rem; }
+  .hero p { font-size: 1.1rem; }
 }

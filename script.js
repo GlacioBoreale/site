@@ -13,10 +13,8 @@ async function loadTranslations(lang) {
 }
 
 function updatePage() {
-  // Blocca Google Translate impostando la lingua corretta
   document.documentElement.lang = currentLang;
   document.documentElement.setAttribute('translate', 'no');
-  // Rimuovi eventuali meta di Google Translate
   let noTranslateMeta = document.querySelector('meta[name="google"]');
   if (!noTranslateMeta) {
     noTranslateMeta = document.createElement('meta');

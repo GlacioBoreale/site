@@ -33,7 +33,29 @@
   },
   "about": {
     "title": "About us",
-    "description": "This page is still under construction. Come back soon!"
+    "subtitle": "The team behind Glaciopia",
+    "members": {
+      "glacio": {
+        "name": "Glacio Boreale",
+        "role": "Founder & Developer",
+        "desc": "Italian brainrotten VTuber and creator of this site. He decided to build everything from scratch because he gets bored too easily."
+      },
+      "eromo": {
+        "name": "Eromo",
+        "role": "Translator & Music Producer",
+        "desc": "Music producer and content translator for Glaciopia. Most of the work was done by an AI, but we put him anyway..."
+      },
+      "placeholder": {
+        "name": "???",
+        "role": "???",
+        "desc": "The next one could be you! Send an application to be part of the team."
+      }
+    },
+    "join": {
+      "title": "Join the Team!",
+      "desc": "Want to be part of Glaciopia? Send us an email with your picture, name and description.",
+      "button": "Send your application"
+    }
   },
   "projects": {
     "title": "My projects",
@@ -129,6 +151,10 @@
     "placeholder2": {
       "shortDesc": "Coming soon...",
       "longDesc": "This VTuber hasn't been added yet. Stay tuned!"
+    },
+    "leo": {
+      "shortDesc": "A pudding-themed VTuber — chill vibes, dry humor, and a competitive streak that comes out of nowhere.",
+      "longDesc": "Leo_Tsonus — a pudding-themed VTuber who keeps things chill with a hint of chaos.\nI stream a mix of cozy games, multiplayer, and whatever I'm currently obsessed with. Expect relaxed vibes, dry humor, and the occasional competitive streak that comes out of nowhere.\nTheme-wise? Yeah, I'm a pudding. Soft aesthetic, caramel top, surprisingly stubborn core.\nIf you're into low-pressure streams, casual conversation, and a creator who doesn't take himself too seriously, you'll fit right in."
     }
   }
 }

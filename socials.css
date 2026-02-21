@@ -60,17 +60,12 @@
   border-radius: 20px;
   padding: 2rem;
   margin-bottom: 1.5rem;
+  animation: fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) both;
 }
 
-.stagger-item {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-.stagger-item.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+.platform-section:nth-child(2) { animation-delay: 0.1s; }
+.platform-section:nth-child(3) { animation-delay: 0.2s; }
+.platform-section:nth-child(4) { animation-delay: 0.3s; }
 
 .platform-header {
   display: flex;
@@ -540,6 +535,7 @@
   text-decoration: none;
   transition: transform 0.2s, opacity 0.2s;
 }
+
 .join-btn:hover { transform: translateY(-2px); opacity: 0.9; }
 .twitch-btn    { background: var(--twitch); color: #fff; }
 .youtube-btn   { background: var(--youtube); color: #fff; }

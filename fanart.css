@@ -1,0 +1,492 @@
+.fanart-main {
+    min-height: calc(100vh - 200px);
+    padding: 2rem;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* ── Hero ── */
+.fanart-hero {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding: 3rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 200px;
+    background: radial-gradient(ellipse, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.fanart-hero h1 {
+    font-size: 3.5rem;
+    font-weight: bold;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+    position: relative;
+}
+
+.fanart-hero .subtitle {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 0.4rem;
+}
+
+.fanart-hero .description {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* ── Controls ── */
+.fanart-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    padding: 0.9rem 1.3rem;
+    transition: border-color 0.3s ease;
+}
+
+.search-bar:focus-within {
+    border-color: rgba(102, 126, 234, 0.6);
+    background: rgba(102, 126, 234, 0.05);
+}
+
+.search-bar i {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.search-bar input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 1rem;
+}
+
+.search-bar input::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.tags-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.tag-btn {
+    padding: 0.45rem 1rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+
+.tag-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: white;
+}
+
+.tag-btn.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-color: transparent;
+    color: white;
+    font-weight: 600;
+}
+
+/* ── Results info ── */
+.results-info {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ── Grid ── */
+.fanart-grid {
+    columns: 4 280px;
+    column-gap: 1.2rem;
+}
+
+.fanart-card {
+    break-inside: avoid;
+    margin-bottom: 1.2rem;
+    border-radius: 14px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+.fanart-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.15);
+}
+
+.fanart-card img {
+    width: 100%;
+    display: block;
+    transition: transform 0.4s ease;
+}
+
+.fanart-card:hover img {
+    transform: scale(1.03);
+}
+
+.card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+    padding: 1.5rem 1rem 0.8rem;
+    transform: translateY(4px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.fanart-card:hover .card-overlay {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.card-title {
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-artist {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 0.78rem;
+}
+
+.card-artist i {
+    color: rgba(102, 126, 234, 0.9);
+    margin-right: 0.3rem;
+    font-size: 0.7rem;
+}
+
+.card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+}
+
+.card-tag {
+    font-size: 0.68rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+    background: rgba(102, 126, 234, 0.3);
+    color: rgba(255,255,255,0.85);
+}
+
+/* ── No results ── */
+.no-results {
+    text-align: center;
+    padding: 5rem 2rem;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.no-results i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.no-results p {
+    font-size: 1.1rem;
+}
+
+/* ── Popup ── */
+.fanart-popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+}
+
+.fanart-popup.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fanart-popup .popup-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(6px);
+}
+
+.fanart-popup .popup-content {
+    position: relative;
+    background: #141414;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    max-width: 960px;
+    width: 92%;
+    max-height: 90vh;
+    z-index: 10000;
+    overflow: hidden;
+    animation: popupIn 0.3s ease;
+}
+
+@keyframes popupIn {
+    from { opacity: 0; transform: scale(0.94) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.fanart-popup .popup-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: all 0.25s ease;
+    z-index: 10001;
+}
+
+.fanart-popup .popup-close:hover {
+    background: rgba(255,255,255,0.18);
+    transform: rotate(90deg);
+}
+
+.fanart-popup .popup-body {
+    display: flex;
+    flex-direction: row;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.popup-image-wrap {
+    flex: 1;
+    min-width: 0;
+    background: #0a0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: 90vh;
+    overflow: hidden;
+}
+
+.popup-image-wrap img {
+    max-width: 100%;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+.fanart-popup .popup-info {
+    width: 300px;
+    flex-shrink: 0;
+    padding: 2.5rem 1.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border-left: 1px solid rgba(255,255,255,0.08);
+    overflow-y: auto;
+}
+
+.fanart-popup .popup-info h2 {
+    font-size: 1.5rem;
+    color: white;
+    line-height: 1.3;
+    padding-right: 2rem;
+}
+
+.popup-artist {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: rgba(255,255,255,0.75);
+    font-size: 0.95rem;
+}
+
+.popup-artist i {
+    color: rgba(102, 126, 234, 0.9);
+}
+
+.popup-desc {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.popup-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.popup-tag {
+    font-size: 0.78rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 12px;
+    background: rgba(102, 126, 234, 0.15);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    color: rgba(102, 126, 234, 1);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.popup-tag:hover {
+    background: rgba(102, 126, 234, 0.3);
+}
+
+/* Social links nel popup */
+.popup-socials {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+}
+
+.popup-socials-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 0.3rem;
+}
+
+.social-link-item {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.25s ease;
+}
+
+.social-link-item:hover {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    transform: translateX(3px);
+}
+
+.social-link-item.twitch:hover { border-color: #9146FF; color: #9146FF; }
+.social-link-item.twitter:hover { border-color: #1DA1F2; color: #1DA1F2; }
+.social-link-item.instagram:hover { border-color: #E1306C; color: #E1306C; }
+.social-link-item.youtube:hover { border-color: #FF0000; color: #FF0000; }
+.social-link-item.deviantart:hover { border-color: #05CC47; color: #05CC47; }
+.social-link-item.artstation:hover { border-color: #13AFF0; color: #13AFF0; }
+.social-link-item.pixiv:hover { border-color: #0096FA; color: #0096FA; }
+.social-link-item.bluesky:hover { border-color: #0085ff; color: #0085ff; }
+
+.popup-date {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255,255,255,0.3);
+    font-size: 0.8rem;
+    margin-top: auto;
+}
+
+.popup-date i {
+    font-size: 0.75rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .fanart-popup .popup-body {
+        flex-direction: column;
+    }
+
+    .popup-image-wrap {
+        max-height: 55vw;
+    }
+
+    .fanart-popup .popup-info {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid rgba(255,255,255,0.08);
+        padding: 1.2rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .fanart-hero h1 {
+        font-size: 2.2rem;
+    }
+
+    .fanart-grid {
+        columns: 2 140px;
+        column-gap: 0.7rem;
+    }
+
+    .fanart-card {
+        margin-bottom: 0.7rem;
+    }
+
+    .popup-image-wrap {
+        max-height: 50vw;
+    }
+}
+
+@media (max-width: 360px) {
+    .fanart-main {
+        padding: 1rem;
+    }
+
+    .fanart-grid {
+        columns: 1;
+    }
+}

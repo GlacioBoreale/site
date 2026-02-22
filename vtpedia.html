@@ -101,7 +101,12 @@
                                 <i class="fas fa-terminal"></i>
                                 <div>
                                     <strong data-i18n="vtpedia.sponsorTwitchCmd">Comando chat</strong>
-                                    <code class="sponsor-code">!glaciopia → Visita glaciopia.com!</code>
+                                    <span data-i18n="vtpedia.sponsorTwitchCmdDesc">Crea un comando con questo testo (sostituisci @nomestreamer col tuo):</span>
+                                    <code class="sponsor-code" id="sponsor-cmd-text" data-i18n="vtpedia.sponsorTwitchCmdText">Visita glaciopia.com! Casa della famigerata VTPedia (di cui @nomestreamer fa parte)!</code>
+                                    <button class="sponsor-copy-btn" id="sponsor-copy-btn" onclick="copySponsorCmd()">
+                                        <i class="fas fa-copy"></i>
+                                        <span data-i18n="vtpedia.sponsorCopy">Copia</span>
+                                    </button>
                                 </div>
                             </div>
                         </div>

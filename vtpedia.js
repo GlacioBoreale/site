@@ -164,6 +164,19 @@ function closePopup() {
     currentImages = [];
 }
 
+function copySponsorCmd() {
+    const text = document.getElementById('sponsor-cmd-text').textContent;
+    const btn = document.getElementById('sponsor-copy-btn');
+    navigator.clipboard.writeText(text).then(() => {
+        btn.classList.add('copied');
+        btn.querySelector('i').className = 'fas fa-check';
+        setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.querySelector('i').className = 'fas fa-copy';
+        }, 2000);
+    });
+}
+
 window.addEventListener('languageChanged', () => {
     displayVTubers();
 });
@@ -212,3 +225,26 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Escape') closeSubmitPopup();
     });
 });
+
+function copySponsorCmd() {
+    const codeEl = document.getElementById('sponsor-cmd-text');
+    const btn = document.getElementById('sponsor-copy-btn');
+    if (!codeEl || !btn) return;
+
+    const text = codeEl.textContent;
+    navigator.clipboard.writeText(text).then(() => {
+        const span = btn.querySelector('span');
+        const originalText = span.textContent;
+        span.textContent = '✓';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            span.textContent = originalText;
+            btn.classList.remove('copied');
+        }, 1500);
+    }).catch(() => {
+        const range = document.createRange();
+        range.selectNodeContents(codeEl);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+    });
+}

@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fanart - Glaciopia</title>
+
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="components/navbar/nav.css">
     <link rel="stylesheet" href="components/footer/footer.css">
     <link rel="stylesheet" href="fanart.css">
+
     <script src="components/navbar/nav.js"></script>
     <script src="components/footer/footer.js"></script>
     <script src="script.js"></script>
@@ -20,58 +22,98 @@
 
     <main class="fanart-main">
         <section class="fanart-hero">
-            <div class="hero-glow"></div>
-            <h1 data-i18n="fanart.title">Fanart Gallery</h1>
-            <p class="subtitle" data-i18n="fanart.subtitle">Le opere dei miei spettatori</p>
-            <p class="description" data-i18n="fanart.description">Una raccolta delle fantastiche fanart create dalla community!</p>
+            <h1 data-i18n="fanart.title">Fanart</h1>
+            <p class="subtitle" data-i18n="fanart.subtitle">Galleria</p>
+            <p class="description" data-i18n="fanart.description">Fanart realizzate dalla community e dagli amici!</p>
+            <button class="submit-fanart-btn" id="submit-fanart-btn">
+                <i class="fas fa-paper-plane"></i>
+                <span data-i18n="fanart.submitBtn">Invia la tua Fanart</span>
+            </button>
         </section>
 
         <section class="fanart-controls">
-            <div class="search-bar">
-                <i class="fas fa-search"></i>
-                <input type="text" id="search-input" placeholder="Cerca per titolo o artista...">
-            </div>
-            <div class="tags-filter" id="tags-filter">
-                <button class="tag-btn active" data-tag="all">Tutti</button>
+            <div class="search-wrapper">
+                <div class="search-bar-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input
+                        type="text"
+                        id="fanart-search"
+                        class="fanart-search-input"
+                        data-i18n-placeholder="fanart.searchPlaceholder"
+                        placeholder="Cerca per titolo o artista..."
+                        autocomplete="off"
+                    >
+                    <div class="search-suggestions" id="search-suggestions"></div>
+                </div>
+                <div class="filter-dropdown-wrapper">
+                    <button class="filter-toggle-btn" id="filter-toggle-btn">
+                        <i class="fas fa-filter"></i>
+                        <span id="filter-label" data-i18n="fanart.filterAll">Tutte</span>
+                        <i class="fas fa-chevron-down filter-chevron" id="filter-chevron"></i>
+                    </button>
+                    <div class="filter-dropdown" id="filter-dropdown">
+                        <button class="filter-option active" data-filter="all" data-i18n="fanart.filterAll">Tutte</button>
+                        <button class="filter-option" data-filter="digital" data-i18n="fanart.filterDigital">Digitale</button>
+                        <button class="filter-option" data-filter="traditional" data-i18n="fanart.filterTraditional">Tradizionale</button>
+                        <button class="filter-option" data-filter="meme" data-i18n="fanart.filterMeme">Meme</button>
+                        <button class="filter-option" data-filter="other" data-i18n="fanart.filterOther">Altro</button>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <div class="results-info" id="results-info">
-            <span id="results-count"></span>
-        </div>
-
         <section class="fanart-grid" id="fanart-grid"></section>
 
-        <div class="no-results" id="no-results" style="display:none;">
-            <i class="fas fa-search"></i>
-            <p>Nessuna fanart trovata</p>
-        </div>
+        <p class="no-results" id="no-results" style="display:none;" data-i18n="fanart.noResults">
+            Nessuna fanart trovata per questa ricerca.
+        </p>
     </main>
 
+    <!-- Popup lightbox -->
     <div class="fanart-popup" id="fanart-popup">
-        <div class="popup-overlay" id="popup-overlay"></div>
-        <div class="popup-content">
-            <button class="popup-close" id="popup-close">
+        <div class="fanart-popup-overlay" id="fanart-popup-overlay"></div>
+        <div class="fanart-popup-content">
+            <button class="fanart-popup-close" id="fanart-popup-close">
                 <i class="fas fa-times"></i>
             </button>
-            <div class="popup-body">
-                <div class="popup-image-wrap">
-                    <img id="popup-img" src="" alt="">
-                </div>
-                <div class="popup-info">
-                    <h2 id="popup-title"></h2>
-                    <div class="popup-artist">
-                        <i class="fas fa-palette"></i>
-                        <span id="popup-artist-name"></span>
-                    </div>
-                    <p class="popup-desc" id="popup-desc"></p>
-                    <div class="popup-tags" id="popup-tags"></div>
-                    <div class="popup-socials" id="popup-socials"></div>
-                    <div class="popup-date">
-                        <i class="fas fa-calendar"></i>
-                        <span id="popup-date"></span>
-                    </div>
-                </div>
+            <img id="fanart-popup-img" src="" alt="">
+            <div class="fanart-popup-info">
+                <h3 id="fanart-popup-title"></h3>
+                <p id="fanart-popup-artist"></p>
+                <div class="fanart-popup-tags" id="fanart-popup-tags"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale invio fanart -->
+    <div class="submit-modal" id="submit-modal">
+        <div class="submit-modal-overlay" id="submit-modal-overlay"></div>
+        <div class="submit-modal-content">
+            <button class="submit-modal-close" id="submit-modal-close">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 data-i18n="fanart.submitTitle">Invia la tua Fanart</h2>
+            <p data-i18n="fanart.submitDesc">
+                Vuoi inviare la tua fanart? Clicca il bottone qui sotto per aprire il tuo client email con un template pre-compilato. Ricordati di allegare l'immagine!
+            </p>
+
+            <div class="submit-rules">
+                <h3 data-i18n="fanart.submitRules">Regole per l'invio</h3>
+                <ul>
+                    <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule1">Le immagini non devono superare i 2.5 MB.</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule2">Invia solo artwork originali tuoi.</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule3">Nessun contenuto NSFW o offensivo.</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule4">Formati accettati: JPG, PNG, GIF, WEBP.</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule5">Includi il titolo dell'opera e il tuo nome/username.</span></li>
+                </ul>
+            </div>
+
+            <div class="submit-actions">
+                <a id="submit-email-link" class="submit-email-btn" href="#">
+                    <i class="fas fa-envelope"></i>
+                    <span data-i18n="fanart.submitEmailBtn">Apri Client Email</span>
+                </a>
+                <button class="submit-close-btn" id="submit-close-btn" data-i18n="fanart.submitClose">Chiudi</button>
             </div>
         </div>
     </div>

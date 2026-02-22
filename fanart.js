@@ -1,190 +1,319 @@
 let fanarts = [];
-let activeTag = 'all';
-let searchQuery = '';
+let currentFilter = 'all';
+let currentSearch = '';
+let suggestionIndex = -1;
 
-const SOCIAL_ICONS = {
-    twitch:     { icon: 'fa-brands fa-twitch',     label: 'Twitch' },
-    twitter:    { icon: 'fa-brands fa-x-twitter',  label: 'Twitter / X' },
-    instagram:  { icon: 'fa-brands fa-instagram',  label: 'Instagram' },
-    youtube:    { icon: 'fa-brands fa-youtube',    label: 'YouTube' },
-    deviantart: { icon: 'fa-brands fa-deviantart', label: 'DeviantArt' },
-    artstation: { icon: 'fa-brands fa-artstation', label: 'ArtStation' },
-    pixiv:      { icon: 'fa-solid fa-p',           label: 'Pixiv' },
-    bluesky:    { icon: 'fa-brands fa-bluesky',    label: 'Bluesky' },
-    tiktok:     { icon: 'fa-brands fa-tiktok',     label: 'TikTok' },
-    website:    { icon: 'fa-solid fa-globe',       label: 'Sito web' },
-};
+const EMAIL_ADDRESS = 'Glacioborealebusiness@outlook.com';
+const EMAIL_SUBJECT = 'Fanart - Submission';
 
-async function loadFanarts() {
+function getEmailBody() {
+    const t = (key) => getNestedTranslation(key) || '';
+    return `Hi Glacio!
+
+I would like to submit my fanart.
+
+Title: [Your title here]
+Artist name / username: [Your name here]
+Tags: [e.g. digital, traditional, meme, other]
+
+[Please attach your image to this email. Max 2.5 MB]
+
+---
+Sent via glacioboreale.github.io/site/fanart.html`;
+}
+
+async function loadFanartData() {
     try {
         const response = await fetch('./assets/data/fanarts.json');
-        if (!response.ok) throw new Error('Errore caricamento fanart');
+        if (!response.ok) throw new Error('No fanart data');
         const data = await response.json();
-        fanarts = data.fanarts;
-        buildTagFilters();
-        renderFanarts();
-    } catch (error) {
-        console.error('Errore fanart:', error);
-        document.getElementById('fanart-grid').innerHTML =
-            '<p style="color:rgba(255,255,255,0.5);text-align:center;padding:4rem;">Nessuna fanart disponibile al momento.</p>';
+        fanarts = data.fanarts || [];
+    } catch {
+        fanarts = [];
     }
-}
-
-function buildTagFilters() {
-    const allTags = new Set();
-    fanarts.forEach(f => (f.tags || []).forEach(t => allTags.add(t)));
-
-    const container = document.getElementById('tags-filter');
-    allTags.forEach(tag => {
-        const btn = document.createElement('button');
-        btn.className = 'tag-btn';
-        btn.dataset.tag = tag;
-        btn.textContent = tag;
-        btn.addEventListener('click', () => selectTag(tag, btn));
-        container.appendChild(btn);
-    });
-}
-
-function selectTag(tag, btn) {
-    activeTag = tag;
-    document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
     renderFanarts();
 }
 
 function getFilteredFanarts() {
     return fanarts.filter(f => {
-        const matchTag = activeTag === 'all' || (f.tags || []).includes(activeTag);
-        const q = searchQuery.toLowerCase().trim();
-        const matchSearch = !q
-            || f.title.toLowerCase().includes(q)
-            || f.artist.toLowerCase().includes(q)
-            || (f.tags || []).some(t => t.toLowerCase().includes(q));
-        return matchTag && matchSearch;
+        const title = (getNestedTranslation(f.titleKey) || f.titleKey || '').toLowerCase();
+        const artist = (f.artist || '').toLowerCase();
+        const query = currentSearch.toLowerCase();
+        const matchSearch = !query || title.includes(query) || artist.includes(query);
+        const matchFilter = currentFilter === 'all' || (f.tags && f.tags.includes(currentFilter));
+        return matchSearch && matchFilter;
     });
 }
 
 function renderFanarts() {
     const grid = document.getElementById('fanart-grid');
     const noResults = document.getElementById('no-results');
-    const countEl = document.getElementById('results-count');
-
     const filtered = getFilteredFanarts();
+
     grid.innerHTML = '';
 
     if (filtered.length === 0) {
         noResults.style.display = 'block';
-        countEl.textContent = '';
         return;
     }
-
     noResults.style.display = 'none';
-    countEl.textContent = `${filtered.length} fanart`;
 
-    filtered.forEach((fanart, i) => {
-        const card = createCard(fanart, i);
+    filtered.forEach(f => {
+        const card = createFanartCard(f);
         grid.appendChild(card);
     });
 }
 
-function createCard(fanart, index) {
+function createFanartCard(f) {
     const card = document.createElement('div');
     card.className = 'fanart-card';
 
-    const tagsHTML = (fanart.tags || []).slice(0, 3)
-        .map(t => `<span class="card-tag">${t}</span>`).join('');
+    const title = getNestedTranslation(f.titleKey) || f.titleKey || '';
+    const byText = getNestedTranslation('fanart.by') || 'di';
+    const tags = f.tags || [];
 
     card.innerHTML = `
-        <img src="${fanart.image}" alt="${fanart.title}" loading="lazy"
-             onerror="this.src='assets/images/vtubers/placeholder.png'">
-        <div class="card-overlay">
-            <div class="card-title">${fanart.title}</div>
-            <div class="card-artist"><i class="fas fa-palette"></i>${fanart.artist}</div>
-            <div class="card-tags">${tagsHTML}</div>
+        <div class="fanart-card-img-wrapper">
+            <img src="${f.image}" alt="${title}" loading="lazy" onerror="this.src='assets/images/vtubers/placeholder.png'">
+            <div class="fanart-card-overlay"><i class="fas fa-expand"></i></div>
+        </div>
+        <div class="fanart-card-info">
+            <div class="fanart-card-title">${title}</div>
+            <div class="fanart-card-artist">${byText} ${f.artist}</div>
+            <div class="fanart-card-tags">
+                ${tags.map(t => `<span class="tag-badge">${t}</span>`).join('')}
+            </div>
         </div>
     `;
 
-    card.addEventListener('click', () => openPopup(fanart));
+    card.addEventListener('click', () => openLightbox(f));
     return card;
 }
 
-function openPopup(fanart) {
-    document.getElementById('popup-img').src = fanart.image;
-    document.getElementById('popup-img').alt = fanart.title;
-    document.getElementById('popup-title').textContent = fanart.title;
-    document.getElementById('popup-artist-name').textContent = fanart.artist;
-    document.getElementById('popup-desc').textContent = fanart.description || '';
-    document.getElementById('popup-date').textContent = fanart.date || '';
+function openLightbox(f) {
+    const title = getNestedTranslation(f.titleKey) || f.titleKey || '';
+    const byText = getNestedTranslation('fanart.by') || 'di';
+    const tags = f.tags || [];
 
-    const tagsContainer = document.getElementById('popup-tags');
-    tagsContainer.innerHTML = (fanart.tags || [])
-        .map(t => `<span class="popup-tag" data-tag="${t}">${t}</span>`)
-        .join('');
+    const popupImg = document.getElementById('fanart-popup-img');
+    popupImg.onerror = function() { this.src = 'assets/images/vtubers/placeholder.png'; this.onerror = null; };
+    popupImg.src = f.image;
+    popupImg.alt = title;
+    document.getElementById('fanart-popup-title').textContent = title;
+    document.getElementById('fanart-popup-artist').textContent = `${byText} ${f.artist}`;
 
-    tagsContainer.querySelectorAll('.popup-tag').forEach(el => {
-        el.addEventListener('click', () => {
-            closePopup();
-            const existing = document.querySelector(`.tag-btn[data-tag="${el.dataset.tag}"]`);
-            if (existing) {
-                selectTag(el.dataset.tag, existing);
-            } else {
-                activeTag = el.dataset.tag;
-                renderFanarts();
-            }
-        });
-    });
-
-    const socialsContainer = document.getElementById('popup-socials');
-    const links = fanart.socials || {};
-    const keys = Object.keys(links).filter(k => links[k]);
-
-    socialsContainer.innerHTML = '';
-    if (keys.length > 0) {
-        const titleEl = document.createElement('div');
-        titleEl.className = 'popup-socials-title';
-        titleEl.textContent = 'Contatta l\'artista';
-        socialsContainer.appendChild(titleEl);
-
-        keys.forEach(platform => {
-            const meta = SOCIAL_ICONS[platform] || { icon: 'fa-solid fa-link', label: platform };
-            const a = document.createElement('a');
-            a.href = links[platform];
-            a.target = '_blank';
-            a.rel = 'noopener noreferrer';
-            a.className = `social-link-item ${platform}`;
-            a.innerHTML = `<i class="${meta.icon}"></i> ${meta.label}`;
-            socialsContainer.appendChild(a);
-        });
-    }
+    const tagsEl = document.getElementById('fanart-popup-tags');
+    tagsEl.innerHTML = tags.map(t => `<span class="tag-badge">${t}</span>`).join('');
 
     document.getElementById('fanart-popup').classList.add('active');
     document.body.style.overflow = 'hidden';
 }
 
-function closePopup() {
+function closeLightbox() {
     document.getElementById('fanart-popup').classList.remove('active');
     document.body.style.overflow = '';
 }
 
-window.addEventListener('languageChanged', renderFanarts);
+function openSubmitModal() {
+    updateEmailLink();
+    document.getElementById('submit-modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadFanarts();
+function closeSubmitModal() {
+    document.getElementById('submit-modal').classList.remove('active');
+    document.body.style.overflow = '';
+}
 
-    document.getElementById('search-input').addEventListener('input', e => {
-        searchQuery = e.target.value;
-        renderFanarts();
+function updateEmailLink() {
+    const body = encodeURIComponent(getEmailBody());
+    const subject = encodeURIComponent(EMAIL_SUBJECT);
+    const link = document.getElementById('submit-email-link');
+    if (link) {
+        link.href = `mailto:${EMAIL_ADDRESS}?subject=${subject}&body=${body}`;
+    }
+}
+
+function buildSuggestions(query) {
+    if (!query || query.length < 1) return [];
+    const q = query.toLowerCase();
+    const results = [];
+    const seen = new Set();
+
+    fanarts.forEach(f => {
+        const title = getNestedTranslation(f.titleKey) || f.titleKey || '';
+        const artist = f.artist || '';
+
+        if (title.toLowerCase().includes(q) && !seen.has('t:' + title)) {
+            seen.add('t:' + title);
+            results.push({ type: 'title', text: title, icon: 'fa-image' });
+        }
+        if (artist.toLowerCase().includes(q) && !seen.has('a:' + artist)) {
+            seen.add('a:' + artist);
+            results.push({ type: 'artist', text: artist, icon: 'fa-user' });
+        }
     });
 
-    const allBtn = document.querySelector('.tag-btn[data-tag="all"]');
-    if (allBtn) allBtn.addEventListener('click', () => selectTag('all', allBtn));
+    return results.slice(0, 6);
+}
 
-    document.getElementById('popup-close').addEventListener('click', closePopup);
-    document.getElementById('popup-overlay').addEventListener('click', closePopup);
+function highlightMatch(text, query) {
+    const idx = text.toLowerCase().indexOf(query.toLowerCase());
+    if (idx === -1) return text;
+    return (
+        text.slice(0, idx) +
+        `<span class="suggestion-match">${text.slice(idx, idx + query.length)}</span>` +
+        text.slice(idx + query.length)
+    );
+}
 
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape' && document.getElementById('fanart-popup').classList.contains('active')) {
-            closePopup();
+function showSuggestions(suggestions) {
+    const box = document.getElementById('search-suggestions');
+    suggestionIndex = -1;
+
+    if (!suggestions.length) {
+        box.innerHTML = '';
+        box.classList.remove('visible');
+        return;
+    }
+
+    box.innerHTML = suggestions.map((s, i) =>
+        `<div class="suggestion-item" data-index="${i}" data-text="${s.text}">
+            <i class="fas ${s.icon}"></i>
+            <span>${highlightMatch(s.text, currentSearch)}</span>
+        </div>`
+    ).join('');
+
+    box.querySelectorAll('.suggestion-item').forEach(el => {
+        el.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            const input = document.getElementById('fanart-search');
+            input.value = el.dataset.text;
+            currentSearch = el.dataset.text;
+            box.classList.remove('visible');
+            renderFanarts();
+        });
+    });
+
+    box.classList.add('visible');
+}
+
+function hideSuggestions() {
+    const box = document.getElementById('search-suggestions');
+    box.classList.remove('visible');
+    suggestionIndex = -1;
+}
+
+function initFilterDropdown() {
+    const btn = document.getElementById('filter-toggle-btn');
+    const dropdown = document.getElementById('filter-dropdown');
+    const label = document.getElementById('filter-label');
+
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = dropdown.classList.contains('open');
+        dropdown.classList.toggle('open', !isOpen);
+        btn.classList.toggle('open', !isOpen);
+    });
+
+    document.addEventListener('click', () => {
+        dropdown.classList.remove('open');
+        btn.classList.remove('open');
+    });
+
+    dropdown.addEventListener('click', (e) => e.stopPropagation());
+
+    dropdown.querySelectorAll('.filter-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+            dropdown.querySelectorAll('.filter-option').forEach(o => o.classList.remove('active'));
+            opt.classList.add('active');
+            currentFilter = opt.dataset.filter;
+            label.textContent = opt.textContent;
+            dropdown.classList.remove('open');
+            btn.classList.remove('open');
+            renderFanarts();
+        });
+    });
+}
+
+function initSearchKeyboard() {
+    const input = document.getElementById('fanart-search');
+    const box = document.getElementById('search-suggestions');
+
+    input.addEventListener('keydown', (e) => {
+        const items = box.querySelectorAll('.suggestion-item');
+        if (!items.length) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            suggestionIndex = Math.min(suggestionIndex + 1, items.length - 1);
+            items.forEach((el, i) => el.classList.toggle('highlighted', i === suggestionIndex));
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            suggestionIndex = Math.max(suggestionIndex - 1, -1);
+            items.forEach((el, i) => el.classList.toggle('highlighted', i === suggestionIndex));
+        } else if (e.key === 'Enter') {
+            if (suggestionIndex >= 0 && items[suggestionIndex]) {
+                input.value = items[suggestionIndex].dataset.text;
+                currentSearch = input.value;
+                hideSuggestions();
+                renderFanarts();
+            }
+        } else if (e.key === 'Escape') {
+            hideSuggestions();
+        }
+    });
+}
+
+window.addEventListener('languageChanged', () => {
+    renderFanarts();
+    updateEmailLink();
+
+    const activeOpt = document.querySelector('.filter-option.active');
+    const label = document.getElementById('filter-label');
+    if (activeOpt && label) {
+        label.textContent = activeOpt.textContent;
+    }
+
+    const input = document.getElementById('fanart-search');
+    if (input) {
+        input.placeholder = getNestedTranslation('fanart.searchPlaceholder') || '';
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadFanartData();
+    initFilterDropdown();
+    initSearchKeyboard();
+
+    const searchInput = document.getElementById('fanart-search');
+    searchInput.addEventListener('input', () => {
+        currentSearch = searchInput.value;
+        renderFanarts();
+        const sugg = buildSuggestions(currentSearch);
+        showSuggestions(sugg);
+    });
+
+    searchInput.addEventListener('focus', () => {
+        if (currentSearch) showSuggestions(buildSuggestions(currentSearch));
+    });
+
+    searchInput.addEventListener('blur', () => {
+        setTimeout(hideSuggestions, 150);
+    });
+
+    document.getElementById('submit-fanart-btn').addEventListener('click', openSubmitModal);
+    document.getElementById('submit-modal-overlay').addEventListener('click', closeSubmitModal);
+    document.getElementById('submit-modal-close').addEventListener('click', closeSubmitModal);
+    document.getElementById('submit-close-btn').addEventListener('click', closeSubmitModal);
+
+    document.getElementById('fanart-popup-close').addEventListener('click', closeLightbox);
+    document.getElementById('fanart-popup-overlay').addEventListener('click', closeLightbox);
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeLightbox();
+            closeSubmitModal();
         }
     });
 });

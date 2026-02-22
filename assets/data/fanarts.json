@@ -2,28 +2,11 @@
   "fanarts": [
     {
       "id": 1,
-      "title": "Fanart1",
-      "artist": "NomeArtista1",
-      "description": "Fanart1 desc",
-      "image": "assets/images/fanart/fanart1.png",
-      "tags": ["digitale", "chibi", "paesaggio"],
-      "date": "10/01/2025",
-      "socials": {
-        "twitter": "https://twitter.com/nomeartista",
-        "instagram": "https://instagram.com/nomeartista"
-      }
-    },
-    {
-      "id": 2,
-      "title": "Fanart2",
-      "artist": "NomeArtista2",
-      "description": "Fanart2 desc",
-      "image": "assets/images/fanart/fanart2.png",
-      "tags": ["tradizionale", "action"],
-      "date": "20/01/2025",
-      "socials": {
-        "deviantart": "https://deviantart.com/altroartista"
-      }
+      "titleKey": "Eromo Placeholder",
+      "artist": "GlacioBoreale",
+      "image": "assets/images/fanart/placeholder.png",
+      "tags": ["digital", "glacio"],
+      "date": "2025-01-15"
     }
   ]
 }

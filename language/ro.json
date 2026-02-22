@@ -110,7 +110,34 @@
     "sponsorOtherLink": "Link în bio / descriere",
     "sponsorOtherLinkDesc": "Adaugă glaciopia.com în bio sau descrierea platformei tale principale",
     "sponsorNote": "⚠️ Menționează în email ce metodă ai ales și pe ce platformă, astfel putem verifica.",
-    "sendEmail": "Trimite cererea prin email"
+    "sendEmail": "Trimite cererea prin email",
+    "ctaTitle": "Ai putea fi tu!",
+    "ctaDesc": "Ești un VTuber? Aplică pentru a intra în VTPedia!"
+  },
+  "fanart": {
+    "title": "Fanart",
+    "subtitle": "Galerie",
+    "description": "Fanart realizate de comunitate și prieteni!",
+    "searchPlaceholder": "Caută după titlu sau artist...",
+    "filterAll": "Toate",
+    "filterDigital": "Digital",
+    "filterTraditional": "Tradițional",
+    "filterMeme": "Meme",
+    "filterOther": "Altele",
+    "noResults": "Nicio fanart găsită pentru această căutare.",
+    "submitBtn": "Trimite Fanart-ul tău",
+    "submitTitle": "Trimite Fanart-ul tău",
+    "submitDesc": "Vrei să trimiți fanart-ul tău? Apasă butonul de mai jos pentru a deschide clientul de email cu un șablon pre-completat. Nu uita să atașezi imaginea!",
+    "submitRules": "Reguli de trimitere",
+    "rule1": "Imaginile nu trebuie să depășească 2.5 MB.",
+    "rule2": "Trimite doar artwork original creat de tine.",
+    "rule3": "Niciun conținut NSFW sau ofensator.",
+    "rule4": "Formate acceptate: JPG, PNG, GIF, WEBP.",
+    "rule5": "Includeți titlul operei și numele/username-ul dvs.",
+    "submitEmailBtn": "Deschide Client Email",
+    "submitClose": "Închide",
+    "by": "de",
+    "tags": "Taguri"
   },
   "socials": {
     "title": "Retelele mele sociale",
@@ -165,11 +192,7 @@
       "shortDesc": "VTuber italian cu creierul putred și creatorul acestui site...",
       "longDesc": "Glacio Boreale este creatorul acestui site frumos, care îți vorbește direct dintr-o descriere... Ei bine, nu știu ce altceva să scriu aici."
     },
-    "placeholder1": {
-      "shortDesc": "În curând...",
-      "longDesc": "Acest VTuber nu a fost încă adăugat. Stai pe fază!"
-    },
-    "placeholder2": {
+    "placeholder": {
       "shortDesc": "În curând...",
       "longDesc": "Acest VTuber nu a fost încă adăugat. Stai pe fază!"
     },

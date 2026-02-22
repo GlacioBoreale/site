@@ -110,7 +110,34 @@
     "sponsorOtherLink": "Link in bio / descrizione",
     "sponsorOtherLinkDesc": "Aggiungi glaciopia.com nella bio o nella descrizione della tua piattaforma principale",
     "sponsorNote": "⚠️ Indica nell'email quale metodo hai scelto e su quale piattaforma, così possiamo verificarlo.",
-    "sendEmail": "Invia richiesta via email"
+    "sendEmail": "Invia richiesta via email",
+    "ctaTitle": "Potresti esserci tu!",
+    "ctaDesc": "Sei un Vtuber? Fai richiesta per entrare nella VTPedia!"
+  },
+  "fanart": {
+    "title": "Fanart",
+    "subtitle": "Galleria",
+    "description": "Fanart realizzate dalla community e dagli amici!",
+    "searchPlaceholder": "Cerca per titolo o artista...",
+    "filterAll": "Tutte",
+    "filterDigital": "Digitale",
+    "filterTraditional": "Tradizionale",
+    "filterMeme": "Meme",
+    "filterOther": "Altro",
+    "noResults": "Nessuna fanart trovata per questa ricerca.",
+    "submitBtn": "Invia la tua Fanart",
+    "submitTitle": "Invia la tua Fanart",
+    "submitDesc": "Vuoi inviare la tua fanart? Clicca il bottone qui sotto per aprire il tuo client email con un template pre-compilato. Ricordati di allegare l'immagine!",
+    "submitRules": "Regole per l'invio",
+    "rule1": "Le immagini non devono superare i 2.5 MB.",
+    "rule2": "Invia solo artwork originali tuoi.",
+    "rule3": "Nessun contenuto NSFW o offensivo.",
+    "rule4": "Formati accettati: JPG, PNG, GIF, WEBP.",
+    "rule5": "Includi il titolo dell'opera e il tuo nome/username.",
+    "submitEmailBtn": "Apri Client Email",
+    "submitClose": "Chiudi",
+    "by": "di",
+    "tags": "Tag"
   },
   "socials": {
     "title": "I miei social",
@@ -164,11 +191,7 @@
       "shortDesc": "VTuber italiano brainrotten e creatore di questo sito...",
       "longDesc": "Glacio Boreale è il creatore di questo bellissimo sito che vi sta parlando direttamente da una descrizione... Beh si non so cos'altro scrivere qui."
     },
-    "placeholder1": {
-      "shortDesc": "Prossimamente...",
-      "longDesc": "Questo VTuber non è ancora stato aggiunto. Resta sintonizzato!"
-    },
-    "placeholder2": {
+    "placeholder": {
       "shortDesc": "Prossimamente...",
       "longDesc": "Questo VTuber non è ancora stato aggiunto. Resta sintonizzato!"
     },

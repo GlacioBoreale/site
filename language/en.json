@@ -110,7 +110,34 @@
     "sponsorOtherLink": "Link in bio / description",
     "sponsorOtherLinkDesc": "Add glaciopia.com in the bio or description of your main platform",
     "sponsorNote": "⚠️ Include in your email which method you chose and on which platform, so we can verify it.",
-    "sendEmail": "Send request via email"
+    "sendEmail": "Send request via email",
+    "ctaTitle": "It could be you!",
+    "ctaDesc": "Are you a VTuber? Apply to join the VTPedia!"
+  },
+  "fanart": {
+    "title": "Fanart",
+    "subtitle": "Gallery",
+    "description": "Fanart made by the community and friends!",
+    "searchPlaceholder": "Search by title or artist...",
+    "filterAll": "All",
+    "filterDigital": "Digital",
+    "filterTraditional": "Traditional",
+    "filterMeme": "Meme",
+    "filterOther": "Other",
+    "noResults": "No fanart found for this search.",
+    "submitBtn": "Send your Fanart",
+    "submitTitle": "Submit your Fanart",
+    "submitDesc": "Want to send your fanart? Click the button below to open your email client with a pre-filled template. Make sure to attach your image!",
+    "submitRules": "Submission Rules",
+    "rule1": "Images must not exceed 2.5 MB in size.",
+    "rule2": "Only send your own original artwork.",
+    "rule3": "No NSFW or offensive content.",
+    "rule4": "Accepted formats: JPG, PNG, GIF, WEBP.",
+    "rule5": "Include the title of the work and your name/username.",
+    "submitEmailBtn": "Open Email Client",
+    "submitClose": "Close",
+    "by": "by",
+    "tags": "Tags"
   },
   "socials": {
     "title": "My socials",
@@ -164,11 +191,7 @@
       "shortDesc": "Italian brainrotten VTuber and creator of this website...",
       "longDesc": "Glacio Boreale is the creator of this beautiful website that is speaking directly to you from a description... Well, I don't know what else to write here."
     },
-    "placeholder1": {
-      "shortDesc": "Coming soon...",
-      "longDesc": "This VTuber hasn't been added yet. Stay tuned!"
-    },
-    "placeholder2": {
+    "placeholder": {
       "shortDesc": "Coming soon...",
       "longDesc": "This VTuber hasn't been added yet. Stay tuned!"
     },

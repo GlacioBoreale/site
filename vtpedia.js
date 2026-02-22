@@ -30,12 +30,34 @@ function displayVTubers() {
         grid.appendChild(card);
     });
 
-    if (typeof updateContent === 'function') updateContent();
+    grid.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        const t = getNestedTranslation(key);
+        if (t) el.textContent = t;
+    });
 }
 
 function createVTuberCard(vtuber, index) {
     const card = document.createElement('div');
     card.className = 'vtuber-card stagger-item';
+
+    if (vtuber.isCTA) {
+        card.classList.add('vtuber-card-cta');
+        card.innerHTML = `
+            <div class="card-cta-body">
+                <div class="card-cta-icon"><i class="fas fa-question"></i></div>
+                <h3 class="card-cta-title" data-i18n="vtpedia.ctaTitle">Potresti esserci tu!</h3>
+                <p class="card-cta-desc" data-i18n="vtpedia.ctaDesc">Sei un VTuber? Fai richiesta per entrare nella VTPedia!</p>
+                <div class="card-cta-btn"><i class="fas fa-plus"></i> <span data-i18n="vtpedia.submit">Invia un VTuber</span></div>
+            </div>
+        `;
+        card.addEventListener('click', () => {
+            const btn = document.getElementById('submit-vtuber-btn');
+            if (btn) btn.click();
+        });
+        setTimeout(() => card.classList.add('visible'), index * 80);
+        return card;
+    }
 
     const firstImage = vtuber.images?.[0] || 'assets/images/vtubers/placeholder.png';
     const shortDesc = getNestedTranslation(vtuber.shortDescKey) || vtuber.shortDescKey;
@@ -179,6 +201,16 @@ function copySponsorCmd() {
 
 window.addEventListener('languageChanged', () => {
     displayVTubers();
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        const t = getNestedTranslation(key);
+        if (t) el.textContent = t;
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        const t = getNestedTranslation(key);
+        if (t) el.placeholder = t;
+    });
 });
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-02-22T19:25:59Z",
+  "updatedAt": "2026-02-22T19:46:39Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,6 +43,14 @@
     ],
     "randomClips": [
       {
+        "title": "Il saving, ez",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/ResourcefulDependableHamBatChest-8RO63Cu2CHD0E6H4",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CaJX_E_ETutwrtghw9BOh-A-preview-480x272.jpg",
+        "views": 53,
+        "duration": 14,
+        "creator": "dabidet87"
+      },
+      {
         "title": "face reaveal",
         "url": "https://www.twitch.tv/glacioborealevt/clip/NastyTardyRuffBuddhaBar-e6YHVBz2APguBcQX",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CFKYn33umB1Qc9gD4LgXEFw-preview-480x272.jpg",
@@ -51,20 +59,12 @@
         "creator": "auremdunknown"
       },
       {
-        "title": "Nixel Fuori Contesto",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/GrossAttractiveHeronANELE-YNXE5gsWGEIkit6p",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/T3ft3WDVxOYLFhhCJIreqQ/AT-cm%7CT3ft3WDVxOYLFhhCJIreqQ-preview-480x272.jpg",
-        "views": 35,
-        "duration": 7.6,
-        "creator": "Gennarix_"
-      },
-      {
-        "title": "no scope memento🗿 (bello il no scope btw)",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/ElegantRelievedSashimiPJSugar-dkfv5Z1lAz_BQPEY",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/eiNtTXZH7-WdZQM_wUDxGA/AT-cm%7CeiNtTXZH7-WdZQM_wUDxGA-preview-480x272.jpg",
-        "views": 29,
-        "duration": 12.6,
-        "creator": "dabidet87"
+        "title": "Pronto!!!!!!!",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/MagnificentWittyInternThisIsSparta-ujpniueNUbiV-77b",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1302910438-preview-480x272.jpg",
+        "views": 49,
+        "duration": 10.5,
+        "creator": "lucaop69"
       }
     ]
   },
@@ -80,7 +80,7 @@
         "thumbnail": "https://i.ytimg.com/vi/MKUd3bB70Ko/mqdefault.jpg",
         "publishedAt": "2026-02-17T07:30:09Z",
         "url": "https://www.youtube.com/watch?v=MKUd3bB70Ko",
-        "viewCount": 27
+        "viewCount": 26
       },
       {
         "title": "Ho Finito L'Atto 1... Ma Ne Valeva VERAMENTE La Pena?",
@@ -88,7 +88,7 @@
         "thumbnail": "https://i.ytimg.com/vi/xg3McGnp1tc/mqdefault.jpg",
         "publishedAt": "2026-02-17T07:30:36Z",
         "url": "https://www.youtube.com/watch?v=xg3McGnp1tc",
-        "viewCount": 43
+        "viewCount": 42
       },
       {
         "title": "ODIAVO Expedition 33, Ma Ora Sono Cambiato.",

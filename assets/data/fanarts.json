@@ -6,7 +6,11 @@
       "artist": "GlacioBoreale",
       "image": "assets/images/fanart/placeholder.png",
       "tags": ["digital", "glacio"],
-      "date": "2025-01-15"
+      "date": "2025-01-15",
+      "socials": {
+        "twitter": "https://x.com/GlacioBoreale",
+        "twitch": "https://twitch.tv/glacioborealevt"
+      }
     }
   ]
 }

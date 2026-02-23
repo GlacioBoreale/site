@@ -457,6 +457,38 @@
   flex-wrap: wrap;
 }
 
+.fanart-popup-socials {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 0.6rem;
+}
+
+.fanart-social-link {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.fanart-social-link:hover         { transform: translateY(-2px); color: #fff; }
+.fanart-social-link.twitter:hover  { background: rgba(255,255,255,0.1);  border-color: rgba(255,255,255,0.3); }
+.fanart-social-link.instagram:hover{ background: rgba(225,48,108,0.2);   border-color: #E1306C; color: #E1306C; }
+.fanart-social-link.twitch:hover   { background: rgba(145,70,255,0.2);   border-color: #9146FF; color: #9146FF; }
+.fanart-social-link.youtube:hover  { background: rgba(255,0,0,0.2);      border-color: #FF0000; color: #FF0000; }
+.fanart-social-link.tiktok:hover   { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.25); }
+.fanart-social-link.discord:hover  { background: rgba(88,101,242,0.2);   border-color: #5865F2; color: #5865F2; }
+.fanart-social-link.bluesky:hover  { background: rgba(0,133,255,0.2);    border-color: #0085FF; color: #0085FF; }
+.fanart-social-link.website:hover  { background: rgba(91,156,246,0.2);   border-color: #5b9cf6; color: #5b9cf6; }
+
 .submit-modal {
   display: none;
   position: fixed;

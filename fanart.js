@@ -15,6 +15,7 @@ I would like to submit my fanart.
 Title: [Your title here]
 Artist name / username: [Your name here]
 Tags: [e.g. digital, traditional, meme, other]
+Socials: [Your social links, e.g. Twitter/X, Instagram, etc.]
 
 [Please attach your image to this email. Max 2.5 MB]
 
@@ -90,10 +91,22 @@ function createFanartCard(f) {
     return card;
 }
 
+const SOCIAL_META = {
+    twitter:   { icon: 'fa-x-twitter',  label: 'X / Twitter' },
+    instagram: { icon: 'fa-instagram',   label: 'Instagram' },
+    twitch:    { icon: 'fa-twitch',      label: 'Twitch' },
+    youtube:   { icon: 'fa-youtube',     label: 'YouTube' },
+    tiktok:    { icon: 'fa-tiktok',      label: 'TikTok' },
+    bluesky:   { icon: 'fa-cloud',       label: 'Bluesky' },
+    discord:   { icon: 'fa-discord',     label: 'Discord' },
+    website:   { icon: 'fa-globe',       label: 'Website' },
+};
+
 function openLightbox(f) {
     const title = getNestedTranslation(f.titleKey) || f.titleKey || '';
     const byText = getNestedTranslation('fanart.by') || 'di';
     const tags = f.tags || [];
+    const socials = f.socials || {};
 
     const popupImg = document.getElementById('fanart-popup-img');
     popupImg.onerror = function() { this.src = 'assets/images/vtubers/placeholder.png'; this.onerror = null; };
@@ -104,6 +117,21 @@ function openLightbox(f) {
 
     const tagsEl = document.getElementById('fanart-popup-tags');
     tagsEl.innerHTML = tags.map(t => `<span class="tag-badge">${t}</span>`).join('');
+
+    const socialsEl = document.getElementById('fanart-popup-socials');
+    const socialEntries = Object.entries(socials);
+    if (socialEntries.length > 0) {
+        socialsEl.innerHTML = socialEntries.map(([platform, url]) => {
+            const meta = SOCIAL_META[platform] || { icon: 'fa-link', label: platform };
+            return `<a href="${url}" target="_blank" rel="noopener" class="fanart-social-link ${platform}" title="${meta.label}">
+                <i class="fab ${meta.icon}"></i>
+            </a>`;
+        }).join('');
+        socialsEl.style.display = 'flex';
+    } else {
+        socialsEl.innerHTML = '';
+        socialsEl.style.display = 'none';
+    }
 
     document.getElementById('fanart-popup').classList.add('active');
     document.body.style.overflow = 'hidden';

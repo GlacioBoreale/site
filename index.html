@@ -191,7 +191,7 @@
         const grid = document.getElementById('vtubers-preview-grid');
         if (!grid) return;
 
-        const toShow = data.vtubers.slice(0, 4);
+        const toShow = data.vtubers.filter(vt => !vt.isCTA).slice(0, 4);
         toShow.forEach(vt => {
           const img = vt.images?.[0] || 'assets/images/vtubers/placeholder.png';
           const card = document.createElement('a');

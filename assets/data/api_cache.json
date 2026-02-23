@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-02-23T08:02:15Z",
+  "updatedAt": "2026-02-23T09:07:31Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,12 +43,20 @@
     ],
     "randomClips": [
       {
-        "title": "*fence di tronco di legno nero*",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/RealFairDinosaurPipeHype-PSVPhKBODLDg4H8G",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1276219802-preview-480x272.jpg",
-        "views": 35,
-        "duration": 8.6,
-        "creator": "Chompy_Sellino"
+        "title": "Nuh-uh ✨✨",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/ImportantSmellyQueleaGrammarKing-g7bfcOfJhMxoUW_w",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/e_mYB4O233DnyYTMaFFv8A/AT-cm%7Ce_mYB4O233DnyYTMaFFv8A-preview-480x272.jpg",
+        "views": 33,
+        "duration": 11,
+        "creator": "dabidet87"
+      },
+      {
+        "title": "L'anklebraking, il faking, la finta. ",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/BoredKawaiiTermiteBatChest-7EJbluOQBVS99ske",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CpOPCe-xCW5bjkAVUvfbJHg-preview-480x272.jpg",
+        "views": 49,
+        "duration": 19.1,
+        "creator": "dabidet87"
       },
       {
         "title": "When Tryhard hits...",
@@ -57,14 +65,6 @@
         "views": 58,
         "duration": 48.8,
         "creator": "GlacioBorealeVT"
-      },
-      {
-        "title": "è un disegno quello lo sai?",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableRenownedAuberginePMSTwin",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C979372397-preview-480x272.jpg",
-        "views": 39,
-        "duration": 7.1,
-        "creator": "andreaproob"
       }
     ]
   },
@@ -80,7 +80,7 @@
         "thumbnail": "https://i.ytimg.com/vi/MKUd3bB70Ko/mqdefault.jpg",
         "publishedAt": "2026-02-17T07:30:09Z",
         "url": "https://www.youtube.com/watch?v=MKUd3bB70Ko",
-        "viewCount": 34
+        "viewCount": 33
       },
       {
         "title": "Ho Finito L'Atto 1... Ma Ne Valeva VERAMENTE La Pena?",

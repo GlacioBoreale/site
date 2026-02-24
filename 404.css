@@ -56,8 +56,14 @@ body {
   border: 3px solid rgba(255,255,255,0.2);
   box-shadow: 0 10px 40px rgba(0,0,0,0.5);
   transition: transform 0.3s ease, filter 0.3s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
 }
-.error-image:hover { transform: scale(1.05) rotate(2deg); }
+.image-container.coin-unlocked .error-image { pointer-events: auto; }
+.image-container:hover .error-image { transform: scale(1.05) rotate(2deg); }
+
 
 .image-container.coin-unlocked {
   cursor: pointer;
@@ -84,6 +90,8 @@ body {
   box-shadow: 0 4px 15px rgba(255,215,0,0.5);
   white-space: nowrap;
   z-index: 10;
+  user-select: none;
+  -webkit-user-select: none;
 }
 .coin-tooltip-hint::after {
   content: '';

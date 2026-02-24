@@ -15,6 +15,21 @@ function formatDuration(seconds) {
     return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
+function renderClipMini(clip) {
+    return `
+        <a href="${clip.url}" target="_blank" class="clip-card-mini">
+            <img src="${clip.thumbnail}" alt="${clip.title}" class="clip-thumb-mini" onerror="this.style.display='none'">
+            <div class="clip-info-mini">
+                <div class="clip-title-mini">${clip.title}</div>
+                <div class="clip-stats-mini">
+                    <span><i class="fas fa-eye"></i> ${formatNumber(clip.views)}</span>
+                    <span><i class="fas fa-clock"></i> ${formatDuration(clip.duration)}</span>
+                </div>
+            </div>
+        </a>
+    `;
+}
+
 function staggerReveal(items, delayStep = 100) {
     items.forEach((el, i) => {
         el.classList.add('stagger-item');
@@ -84,18 +99,17 @@ function renderTwitch(twitch) {
         if (clips.length === 0) {
             clipsGrid.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:0.85rem;">Nessuna clip disponibile</p>';
         } else {
-            clipsGrid.innerHTML = clips.map(clip => `
-                <a href="${clip.url}" target="_blank" class="clip-card-mini">
-                    <img src="${clip.thumbnail}" alt="${clip.title}" class="clip-thumb-mini" onerror="this.style.display='none'">
-                    <div class="clip-info-mini">
-                        <div class="clip-title-mini">${clip.title}</div>
-                        <div class="clip-stats-mini">
-                            <span><i class="fas fa-eye"></i> ${formatNumber(clip.views)}</span>
-                            <span><i class="fas fa-clock"></i> ${formatDuration(clip.duration)}</span>
-                        </div>
-                    </div>
-                </a>
-            `).join('');
+            clipsGrid.innerHTML = clips.map(clip => renderClipMini(clip)).join('');
+        }
+    }
+
+    const randomSection = document.getElementById('twitch-random-section');
+    const randomGrid = document.getElementById('twitch-random-grid');
+    if (randomGrid) {
+        const randomClips = twitch.randomClips || [];
+        if (randomClips.length > 0) {
+            randomGrid.innerHTML = randomClips.map(clip => renderClipMini(clip)).join('');
+            if (randomSection) randomSection.style.display = 'block';
         }
     }
 }

@@ -148,6 +148,7 @@
     "subscribers": "subscribers",
     "topClips": "Top Clips",
     "popularClips": "Popular Clips",
+    "randomClips": "Random Clips",
     "liveNow": "LIVE",
     "offline": "OFFLINE",
     "offlineDesc": "Not streaming right now",

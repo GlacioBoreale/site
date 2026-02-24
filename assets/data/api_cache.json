@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-02-24T13:06:37Z",
+  "updatedAt": "2026-02-24T15:58:50Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
     "followers": 1187,
     "url": "https://twitch.tv/glacioborealevt",
-    "isLive": false,
+    "isLive": true,
     "stream": {
-      "title": "",
-      "game": "",
-      "gameBoxArt": "",
-      "viewers": 0,
-      "startedAt": "",
-      "thumbnail": ""
+      "title": "I robot sono stati aggiornati? | ► Vtuber ITA ◄ | !ds !ig",
+      "game": "ARC Raiders",
+      "gameBoxArt": "https://static-cdn.jtvnw.net/ttv-boxart/464339927-144x192.jpg",
+      "viewers": 2,
+      "startedAt": "2026-02-24T14:30:04Z",
+      "thumbnail": "https://static-cdn.jtvnw.net/previews-ttv/live_user_glacioborealevt-1280x720.jpg"
     },
     "offlineImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/101d761a-4950-4c4e-87f7-f81e912529c8-channel_offline_image-1920x1080.png",
     "topClips": [
@@ -20,7 +20,7 @@
         "title": "he fell off (AAAAAAAAAAHHHH)",
         "url": "https://www.twitch.tv/glacioborealevt/clip/GleamingGiantLardCoolStoryBob-z_Je0V6Hh3Bdm_VD",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CL-BTvM_yXtFeh4dwXZv1Qw-preview-480x272.jpg",
-        "views": 108,
+        "views": 109,
         "duration": 14,
         "creator": "dabidet87"
       },
@@ -43,28 +43,28 @@
     ],
     "randomClips": [
       {
-        "title": "wtf is that sound",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/CuriousAdventurousDadHeyGuys-oDbHErbl88zzZ2WY",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/-4fptaA2xxK25fPM82dlmA/vod-1997814363-offset-5294-preview-480x272.jpg",
+        "title": "è un disegno quello lo sai?",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableRenownedAuberginePMSTwin",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C979372397-preview-480x272.jpg",
         "views": 39,
-        "duration": 30,
-        "creator": "antokekt"
+        "duration": 7.1,
+        "creator": "andreaproob"
       },
       {
-        "title": "*fence di tronco di legno nero*",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/RealFairDinosaurPipeHype-PSVPhKBODLDg4H8G",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1276219802-preview-480x272.jpg",
-        "views": 35,
-        "duration": 8.6,
-        "creator": "Chompy_Sellino"
+        "title": "streamers luck ",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/CrowdedFurryTireWOOP-W-kBSOuRuJ90WPSj",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/wUZHrlvpAUjrkbifdFj0ow/AT-cm%7CwUZHrlvpAUjrkbifdFj0ow-preview-480x272.jpg",
+        "views": 55,
+        "duration": 51.8,
+        "creator": "sachiiscorner"
       },
       {
-        "title": "Pronto!!!!!!!",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/MagnificentWittyInternThisIsSparta-ujpniueNUbiV-77b",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1302910438-preview-480x272.jpg",
-        "views": 49,
-        "duration": 10.5,
-        "creator": "lucaop69"
+        "title": "AHAHAAH",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/CoySilkyJuiceKappaRoss-wI0uSDy-6120KAAv",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/JjN_28CNLkg8vutdtCgALw/AT-cm%7CJjN_28CNLkg8vutdtCgALw-preview-480x272.jpg",
+        "views": 31,
+        "duration": 11.3,
+        "creator": "OriginalEromo"
       }
     ]
   },
@@ -80,7 +80,7 @@
         "thumbnail": "https://i.ytimg.com/vi/MKUd3bB70Ko/mqdefault.jpg",
         "publishedAt": "2026-02-17T07:30:09Z",
         "url": "https://www.youtube.com/watch?v=MKUd3bB70Ko",
-        "viewCount": 46
+        "viewCount": 47
       },
       {
         "title": "Ho Finito L'Atto 1... Ma Ne Valeva VERAMENTE La Pena?",
@@ -88,7 +88,7 @@
         "thumbnail": "https://i.ytimg.com/vi/xg3McGnp1tc/mqdefault.jpg",
         "publishedAt": "2026-02-17T07:30:36Z",
         "url": "https://www.youtube.com/watch?v=xg3McGnp1tc",
-        "viewCount": 68
+        "viewCount": 69
       },
       {
         "title": "ODIAVO Expedition 33, Ma Ora Sono Cambiato.",

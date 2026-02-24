@@ -199,16 +199,18 @@ async function initNavLiveBadge() {
     const data = await res.json();
     const isLive = data?.twitch?.isLive;
 
+    const t = window._translations || {};
+    const ach = t.ach || {};
     if (isLive) {
       btn.href = 'https://twitch.tv/glacioborealevt';
       btn.target = '_blank';
       btn.rel = 'noopener';
       btn.classList.add('is-live');
-      text.textContent = 'Glacio è in LIVE!';
+      text.textContent = ach.liveOnline || 'Glacio è in LIVE!';
     } else {
       btn.href = `${base}socials.html`;
       btn.target = '';
-      text.textContent = 'Glacio è Offline';
+      text.textContent = ach.liveOffline || 'Glacio è Offline';
     }
   } catch(e) {
   }

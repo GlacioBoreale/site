@@ -39,22 +39,22 @@
         <div class="settings-panel-arrow"></div>
         
         <div class="settings-section">
-          <p class="settings-label">Lingua</p>
+          <p class="settings-label" data-i18n="settings.language">Lingua</p>
           <div class="settings-lang-row" id="settings-lang-row"></div>
         </div>
 
         <div class="settings-divider"></div>
 
         <div class="settings-section">
-          <p class="settings-label">Tema</p>
+          <p class="settings-label" data-i18n="settings.theme">Tema</p>
           <div class="settings-theme-row">
             <button class="settings-theme-btn active" data-theme="dark" id="theme-btn-dark">
               <i class="fas fa-moon"></i>
-              <span>Scuro</span>
+              <span data-i18n="settings.dark">Scuro</span>
             </button>
             <button class="settings-theme-btn" data-theme="light" id="theme-btn-light">
               <i class="fas fa-sun"></i>
-              <span>Chiaro</span>
+              <span data-i18n="settings.light">Chiaro</span>
             </button>
           </div>
         </div>
@@ -62,11 +62,11 @@
         <div class="settings-divider"></div>
 
         <div class="settings-section">
-          <p class="settings-label">Achievement</p>
+          <p class="settings-label" data-i18n="settings.achievements">Achievement</p>
           <button class="settings-ach-btn" id="open-achievements-btn">
             <span class="settings-ach-btn-left">
               <i class="fas fa-trophy"></i>
-              <span>I tuoi achievement</span>
+              <span data-i18n="settings.yourAchievements">I tuoi achievement</span>
             </span>
             <span class="settings-ach-count" id="ach-nav-count">0/0</span>
           </button>
@@ -86,13 +86,13 @@
     </ul>
 
     <div class="mobile-lang-container show-on-mobile">
-      <p class="mobile-settings-label">Lingua</p>
+      <p class="mobile-settings-label" data-i18n="settings.language">Lingua</p>
       <ul class="lang-dropdown-menu lang-menu-mobile" id="lang-menu-mobile" role="listbox"></ul>
     </div>
 
     <div class="mobile-ach-container show-on-mobile">
       <button class="mobile-ach-btn" id="mobile-open-achievements-btn">
-        <span><i class="fas fa-trophy"></i> Achievement</span>
+        <span><i class="fas fa-trophy"></i> <span data-i18n="settings.mobileAch">Achievement</span></span>
         <span class="mobile-ach-count" id="mobile-ach-count">0/0</span>
       </button>
     </div>

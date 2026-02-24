@@ -146,6 +146,11 @@ const ACHIEVEMENTS = [
 ];
 
 
+// ---- Helper traduzioni -----------------------------------------------
+function t(key) {
+  return key.split('.').reduce((obj, k) => obj?.[k], translations) || key.split('.').pop();
+}
+
 // ---- Inizio vero codice ----------------------------------------------
 const STORAGE_KEY = 'glaciopia_achievements';
 
@@ -244,8 +249,8 @@ function queueToast(ach) {
     <div class="ach-toast-inner">
       <span class="ach-toast-icon">${ach.icon}</span>
       <div class="ach-toast-text">
-        <span class="ach-toast-label">Achievement sbloccato!</span>
-        <span class="ach-toast-name">${ach.name}</span>
+        <span class="ach-toast-label">${t('ach.unlocked')}</span>
+        <span class="ach-toast-name">${t('ach.' + ach.id + '_name')}</span>
       </div>
     </div>
   `;
@@ -273,7 +278,7 @@ function buildAchievementPopup() {
           <i class="fas fa-trophy"></i>
           <div>
             <h2>Achievement</h2>
-            <p class="ach-popup-progress-text" id="ach-progress-text">0 / ${ACHIEVEMENTS.length} sbloccati</p>
+            <p class="ach-popup-progress-text" id="ach-progress-text">0 / ${ACHIEVEMENTS.length} ${t('ach.progress')}</p>
           </div>
         </div>
         <button class="ach-popup-close" id="ach-popup-close" aria-label="Chiudi">
@@ -286,10 +291,10 @@ function buildAchievementPopup() {
       </div>
 
       <div class="ach-popup-filters" id="ach-filters">
-        <button class="ach-filter-btn active" data-cat="all">Tutti</button>
-        <button class="ach-filter-btn" data-cat="esplora">Esplorazione</button>
-        <button class="ach-filter-btn" data-cat="segreto">Segreti</button>
-        <button class="ach-filter-btn" data-cat="varie">Varie</button>
+        <button class="ach-filter-btn active" data-cat="all">${t('ach.filterAll')}</button>
+        <button class="ach-filter-btn" data-cat="esplora">${t('ach.filterExplore')}</button>
+        <button class="ach-filter-btn" data-cat="segreto">${t('ach.filterSecret')}</button>
+        <button class="ach-filter-btn" data-cat="varie">${t('ach.filterVarie')}</button>
       </div>
 
       <div class="ach-popup-grid" id="ach-popup-grid"></div>
@@ -339,12 +344,16 @@ function renderAchievementGrid(filterCat = 'all') {
     const card = document.createElement('div');
     card.className = `ach-card ${done ? 'ach-card--unlocked' : 'ach-card--locked'}`;
 
+    const achName = t('ach.' + ach.id + '_name');
+    const achDesc = t('ach.' + ach.id + '_desc');
+    const achHint = t('ach.' + ach.id + '_hint');
+
     if (ach.secret && !done) {
       card.innerHTML = `
         <div class="ach-card-icon ach-card-icon--secret">?</div>
         <div class="ach-card-body">
           <p class="ach-card-name">???</p>
-          <p class="ach-card-desc">${ach.hint}</p>
+          <p class="ach-card-desc">${achHint}</p>
         </div>
         <div class="ach-card-badge ach-card-badge--locked"><i class="fas fa-lock"></i></div>
       `;
@@ -352,8 +361,8 @@ function renderAchievementGrid(filterCat = 'all') {
       card.innerHTML = `
         <div class="ach-card-icon">${ach.icon}</div>
         <div class="ach-card-body">
-          <p class="ach-card-name">${ach.name}</p>
-          <p class="ach-card-desc">${done ? ach.desc : ach.hint}</p>
+          <p class="ach-card-name">${achName}</p>
+          <p class="ach-card-desc">${done ? achDesc : achHint}</p>
           ${done ? `<p class="ach-card-date"><i class="fas fa-calendar-check"></i> ${date}</p>` : ''}
         </div>
         <div class="ach-card-badge ${done ? 'ach-card-badge--unlocked' : 'ach-card-badge--locked'}">
@@ -373,11 +382,17 @@ function updateAchievementPopupProgress() {
 
   const txt = document.getElementById('ach-progress-text');
   const bar = document.getElementById('ach-progress-bar');
-  if (txt) txt.textContent = `${count} / ${total} sbloccati`;
+  if (txt) txt.textContent = `${count} / ${total} ${t('ach.progress')}`;
   if (bar) bar.style.width = `${pct}%`;
 }
 
+function rebuildAchievementPopup() {
+  const existing = document.getElementById('achievement-popup');
+  if (existing) existing.remove();
+}
+
 function openAchievementPopup() {
+  rebuildAchievementPopup();
   buildAchievementPopup();
   updateAchievementPopupProgress();
   renderAchievementGrid('all');
@@ -411,6 +426,20 @@ function updateAchievementCounter() {
 function initAchievements() {
   unlockAchievement('first_visit');
   updateAchievementCounter();
+
+  window.addEventListener('languageChanged', () => {
+    updateAchievementCounter();
+    if (document.getElementById('achievement-popup')?.classList.contains('active')) {
+      rebuildAchievementPopup();
+      buildAchievementPopup();
+      updateAchievementPopupProgress();
+      renderAchievementGrid('all');
+      document.getElementById('achievement-popup')?.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+  });
+
+  window.addEventListener('languageChanged', () => initNavLiveBadge());
 
   const path = window.location.pathname;
   if (path.includes('vtpedia'))  unlockAchievement('visited_vtpedia');

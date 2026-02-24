@@ -629,3 +629,52 @@
 [data-theme="light"] .live-uptime { color: rgba(10,10,20,0.25); }
 [data-theme="light"] .offline-badge { background: rgba(240,244,255,0.85); border-color: rgba(10,10,20,0.1); color: rgba(10,10,20,0.5); }
 [data-theme="light"] .twitch-clips-section { border-top-color: rgba(10,10,20,0.07); }
+
+/* Bottoni X e TikTok */
+[data-theme="light"] .x-btn {
+  background: rgba(10,10,20,0.07);
+  border-color: rgba(10,10,20,0.2);
+  color: #0a0a14;
+}
+[data-theme="light"] .x-btn:hover {
+  background: rgba(10,10,20,0.12);
+  border-color: rgba(10,10,20,0.35);
+}
+[data-theme="light"] .tiktok-btn {
+  background: linear-gradient(-45deg, rgba(236,14,83,0.12), rgba(4,187,199,0.12));
+  color: #0a0a14;
+}
+
+/* Icona TikTok */
+[data-theme="light"] .tiktok-icon {
+  background: linear-gradient(-45deg, rgba(236,14,83,0.1), rgba(4,187,199,0.1));
+  color: #1a1a1a;
+}
+[data-theme="light"] .x-icon {
+  background: rgba(10,10,20,0.07);
+  border-color: rgba(10,10,20,0.2);
+  color: #0a0a14;
+}
+
+/* Hover nomi piattaforme */
+[data-theme="light"] .twitch-name:hover    { color: #6c2fc4; }
+[data-theme="light"] .yt-name:hover        { color: #b30000; }
+[data-theme="light"] .discord-name:hover   { color: #3a4bc4; }
+[data-theme="light"] .instagram-name:hover { color: #a01050; }
+[data-theme="light"] .x-name:hover         { color: #0a0a14; }
+
+/* Bottoni join varianti scure */
+[data-theme="light"] .twitch-btn    { background: #6c2fc4; }
+[data-theme="light"] .youtube-btn   { background: #b30000; }
+[data-theme="light"] .discord-btn   { background: #3a4bc4; }
+[data-theme="light"] .instagram-btn { background: linear-gradient(135deg, #c07000, #b84020, #a01050, #8a1060, #6e0070); }
+
+/* Icone cerchio varianti scure */
+[data-theme="light"] .discord-icon   { background: rgba(58,75,196,0.12);  border-color: rgba(58,75,196,0.3);  color: #3a4bc4; }
+[data-theme="light"] .instagram-icon { background: rgba(160,16,80,0.1);   border-color: rgba(160,16,80,0.25); color: #a01050; }
+[data-theme="light"] .tiktok-name:hover {
+  background-image: linear-gradient(-45deg, #c0003a, #008fa8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

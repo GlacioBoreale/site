@@ -968,3 +968,4 @@
 [data-theme="light"] .sponsor-code { background: rgba(10,10,20,0.06); border-color: rgba(10,10,20,0.1); color: rgba(10,10,20,0.7); }
 [data-theme="light"] .sponsor-copy-btn { background: rgba(10,10,20,0.05); border-color: rgba(10,10,20,0.1); color: rgba(10,10,20,0.5); }
 [data-theme="light"] .sponsor-copy-btn:hover { background: rgba(10,10,20,0.1); color: rgba(10,10,20,0.8); }
+[data-theme="light"] .sponsor-note { color: #8a6200; background: rgba(180,130,0,0.08); border-color: rgba(180,130,0,0.2); }

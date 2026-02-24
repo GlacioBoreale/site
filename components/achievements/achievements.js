@@ -103,7 +103,7 @@ const ACHIEVEMENTS = [
     icon: '🪙',
     name: 'Testa o Croce?',
     desc: 'Hai trovato la moneta nascosta nella pagina 404.',
-    hint: 'Sembra che questa pagina sia stata smarrita... ma c\'è qualcosa di strano qui.',
+    hint: 'Ho smarrito la mia moneta in una pagina persa nel tempo... forse quattro lettere bastano?',
     secret: true,
     category: 'segreto',
   },

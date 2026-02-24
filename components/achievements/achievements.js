@@ -91,7 +91,7 @@ const ACHIEVEMENTS = [
   },
   {
     id: 'mirage',
-    icon: '👁️',
+    icon: '👀',
     name: 'WHAT WAS THAT?!',
     desc: 'È Apparso, come un miraggio, per poi scomparire nel nulla.',
     hint: 'C\'è qualcosa di strano nel logo...',

@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-02-24T13:06:37Z",
+  "updatedAt": "2026-02-24T14:50:05Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
     "followers": 1187,
     "url": "https://twitch.tv/glacioborealevt",
-    "isLive": false,
+    "isLive": true,
     "stream": {
-      "title": "",
-      "game": "",
-      "gameBoxArt": "",
-      "viewers": 0,
-      "startedAt": "",
-      "thumbnail": ""
+      "title": "I robot sono stati aggiornati? | ► Vtuber ITA ◄ | !ds !ig",
+      "game": "ARC Raiders",
+      "gameBoxArt": "https://static-cdn.jtvnw.net/ttv-boxart/464339927-144x192.jpg",
+      "viewers": 2,
+      "startedAt": "2026-02-24T14:30:04Z",
+      "thumbnail": "https://static-cdn.jtvnw.net/previews-ttv/live_user_glacioborealevt-1280x720.jpg"
     },
     "offlineImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/101d761a-4950-4c4e-87f7-f81e912529c8-channel_offline_image-1920x1080.png",
     "topClips": [
@@ -43,12 +43,20 @@
     ],
     "randomClips": [
       {
-        "title": "wtf is that sound",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/CuriousAdventurousDadHeyGuys-oDbHErbl88zzZ2WY",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/-4fptaA2xxK25fPM82dlmA/vod-1997814363-offset-5294-preview-480x272.jpg",
+        "title": "face reaveal",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/NastyTardyRuffBuddhaBar-e6YHVBz2APguBcQX",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CFKYn33umB1Qc9gD4LgXEFw-preview-480x272.jpg",
         "views": 39,
-        "duration": 30,
-        "creator": "antokekt"
+        "duration": 5,
+        "creator": "auremdunknown"
+      },
+      {
+        "title": "L'anklebraking, il faking, la finta. ",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/BoredKawaiiTermiteBatChest-7EJbluOQBVS99ske",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CpOPCe-xCW5bjkAVUvfbJHg-preview-480x272.jpg",
+        "views": 49,
+        "duration": 19.1,
+        "creator": "dabidet87"
       },
       {
         "title": "*fence di tronco di legno nero*",
@@ -57,14 +65,6 @@
         "views": 35,
         "duration": 8.6,
         "creator": "Chompy_Sellino"
-      },
-      {
-        "title": "Pronto!!!!!!!",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/MagnificentWittyInternThisIsSparta-ujpniueNUbiV-77b",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1302910438-preview-480x272.jpg",
-        "views": 49,
-        "duration": 10.5,
-        "creator": "lucaop69"
       }
     ]
   },

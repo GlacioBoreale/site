@@ -34,17 +34,17 @@
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="components/navbar/nav.css">
     <link rel="stylesheet" href="components/footer/footer.css">
+    <link rel="stylesheet" href="components/achievements/achievements.css">
 
     <script src="components/navbar/nav.js"></script>
     <script src="components/footer/footer.js"></script>
+    <script src="components/achievements/achievements.js"></script>
     <script src="script.js"></script>
 </head>
 <body>
     <div id="navbar-placeholder"></div>
 
     <main>
-
-      <!-- ── HERO ── -->
       <section class="home-hero">
         <img src="assets/images/logo.png" alt="Glaciopia" class="hero-logo">
         <h1 data-i18n="home.title">Benvenuto su Glaciopia</h1>
@@ -60,11 +60,7 @@
           <i class="fas fa-chevron-down"></i>
         </div>
       </section>
-
-      <!-- ── SEZIONI ── -->
       <div class="home-sections">
-
-        <!-- CHI SIAMO -->
         <section class="fade-in-up">
           <div class="about-row">
             <div class="about-image-wrap">
@@ -78,15 +74,11 @@
             </div>
           </div>
         </section>
-
         <div class="section-divider"></div>
-
-        <!-- LINK RAPIDI -->
         <section class="fade-in-up">
           <p class="section-label" data-i18n="home.quickLabel">Esplora</p>
           <h2 class="section-title" data-i18n="home.quickTitle">Cosa trovi qui</h2>
           <div class="quicklinks-grid" style="margin-top:2rem">
-
             <a href="vtpedia.html" class="quicklink-card">
               <div class="quicklink-icon"><i class="fas fa-book-open"></i></div>
               <div class="quicklink-title" data-i18n="nav.VTPedia">VTPedia</div>
@@ -117,45 +109,25 @@
 
           </div>
         </section>
-
         <div class="section-divider"></div>
-
-        <!-- SOCIAL -->
         <section class="fade-in-up">
           <p class="section-label" data-i18n="home.socialLabel">Seguimi</p>
           <h2 class="section-title" data-i18n="home.socialTitle">Trovami sui social</h2>
           <p class="section-desc" data-i18n="home.socialDesc" style="margin-bottom:2rem">Stream, aggiornamenti e molto altro!.</p>
           <div class="social-cards">
-            <a href="https://twitch.tv/glacioborealevt" target="_blank" rel="noopener" class="social-card twitch">
-              <i class="fab fa-twitch"></i> Twitch
-            </a>
-            <a href="https://www.youtube.com/@glacioborealevt" target="_blank" rel="noopener" class="social-card youtube">
-              <i class="fab fa-youtube"></i> YouTube
-            </a>
-            <a href="https://discord.gg/nsdCYSxzuR" target="_blank" rel="noopener" class="social-card discord">
-              <i class="fab fa-discord"></i> Discord
-            </a>
-            <a href="https://www.instagram.com/glacioboreale_vt/" target="_blank" rel="noopener" class="social-card instagram">
-              <i class="fab fa-instagram"></i> Instagram
-            </a>
-            <a href="https://www.tiktok.com/@glacioborealevt" target="_blank" rel="noopener" class="social-card tiktok">
-              <i class="fab fa-tiktok"></i> TikTok
-            </a>
-            <a href="https://x.com/GlacioBoreale" target="_blank" rel="noopener" class="social-card x">
-              <i class="fab fa-x-twitter"></i> X
-            </a>
-
+            <a href="https://twitch.tv/glacioborealevt" target="_blank" rel="noopener" class="social-card twitch"><i class="fab fa-twitch"></i> Twitch</a>
+            <a href="https://www.youtube.com/@glacioborealevt" target="_blank" rel="noopener" class="social-card youtube"><i class="fab fa-youtube"></i> YouTube</a>
+            <a href="https://discord.gg/nsdCYSxzuR" target="_blank" rel="noopener" class="social-card discord"><i class="fab fa-discord"></i> Discord</a>
+            <a href="https://www.instagram.com/glacioboreale_vt/" target="_blank" rel="noopener" class="social-card instagram"><i class="fab fa-instagram"></i> Instagram</a>
+            <a href="https://www.tiktok.com/@glacioborealevt" target="_blank" rel="noopener" class="social-card tiktok"><i class="fab fa-tiktok"></i> TikTok</a>
+            <a href="https://x.com/GlacioBoreale" target="_blank" rel="noopener" class="social-card x"><i class="fab fa-x-twitter"></i> X</a>
           </div>
         </section>
-
         <div class="section-divider"></div>
-
-        <!-- ULTIMI VTUBER -->
         <section class="fade-in-up" id="vtubers-preview-section">
           <p class="section-label" data-i18n="home.vtLabel">VTPedia</p>
           <h2 class="section-title" data-i18n="home.vtTitle">VTuber in evidenza</h2>
           <div class="vtubers-preview-grid" id="vtubers-preview-grid">
-            <!-- popolato da JS -->
           </div>
           <div class="vtubers-cta">
             <a href="vtpedia.html" class="btn-ghost">
@@ -164,14 +136,12 @@
             </a>
           </div>
         </section>
-
       </div>
     </main>
 
     <div id="footer-placeholder"></div>
 
     <script>
-    // Scroll reveal
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (e.isIntersecting) {
@@ -183,7 +153,6 @@
 
     document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
 
-    // VTubers preview
     async function loadVTubersPreview() {
       try {
         const res = await fetch('./assets/data/vtubers.json');
@@ -211,7 +180,6 @@
         console.error('Errore caricamento VTubers preview:', e);
       }
     }
-
     window.addEventListener('DOMContentLoaded', loadVTubersPreview);
     </script>
 </body>

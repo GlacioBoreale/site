@@ -21,42 +21,35 @@ Benvenuto nel caos TOTALMENTE organizzato di Glacio Boreale
 
 ## ✅ Implementato
 
-- [x] Sistema multilingua (Italiano / English / Română)
-- [x] Dropdown lingua custom e scalabile (aggiungere una lingua = 1 riga di JS)
-- [x] Navbar e footer modulari e riutilizzabili
-- [x] Design nero con effetti glassmorphism
-- [x] Memorizzazione lingua preferita (localStorage)
-- [x] Animazioni e transizioni (scroll reveal, fade-in)
-- [x] Hosting su GitHub Pages
-- [x] Responsive design per mobile/tablet con menu hamburger
-- [x] Homepage completa con hero, sezioni e anteprima VTPedia
-- [x] Pagina VTPedia con galleria immagini e popup
-- [x] Pagina Fanart con griglia, lightbox, ricerca e filtri per tag
-- [x] Pagine WIP con estetica coerente (about, projects, socials)
-- [x] Pagina 404 con easter egg coin flip (digita "coin") e Konami code
-- [x] Easter egg miraggio (5 click veloci sul logo della navbar)
-- [x] Link social nel footer (Twitch, YouTube, Discord, GitHub)
-- [x] wip.css condiviso per le pagine in costruzione
-- [x] Sfondo globale coerente su tutte le pagine (gradiente blu in cima)
-- [x] Aggiornamento traduzioni su elementi generati dinamicamente in VTPedia
-- [x] Card CTA "Potresti essere tu!" in VTPedia con traduzione IT/EN/RO
-- [x] Placeholder fanart visibile anche nel lightbox ingrandito
+- [x] Sistema multilingua (IT / EN / RO) con preferenza salvata
+- [x] Navbar e footer modulari, riutilizzabili su tutte le pagine
+- [x] Design scuro con effetti glassmorphism e sfondo coerente
+- [x] Animazioni e transizioni su scroll e caricamento pagina
+- [x] Hosting su GitHub Pages con dominio custom
+- [x] Layout responsive per tutte le dimensioni di schermo
+- [x] Homepage con presentazione, sezioni e anteprima contenuti
+- [x] Sezione enciclopedica con schede, galleria e popup dettaglio
+- [x] Galleria community con ricerca, filtri e visualizzazione espansa
+- [x] Pagina 404 con contenuti interattivi e qualche sorpresa nascosta
+- [x] Qualche easter egg sparso qua e là, chi trova trova
+- [x] Pagine placeholder con estetica coerente al resto del sito
+- [x] Traduzioni applicate anche agli elementi generati dinamicamente
+- [x] Achievement del sito
 
 ---
 
 ## 🚧 In Sviluppo
 
-- [ ] Contenuti effettivi delle pagine (about, projects, socials)
-- [ ] Sistema di achievement con salvataggio in cache
-- [ ] Sezione progetti con portfolio
-- [ ] SEO e meta tags
+- [ ] Completamento delle pagine ancora in costruzione
+- [ ] Sistema di progressione nascosto con salvataggio lato client
+- [ ] Sezione dedicata ai progetti personali
+- [ ] Miglioramenti SEO e meta tags
 
 ---
 
 ## 🛠️ Idee
 
 - Mettere in "Chi siamo" l'immagine di "Who is this?" (chiedi a fleim per maggiori info)
-- Implementare un sistema di achievement che salva quali sono stati ottenuti tramite cache e creare una zona apposita
 
 ---
 

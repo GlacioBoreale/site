@@ -7,6 +7,7 @@
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
 
     <link rel="stylesheet" href="404.css">
+    <link rel="stylesheet" href="components/achievements/achievements.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
@@ -55,6 +56,7 @@
                 setTimeout(() => {
                     document.body.style.animation = '';
                 }, 5000);
+                if (typeof unlockAchievement === 'function') unlockAchievement('konami');
             }
         });
     </script>
@@ -107,6 +109,7 @@
 
     function unlockCoinFeature() {
         coinUnlocked = true;
+        if (typeof unlockAchievement === 'function') unlockAchievement('coin_flip');
         const imageContainer = document.querySelector('.image-container');
         const errorImage = document.querySelector('.error-image');
         
@@ -151,6 +154,9 @@
                 
                 const finalImage = coinImages[Math.floor(Math.random() * coinImages.length)];
                 errorImage.src = finalImage;
+
+                const isCoin1 = finalImage.endsWith('coin1.png');
+                const isEromo = finalImage.endsWith('coin2.png') || finalImage.endsWith('coin3.png');
                 
                 setTimeout(() => {
                     imageContainer.classList.remove('flipping');
@@ -159,6 +165,10 @@
                     setTimeout(() => {
                         imageContainer.classList.remove('landing');
                         isFlipping = false;
+                        if (typeof unlockAchievement === 'function') {
+                            if (isCoin1) unlockAchievement('rome');
+                            if (isEromo) unlockAchievement('eromo');
+                        }
                     }, 500);
                 }, 500);
             }
@@ -170,10 +180,12 @@
     });
     </script>
 
+    <script src="components/achievements/achievements.js"></script>
     <script src="script.js"></script>
     <script>
     window.addEventListener('DOMContentLoaded', () => {
         loadTranslations(currentLang);
+        if (typeof initAchievements === 'function') initAchievements();
     });
     </script>
 </body>

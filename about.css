@@ -46,7 +46,7 @@
 .about-subtitle {
   font-family: 'Fredoka', sans-serif;
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.4);
+  color: rgba(255,255,255,0.4);
 }
 
 .team-section {
@@ -63,8 +63,8 @@
 }
 
 .team-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
   border-radius: 16px;
   padding: 1.8rem;
   display: flex;
@@ -74,8 +74,8 @@
 }
 
 .team-card:hover {
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255,255,255,0.2);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
   transform: translateY(-3px);
 }
 
@@ -94,7 +94,7 @@
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
-  border: 2px solid rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255,255,255,0.15);
 }
 
 .team-avatar img {
@@ -104,12 +104,12 @@
 }
 
 .team-avatar--empty {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255,255,255,0.05);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.8rem;
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255,255,255,0.3);
 }
 
 .team-info {
@@ -145,7 +145,7 @@
   font-family: 'Fredoka', sans-serif;
   font-size: 0.95rem;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255,255,255,0.5);
   line-height: 1.6;
   margin-top: 0.3rem;
 }
@@ -160,9 +160,9 @@
   width: 34px;
   height: 34px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.7);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -171,20 +171,16 @@
   transition: all 0.3s ease;
 }
 
-.team-link:hover {
-  color: white;
-  transform: translateY(-2px);
-}
-
+.team-link:hover { color: white; transform: translateY(-2px); }
 .team-link.twitch:hover    { background: rgba(145,70,255,0.15);  border-color: #9146FF; color: #9146FF; }
 .team-link.youtube:hover   { background: rgba(255,0,0,0.15);      border-color: #FF0000; color: #FF0000; }
 .team-link.discord:hover   { background: rgba(88,101,242,0.15);   border-color: #5865F2; color: #5865F2; }
 .team-link.instagram:hover { background: rgba(225,48,108,0.15);   border-color: #E1306C; color: #E1306C; }
-.team-link.x:hover { background: rgba(179,179,179,0.15); border: 1px solid var(--x); color: var(--x); }
-.team-link.x:hover      { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.3); color: #fff; }
-.team-link.github:hover { background: rgba(255,255,255,0.1);  border-color: #fff; color: #fff; }
-.team-link.ko-fi:hover { background: rgba(255,90,22,0.15); border-color: #FF5A16; color: #FF5A16; }
-.team-link.gunslol:hover { background: rgba(255,255,255,0.15); border-color: #fff; color: #fff; }
+.team-link.x:hover         { background: rgba(255,255,255,0.08);  border-color: rgba(255,255,255,0.3); color: #fff; }
+.team-link.github:hover    { background: rgba(255,255,255,0.1);   border-color: #fff; color: #fff; }
+.team-link.ko-fi:hover     { background: rgba(255,90,22,0.15);    border-color: #FF5A16; color: #FF5A16; }
+.team-link.gunslol:hover   { background: rgba(255,255,255,0.15);  border-color: #fff; color: #fff; }
+
 .team-link.tiktok {
   position: relative;
   overflow: visible;
@@ -238,7 +234,7 @@
 
 .join-card p {
   font-family: 'Fredoka', sans-serif;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255,255,255,0.5);
   font-size: 1rem;
   max-width: 500px;
 }
@@ -281,25 +277,9 @@
 }
 
 @media (max-width: 600px) {
-  .about-hero h1 {
-    font-size: 2.2rem;
-  }
-
-  .team-card {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .team-role {
-    margin: 0 auto;
-  }
-
-  .team-links {
-    justify-content: center;
-  }
-
-  .join-card {
-    padding: 1.8rem 1.2rem;
-  }
+  .about-hero h1 { font-size: 2.2rem; }
+  .team-card { flex-direction: column; align-items: center; text-align: center; }
+  .team-role { margin: 0 auto; }
+  .team-links { justify-content: center; }
+  .join-card { padding: 1.8rem 1.2rem; }
 }

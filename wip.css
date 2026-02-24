@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Fredoka:wght@300;400;500;600;700&display=swap');
-
 :root {
   --accent: #5b9cf6;
   --accent2: #a78bfa;
@@ -37,8 +35,6 @@
 .wip-title {
   font-family: 'Fredoka One', sans-serif;
   font-size: clamp(2.5rem, 6vw, 4rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
   background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

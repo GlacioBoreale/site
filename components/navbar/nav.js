@@ -1,24 +1,21 @@
 async function loadNavbar() {
   try {
-    console.log('Caricamento navbar...');
     const response = await fetch('./components/navbar/nav.html');
     if (!response.ok) throw new Error('Errore nel caricamento navbar');
     const navbarHTML = await response.text();
     document.getElementById('navbar-placeholder').innerHTML = navbarHTML;
-    console.log('Navbar caricata!');
-    
+
     initLangSelector();
     initMobileMenu();
     initMirage();
     initNavLiveBadge();
-    
+    initSettingsPanel();
+
   } catch (error) {
     console.error('Errore navbar:', error);
   }
 }
 
-// ── UNICA FONTE DI VERITÀ ─────────────────────────
-// Per aggiungere una lingua: aggiungi un oggetto qui.
 const languages = [
   { value: 'it', flag: 'https://flagcdn.com/w20/it.png', flag2x: 'https://flagcdn.com/w40/it.png', code: 'IT', label: 'Italiano' },
   { value: 'en', flag: 'https://flagcdn.com/w20/gb.png', flag2x: 'https://flagcdn.com/w40/gb.png', code: 'EN', label: 'English'  },
@@ -26,104 +23,108 @@ const languages = [
 ];
 
 function initLangSelector() {
-  buildMenus();
-  setupDesktopDropdown();
-  setupMobileMenu();
-  updateDropdownUI(currentLang);
+  buildLangMenus();
+  setupMobileLangMenu();
+  updateSettingsLangUI(currentLang);
 
-  // chiudi desktop cliccando fuori
   document.addEventListener('click', (e) => {
-    const dd = document.getElementById('lang-dropdown-desktop');
-    if (dd && !dd.contains(e.target)) closeDesktop();
+    const wrapper = document.getElementById('nav-settings-wrapper');
+    if (wrapper && !wrapper.contains(e.target)) closeSettingsPanel();
   });
 }
 
-function buildMenus() {
-  const menuDesktop = document.getElementById('lang-menu-desktop');
-  const menuMobile  = document.getElementById('lang-menu-mobile');
+function buildLangMenus() {
+  const row = document.getElementById('settings-lang-row');
+  if (row) {
+    languages.forEach(lang => {
+      const btn = document.createElement('button');
+      btn.className = 'settings-lang-btn';
+      btn.dataset.value = lang.value;
+      btn.innerHTML = `<img src="${lang.flag}" srcset="${lang.flag2x} 2x" alt="${lang.label}" class="flag-img"> <span>${lang.label}</span>`;
+      btn.addEventListener('click', () => setLang(lang.value));
+      row.appendChild(btn);
+    });
+  }
 
-  languages.forEach(lang => {
-    if (menuDesktop) {
-      const li = document.createElement('li');
-      li.className = 'lang-option';
-      li.dataset.value = lang.value;
-      li.role = 'option';
-      li.innerHTML = `<img src="${lang.flag}" srcset="${lang.flag2x} 2x" alt="${lang.label}" class="flag-img"> <span>${lang.code}</span>`;
-      menuDesktop.appendChild(li);
-    }
-    if (menuMobile) {
+  const menuMobile = document.getElementById('lang-menu-mobile');
+  if (menuMobile) {
+    languages.forEach(lang => {
       const li = document.createElement('li');
       li.className = 'lang-option lang-option-mobile';
       li.dataset.value = lang.value;
       li.role = 'option';
       li.innerHTML = `<img src="${lang.flag}" srcset="${lang.flag2x} 2x" alt="${lang.label}" class="flag-img"> <span>${lang.label}</span>`;
       menuMobile.appendChild(li);
-    }
-  });
+    });
+  }
 }
 
-function setupDesktopDropdown() {
-  const btn  = document.getElementById('lang-btn-desktop');
-  const menu = document.getElementById('lang-menu-desktop');
-  if (!btn || !menu) return;
-
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    menu.classList.contains('open') ? closeDesktop() : openDesktop();
-  });
-
-  menu.addEventListener('click', (e) => e.stopPropagation());
-
-  menu.querySelectorAll('.lang-option').forEach(opt => {
-    opt.addEventListener('click', () => setLang(opt.dataset.value, true));
-  });
-}
-
-function setupMobileMenu() {
+function setupMobileLangMenu() {
   const menu = document.getElementById('lang-menu-mobile');
   if (!menu) return;
   menu.querySelectorAll('.lang-option').forEach(opt => {
-    opt.addEventListener('click', () => setLang(opt.dataset.value, false));
+    opt.addEventListener('click', () => setLang(opt.dataset.value));
   });
 }
 
-function setLang(val, closeMenu) {
+function setLang(val) {
   currentLang = val;
   localStorage.setItem('language', val);
-  updateDropdownUI(val);
-  if (closeMenu) closeDesktop();
+  updateSettingsLangUI(val);
   loadTranslations(val);
+  if (typeof unlockAchievement === 'function') unlockAchievement('changed_language');
 }
 
-function openDesktop() {
-  document.getElementById('lang-btn-desktop')?.classList.add('open');
-  document.getElementById('lang-menu-desktop')?.classList.add('open');
-}
-
-function closeDesktop() {
-  document.getElementById('lang-btn-desktop')?.classList.remove('open');
-  document.getElementById('lang-menu-desktop')?.classList.remove('open');
-}
-
-function updateDropdownUI(lang) {
-  const meta = languages.find(l => l.value === lang);
-  if (!meta) return;
-
-  const flagD = document.getElementById('lang-flag-desktop');
-  const codeD = document.getElementById('lang-code-desktop');
-  if (flagD) flagD.innerHTML = `<img src="${meta.flag}" srcset="${meta.flag2x} 2x" alt="${meta.label}" class="flag-img">`;
-  if (codeD) codeD.textContent = meta.code;
-
+function updateSettingsLangUI(lang) {
+  document.querySelectorAll('.settings-lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.value === lang);
+  });
   document.querySelectorAll('.lang-option').forEach(opt => {
     opt.classList.toggle('active', opt.dataset.value === lang);
   });
+}
+
+function initSettingsPanel() {
+  const btn   = document.getElementById('nav-settings-btn');
+  const panel = document.getElementById('settings-panel');
+  if (!btn || !panel) return;
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = panel.classList.contains('open');
+    open ? closeSettingsPanel() : openSettingsPanel();
+  });
+
+  panel.addEventListener('click', (e) => e.stopPropagation());
+
+  document.getElementById('open-achievements-btn')?.addEventListener('click', () => {
+    closeSettingsPanel();
+    if (typeof openAchievementPopup === 'function') openAchievementPopup();
+  });
+
+  document.getElementById('mobile-open-achievements-btn')?.addEventListener('click', () => {
+    document.getElementById('hamburger-btn')?.classList.remove('active');
+    document.getElementById('mobile-menu')?.classList.remove('active');
+    if (typeof openAchievementPopup === 'function') openAchievementPopup();
+  });
+}
+
+function openSettingsPanel() {
+  const btn   = document.getElementById('nav-settings-btn');
+  const panel = document.getElementById('settings-panel');
+  btn?.classList.add('open');
+  panel?.classList.add('open');
+}
+
+function closeSettingsPanel() {
+  document.getElementById('nav-settings-btn')?.classList.remove('open');
+  document.getElementById('settings-panel')?.classList.remove('open');
 }
 
 function initMirage() {
   const logo = document.querySelector('.logo-link');
   if (!logo) return;
 
-  // Crea l'overlay miraggio nel body se non esiste
   if (!document.getElementById('mirage-overlay')) {
     const overlay = document.createElement('div');
     overlay.id = 'mirage-overlay';
@@ -137,7 +138,6 @@ function initMirage() {
   logo.addEventListener('click', (e) => {
     e.preventDefault();
     clickCount++;
-
     clearTimeout(clickTimer);
     clickTimer = setTimeout(() => { clickCount = 0; }, 800);
 
@@ -154,8 +154,8 @@ function showMirage() {
   if (!overlay || overlay.classList.contains('active')) return;
 
   overlay.classList.add('active');
+  if (typeof unlockAchievement === 'function') unlockAchievement('mirage');
 
-  // Dissolvi dopo 2.8s
   setTimeout(() => {
     overlay.classList.add('dissolve');
     setTimeout(() => {
@@ -169,7 +169,6 @@ async function initNavLiveBadge() {
   const text = document.getElementById('nav-live-text');
   if (!btn || !text) return;
 
-  // Determina il path base (funziona sia in root che in sottocartelle)
   const depth = (window.location.pathname.match(/\//g) || []).length - 1;
   const base  = depth > 0 ? '../'.repeat(depth) : './';
 
@@ -191,28 +190,24 @@ async function initNavLiveBadge() {
       text.textContent = 'Glacio è Offline';
     }
   } catch(e) {
-    // la navbar funziona lo stesso senza cache
   }
 }
 
 function initMobileMenu() {
   const hamburgerBtn = document.getElementById('hamburger-btn');
-  const mobileMenu = document.getElementById('mobile-menu');
-  
-  if (hamburgerBtn && mobileMenu) {
-    hamburgerBtn.addEventListener('click', () => {
-      const opening = !mobileMenu.classList.contains('active');
-      hamburgerBtn.classList.toggle('active');
-      mobileMenu.classList.toggle('active');
-      // chiudi il dropdown lingua quando si chiude il menu
-      if (!opening) closeDropdown('mobile');
+  const mobileMenu   = document.getElementById('mobile-menu');
+  if (!hamburgerBtn || !mobileMenu) return;
+
+  hamburgerBtn.addEventListener('click', () => {
+    hamburgerBtn.classList.toggle('active');
+    mobileMenu.classList.toggle('active');
+    closeSettingsPanel();
+  });
+
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      hamburgerBtn.classList.remove('active');
+      mobileMenu.classList.remove('active');
     });
-    const mobileLinks = mobileMenu.querySelectorAll('a');
-    mobileLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        hamburgerBtn.classList.remove('active');
-        mobileMenu.classList.remove('active');
-      });
-    });
-  }
+  });
 }

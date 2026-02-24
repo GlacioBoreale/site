@@ -25,15 +25,49 @@
       <span id="nav-live-text">Glacio è Offline</span>
     </a>
 
-    <div class="lang-dropdown desktop-lang" id="lang-dropdown-desktop">
-      <button class="lang-dropdown-btn" id="lang-btn-desktop" aria-haspopup="listbox">
-        <span id="lang-flag-desktop"></span>
-        <span id="lang-code-desktop"></span>
-        <svg class="lang-chevron" viewBox="0 0 10 6" fill="none">
-          <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
+    <div class="nav-settings-wrapper desktop-lang" id="nav-settings-wrapper">
+      <button class="nav-settings-btn" id="nav-settings-btn" aria-label="Impostazioni">
+        <i class="fas fa-gear"></i>
       </button>
-      <ul class="lang-dropdown-menu" id="lang-menu-desktop" role="listbox"></ul>
+
+      <div class="settings-panel" id="settings-panel">
+        <div class="settings-panel-arrow"></div>
+
+        <div class="settings-section">
+          <p class="settings-label">Lingua</p>
+          <div class="settings-lang-row" id="settings-lang-row"></div>
+        </div>
+
+        <div class="settings-divider"></div>
+
+        <div class="settings-section">
+          <p class="settings-label">Tema</p>
+          <div class="settings-theme-row">
+            <button class="settings-theme-btn active" data-theme="dark" disabled>
+              <i class="fas fa-moon"></i>
+              <span>Scuro</span>
+            </button>
+            <button class="settings-theme-btn" data-theme="light" disabled title="Prossimamente">
+              <i class="fas fa-sun"></i>
+              <span>Chiaro</span>
+              <span class="settings-soon-badge">Soon</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="settings-divider"></div>
+
+        <div class="settings-section">
+          <p class="settings-label">Achievement</p>
+          <button class="settings-ach-btn" id="open-achievements-btn">
+            <span class="settings-ach-btn-left">
+              <i class="fas fa-trophy"></i>
+              <span>I tuoi achievement</span>
+            </span>
+            <span class="settings-ach-count" id="ach-nav-count">0/0</span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -48,7 +82,15 @@
     </ul>
 
     <div class="mobile-lang-container show-on-mobile">
+      <p class="mobile-settings-label">Lingua</p>
       <ul class="lang-dropdown-menu lang-menu-mobile" id="lang-menu-mobile" role="listbox"></ul>
+    </div>
+
+    <div class="mobile-ach-container show-on-mobile">
+      <button class="mobile-ach-btn" id="mobile-open-achievements-btn">
+        <span><i class="fas fa-trophy"></i> Achievement</span>
+        <span class="mobile-ach-count" id="mobile-ach-count">0/0</span>
+      </button>
     </div>
   </div>
 </nav>

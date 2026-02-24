@@ -13,6 +13,12 @@ body {
   align-items: center;
   justify-content: center;
   overflow-x: hidden;
+  transition: background 0.35s ease, color 0.35s ease;
+}
+
+[data-theme="light"] body {
+  background: #f0f4ff;
+  color: #0a0a14;
 }
 
 .container-404 {
@@ -140,12 +146,14 @@ body {
   margin-bottom: 1rem;
   color: rgba(255,255,255,0.95);
 }
+[data-theme="light"] .error-message { color: rgba(10,10,20,0.9); }
 
 .error-description {
   font-size: 1.3rem;
   color: rgba(255,255,255,0.7);
   margin-bottom: 2rem;
 }
+[data-theme="light"] .error-description { color: rgba(10,10,20,0.55); }
 
 .home-button {
   display: inline-flex;
@@ -193,6 +201,8 @@ body {
   transform: translateY(-2px);
   color: white;
 }
+[data-theme="light"] .link-button { background: rgba(10,10,20,0.04); border-color: rgba(10,10,20,0.1); color: rgba(10,10,20,0.75); }
+[data-theme="light"] .link-button:hover { background: rgba(10,10,20,0.08); border-color: rgba(10,10,20,0.18); color: #0a0a14; }
 
 .mini-footer {
   margin-top: 4rem;
@@ -202,6 +212,7 @@ body {
   color: rgba(255,255,255,0.5);
   font-size: 0.9rem;
 }
+[data-theme="light"] .mini-footer { border-top-color: rgba(10,10,20,0.1); color: rgba(10,10,20,0.4); }
 
 @keyframes fadeInLeft {
   from { opacity: 0; transform: translateX(-50px); }

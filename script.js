@@ -1,3 +1,9 @@
+// Applica il tema salvato subito, prima del render, per evitare flash
+(function() {
+  const t = localStorage.getItem('glaciopia_theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+})();
+
 let currentLang = localStorage.getItem('language') || 'it';
 let translations = {};
 

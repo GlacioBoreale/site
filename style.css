@@ -1,5 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Fredoka:wght@300;400;500;600;700&display=swap');
 
+:root {
+  --bg:          #0a0a0a;
+  --bg-grad:     rgba(91,156,246,0.1);
+  --text:        #fff;
+  --text-muted:  rgba(255,255,255,0.55);
+  --border:      rgba(255,255,255,0.08);
+  --glass:       rgba(255,255,255,0.04);
+  --card-bg:     rgba(255,255,255,0.04);
+  --card-hover:  rgba(255,255,255,0.08);
+  --footer-bg:   rgba(8,8,8,0.6);
+  --input-bg:    rgba(255,255,255,0.05);
+  --input-border:rgba(255,255,255,0.1);
+  --code-bg:     rgba(255,255,255,0.08);
+}
+
+[data-theme="light"] {
+  --bg:          #f0f4ff;
+  --bg-grad:     rgba(91,156,246,0.08);
+  --text:        #0a0a14;
+  --text-muted:  rgba(10,10,20,0.5);
+  --border:      rgba(10,10,20,0.1);
+  --glass:       rgba(10,10,20,0.04);
+  --card-bg:     rgba(255,255,255,0.7);
+  --card-hover:  rgba(255,255,255,0.95);
+  --footer-bg:   rgba(220,228,255,0.6);
+  --input-bg:    rgba(255,255,255,0.8);
+  --input-border:rgba(10,10,20,0.15);
+  --code-bg:     rgba(10,10,20,0.08);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -13,11 +43,12 @@ html {
 body {
   font-family: 'Fredoka', sans-serif;
   line-height: 1.6;
-  color: #fff;
-  background: #0a0a0a;
+  color: var(--text);
+  background: var(--bg);
   min-height: 100vh;
   padding-top: 70px;
   position: relative;
+  transition: background 0.35s ease, color 0.35s ease;
 }
 
 body::before {
@@ -27,9 +58,10 @@ body::before {
   left: 0;
   right: 0;
   height: 100vh;
-  background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(91,156,246,0.1) 0%, transparent 70%);
+  background: radial-gradient(ellipse 60% 50% at 50% 0%, var(--bg-grad) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
+  transition: background 0.35s ease;
 }
 
 main {

@@ -6,9 +6,11 @@
     <title>404 - Glaciopia</title>
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
 
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="404.css">
     <link rel="stylesheet" href="components/achievements/achievements.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>(function(){var t=localStorage.getItem('glaciopia_theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
 </head>
 <body>
     <div class="container-404">
@@ -186,6 +188,12 @@
     window.addEventListener('DOMContentLoaded', () => {
         loadTranslations(currentLang);
         if (typeof initAchievements === 'function') initAchievements();
+
+        // Se l'URL non termina con /404.html l'utente è arrivato tramite un link inesistente
+        const path = window.location.pathname;
+        if (!path.endsWith('/404.html') && !path.endsWith('/404')) {
+            if (typeof unlockAchievement === 'function') unlockAchievement('fourofour');
+        }
     });
     </script>
 </body>

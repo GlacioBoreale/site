@@ -283,3 +283,23 @@
   .team-links { justify-content: center; }
   .join-card { padding: 1.8rem 1.2rem; }
 }
+
+[data-theme="light"] .about-hero h1 {
+  background: linear-gradient(135deg, #0a0a14 30%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+[data-theme="light"] .about-subtitle { color: rgba(10,10,20,0.4); }
+[data-theme="light"] .team-card {
+  background: rgba(255,255,255,0.6);
+  border-color: rgba(10,10,20,0.1);
+}
+[data-theme="light"] .team-card:hover { border-color: rgba(10,10,20,0.2); box-shadow: 0 8px 30px rgba(10,10,20,0.08); }
+[data-theme="light"] .team-avatar { border-color: rgba(10,10,20,0.15); }
+[data-theme="light"] .team-avatar--empty { background: rgba(10,10,20,0.05); color: rgba(10,10,20,0.3); }
+[data-theme="light"] .team-name { color: #0a0a14; }
+[data-theme="light"] .team-desc { color: rgba(10,10,20,0.5); }
+[data-theme="light"] .team-link { background: rgba(10,10,20,0.04); border-color: rgba(10,10,20,0.1); color: rgba(10,10,20,0.6); }
+[data-theme="light"] .join-card { background: rgba(91,156,246,0.07); }
+[data-theme="light"] .join-card h2 { color: #0a0a14; }
+[data-theme="light"] .join-card p { color: rgba(10,10,20,0.5); }

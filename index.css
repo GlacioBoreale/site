@@ -7,6 +7,11 @@
   --border: rgba(255,255,255,0.08);
 }
 
+[data-theme="light"] {
+  --glass: rgba(10,10,20,0.04);
+  --border: rgba(10,10,20,0.1);
+}
+
 .home-hero {
   min-height: calc(100vh - 90px);
   display: flex;
@@ -36,6 +41,13 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+[data-theme="light"] .home-hero h1 {
+  background: linear-gradient(135deg, #0a0a14 30%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.home-hero h1 {
   margin-bottom: 1rem;
   animation: heroFadeDown 0.9s 0.1s cubic-bezier(0.16,1,0.3,1) both;
 }
@@ -50,6 +62,7 @@
   margin-bottom: 2.5rem;
   animation: heroFadeDown 0.9s 0.2s cubic-bezier(0.16,1,0.3,1) both;
 }
+[data-theme="light"] .home-hero .hero-sub { color: rgba(10,10,20,0.5); }
 
 .hero-cta-row {
   display: flex;
@@ -97,6 +110,8 @@
   transform: translateY(-3px);
   color: #fff;
 }
+[data-theme="light"] .btn-ghost { color: rgba(10,10,20,0.75); }
+[data-theme="light"] .btn-ghost:hover { background: rgba(10,10,20,0.07); border-color: rgba(10,10,20,0.2); color: #0a0a14; }
 
 .hero-scroll-hint {
   position: absolute;
@@ -107,6 +122,7 @@
   font-size: 1.4rem;
   animation: bounce 2s infinite;
 }
+[data-theme="light"] .hero-scroll-hint { color: rgba(10,10,20,0.2); }
 
 .home-sections {
   max-width: 1200px;
@@ -135,6 +151,7 @@
   margin-bottom: 1rem;
   line-height: 1.2;
 }
+[data-theme="light"] .section-title { color: #0a0a14; }
 
 .section-desc {
   font-family: 'Fredoka', sans-serif;
@@ -144,6 +161,7 @@
   line-height: 1.7;
   max-width: 520px;
 }
+[data-theme="light"] .section-desc { color: rgba(10,10,20,0.55); }
 
 .about-row {
   display: grid;
@@ -197,6 +215,7 @@
   position: relative;
   overflow: hidden;
 }
+[data-theme="light"] .quicklink-card { color: #0a0a14; background: rgba(255,255,255,0.6); }
 .quicklink-card::before {
   content: '';
   position: absolute;
@@ -211,6 +230,7 @@
   border-color: rgba(255,255,255,0.15);
   transform: translateY(-4px);
 }
+[data-theme="light"] .quicklink-card:hover { background: rgba(255,255,255,0.9); border-color: rgba(10,10,20,0.18); }
 .quicklink-card:hover::before { opacity: 1; }
 
 .quicklink-icon { font-size: 1.6rem; color: var(--accent); }
@@ -222,12 +242,14 @@
   color: rgba(255,255,255,0.45);
   line-height: 1.5;
 }
+[data-theme="light"] .quicklink-desc { color: rgba(10,10,20,0.45); }
 .quicklink-arrow {
   margin-top: auto;
   color: rgba(255,255,255,0.25);
   font-size: 0.85rem;
   transition: color 0.2s, transform 0.2s;
 }
+[data-theme="light"] .quicklink-arrow { color: rgba(10,10,20,0.25); }
 .quicklink-card:hover .quicklink-arrow { color: var(--accent); transform: translateX(4px); }
 
 .social-cards {
@@ -251,6 +273,7 @@
   transition: all 0.25s;
   min-width: 160px;
 }
+[data-theme="light"] .social-card { color: rgba(10,10,20,0.75); background: rgba(255,255,255,0.6); }
 .social-card i { font-size: 1.4rem; }
 .social-card:hover { transform: translateY(-3px); color: #fff; }
 .social-card.twitch:hover    { background: rgba(145,70,255,0.15);  border-color: #9146FF; color: #9146FF; }
@@ -317,6 +340,7 @@
   font-weight: 400;
   color: #fff;
 }
+[data-theme="light"] .vtuber-preview-info .name { color: #0a0a14; }
 .vtuber-preview-info .desc {
   font-family: 'Fredoka', sans-serif;
   font-size: 0.85rem;
@@ -327,6 +351,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+[data-theme="light"] .vtuber-preview-info .desc { color: rgba(10,10,20,0.4); }
 .vtubers-cta { margin-top: 1.8rem; }
 
 .section-divider {

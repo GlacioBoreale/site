@@ -595,3 +595,37 @@
   .socials-main { padding: 1rem 1rem 3rem; }
   .platform-section { padding: 1.2rem; }
 }
+
+[data-theme="light"] .socials-title {
+  background: linear-gradient(135deg, #0a0a14 30%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+[data-theme="light"] .socials-subtitle { color: rgba(10,10,20,0.4); }
+[data-theme="light"] .platform-section { background: rgba(255,255,255,0.6); border-color: rgba(10,10,20,0.1); }
+[data-theme="light"] .platform-name { color: #0a0a14; }
+[data-theme="light"] .platform-meta { color: rgba(10,10,20,0.5); }
+[data-theme="light"] .stream-info-box { background: rgba(10,10,20,0.04); border-color: rgba(10,10,20,0.08); }
+[data-theme="light"] .info-box-label { color: rgba(10,10,20,0.35); }
+[data-theme="light"] .info-box-value { color: #0a0a14; }
+[data-theme="light"] .stat-chip { background: rgba(10,10,20,0.04); border-color: rgba(10,10,20,0.08); color: rgba(10,10,20,0.5); }
+[data-theme="light"] .stat-chip i { color: rgba(10,10,20,0.3); }
+[data-theme="light"] .clips-section-title { color: rgba(10,10,20,0.35); }
+[data-theme="light"] .yt-section-title { color: rgba(10,10,20,0.35); }
+[data-theme="light"] .clip-card { background: rgba(10,10,20,0.03); border-color: rgba(10,10,20,0.08); }
+[data-theme="light"] .clip-title { color: #0a0a14; }
+[data-theme="light"] .clip-stats { color: rgba(10,10,20,0.4); }
+[data-theme="light"] .clip-card-mini { background: rgba(10,10,20,0.03); border-color: rgba(10,10,20,0.07); }
+[data-theme="light"] .clip-title-mini { color: rgba(10,10,20,0.8); }
+[data-theme="light"] .clip-stats-mini { color: rgba(10,10,20,0.3); }
+[data-theme="light"] .yt-video-card { background: rgba(10,10,20,0.03); border-color: rgba(10,10,20,0.08); }
+[data-theme="light"] .yt-video-card:hover { background: rgba(255,0,0,0.05); }
+[data-theme="light"] .yt-video-title { color: #0a0a14; }
+[data-theme="light"] .yt-views { color: rgba(10,10,20,0.4); }
+[data-theme="light"] .yt-views i { color: rgba(10,10,20,0.25); }
+[data-theme="light"] .yt-video-date { color: rgba(10,10,20,0.35); }
+[data-theme="light"] .status-label { color: rgba(10,10,20,0.4); }
+[data-theme="light"] .status-dot.is-offline { background: rgba(10,10,20,0.2); }
+[data-theme="light"] .live-uptime { color: rgba(10,10,20,0.25); }
+[data-theme="light"] .offline-badge { background: rgba(240,244,255,0.85); border-color: rgba(10,10,20,0.1); color: rgba(10,10,20,0.5); }
+[data-theme="light"] .twitch-clips-section { border-top-color: rgba(10,10,20,0.07); }

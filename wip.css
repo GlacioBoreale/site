@@ -105,3 +105,13 @@
   0%, 100% { opacity: 1; transform: scale(1); }
   50%       { opacity: 0.4; transform: scale(0.8); }
 }
+
+[data-theme="light"] .wip-title {
+  background: linear-gradient(135deg, #0a0a14 30%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+[data-theme="light"] .wip-badge { color: rgba(10,10,20,0.5); }
+[data-theme="light"] .wip-desc  { color: rgba(10,10,20,0.45); }
+[data-theme="light"] .wip-back  { color: rgba(10,10,20,0.6); }
+[data-theme="light"] .wip-back:hover { color: #0a0a14; }

@@ -909,3 +909,62 @@
   .gallery-container { height: 180px; }
   .popup-info h2 { font-size: 1.2rem; }
 }
+
+[data-theme="light"] .vtpedia-hero h1 {
+  background: linear-gradient(135deg, #0a0a14 30%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+[data-theme="light"] .vtpedia-hero .description { color: rgba(10,10,20,0.5); }
+[data-theme="light"] .vtuber-card { background: rgba(255,255,255,0.6); border-color: rgba(10,10,20,0.1); }
+[data-theme="light"] .vtuber-card:hover { border-color: rgba(91,156,246,0.35); box-shadow: 0 12px 40px rgba(10,10,20,0.1); }
+[data-theme="light"] .vtuber-name { color: #0a0a14; }
+[data-theme="light"] .vtuber-desc { color: rgba(10,10,20,0.5); }
+[data-theme="light"] .card-image { background: #e8edf8; }
+[data-theme="light"] .added-date { background: rgba(240,244,255,0.85); color: rgba(10,10,20,0.6); border-color: rgba(10,10,20,0.1); }
+[data-theme="light"] .show-more-btn { color: rgba(10,10,20,0.6); }
+[data-theme="light"] .show-more-btn:hover { color: var(--accent); }
+[data-theme="light"] .popup-content { background: #f0f4ff; border-color: rgba(10,10,20,0.1); }
+[data-theme="light"] .popup-overlay { background: rgba(180,195,240,0.8); }
+[data-theme="light"] .popup-close { background: rgba(10,10,20,0.05); border-color: rgba(10,10,20,0.1); color: rgba(10,10,20,0.5); }
+[data-theme="light"] .popup-close:hover { background: rgba(10,10,20,0.1); color: #0a0a14; }
+[data-theme="light"] .popup-info h2 {
+  background: linear-gradient(135deg, #0a0a14 30%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+[data-theme="light"] .popup-gallery { background: #e8edf8; border-color: rgba(10,10,20,0.1); }
+[data-theme="light"] .gallery-container { background: #e8edf8; }
+[data-theme="light"] .gallery-nav { background: rgba(240,244,255,0.7); border-color: rgba(10,10,20,0.1); color: rgba(10,10,20,0.6); }
+[data-theme="light"] .gallery-counter { background: rgba(240,244,255,0.85); color: rgba(10,10,20,0.6); }
+[data-theme="light"] .gallery-indicator { background: rgba(10,10,20,0.2); border-color: rgba(10,10,20,0.1); }
+[data-theme="light"] .popup-details { background: rgba(10,10,20,0.03); border-color: rgba(10,10,20,0.08); }
+[data-theme="light"] .detail-item { color: rgba(10,10,20,0.75); }
+[data-theme="light"] .popup-description { background: rgba(10,10,20,0.03); border-color: rgba(10,10,20,0.08); }
+[data-theme="light"] .popup-description h3 { color: #0a0a14; }
+[data-theme="light"] .popup-description p { color: rgba(10,10,20,0.6); }
+[data-theme="light"] .avviso.active { background: rgba(255,240,240,0.97); }
+[data-theme="light"] .card-cta-title { color: #0a0a14; }
+[data-theme="light"] .card-cta-desc { color: rgba(10,10,20,0.45); }
+
+/* Form submit vtuber */
+[data-theme="light"] .submit-popup-content { background: #f0f4ff; }
+[data-theme="light"] .submit-popup-header { border-bottom-color: rgba(10,10,20,0.08); }
+[data-theme="light"] .submit-popup-header h2 { color: #0a0a14; }
+[data-theme="light"] .submit-popup-header p { color: rgba(10,10,20,0.45); }
+[data-theme="light"] .submit-rules h3,
+[data-theme="light"] .submit-how h3 { color: rgba(10,10,20,0.45); }
+[data-theme="light"] .submit-rules li { background: rgba(10,10,20,0.03); border-color: rgba(10,10,20,0.07); color: rgba(10,10,20,0.65); }
+[data-theme="light"] .submit-how p { color: rgba(10,10,20,0.45); }
+[data-theme="light"] .submit-field { background: rgba(10,10,20,0.03); color: rgba(10,10,20,0.6); }
+[data-theme="light"] .submit-sponsor > h3 { color: rgba(10,10,20,0.45); }
+[data-theme="light"] .submit-sponsor-desc { color: rgba(10,10,20,0.45); }
+[data-theme="light"] .sponsor-platform { border-color: rgba(10,10,20,0.1); }
+[data-theme="light"] .sponsor-options { background: rgba(10,10,20,0.02); }
+[data-theme="light"] .sponsor-option { border-bottom-color: rgba(10,10,20,0.05); }
+[data-theme="light"] .sponsor-option > i { color: rgba(10,10,20,0.25); }
+[data-theme="light"] .sponsor-option strong { color: rgba(10,10,20,0.8); }
+[data-theme="light"] .sponsor-option span { color: rgba(10,10,20,0.4); }
+[data-theme="light"] .sponsor-code { background: rgba(10,10,20,0.06); border-color: rgba(10,10,20,0.1); color: rgba(10,10,20,0.7); }
+[data-theme="light"] .sponsor-copy-btn { background: rgba(10,10,20,0.05); border-color: rgba(10,10,20,0.1); color: rgba(10,10,20,0.5); }
+[data-theme="light"] .sponsor-copy-btn:hover { background: rgba(10,10,20,0.1); color: rgba(10,10,20,0.8); }

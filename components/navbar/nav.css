@@ -7,6 +7,11 @@
   --nav-border: rgba(255,255,255,0.08);
 }
 
+[data-theme="light"] {
+  --nav-glass: rgba(240,244,255,0.85);
+  --nav-border: rgba(10,10,20,0.1);
+}
+
 .navbar {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -32,6 +37,10 @@
   background: linear-gradient(to bottom, rgba(10,10,10,0.35) 0%, transparent 100%);
   pointer-events: none;
   z-index: -1;
+  transition: background 0.35s ease;
+}
+[data-theme="light"] .navbar::after {
+  background: linear-gradient(to bottom, rgba(200,210,240,0.25) 0%, transparent 100%);
 }
 
 .navbar-container {
@@ -80,6 +89,13 @@
 
 .navbar-menu li a {
   font-family: 'DM Sans', sans-serif;
+  color: rgba(255,255,255,0.6);
+}
+[data-theme="light"] .navbar-menu li a {
+  color: rgba(10,10,20,0.6);
+}
+[data-theme="light"] .navbar-menu li a:hover { color: #0a0a14; background: rgba(10,10,20,0.06); }
+.navbar-menu li a {
   color: rgba(255,255,255,0.6);
   text-decoration: none;
   padding: 0.45rem 0.9rem;
@@ -301,6 +317,38 @@
   color: #fff;
 }
 .settings-theme-btn:disabled { cursor: default; opacity: 0.5; }
+
+[data-theme="light"] .settings-panel {
+  background: rgba(240,244,255,0.98);
+  border-color: rgba(10,10,20,0.1);
+}
+[data-theme="light"] .settings-panel-arrow {
+  background: rgba(240,244,255,0.98);
+  border-color: rgba(10,10,20,0.1);
+}
+[data-theme="light"] .settings-label { color: rgba(10,10,20,0.4); }
+[data-theme="light"] .settings-lang-btn { color: rgba(10,10,20,0.6); }
+[data-theme="light"] .settings-lang-btn:hover { background: rgba(10,10,20,0.06); color: #0a0a14; }
+[data-theme="light"] .settings-lang-btn.active { background: rgba(91,156,246,0.12); border-color: rgba(91,156,246,0.3); color: #0a0a14; }
+[data-theme="light"] .settings-theme-btn { border-color: rgba(10,10,20,0.1); color: rgba(10,10,20,0.5); }
+[data-theme="light"] .settings-theme-btn:not(:disabled):hover { background: rgba(10,10,20,0.06); color: #0a0a14; }
+[data-theme="light"] .settings-theme-btn.active { background: rgba(91,156,246,0.1); border-color: rgba(91,156,246,0.3); color: #0a0a14; }
+[data-theme="light"] .settings-divider { background: rgba(10,10,20,0.08); }
+[data-theme="light"] .nav-settings-btn { background: rgba(10,10,20,0.05); border-color: rgba(10,10,20,0.12); color: rgba(10,10,20,0.6); }
+[data-theme="light"] .nav-settings-btn:hover,
+[data-theme="light"] .nav-settings-btn.open { background: rgba(91,156,246,0.1); border-color: rgba(91,156,246,0.35); color: #5b9cf6; }
+[data-theme="light"] .nav-live-btn { color: rgba(10,10,20,0.65); border-color: rgba(10,10,20,0.18); background: rgba(10,10,20,0.04); }
+[data-theme="light"] .nav-live-btn:hover { color: rgba(10,10,20,0.85); border-color: rgba(10,10,20,0.28); background: rgba(10,10,20,0.08); }
+[data-theme="light"] .navbar-brand .logo-link:hover { filter: drop-shadow(0 4px 12px rgba(91,156,246,0.3)); }
+[data-theme="light"] .mobile-menu { background: rgba(235,240,255,0.98); }
+[data-theme="light"] .mobile-menu ul li a { color: rgba(10,10,20,0.7); background: rgba(10,10,20,0.03); }
+[data-theme="light"] .mobile-menu ul li a:hover { background: rgba(10,10,20,0.07); color: #0a0a14; }
+[data-theme="light"] .mobile-settings-label { color: rgba(10,10,20,0.35); }
+[data-theme="light"] .lang-option { color: rgba(10,10,20,0.5); }
+[data-theme="light"] .lang-option:hover { background: rgba(10,10,20,0.07); color: #0a0a14; }
+[data-theme="light"] .lang-option.active { background: rgba(91,156,246,0.1); color: #0a0a14; }
+[data-theme="light"] .hamburger-btn span { background: rgba(10,10,20,0.7); }
+[data-theme="light"] .hamburger-btn:hover span { background: #0a0a14; }
 
 .settings-soon-badge {
   position: absolute;
@@ -588,4 +636,36 @@
   .navbar-container { padding: 0.65rem 1rem; }
   .logo-image { height: 34px; }
   .mobile-menu ul li a { padding: 0.75rem 0.9rem; }
+}
+
+[data-theme="light"] .nav-live-dot { background: rgba(10,10,20,0.35); }
+[data-theme="light"] .settings-ach-btn {
+  background: rgba(245,197,66,0.1);
+  border-color: rgba(245,197,66,0.25);
+  color: rgba(10,10,20,0.75);
+}
+[data-theme="light"] .settings-ach-btn:hover {
+  background: rgba(245,197,66,0.18);
+  border-color: rgba(245,197,66,0.4);
+  color: #0a0a14;
+}
+[data-theme="light"] .settings-ach-btn-left .fas { color: #c9980a; }
+[data-theme="light"] .settings-ach-count {
+  color: rgba(160,120,0,0.85);
+  background: rgba(245,197,66,0.15);
+}
+[data-theme="light"] .mobile-ach-btn {
+  background: rgba(245,197,66,0.08);
+  border-color: rgba(245,197,66,0.2);
+  color: rgba(10,10,20,0.75);
+}
+[data-theme="light"] .mobile-ach-btn:hover {
+  background: rgba(245,197,66,0.16);
+  border-color: rgba(245,197,66,0.35);
+  color: #0a0a14;
+}
+[data-theme="light"] .mobile-ach-btn .fas { color: #c9980a; }
+[data-theme="light"] .mobile-ach-count {
+  color: rgba(160,120,0,0.85);
+  background: rgba(245,197,66,0.15);
 }

@@ -10,6 +10,7 @@ async function loadNavbar() {
     initMirage();
     initNavLiveBadge();
     initSettingsPanel();
+    initTheme();
 
   } catch (error) {
     console.error('Errore navbar:', error);
@@ -107,6 +108,26 @@ function initSettingsPanel() {
     document.getElementById('mobile-menu')?.classList.remove('active');
     if (typeof openAchievementPopup === 'function') openAchievementPopup();
   });
+}
+
+function initTheme() {
+  const saved = localStorage.getItem('glaciopia_theme') || 'dark';
+  applyTheme(saved, false);
+
+  document.getElementById('theme-btn-dark')?.addEventListener('click', () => applyTheme('dark', true));
+  document.getElementById('theme-btn-light')?.addEventListener('click', () => applyTheme('light', true));
+}
+
+function applyTheme(theme, save) {
+  document.documentElement.setAttribute('data-theme', theme);
+  if (save) localStorage.setItem('glaciopia_theme', theme);
+
+  document.getElementById('theme-btn-dark')?.classList.toggle('active', theme === 'dark');
+  document.getElementById('theme-btn-light')?.classList.toggle('active', theme === 'light');
+
+  if (save && theme === 'light') {
+    if (typeof unlockAchievement === 'function') unlockAchievement('whiteTheme');
+  }
 }
 
 function openSettingsPanel() {

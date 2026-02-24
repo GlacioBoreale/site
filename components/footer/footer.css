@@ -4,6 +4,13 @@
   border-top: 2px solid rgba(255,255,255,0.1);
   margin-top: 4rem;
   padding: 3rem 2rem 1.5rem;
+  transition: background 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+}
+
+[data-theme="light"] .footer {
+  background: rgba(220,228,255,0.6);
+  color: rgba(10,10,20,0.75);
+  border-top-color: rgba(10,10,20,0.1);
 }
 
 .footer-container {
@@ -18,6 +25,9 @@
   color: white;
   font-size: 1.1rem;
   margin-bottom: 1rem;
+}
+[data-theme="light"] .footer-section h3 { color: #0a0a14; }
+.footer-section h3 {
   font-weight: 600;
 }
 
@@ -193,3 +203,20 @@
   .social-link:hover { transform: translateX(0); }
   .footer-links a:hover { transform: translateX(0); }
 }
+
+[data-theme="light"] .social-link { background: rgba(10,10,20,0.04); border-color: rgba(10,10,20,0.1); color: rgba(10,10,20,0.75); }
+[data-theme="light"] .social-link:hover { background: rgba(10,10,20,0.08); border-color: rgba(10,10,20,0.18); color: #0a0a14; }
+[data-theme="light"] .discord-username { background: rgba(88,101,242,0.08); }
+[data-theme="light"] .discord-username p { color: rgba(10,10,20,0.6); }
+[data-theme="light"] .footer-links a { color: rgba(10,10,20,0.6); }
+[data-theme="light"] .footer-links a:hover { color: #0a0a14; }
+[data-theme="light"] .footer-bottom { border-top-color: rgba(10,10,20,0.1); color: rgba(10,10,20,0.4); }
+[data-theme="light"] .made-with { color: rgba(10,10,20,0.5); }
+[data-theme="light"] .footer-popup { background: #f0f4ff; border-color: rgba(10,10,20,0.1); }
+[data-theme="light"] .footer-popup-overlay { background: rgba(180,195,240,0.75); }
+[data-theme="light"] .footer-popup-close { background: rgba(10,10,20,0.05); border-color: rgba(10,10,20,0.1); color: rgba(10,10,20,0.5); }
+[data-theme="light"] .footer-popup-close:hover { background: rgba(10,10,20,0.1); color: #0a0a14; }
+[data-theme="light"] .footer-popup-body h2 { color: #0a0a14; }
+[data-theme="light"] .footer-popup-body h3 { color: rgba(10,10,20,0.8); }
+[data-theme="light"] .footer-popup-body p,
+[data-theme="light"] .footer-popup-body li { color: rgba(10,10,20,0.5); }

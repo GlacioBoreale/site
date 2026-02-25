@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-02-25T13:05:13Z",
+  "updatedAt": "2026-02-25T14:49:18Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,12 +43,20 @@
     ],
     "randomClips": [
       {
-        "title": "When Tryhard hits...",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/InventiveApatheticApeTwitchRPG-b0Jt3pe210IVYMm2",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1122899254-preview-480x272.jpg",
-        "views": 58,
-        "duration": 48.8,
-        "creator": "GlacioBorealeVT"
+        "title": "face reaveal",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/NastyTardyRuffBuddhaBar-e6YHVBz2APguBcQX",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CFKYn33umB1Qc9gD4LgXEFw-preview-480x272.jpg",
+        "views": 39,
+        "duration": 5,
+        "creator": "auremdunknown"
+      },
+      {
+        "title": "L'anklebraking, il faking, la finta. ",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/BoredKawaiiTermiteBatChest-7EJbluOQBVS99ske",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CpOPCe-xCW5bjkAVUvfbJHg-preview-480x272.jpg",
+        "views": 49,
+        "duration": 19.1,
+        "creator": "dabidet87"
       },
       {
         "title": "\"Perché non finisce?\"💀",
@@ -56,14 +64,6 @@
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/qNW9YMdIyyrfoIBa_ztpsA/AT-cm%7CqNW9YMdIyyrfoIBa_ztpsA-preview-480x272.jpg",
         "views": 43,
         "duration": 18.4,
-        "creator": "dabidet87"
-      },
-      {
-        "title": "Il saving, ez",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/ResourcefulDependableHamBatChest-8RO63Cu2CHD0E6H4",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CaJX_E_ETutwrtghw9BOh-A-preview-480x272.jpg",
-        "views": 53,
-        "duration": 14,
         "creator": "dabidet87"
       }
     ]

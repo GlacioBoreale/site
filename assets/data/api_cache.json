@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-02-28T13:36:22Z",
+  "updatedAt": "2026-02-28T14:22:20Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,20 +43,12 @@
     ],
     "randomClips": [
       {
-        "title": "lo ho scammato (ezezezezez111!)",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/AgileFrailHamsterBigBrother-4EpT2lO-Enq1aGJe",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CMjefweBKU9pTvhJ6tWhiXg-preview-480x272.jpg",
-        "views": 27,
-        "duration": 34.9,
-        "creator": "dabidet87"
-      },
-      {
-        "title": "\"Perché non finisce?\"💀",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/InspiringCuriousWolfFrankerZ-x0jLKt-ggFr_O2mw",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/qNW9YMdIyyrfoIBa_ztpsA/AT-cm%7CqNW9YMdIyyrfoIBa_ztpsA-preview-480x272.jpg",
-        "views": 43,
-        "duration": 18.4,
-        "creator": "dabidet87"
+        "title": "When Tryhard hits...",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/InventiveApatheticApeTwitchRPG-b0Jt3pe210IVYMm2",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1122899254-preview-480x272.jpg",
+        "views": 59,
+        "duration": 48.8,
+        "creator": "GlacioBorealeVT"
       },
       {
         "title": "Mi serve moderazione non Pix",
@@ -65,6 +57,14 @@
         "views": 28,
         "duration": 5,
         "creator": "BrainSedge"
+      },
+      {
+        "title": "wtf is that sound",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/CuriousAdventurousDadHeyGuys-oDbHErbl88zzZ2WY",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/-4fptaA2xxK25fPM82dlmA/vod-1997814363-offset-5294-preview-480x272.jpg",
+        "views": 39,
+        "duration": 30,
+        "creator": "antokekt"
       }
     ]
   },

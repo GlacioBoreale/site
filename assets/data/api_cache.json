@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-02-28T15:22:20Z",
+  "updatedAt": "2026-02-28T16:26:56Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,6 +43,14 @@
     ],
     "randomClips": [
       {
+        "title": "no scope memento🗿 (bello il no scope btw)",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/ElegantRelievedSashimiPJSugar-dkfv5Z1lAz_BQPEY",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/eiNtTXZH7-WdZQM_wUDxGA/AT-cm%7CeiNtTXZH7-WdZQM_wUDxGA-preview-480x272.jpg",
+        "views": 29,
+        "duration": 12.6,
+        "creator": "dabidet87"
+      },
+      {
         "title": "L'anklebraking, il faking, la finta. ",
         "url": "https://www.twitch.tv/glacioborealevt/clip/BoredKawaiiTermiteBatChest-7EJbluOQBVS99ske",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CpOPCe-xCW5bjkAVUvfbJHg-preview-480x272.jpg",
@@ -57,14 +65,6 @@
         "views": 43,
         "duration": 18.4,
         "creator": "dabidet87"
-      },
-      {
-        "title": "Nixel Fuori Contesto",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/GrossAttractiveHeronANELE-YNXE5gsWGEIkit6p",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/T3ft3WDVxOYLFhhCJIreqQ/AT-cm%7CT3ft3WDVxOYLFhhCJIreqQ-preview-480x272.jpg",
-        "views": 35,
-        "duration": 7.6,
-        "creator": "Gennarix_"
       }
     ]
   },

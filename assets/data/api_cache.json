@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-03-01T06:46:52Z",
+  "updatedAt": "2026-03-01T07:33:07Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,14 +43,6 @@
     ],
     "randomClips": [
       {
-        "title": "L'anklebraking, il faking, la finta. ",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/BoredKawaiiTermiteBatChest-7EJbluOQBVS99ske",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CpOPCe-xCW5bjkAVUvfbJHg-preview-480x272.jpg",
-        "views": 49,
-        "duration": 19.1,
-        "creator": "dabidet87"
-      },
-      {
         "title": "Mi serve moderazione non Pix",
         "url": "https://www.twitch.tv/glacioborealevt/clip/PoliteSolidHawkEleGiggle-6wdUnkC3uEyFMwle",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1269549042-preview-480x272.jpg",
@@ -59,12 +51,20 @@
         "creator": "BrainSedge"
       },
       {
-        "title": "è un disegno quello lo sai?",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableRenownedAuberginePMSTwin",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C979372397-preview-480x272.jpg",
-        "views": 39,
-        "duration": 7.1,
-        "creator": "andreaproob"
+        "title": "no scope memento🗿 (bello il no scope btw)",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/ElegantRelievedSashimiPJSugar-dkfv5Z1lAz_BQPEY",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/eiNtTXZH7-WdZQM_wUDxGA/AT-cm%7CeiNtTXZH7-WdZQM_wUDxGA-preview-480x272.jpg",
+        "views": 29,
+        "duration": 12.6,
+        "creator": "dabidet87"
+      },
+      {
+        "title": "lo ho scammato (ezezezezez111!)",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/AgileFrailHamsterBigBrother-4EpT2lO-Enq1aGJe",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CMjefweBKU9pTvhJ6tWhiXg-preview-480x272.jpg",
+        "views": 27,
+        "duration": 34.9,
+        "creator": "dabidet87"
       }
     ]
   },

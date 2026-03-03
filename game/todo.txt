@@ -1,0 +1,31 @@
+amazon web services per il database, pushamo 20Gb che dovrebbe essere sotto l'euro
+
+ricreare la playlist Averpyxl in Glacio's Jam, ci piazzi le tue canzoni, plagione
+
+un don cliccabile che fa i rumori fastidiosi di don
+
+#5p deve permettere di comprare il massimo comprabile per upgrade con la currency rispettiva, questo potrà essere modificato più avanti nelle impostazioni.
+
+cambiare la zona ricerca e renderla simile alla zona leveling
+
+aggiustare il boost che da #21 a #5 aumentando l'esponente di 0.05 (o almeno controllare che lo faccia correttamente)
+
+Mettere un delay tra gli input sul clicca qui del livello per evitare autoclicker abuse
+
+#8p Moltiplica XP ottenuti per click di x2 compounding | 300 600 1200 (scala di 2x alla volta)
+
+spostare la radio in alto a sinistra e far un bottone che ti permette di nasconderla e mostrarla
+
+resettare i livelli XP su prestigio ma non nasconde la zona
+
+fare un cursore custom, la mano del grab esce solo se click e hold lo schermo
+
+right cliccare evita che esca il popup del browser per le solite opzioni del browser
+
+Stat bar non viene caricata sul caricamento della pagina
+
+aggiornare la descrizione di #5 quando #21 viene cambiato per mostrare la formula corretta [x(p^0.21, min 1) al posto della vecchia]
+
+rimuovere le info in alto allo schermo, spostare il reset in Impostazioni>Misc. e spostare il ricentra in alto a destra, sotto la navbar
+
+aggiustare le stats in basso allo schermo per mobile quando sta in verticale, quando sta in orizzontale aggiustare il menù a sinistra; aggiustare la grandezza dei popup delle sezioni Impostazioni, Statistiche e tutte le altre per starci nello schermo (sia per orizzontale che per verticale)

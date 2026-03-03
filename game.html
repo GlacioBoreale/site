@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anything Enhance Sapling</title>
+  <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+  <link rel="icon" type="image/png" href="assets/images/tabLogo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="auth.css">
+  <link rel="stylesheet" href="components/navbar/nav.css">
+  <link rel="stylesheet" href="components/achievements/achievements.css">
+  <link rel="stylesheet" href="game.css">
+  <link rel="stylesheet" href="game/stats.css">
+  <link rel="stylesheet" href="game/sidebar.css">
+  <link rel="stylesheet" href="game/leveling.css">
+  <link rel="stylesheet" href="game/research.css">
+  <script src="api.js"></script>
+  <script src="auth.js"></script>
+  <script src="components/navbar/nav.js"></script>
+  <script src="components/achievements/achievements.js"></script>
+  <script src="script.js"></script>
+</head>
+<body>
+  <div id="navbar-placeholder"></div>
+
+  <main class="game-main">
+    <div class="game-hud">
+      <div class="hud-points">
+        <span id="hud-points-value">0 P</span>
+        <span class="hud-pps" id="hud-pps">(+0 P/s)</span>
+      </div>
+
+      <div id="hud-prestige" class="hud-prestige" style="display:none">
+        <span id="hud-prestige-value">0 ✦</span>
+        <span class="hud-pps" id="hud-prestige-pending"></span>
+      </div>
+      <div class="hud-actions">
+        <button class="hud-btn" id="btn-reset" title="Reset">
+          <i class="fas fa-rotate-left"></i>
+        </button>
+        <button class="hud-btn" id="btn-center" title="Centra la vista">
+          <i class="fas fa-crosshairs"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="convert-panel" class="convert-panel" style="display:none">
+      <div class="convert-title">CONVERSIONE</div>
+      <div class="convert-desc">Resetta tutti i tuoi ₽ e upgrade ₽ per ottenere <span>Research Points λ</span> e spenderli in un nuovo albero di upgrade che dà grandi potenziamenti!</div>
+      <div id="convert-info" class="convert-info"></div>
+      <button id="btn-convert" class="convert-btn" style="display:none">CONVERTI</button>
+    </div>
+
+    <canvas id="game-canvas"></canvas>
+
+    <div class="game-tooltip" id="game-tooltip"></div>
+
+    <div class="game-reset-overlay" id="reset-overlay">
+      <div class="game-modal">
+        <div class="modal-header">
+          <span class="modal-title">Reset partita</span>
+          <button class="modal-close" id="reset-cancel"><i class="fas fa-times"></i></button>
+        </div>
+        <p class="modal-desc">Sei sicuro di voler resettare tutto? I progressi andranno persi.</p>
+        <div style="display:flex;gap:1rem;margin-top:1rem">
+          <button class="modal-buy-btn" id="reset-confirm" style="background:rgba(239,68,68,0.2);border-color:rgba(239,68,68,0.4);color:#f87171">Reset</button>
+          <button class="modal-buy-btn" id="reset-cancel2">Annulla</button>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="game/nodes.js"></script>
+  <script src="game/state.js"></script>
+  <script src="game/save.js"></script>
+  <script src="game/render.js"></script>
+  <script src="game/input.js"></script>
+  <script src="game/ui.js"></script>
+  <script src="game/loop.js"></script>
+  <script src="game/radio.js"></script>
+  <script src="game/leveling.js"></script>
+  <script src="game/research.js"></script>
+  <script src="game/stats.js"></script>
+  <script src="game/sidebar.js"></script>
+</body>
+</html>

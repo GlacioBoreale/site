@@ -162,6 +162,17 @@
     "tiktokDesc": "Urmareste-ma pe TikTok",
     "follow": "Urmareste"
   },
+  "auth": {
+    "login": "Login",
+    "register": "Înregistrare",
+    "logout": "Deconectare",
+    "email": "Email",
+    "password": "Parolă",
+    "username": "Nume utilizator",
+    "signIn": "Conectează-te",
+    "createAccount": "Creează cont",
+    "registeredSince": "Înregistrat la"
+  },
   "settings": {
     "language": "Limbă",
     "theme": "Temă",

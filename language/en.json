@@ -161,6 +161,17 @@
     "tiktokDesc": "Follow me on TikTok",
     "follow": "Follow"
   },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "username": "Username",
+    "signIn": "Sign in",
+    "createAccount": "Create account",
+    "registeredSince": "Registered on"
+  },
   "settings": {
     "language": "Language",
     "theme": "Theme",

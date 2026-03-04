@@ -1,5 +1,21 @@
 'use strict';
 
+// helper shorthand — disponibile dopo i18n.js
+const _nd = {
+  perm:       () => gt('nodes.permanent'),
+  right:      () => gt('nodes.buyRight'),
+  left:       () => gt('nodes.buyLeft'),
+  lockHint:   () => gt('nodes.lockHint'),
+  p3:         () => gt('nodes.buy3p'),
+  p3zone:     () => gt('nodes.buy3pZone'),
+  gold:       () => gt('nodes.goldBoost'),
+  rc:         () => gt('nodes.researchCenter'),
+  stereo:     () => gt('nodes.stereo'),
+  lc:         () => gt('nodes.levelingCenter'),
+  obelisk:    () => gt('nodes.mysticObelisk'),
+  t:          (id) => gt('nodes.titles.' + id) || id,
+};
+
 const NODE_DEFS = [
   //  ZONA BASE
   {
@@ -10,14 +26,14 @@ const NODE_DEFS = [
     desc: (page) => {
       if (page === 1 && G.startGoldLevels > 0) {
         return [
-          { text: 'Boost oro:', color: '#fbbf24' },
-          { text: 'ottieni x' + (1.5 * G.startGoldLevels).toFixed(1) + ' \u20bd', color: null },
-          { text: 'ottieni x' + (1.25 * G.startGoldLevels).toFixed(2) + ' \u03bb', color: '#38bdf8' },
+          { text: _nd.gold(), color: '#fbbf24' },
+          { text: 'x' + (1.5 * G.startGoldLevels).toFixed(1) + ' \u20bd', color: null },
+          { text: 'x' + (1.25 * G.startGoldLevels).toFixed(2) + ' \u03bb', color: '#38bdf8' },
         ];
       }
       return [
-        { text: 'Inizia a ottenere "Points" \u20bd', color: null },
-        { text: 'a un tasso di 1/s', color: null },
+        { text: 'Start getting "Points" \u20bd', color: null },
+        { text: 'at a rate of 1/s', color: null },
       ];
     },
     descPages: () => G.startGoldLevels > 0 ? 2 : 1,
@@ -38,11 +54,11 @@ const NODE_DEFS = [
     desc: (page) => {
       if (page === 1 && (nodeState['flat2x']?.level ?? 0) >= 2) {
         return [
-          { text: 'Boost oro:', color: '#fbbf24' },
+          { text: _nd.gold(), color: '#fbbf24' },
           { text: 'x1.5 \u20bd bonus', color: null },
         ];
       }
-      return [{ text: 'Guadagna 2x \u20bd', color: null }];
+      return [{ text: 'x2 \u20bd', color: null }];
     },
     descPages: () => (nodeState['flat2x']?.level ?? 0) >= 2 ? 2 : 1,
     maxLevel: 1,
@@ -63,11 +79,11 @@ const NODE_DEFS = [
     desc: (page) => {
       if (page === 1 && (nodeState['flat3x']?.level ?? 0) >= 2) {
         return [
-          { text: 'Boost oro:', color: '#fbbf24' },
+          { text: _nd.gold(), color: '#fbbf24' },
           { text: 'x2 \u20bd bonus', color: null },
         ];
       }
-      return [{ text: 'Guadagna 3x \u20bd', color: null }];
+      return [{ text: 'x3 \u20bd', color: null }];
     },
     descPages: () => (nodeState['flat3x']?.level ?? 0) >= 2 ? 2 : 1,
     maxLevel: 1,
@@ -86,8 +102,8 @@ const NODE_DEFS = [
     label: '#4',
     title: 'Molteplici incrementi',
     desc: [
-      { text: '+0.5x \u20bd per ogni livello', color: null },
-      { text: '(inizia da x1)', color: null },
+      { text: '+0.5x \u20bd per level', color: null },
+      { text: '(starts at x1)', color: null },
     ],
     maxLevel: 3,
     costFn: (lvl) => {
@@ -108,9 +124,9 @@ const NODE_DEFS = [
     x: -340, y: 0,
     label: '#5',
     title: 'Un incremento avanzato',
-    desc: [
-      { text: '\u20bd si boosta da solo', color: null },
-      { text: 'x(\u20bd^0.16, min 1)', color: '#4ade80' },
+    desc: () => [
+      { text: '\u20bd self-boosts', color: null },
+      { text: `x(\u20bd^${G.selfBoostExp.toFixed(2)}, min 1)`, color: '#4ade80' },
     ],
     maxLevel: 1,
     baseCost: 100,
@@ -128,16 +144,16 @@ const NODE_DEFS = [
     label: '#6',
     title: 'Cresce',
     desc: [
-      { text: 'Per ogni upgrade base sbloccato,', color: null },
-      { text: 'x1.2\u20bd moltiplicativo', color: '#4ade80' },
+      { text: 'For each unlocked base upgrade,', color: null },
+      { text: 'x1.2\u20bd multiplicative', color: '#4ade80' },
     ],
     maxLevel: 1,
     baseCost: 500,
     costScale: 1,
     zone: 'base',
     statLabel: (lvl) => lvl > 0
-      ? `x${fmtMulti(Math.pow(1.2, unlockedBaseNodes()))} (${unlockedBaseNodes()} nodi)`
-      : 'x1.2 per nodo base',
+      ? `x${fmtMulti(Math.pow(1.2, unlockedBaseNodes()))} (${unlockedBaseNodes()} nodes)`
+      : 'x1.2 per base node',
     parents: ['selfBoost'],
     onBuy: (lvl) => { G.growsUnlocked = true; recalcPps(); },
   },
@@ -146,7 +162,7 @@ const NODE_DEFS = [
     x: -680, y: -200,
     label: '#7',
     title: 'Ancora pi\u00f9 livelli',
-    desc: [{ text: '+7 livelli massimi a #4', color: '#4ade80' }],
+    desc: [{ text: '+7 max levels to #4', color: '#4ade80' }],
     maxLevel: 1,
     baseCost: 1000,
     costScale: 1,
@@ -164,10 +180,10 @@ const NODE_DEFS = [
     x: 0, y: -200,
     label: '#8',
     title: 'Nuove tecnologie',
-    desc: [
-      { text: 'Sblocca il', color: null },
-      { text: 'CENTRO RICERCA', color: '#38bdf8' },
-      { text: '[PERMANENTE]', color: '#f87171' },
+    desc: () => [
+      { text: 'Unlocks the', color: null },
+      { text: _nd.rc(), color: '#38bdf8' },
+      { text: _nd.perm(), color: '#f87171' },
     ],
     maxLevel: 1,
     baseCost: 10000,
@@ -183,10 +199,10 @@ const NODE_DEFS = [
     x: 0, y: 400,
     label: '#9',
     title: 'Ma non \u00e8 totalmente vuoto',
-    desc: [
-      { text: 'Sblocca lo', color: null },
-      { text: 'STEREO CHE RIPRODUCE MUSICA', color: '#fbbf24' },
-      { text: '[PERMANENTE]', color: '#f87171' },
+    desc: () => [
+      { text: 'Unlocks the', color: null },
+      { text: _nd.stereo(), color: '#fbbf24' },
+      { text: _nd.perm(), color: '#f87171' },
     ],
     maxLevel: 1,
     baseCost: 10000,
@@ -198,14 +214,39 @@ const NODE_DEFS = [
     onBuy: (lvl) => { G.boomboxUnlocked = true; recalcPps(); syncRadioVisibility(); },
   },
   {
+    id: 'leaderboardUnlock',
+    x: -340, y: 400,
+    label: '🏆',
+    title: 'Nella storia',
+    desc: () => [
+      { text: 'Scegli se apparire nella', color: null },
+      { text: 'classifica globale.', color: '#fbbf24' },
+      !G.hasPrestiged
+        ? { text: 'Richiede almeno 1 Prestige', color: '#f87171' }
+        : { text: _nd.perm(), color: '#f87171' },
+    ],
+    maxLevel: 1,
+    baseCost: 1,
+    costScale: 1,
+    costInPrestige: true,
+    zone: 'base',
+    statLabel: 'abilita leaderboard',
+    parents: ['boombox'],
+    permanent: true,
+    onBuy: () => {
+      G.leaderboardUnlocked = true;
+      if (typeof syncLeaderboardBtn === 'function') syncLeaderboardBtn();
+    },
+  },
+  {
     id: 'thereItIs',
     x: 680, y: 0,
     label: '#10',
     title: 'Eccolo qui',
     desc: () => G.rightSideUnlocked
-      ? [{ text: 'ottieni x4\u20bd', color: '#4ade80' }]
-      : [{ text: 'Compra Lato Destro (R3)', color: '#f87171' },
-         { text: 'nella Ricerca per sbloccare', color: '#f87171' }],
+      ? [{ text: 'x4 \u20bd', color: '#4ade80' }]
+      : [{ text: _nd.right(), color: '#f87171' },
+         { text: _nd.lockHint(), color: '#f87171' }],
     maxLevel: 1,
     baseCost: 125000,
     costScale: 1,
@@ -220,10 +261,10 @@ const NODE_DEFS = [
     label: '#11',
     title: 'Premi per ricercare',
     desc: () => G.leftSideUnlocked
-      ? [{ text: '\u20bd potenziato da \u03bb', color: null },
+      ? [{ text: '\u20bd boosted by \u03bb', color: null },
          { text: 'x((50+\u03bb)^0.18, min 1)', color: '#4ade80' }]
-      : [{ text: 'Compra Lato Sinistro (R2)', color: '#f87171' },
-         { text: 'nella Ricerca per sbloccare', color: '#f87171' }],
+      : [{ text: _nd.left(), color: '#f87171' },
+         { text: _nd.lockHint(), color: '#f87171' }],
     maxLevel: 1,
     baseCost: 500000,
     costScale: 1,
@@ -240,9 +281,9 @@ const NODE_DEFS = [
     label: '#12',
     title: 'Ora con esponenti',
     desc: () => G.rightSideUnlocked
-      ? [{ text: 'x1.3 \u20bd per livello', color: '#4ade80' }]
-      : [{ text: 'Compra Lato Destro (R3)', color: '#f87171' },
-         { text: 'nella Ricerca per sbloccare', color: '#f87171' }],
+      ? [{ text: 'x1.3 \u20bd per level', color: '#4ade80' }]
+      : [{ text: _nd.right(), color: '#f87171' },
+         { text: _nd.lockHint(), color: '#f87171' }],
     maxLevel: 20,
     costFn: (lvl) => {
       const div = Math.pow(50, nodeState['costCutting']?.level ?? 0);
@@ -261,15 +302,15 @@ const NODE_DEFS = [
     label: '#13',
     title: 'Taglio dei costi',
     desc: () => G.rightSideUnlocked
-      ? [{ text: '\u00f7(50^livello) al costo di #12', color: '#4ade80' }]
-      : [{ text: 'Compra Lato Destro (R3)', color: '#f87171' },
-         { text: 'nella Ricerca per sbloccare', color: '#f87171' }],
+      ? [{ text: '\u00f7(50^level) to #12 cost', color: '#4ade80' }]
+      : [{ text: _nd.right(), color: '#f87171' },
+         { text: _nd.lockHint(), color: '#f87171' }],
     maxLevel: 5,
     costFn: (lvl) => [10000000, 250000000, 6250000000, 156250000000, 3906250000000][lvl] ?? 0,
     baseCost: 0,
     costScale: 1,
     zone: 'base',
-    statLabel: (lvl) => lvl > 0 ? `\u00f7${Math.pow(50, lvl).toExponential(1)}` : '\u00f750^lvl su #12',
+    statLabel: (lvl) => lvl > 0 ? `\u00f7${Math.pow(50, lvl).toExponential(1)}` : '\u00f750^lvl on #12',
     parents: ['multiInc'],
     onBuy: (lvl) => { recalcPps(); },
   },
@@ -279,9 +320,9 @@ const NODE_DEFS = [
     label: '#14',
     title: 'Questo \u00e8 tanto',
     desc: () => G.rightSideUnlocked
-      ? [{ text: 'ottieni x5\u20bd', color: '#4ade80' }]
-      : [{ text: 'Compra Lato Destro (R3)', color: '#f87171' },
-         { text: 'nella Ricerca per sbloccare', color: '#f87171' }],
+      ? [{ text: 'x5 \u20bd', color: '#4ade80' }]
+      : [{ text: _nd.right(), color: '#f87171' },
+         { text: _nd.lockHint(), color: '#f87171' }],
     maxLevel: 1,
     baseCost: 400000000,
     costScale: 1,
@@ -296,9 +337,9 @@ const NODE_DEFS = [
     label: '#15',
     title: 'TROPPI LIVELLI',
     desc: () => G.leftSideUnlocked
-      ? [{ text: '+30 livelli massimi a #4', color: '#4ade80' }]
-      : [{ text: 'Compra Lato Sinistro (R2)', color: '#f87171' },
-         { text: 'nella Ricerca per sbloccare', color: '#f87171' }],
+      ? [{ text: '+30 max levels to #4', color: '#4ade80' }]
+      : [{ text: _nd.left(), color: '#f87171' },
+         { text: _nd.lockHint(), color: '#f87171' }],
     maxLevel: 1,
     baseCost: 10000000000,
     costScale: 1,
@@ -317,11 +358,11 @@ const NODE_DEFS = [
     label: '#16',
     title: 'Solo Livellamento',
     desc: () => G.rightSideUnlocked
-      ? [{ text: 'Sblocca il', color: null },
-         { text: 'Centro Livellamento', color: '#4ade80' },
-         { text: '[PERMANENTE]', color: '#f87171' }]
-      : [{ text: 'Compra Lato Destro (R3)', color: '#f87171' },
-         { text: 'nella Ricerca per sbloccare', color: '#f87171' }],
+      ? [{ text: 'Unlocks the', color: null },
+         { text: _nd.lc(), color: '#4ade80' },
+         { text: _nd.perm(), color: '#f87171' }]
+      : [{ text: _nd.right(), color: '#f87171' },
+         { text: _nd.lockHint(), color: '#f87171' }],
     maxLevel: 1,
     baseCost: 100000000000,
     costScale: 1,
@@ -337,9 +378,9 @@ const NODE_DEFS = [
     label: '#19',
     title: 'Maggior aumento, ma diverso',
     desc: () => G.rightSideUnlocked
-      ? [{ text: 'ottieni x3\u03bb', color: '#38bdf8' }]
-      : [{ text: 'Compra Lato Destro (R3)', color: '#f87171' },
-         { text: 'nella Ricerca per sbloccare', color: '#f87171' }],
+      ? [{ text: 'x3 \u03bb', color: '#38bdf8' }]
+      : [{ text: _nd.right(), color: '#f87171' },
+         { text: _nd.lockHint(), color: '#f87171' }],
     maxLevel: 1,
     baseCost: 1000000000000,
     costScale: 1,
@@ -354,16 +395,16 @@ const NODE_DEFS = [
     label: '#21',
     title: 'Upgrade Genetico',
     desc: () => G.leftSideUnlocked
-      ? [{ text: '+0.05 esponente a #5', color: '#4ade80' },
-         { text: '[PERMANENTE]', color: '#f87171' }]
-      : [{ text: 'Compra Lato Sinistro (R2)', color: '#f87171' },
-         { text: 'nella Ricerca per sbloccare', color: '#f87171' }],
+      ? [{ text: '+0.05 exponent to #5', color: '#4ade80' },
+         { text: _nd.perm(), color: '#f87171' }]
+      : [{ text: _nd.left(), color: '#f87171' },
+         { text: _nd.lockHint(), color: '#f87171' }],
     maxLevel: 1,
     baseCost: 100000,
     costScale: 1,
     zone: 'base',
     costInLambda: true,
-    statLabel: (lvl) => lvl > 0 ? `#5 exp: ${G.selfBoostExp.toFixed(2)}` : '+0.05 exp a #5',
+    statLabel: (lvl) => lvl > 0 ? `#5 exp: ${G.selfBoostExp.toFixed(2)}` : '+0.05 exp to #5',
     parents: ['selfBoost'],
     permanent: true,
     onBuy: (lvl) => { G.selfBoostExp += 0.05; recalcPps(); },
@@ -374,9 +415,9 @@ const NODE_DEFS = [
     label: '#30',
     title: 'FRENESIA assoluta',
     desc: () => G.leftSideUnlocked
-      ? [{ text: '+250 livelli massimi a #4', color: '#4ade80' }]
-      : [{ text: 'Compra Lato Sinistro (R2)', color: '#f87171' },
-         { text: 'nella Ricerca per sbloccare', color: '#f87171' }],
+      ? [{ text: '+250 max levels to #4', color: '#4ade80' }]
+      : [{ text: _nd.left(), color: '#f87171' },
+         { text: _nd.lockHint(), color: '#f87171' }],
     maxLevel: 1,
     baseCost: 10e30,
     costScale: 1,
@@ -398,8 +439,8 @@ const NODE_DEFS = [
     label: 'R1',
     title: 'Point Gain 1',
     desc: [
-      { text: '+1x moltiplicatore \u20bd', color: null },
-      { text: 'per ogni livello', color: null },
+      { text: '+1x \u20bd multiplier', color: null },
+      { text: 'per level', color: null },
     ],
     maxLevel: 20,
     costFn: (lvl) => 0.2 + (lvl * 0.2),
@@ -416,15 +457,15 @@ const NODE_DEFS = [
     label: 'R2',
     title: 'Lato Sinistro',
     desc: [
-      { text: 'Sblocca pi\u00f9 upgrades alla sinistra', color: null },
-      { text: "dell'albero principale", color: null },
-      { text: '\u00c8 consigliato prendere prima R3', color: '#fbbf24' },
+      { text: 'Unlocks more upgrades on the left', color: null },
+      { text: 'of the main tree', color: null },
+      { text: 'Recommended to take R3 first', color: '#fbbf24' },
     ],
     maxLevel: 1,
     baseCost: 10,
     costScale: 1,
     zone: 'research',
-    statLabel: 'sblocca lato sx',
+    statLabel: 'unlocks left side',
     parents: ['r_pointGain'],
     onBuy: (lvl) => { G.leftSideUnlocked = true; recalcPps(); },
   },
@@ -434,15 +475,15 @@ const NODE_DEFS = [
     label: 'R3',
     title: 'Lato Destro',
     desc: [
-      { text: 'Sblocca pi\u00f9 upgrades alla destra', color: null },
-      { text: "dell'albero principale", color: null },
-      { text: '\u00c8 consigliato prendere prima', color: '#4ade80' },
+      { text: 'Unlocks more upgrades on the right', color: null },
+      { text: 'of the main tree', color: null },
+      { text: 'Recommended to take first', color: '#4ade80' },
     ],
     maxLevel: 1,
     baseCost: 10,
     costScale: 1,
     zone: 'research',
-    statLabel: 'sblocca lato dx',
+    statLabel: 'unlocks right side',
     parents: ['r_pointGain'],
     onBuy: (lvl) => { G.rightSideUnlocked = true; recalcPps(); },
   },
@@ -452,8 +493,8 @@ const NODE_DEFS = [
     label: 'R4',
     title: 'Point Gain 2',
     desc: [
-      { text: '+0.5x moltiplicatore \u20bd', color: null },
-      { text: 'per ogni livello', color: null },
+      { text: '+0.5x \u20bd multiplier', color: null },
+      { text: 'per level', color: null },
     ],
     maxLevel: 10,
     costFn: (lvl) => 100 + (lvl * 100),
@@ -470,14 +511,14 @@ const NODE_DEFS = [
     label: 'R5',
     title: 'Materialize',
     desc: [
-      { text: 'Sblocca pi\u00f9 tier di upgrade', color: null },
-      { text: '+1 livello oro a #1', color: '#fbbf24' },
+      { text: 'Unlocks more upgrade tiers', color: null },
+      { text: '+1 gold level to #1', color: '#fbbf24' },
     ],
     maxLevel: 1,
     baseCost: 3000000,
     costScale: 1,
     zone: 'research',
-    statLabel: '+1 lvl oro a #1',
+    statLabel: '+1 gold lvl to #1',
     parents: ['r_pointGain'],
     onBuy: (lvl) => {
       const nd = NODE_DEFS.find(n => n.id === 'start');
@@ -494,17 +535,19 @@ const NODE_DEFS = [
     label: 'R5b',
     title: 'Materialize 2',
     desc: [
-      { text: '+1 livello max a #2 e #3', color: '#fbbf24' },
+      { text: '+1 max level to #2 and #3', color: '#fbbf24' },
     ],
     maxLevel: 1,
     baseCost: 500000000,
     costScale: 1,
     zone: 'research',
-    statLabel: (lvl) => lvl > 0 ? '#2 e #3 gold' : '',
+    statLabel: (lvl) => lvl > 0 ? '#2 and #3 gold' : '',
     parents: ['r_materialize'],
     onBuy: () => {
-      NODE_DEFS.find(n => n.id === 'flat2x').maxLevel += 1;
-      NODE_DEFS.find(n => n.id === 'flat3x').maxLevel += 1;
+      const n2 = NODE_DEFS.find(n => n.id === 'flat2x');
+      const n3 = NODE_DEFS.find(n => n.id === 'flat3x');
+      if (n2.maxLevel < 2) n2.maxLevel = 2;
+      if (n3.maxLevel < 2) n3.maxLevel = 2;
       G.mat2Unlocked = true;
       recalcPps();
     },
@@ -515,8 +558,8 @@ const NODE_DEFS = [
     label: 'R6',
     title: 'Point Gain 3',
     desc: [
-      { text: '+0.5x moltiplicatore \u20bd', color: null },
-      { text: 'per ogni livello', color: null },
+      { text: '+0.5x \u20bd multiplier', color: null },
+      { text: 'per level', color: null },
     ],
     maxLevel: 10,
     costFn: (lvl) => 100000 + lvl * 100000,
@@ -533,8 +576,8 @@ const NODE_DEFS = [
     label: 'R7',
     title: 'Point Gain 4',
     desc: [
-      { text: '+0.5x moltiplicatore \u20bd', color: null },
-      { text: 'per ogni livello', color: null },
+      { text: '+0.5x \u20bd multiplier', color: null },
+      { text: 'per level', color: null },
     ],
     maxLevel: 10,
     costFn: (lvl) => [100e9, 400e9, 1.2e12, 3.2e12, 8e12, 19.2e12, 44.8e12, 102.4e12, 230.4e12, 512e12][lvl] ?? 512e12,
@@ -551,8 +594,8 @@ const NODE_DEFS = [
     label: 'R8',
     title: 'Point Gain 1B',
     desc: [
-      { text: 'x2 \u20bd per livello', color: null },
-      { text: '(compounding, da x1)', color: null },
+      { text: 'x2 \u20bd per level', color: null },
+      { text: '(compounding, from x1)', color: null },
     ],
     maxLevel: 5,
     costFn: (lvl) => [10e12, 100e12, 1e15, 10e15, 100e15][lvl] ?? 1e21,
@@ -575,19 +618,19 @@ const NODE_DEFS = [
     desc: () => {
       const gain = pendingPrestige() - G.prestige;
       return [
-        { text: '"Ora o pi\u00f9 tardi" - Glacio', color: '#C39131' },
-        { text: 'Resetta tutto per fiorire', color: null },
-        { text: 'pi\u00f9 forte che mai', color: null },
+        { text: gt('nodes.prestigeQuote'), color: '#C39131' },
+        { text: gt('nodes.prestigeReset'), color: null },
+        { text: gt('nodes.prestigeReset2'), color: null },
         G.points >= 10e15
           ? { text: `\u20bd \u2192 +${gain.toFixed(2)} \u2726`, color: '#C39131' }
-          : { text: 'Prima ottieni 10Qd \u20bd!', color: '#f87171' },
+          : { text: gt('nodes.prestigeNeedPoints'), color: '#f87171' },
       ];
     },
     maxLevel: Infinity,
     baseCost: 0,
     costScale: 1,
     zone: 'prestige',
-    statLabel: () => G.prestige > 0 ? `${fmt(G.prestige)} \u2726 totali` : '',
+    statLabel: () => G.prestige > 0 ? `${fmt(G.prestige)} \u2726 total` : '',
     parents: ['nowWithExponents'],
     permanent: true,
     onBuy: () => {},
@@ -597,16 +640,16 @@ const NODE_DEFS = [
     x: 1960, y: 200,
     label: '#1p',
     title: 'La Sfida.',
-    desc: [
-      { text: 'Sblocca l\'', color: null },
-      { text: 'Obelisco Mistico', color: '#B874BA' },
-      { text: '[PERMANENTE]', color: '#f87171' },
+    desc: () => [
+      { text: 'Unlocks the', color: null },
+      { text: _nd.obelisk(), color: '#B874BA' },
+      { text: _nd.perm(), color: '#f87171' },
     ],
     maxLevel: 1,
     baseCost: 250,
     costScale: 1,
     zone: 'prestige',
-    statLabel: 'ancora da implementare',
+    statLabel: 'not yet implemented',
     parents: ['prestigeUnlock'],
     permanent: true,
     onBuy: () => {},
@@ -617,8 +660,8 @@ const NODE_DEFS = [
     label: '#2p',
     title: 'Rocket Shot',
     desc: [
-      { text: '+1x \u20bd e +0.5x \u03bb gain', color: '#fbbf24' },
-      { text: 'per livello', color: null },
+      { text: '+1x \u20bd and +0.5x \u03bb gain', color: '#fbbf24' },
+      { text: 'per level', color: null },
     ],
     maxLevel: 50,
     costFn: (lvl) => +(0.05 + lvl * 0.05).toFixed(2),
@@ -634,9 +677,9 @@ const NODE_DEFS = [
     x: 1620, y: 0,
     label: '#3p',
     title: 'Le alte altezze',
-    desc: [
-      { text: 'Espandi l\'arbusto dei punti', color: null },
-      { text: '[PERMANENTE]', color: '#f87171' },
+    desc: () => [
+      { text: 'Expands the points upgrade tree', color: null },
+      { text: _nd.perm(), color: '#f87171' },
     ],
     maxLevel: 1,
     baseCost: 0,
@@ -653,7 +696,7 @@ const NODE_DEFS = [
     label: '#4p',
     title: 'Duplicando IQ',
     desc: [
-      { text: 'x2 \u03bb guadagnati (compounding)', color: '#38bdf8' },
+      { text: 'x2 \u03bb earned (compounding)', color: '#38bdf8' },
     ],
     maxLevel: 5,
     baseCost: 3,
@@ -668,16 +711,16 @@ const NODE_DEFS = [
     x: 1620, y: -200,
     label: '#5p',
     title: 'Fast and Furious',
-    desc: [
-      { text: 'Gli upgrade punti comprano', color: null },
-      { text: 'il massimo al click', color: null },
-      { text: '[PERMANENTE]', color: '#f87171' },
+    desc: () => [
+      { text: 'Point upgrades buy max', color: null },
+      { text: 'on click', color: null },
+      { text: _nd.perm(), color: '#f87171' },
     ],
     maxLevel: 1,
     baseCost: 0,
     costScale: 1,
     zone: 'prestige',
-    statLabel: 'ancora da implementare',
+    statLabel: 'not yet implemented',
     parents: ['toNewHeights'],
     permanent: true,
     onBuy: () => { G.fastAndFurious = true; },
@@ -688,8 +731,8 @@ const NODE_DEFS = [
     label: '#6p',
     title: 'Ricercatori Angelici',
     desc: [
-      { text: 'Genera l\'1% dei \u03bb', color: '#38bdf8' },
-      { text: 'guadagnati ogni secondo', color: '#38bdf8' },
+      { text: 'Generates 1% of \u03bb', color: '#38bdf8' },
+      { text: 'earned every second', color: '#38bdf8' },
     ],
     maxLevel: 1,
     baseCost: 2,
@@ -705,31 +748,32 @@ const NODE_DEFS = [
     label: '#8p',
     title: '2UP!',
     desc: [
-      { text: 'DA CAMBIARE PER GLI XP', color: '#fbbf24' },
+      { text: 'x2 XP per click (compounding)', color: '#4ade80' },
     ],
-    maxLevel: 1,
-    baseCost: 300,
+    maxLevel: 5,
+    costFn: (lvl) => [300, 600, 1200, 2400, 4800][lvl] ?? 4800,
+    baseCost: 0,
     costScale: 1,
     zone: 'prestige',
-    statLabel: 'ancora da implementare',
+    statLabel: (lvl) => lvl > 0 ? `x${Math.pow(2, lvl)} XP/click` : 'x2 XP/click per lvl',
     parents: ['dupingIq'],
-    onBuy: () => null,
+    onBuy: () => { G.xpClickMulti = (G.xpClickMulti || 1) * 2; },
   },
   {
     id: 'unlazyScientists',
     x: 1960, y: 700,
     label: '#9p',
-    title: 'Scenziati non così pigri',
-    desc: [
-      { text: 'Sblocca nuovi upgrade', color: null },
-      { text: 'nella zona ricerca', color: '#38bdf8' },
-      { text: '[PERMANENTE]', color: '#f87171' },
+    title: 'Scenziati non cos\u00ec pigri',
+    desc: () => [
+      { text: 'Unlocks new upgrades', color: null },
+      { text: 'in the research zone', color: '#38bdf8' },
+      { text: _nd.perm(), color: '#f87171' },
     ],
     maxLevel: 1,
     baseCost: 10000,
     costScale: 1,
     zone: 'prestige',
-    statLabel: 'ancora da implementare',
+    statLabel: 'not yet implemented',
     parents: ['dupingIq'],
     permanent: true,
     onBuy: () => { G.unlazyScientists = true; },
@@ -742,9 +786,9 @@ const NODE_DEFS = [
     title: '1UP!',
     desc: () => G.toNewHeightsUnlocked
       ? [{ text: '+2 XP per click', color: '#4ade80' },
-         { text: 'per ogni livello di questo upgrade', color: null }]
-      : [{ text: 'Sblocca #3p', color: '#f87171' },
-         { text: 'nella zona Prestige', color: '#f87171' }],
+         { text: 'per level of this upgrade', color: null }]
+      : [{ text: _nd.p3(), color: '#f87171' },
+         { text: _nd.p3zone(), color: '#f87171' }],
     maxLevel: 15,
     costFn: (lvl) => 1e18 * Math.pow(1.5, lvl),
     baseCost: 0,
@@ -760,16 +804,16 @@ const NODE_DEFS = [
     label: '#23',
     title: 'Rimpicciolimento',
     desc: () => G.toNewHeightsUnlocked
-      ? [{ text: 'Riduce i requisiti di XP', color: '#4ade80' },
-         { text: '÷1.5 compounding per livello', color: null }]
-      : [{ text: 'Sblocca #3p', color: '#f87171' },
-         { text: 'nella zona Prestige', color: '#f87171' }],
+      ? [{ text: 'Reduces XP requirements', color: '#4ade80' },
+         { text: '\u00f71.5 compounding per level', color: null }]
+      : [{ text: _nd.p3(), color: '#f87171' },
+         { text: _nd.p3zone(), color: '#f87171' }],
     maxLevel: 10,
     costFn: (lvl) => 1e18 * Math.pow(2.5, lvl),
     baseCost: 0,
     costScale: 1,
     zone: 'base',
-    statLabel: (lvl) => lvl > 0 ? `÷${Math.pow(1.5, lvl).toFixed(2)} XP req` : '÷1.5 XP req per lvl',
+    statLabel: (lvl) => lvl > 0 ? `\u00f7${Math.pow(1.5, lvl).toFixed(2)} XP req` : '\u00f71.5 XP req per lvl',
     parents: ['oneUp'],
     onBuy: (lvl) => { G.xpReqDiv = Math.pow(1.5, lvl); },
   },
@@ -779,15 +823,15 @@ const NODE_DEFS = [
     label: '#24',
     title: 'Santo Graal',
     desc: () => G.toNewHeightsUnlocked
-      ? [{ text: '₽ potenziato dal Prestige', color: '#fbbf24' },
-         { text: 'x((✦+5)^0.4, min 1)', color: '#4ade80' }]
-      : [{ text: 'Sblocca #3p', color: '#f87171' },
-         { text: 'nella zona Prestige', color: '#f87171' }],
+      ? [{ text: '\u20bd boosted by Prestige', color: '#fbbf24' },
+         { text: 'x((\u2726+5)^0.4, min 1)', color: '#4ade80' }]
+      : [{ text: _nd.p3(), color: '#f87171' },
+         { text: _nd.p3zone(), color: '#f87171' }],
     maxLevel: 1,
     baseCost: 1e24,
     costScale: 1,
     zone: 'base',
-    statLabel:'',
+    statLabel: '',
     parents: ['oneUp'],
     onBuy: () => { G.holyGrailUnlocked = true; recalcPps(); },
   },
@@ -797,10 +841,10 @@ const NODE_DEFS = [
     label: '#25',
     title: 'Dopo l\'Halcyon',
     desc: () => G.toNewHeightsUnlocked
-      ? [{ text: '₽ elevato a ^1.05', color: '#4ade80' },
-         { text: 'dopo tutti i moltiplicatori', color: null }]
-      : [{ text: 'Sblocca #3p', color: '#f87171' },
-         { text: 'nella zona Prestige', color: '#f87171' }],
+      ? [{ text: '\u20bd raised to ^1.05', color: '#4ade80' },
+         { text: 'after all multipliers', color: null }]
+      : [{ text: _nd.p3(), color: '#f87171' },
+         { text: _nd.p3zone(), color: '#f87171' }],
     maxLevel: 1,
     baseCost: 1e27,
     costScale: 1,
@@ -815,11 +859,11 @@ const NODE_DEFS = [
     label: '#27',
     title: 'Gratificazione Ritardata',
     desc: () => G.toNewHeightsUnlocked
-      ? [{ text: 'Più tempo passa, più ₽ guadagni', color: null },
-         { text: 'x(tempo^0.65/30+1)', color: '#4ade80' },
-         { text: '(il tempo non si resetta!)', color: '#f87171' }]
-      : [{ text: 'Sblocca #3p', color: '#f87171' },
-         { text: 'nella zona Prestige', color: '#f87171' }],
+      ? [{ text: 'The longer you play, the more \u20bd', color: null },
+         { text: 'x(time^0.65/30+1)', color: '#4ade80' },
+         { text: '(time doesn\'t reset!)', color: '#f87171' }]
+      : [{ text: _nd.p3(), color: '#f87171' },
+         { text: _nd.p3zone(), color: '#f87171' }],
     maxLevel: 1,
     baseCost: 50e24,
     costScale: 1,
@@ -835,7 +879,7 @@ const NODE_DEFS = [
     label: '#10p',
     title: 'Rocket Shot Ultra',
     desc: [
-      { text: '+2x \u20bd per livello', color: '#fbbf24' },
+      { text: '+2x \u20bd per level', color: '#fbbf24' },
     ],
     maxLevel: 50,
     costFn: (lvl) => 50 + lvl * 50,

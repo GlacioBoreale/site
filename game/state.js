@@ -18,7 +18,7 @@ const G = {
   boomboxUnlocked:   false,
   rightSideUnlocked: false,
   leftSideUnlocked:  false,
-  startGoldLevels:  0,
+  startGoldLevels:   0,
   startGoldMultiP:   1,
   startGoldMultiL:   1,
   prestige:          0,
@@ -44,6 +44,8 @@ const G = {
   researchUnlocked:  false,
   rBasePps:          0,
   rMulti:            1,
+  leaderboardUnlocked: false,
+  leaderboardOptIn:    false,
 };
 
 // ─── STATO NODI ───────────────────────────────────────────────────────────────
@@ -51,10 +53,10 @@ const nodeState = {};
 NODE_DEFS.forEach(n => { nodeState[n.id] = { level: 0 }; });
 
 // ─── VISIBILITÀ ───────────────────────────────────────────────────────────────
-const REQUIRES_RIGHT   = new Set(['thereItIs', 'nowWithExponents', 'costCutting', 'ThatsaLot', 'moreButDifferent']);
-const REQUIRES_LEFT    = new Set(['push4research', 'toomanylvls', 'upgradeGenetics']);
+const REQUIRES_RIGHT    = new Set(['thereItIs', 'nowWithExponents', 'costCutting', 'ThatsaLot', 'moreButDifferent']);
+const REQUIRES_LEFT     = new Set(['push4research', 'toomanylvls', 'upgradeGenetics']);
 const REQUIRES_PRESTIGE = new Set(['p_firstUpgrade']);
-const REQUIRES_TNH     = new Set(['oneUp', 'downsizing', 'holyGrail', 'afterHalcyon', 'delayedGratification']);
+const REQUIRES_TNH      = new Set(['oneUp', 'downsizing', 'holyGrail', 'afterHalcyon', 'delayedGratification']);
 
 function isVisible(nd) {
   if (nd.zone === 'research' && nd.id !== 'researchUnlock') return false;
@@ -99,14 +101,12 @@ function pendingPrestige() {
   return (Math.pow(G.points / PRESTIGE_SCALE, 0.16) + G.prestige) * G.prestigeGainMulti * lvlMPres;
 }
 
-// ─── HELPERS ──────────────────────────────────────────────────────────────────
-// ─── LEVELING ────────────────────────────────────────────────────────────────
+// ─── HELPERS / LEVELING ───────────────────────────────────────────────────────
 function xpForLevel(lvl) {
   return Math.round(2 * Math.pow(2, lvl) / (G.xpReqDiv || 1));
 }
 
 function totalXpForLevel(lvl) {
-  // somma xpForLevel(0..lvl-1)
   let tot = 0;
   for (let i = 0; i < lvl; i++) tot += xpForLevel(i);
   return tot;
@@ -150,35 +150,27 @@ function recalcPps() {
     multi *= Math.max(1, Math.pow(50 + G.research, 0.18));
   }
   const lvlMP = G.soloLevelingUnlocked ? levelMultiP() : 1;
-  const lvlML = G.soloLevelingUnlocked ? levelMultiL() : 1;
-
-  // holy grail
   const holyM = G.holyGrailUnlocked ? Math.max(1, Math.pow(G.prestige + 5, 0.4)) : 1;
-  // delayed gratification
-  const dgM = G.delayedGratUnlocked ? (Math.pow(G.delayedGratTime, 0.65) / 30 + 1) : 1;
-
+  const dgM   = G.delayedGratUnlocked ? (Math.pow(G.delayedGratTime, 0.65) / 30 + 1) : 1;
   let pps = base * multi * flat * G.multiIncBonus * G.startGoldMultiP * G.prestigeMulti * lvlMP * holyM * dgM;
-
-  // after halcyon: ^1.05 dopo tutti i moltiplicatori
   if (G.afterHalcyonUnlocked) pps = Math.pow(pps, 1.05);
-
   G.pps = pps;
 }
 
 // ─── FORMATTAZIONE ────────────────────────────────────────────────────────────
 const SUFFIXES = [
   '', 'k', 'M', 'B', 'T',
-  'Qd', 'Qn', 'Sx', 'Sp', 'Oc', 'No',        // 10^15 - 10^33
-  'Dc', 'Ud', 'Dd', 'Td', 'QtD', 'QnD', 'SxD', 'SpD', 'OcD', 'NvD', // 10^33 - 10^63
-  'Vg', 'UVg', 'DVg', 'TVg', 'QtVg', 'QnVg', 'SxVg', 'SpVg', 'OcVg', 'NvVg', // 10^63 - 10^93
-  'Tg', 'UTg', 'DTg', 'TTg', 'QtTg', 'QnTg', 'SxTg', 'SpTg', 'OcTg', 'NvTg', // 10^93 - 10^123
-  'Qag', 'UQag', 'DQag', 'TQag', 'QtQag', 'QnQag', 'SxQag', 'SpQag', 'OcQag', 'NvQag', // 10^123 - 10^153
-  'Qig', 'UQig', 'DQig', 'TQig', 'QtQig', 'QnQig', 'SxQig', 'SpQig', 'OcQig', 'NvQig', // 10^153 - 10^183
-  'Sxg', 'USxg', 'DSxg', 'TSxg', 'QtSxg', 'QnSxg', 'SxSxg', 'SpSxg', 'OcSxg', 'NvSxg', // 10^183 - 10^213
-  'Spg', 'USpg', 'DSpg', 'TSpg', 'QtSpg', 'QnSpg', 'SxSpg', 'SpSpg', 'OcSpg', 'NvSpg', // 10^213 - 10^243
-  'Ocg', 'UOcg', 'DOcg', 'TOcg', 'QtOcg', 'QnOcg', 'SxOcg', 'SpOcg', 'OcOcg', 'NvOcg', // 10^243 - 10^273
-  'Nvg', 'UNvg', 'DNvg', 'TNvg', 'QtNvg', 'QnNvg', 'SxNvg', 'SpNvg', 'OcNvg', 'NvNvg', // 10^273 - 10^303
-  'Ct', // 10^303
+  'Qd', 'Qn', 'Sx', 'Sp', 'Oc', 'No',
+  'Dc', 'Ud', 'Dd', 'Td', 'QtD', 'QnD', 'SxD', 'SpD', 'OcD', 'NvD',
+  'Vg', 'UVg', 'DVg', 'TVg', 'QtVg', 'QnVg', 'SxVg', 'SpVg', 'OcVg', 'NvVg',
+  'Tg', 'UTg', 'DTg', 'TTg', 'QtTg', 'QnTg', 'SxTg', 'SpTg', 'OcTg', 'NvTg',
+  'Qag', 'UQag', 'DQag', 'TQag', 'QtQag', 'QnQag', 'SxQag', 'SpQag', 'OcQag', 'NvQag',
+  'Qig', 'UQig', 'DQig', 'TQig', 'QtQig', 'QnQig', 'SxQig', 'SpQig', 'OcQig', 'NvQig',
+  'Sxg', 'USxg', 'DSxg', 'TSxg', 'QtSxg', 'QnSxg', 'SxSxg', 'SpSxg', 'OcSxg', 'NvSxg',
+  'Spg', 'USpg', 'DSpg', 'TSpg', 'QtSpg', 'QnSpg', 'SxSpg', 'SpSpg', 'OcSpg', 'NvSpg',
+  'Ocg', 'UOcg', 'DOcg', 'TOcg', 'QtOcg', 'QnOcg', 'SxOcg', 'SpOcg', 'OcOcg', 'NvOcg',
+  'Nvg', 'UNvg', 'DNvg', 'TNvg', 'QtNvg', 'QnNvg', 'SxNvg', 'SpNvg', 'OcNvg', 'NvNvg',
+  'Ct',
 ];
 
 function trimDecimals(s) {
@@ -199,4 +191,14 @@ function fmtLambda(n) {
   let i = 0;
   while (n >= 1000 && i < SUFFIXES.length - 1) { n /= 1000; i++; }
   return trimDecimals(n.toFixed(2)) + SUFFIXES[i];
+}
+
+function fmtMulti(val) {
+  if (!isFinite(val) || isNaN(val)) return '?';
+  if (val < 1e4) return val.toFixed(val < 100 ? 2 : 0);
+  if (val < 1e6)  return (val / 1e3).toFixed(1)  + 'k';
+  if (val < 1e9)  return (val / 1e6).toFixed(2)  + 'M';
+  if (val < 1e12) return (val / 1e9).toFixed(2)  + 'B';
+  if (val < 1e15) return (val / 1e12).toFixed(2) + 'T';
+  return fmt(val);
 }

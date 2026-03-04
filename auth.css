@@ -218,3 +218,114 @@
   font-size: 0.7rem;
   color: rgba(255,255,255,0.4);
 }
+
+/* ── SUBMIT MODAL (fanart / vtpedia) ─────────────────────────────── */
+.submit-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.submit-modal-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.submit-modal-box {
+  position: relative;
+  background: rgba(12,12,22,0.98);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 18px;
+  padding: 1.8rem;
+  width: min(480px, 95vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.7);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+[data-theme="light"] .submit-modal-box {
+  background: rgba(245,248,255,0.99);
+  border-color: rgba(10,10,20,0.1);
+}
+.submit-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.submit-modal-header h2 {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 1.2rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+[data-theme="light"] .submit-modal-header h2 { color: #0a0a14; }
+.submit-modal-close {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  border: none;
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.38);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+.submit-modal-close:hover { background: rgba(255,255,255,0.12); color: #fff; }
+.submit-modal-body { display: flex; flex-direction: column; gap: 0.6rem; }
+.submit-modal-footer {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: flex-end;
+  margin-top: 0.25rem;
+}
+.submit-field-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.submit-label {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+[data-theme="light"] .submit-label { color: rgba(10,10,20,0.45); }
+.submit-file-input {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.6);
+  padding: 0.4rem 0;
+}
+.submit-img-preview {
+  margin-top: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.submit-success {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.9rem;
+  color: #4ade80;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.8rem;
+  background: rgba(74,222,128,0.08);
+  border: 1px solid rgba(74,222,128,0.2);
+  border-radius: 9px;
+}
+[data-theme="light"] .submit-success { color: #16a34a; background: rgba(22,163,74,0.06); border-color: rgba(22,163,74,0.2); }

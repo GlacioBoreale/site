@@ -36,9 +36,14 @@ canvas.addEventListener('mouseup', e => {
     const ly = e.clientY - rect.top;
     const w  = worldPos(lx, ly);
     const nd = nodeAt(w.x, w.y);
-    if (nd) handleNodeClick(nd, lx, ly);
+    if (nd) {
+      if (e.button === 2) handleNodeRightClick(nd);
+      else handleNodeClick(nd, lx, ly);
+    }
   }
 });
+
+canvas.addEventListener('contextmenu', e => e.preventDefault());
 
 canvas.addEventListener('mouseleave', () => {
   isDragging  = false;
@@ -84,6 +89,23 @@ canvas.addEventListener('touchend', e => {
   touchStart = null;
 });
 
+function handleNodeRightClick(nd) {
+  if (!gameReady) return;
+  if (!window._cfgBuyMaxEnabled || !window._cfgBuyMaxBoards) return;
+  const st = nodeState[nd.id];
+  if (!isVisible(nd) || isLocked(nd) || nd.zone !== 'base' || nd.isPrestigeBtn) return;
+  let bought = false;
+  while (st.level < nd.maxLevel) {
+    const cost = nodeCost(nd, st.level);
+    if (G.points < cost) break;
+    G.points -= cost;
+    st.level++;
+    nd.onBuy(st.level);
+    bought = true;
+  }
+  if (bought) saveGame();
+}
+
 //  CLICK NODO
 function checkDescPageClick(nd, lx, ly) {
   const totalPages = typeof nd.descPages === 'function' ? nd.descPages() : 1;
@@ -124,7 +146,32 @@ function handleNodeClick(nd, lx, ly) {
   if (!isVisible(nd) || isLocked(nd) || st.level >= nd.maxLevel) return;
   const isRNode = (nd.zone === 'research' && nd.id !== 'researchUnlock') || !!nd.costInLambda;
   const isPNode = nd.zone === 'prestige' && !nd.isPrestigeBtn;
-  if (isPNode) {
+  const isPrestNode = !!nd.costInPrestige;
+
+  if (isPrestNode && !G.hasPrestiged) return;
+
+  const isPointUpgrade = !isRNode && !isPNode && !isPrestNode && nd.zone === 'base';
+  const buyMax = G.fastAndFurious && isPointUpgrade && window._cfgBuyMaxEnabled && (typeof CFG !== 'undefined' ? CFG.buyMaxPointUpgrades : false);
+
+  if (buyMax) {
+    let bought = false;
+    while (st.level < nd.maxLevel) {
+      const cost = nodeCost(nd, st.level);
+      if (G.points < cost) break;
+      G.points -= cost;
+      st.level++;
+      nd.onBuy(st.level);
+      bought = true;
+    }
+    if (bought) saveGame();
+    return;
+  }
+
+  if (isPrestNode) {
+    const cost = nodeCost(nd, st.level);
+    if (G.prestige < cost) return;
+    G.prestige -= cost;
+  } else if (isPNode) {
     const cost = nodeCost(nd, st.level);
     if (G.prestige < cost) return;
     G.prestige -= cost;

@@ -22,13 +22,18 @@ const _statCache = {};
 function getStatLabel(nd, lvl) {
   if (_now - _lastStatUpdate >= 500) {
     _lastStatUpdate = _now;
-    // invalida tutto: si ricalcola su richiesta nel frame corrente
     Object.keys(_statCache).forEach(k => delete _statCache[k]);
   }
   if (_statCache[nd.id] !== undefined) return _statCache[nd.id];
   const raw = typeof nd.statLabel === 'function' ? nd.statLabel(lvl) : (nd.statLabel || '');
-  _statCache[nd.id] = raw;
-  return raw;
+  let label = raw;
+  if (raw && /x[\d.]/.test(raw) && !raw.includes('gain')) {
+    if (raw.includes('\u20bd') || raw.includes('\u03bb') || raw.includes('\u2726')) {
+      label = raw + ' gain';
+    }
+  }
+  _statCache[nd.id] = label;
+  return label;
 }
 
 // ─── FMT MOLTIPLICATORE ───────────────────────────────────────────────────────
@@ -158,6 +163,7 @@ function roundRect(x, y, w, h, r) {
 
 // ─── GRIGLIA ──────────────────────────────────────────────────────────────────
 function drawGrid(T) {
+  if (window._cfgShowGrid === false) return;
   const offX = ((camX % GRID) + GRID) % GRID;
   const offY = ((camY % GRID) + GRID) % GRID;
   ctx.strokeStyle = T.grid;
@@ -172,6 +178,7 @@ function drawGrid(T) {
 
 // ─── CONNESSIONI ──────────────────────────────────────────────────────────────
 function drawConnections(T) {
+  if (window._cfgShowConnections === false) return;
   NODE_DEFS.forEach(nd => {
     if (!isVisible(nd)) return;
     nd.parents.forEach(pid => {
@@ -203,9 +210,9 @@ function hexToRgba(hex, alpha) {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-function costStr(cost, isRNode, isPNode) {
+function costStr(cost, isRNode, isPNode, isPrestNode) {
   if (cost === 0) return 'Gratis';
-  if (isPNode) return fmt(cost) + ' ✦';
+  if (isPrestNode || isPNode) return cost.toFixed ? cost.toFixed(2) + ' ✦' : fmt(cost) + ' ✦';
   return isRNode ? fmtLambda(cost) + ' λ' : fmt(cost) + ' ₽';
 }
 
@@ -227,9 +234,10 @@ function drawNodes(T) {
     const isPrestigeBtn = !!nd.isPrestigeBtn;
     const isRNode      = (nd.zone === 'research' && nd.id !== 'researchUnlock') || !!nd.costInLambda;
     const isPNode      = nd.zone === 'prestige' && !isPrestigeBtn;
+    const isPrestNode  = !!nd.costInPrestige;
     const cost         = isPNode ? nodeCost(nd, st.level) : isRNode ? researchCost(nd, st.level) : nodeCost(nd, st.level);
     const prestigeReady = isPrestigeBtn && G.points >= 10e15;
-    const canAfford    = isPrestigeBtn ? prestigeReady : (!maxed && !locked && (isPNode ? G.prestige >= cost : isRNode ? G.research >= cost : G.points >= cost));
+    const canAfford    = isPrestigeBtn ? prestigeReady : (!maxed && !locked && (isPrestNode ? (G.hasPrestiged && G.prestige >= cost) : isPNode ? G.prestige >= cost : isRNode ? G.research >= cost : G.points >= cost));
     const buyable      = isPrestigeBtn ? prestigeReady : (!maxed && !locked && canAfford);
 
     const pulse = 0.5 + 0.5 * Math.sin(_now / 210);
@@ -323,7 +331,8 @@ function drawNodes(T) {
     ctx.textAlign = 'right';
     ctx.font      = '600 12px Fredoka, sans-serif';
     ctx.fillStyle = hexToRgba(zc.a, '1');
-    ctx.fillText(nd.title, nx + NODE_W - PAD, row1Y);
+    const _ndTitle = typeof nd.title === 'function' ? nd.title() : nd.title;
+    ctx.fillText(_ndTitle, nx + NODE_W - PAD, row1Y);
 
     const sepY = row1Y + 7;
     ctx.beginPath();
@@ -392,9 +401,9 @@ function drawNodes(T) {
         ctx.font      = '600 11px Fredoka, sans-serif';
         if (maxed || bought) {
           ctx.fillStyle = hexToRgba(zc.a, '1');
-          ctx.fillText(maxed ? 'Maxed!' : costStr(cost, isRNode, isPNode), nx + NODE_W - PAD, row2Y);
+          ctx.fillText(maxed ? 'Maxed!' : costStr(cost, isRNode, isPNode, isPrestNode), nx + NODE_W - PAD, row2Y);
         } else {
-          const cs = costStr(cost, isRNode, isPNode);
+          const cs = costStr(cost, isRNode, isPNode, isPrestNode);
           ctx.fillStyle = cs === 'Gratis' ? T.green : canAfford ? T.textMuted : 'rgba(248,113,113,0.9)';
           ctx.fillText(cs, nx + NODE_W - PAD, row2Y);
         }

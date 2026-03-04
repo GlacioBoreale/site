@@ -50,19 +50,19 @@ const STATS_DEFS = {
   other: [
     {
       id:    'sessionTime',
-      label: () => _statFmtTime(_statsSessionSec) + ' session time',
+      label: () => _statFmtTime(_statsSessionSec) + ' ' + (window._gt_session || 'session time'),
       color: '#f87171',
       bg:    'rgba(248,113,113,0.13)',
     },
     {
       id:    'totalTime',
-      label: () => _statFmtTime(G.totalTimeSec || 0) + ' total time',
+      label: () => _statFmtTime(G.totalTimeSec || 0) + ' ' + (window._gt_total || 'total time'),
       color: '#38bdf8',
       bg:    'rgba(56,189,248,0.10)',
     },
     {
       id:    'prestigeCount',
-      label: () => (G.prestigeCount || 0) + ' prestiges',
+      label: () => (G.prestigeCount || 0) + ' ' + (window._gt_prestiges || 'prestiges'),
       color: '#fbbf24',
       bg:    'rgba(251,191,36,0.10)',
       check: () => G.hasPrestiged,
@@ -132,7 +132,8 @@ function tickStats(dt) {
   G.totalTimeSec += dt;
 
   _statsTickAcc += dt;
-  if (_statsTickAcc >= 0.5) {
+  const interval = (window._settingsCurrencyInterval || 300) / 1000;
+  if (_statsTickAcc >= interval) {
     _statsTickAcc = 0;
     if (document.getElementById('panel-stats')?.classList.contains('open')) _statsUpdatePanel();
     _statRenderPinnedBar();
@@ -232,7 +233,7 @@ function _statsUpdatePanel() {
 
   if (cnt) {
     const n = _statsPinned.filter(id => _statVisible(_statById(id))).length;
-    cnt.textContent = n + ' PINNED';
+    cnt.textContent = n + ' ' + (window._gt_pinned || 'PINNED');
   }
 
   body.querySelectorAll('.stats-pin-btn').forEach(btn => {

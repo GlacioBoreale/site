@@ -46,23 +46,17 @@ function buildLevelingPanel() {
   const el = document.createElement('div');
   el.id = 'leveling-panel';
   el.innerHTML = `
-    <div class="lp-header">Leveling</div>
+    <div class="lp-header" id="lp-header">Leveling</div>
     <div class="lp-body">
       <div class="lp-buffs" id="lp-buffs"></div>
       <div class="lp-right">
-        <div class="lp-desc">
-          Cos'\u00e8 un incremental senza dei livelli?<br>
-          Guadagna <span style="color:#4ade80">Esperienza</span> e
-          <span style="color:#4ade80">Livelli</span> cliccando.<br>
-          I boost sono nel pannello a sinistra.<br>
-          <span style="color:rgba(255,255,255,0.3);font-size:.67rem">(i livelli si resettano col prestige)</span>
-        </div>
+        <div class="lp-desc" id="lp-desc"></div>
         <div class="lp-level-display">
-          <span class="lp-level-label" id="lp-level-label">LIVELLO 0</span>
+          <span class="lp-level-label" id="lp-level-label">0</span>
           <span class="lp-level-fraction" id="lp-level-fraction">0 / 2 XP</span>
         </div>
         <div class="lp-xp-bar-wrap"><div class="lp-xp-bar" id="lp-xp-bar"></div></div>
-        <button class="lp-btn" id="lp-btn">Clicca qui!</button>
+        <button class="lp-btn" id="lp-btn"></button>
       </div>
     </div>
   `;
@@ -106,7 +100,7 @@ function buildLevelingPanel() {
 
 function onLevelingClick() {
   if (!G.soloLevelingUnlocked) return;
-  G.xp += G.xpPerClick || 1;
+  G.xp += (G.xpPerClick || 1) * (G.xpClickMulti || 1);
 
   let needed = xpForLevel(G.xpLevel);
   while (G.xp >= needed) {
@@ -127,7 +121,7 @@ function updateLevelingPanel() {
   const needed = xpForLevel(lvl);
   const pct    = Math.min(100, (xp / needed) * 100);
 
-  _lpLevelLabelEl.textContent = 'LIVELLO ' + lvl;
+  _lpLevelLabelEl.textContent = (gt('leveling.level') || 'LEVEL') + ' ' + lvl;
   _lpFractionEl.textContent   = xp + ' / ' + needed + ' XP';
   _lpBarEl.style.width        = pct + '%';
 
@@ -137,7 +131,7 @@ function updateLevelingPanel() {
     el.classList.toggle('inactive', !active);
     textNode.textContent = active
       ? buff.labelActive(lvl)
-      : 'lvl req ' + buff.req;
+      : (gt('leveling.lvlReq') || 'lvl req') + ' ' + buff.req;
   });
 }
 

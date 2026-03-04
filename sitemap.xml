@@ -19,7 +19,7 @@
     <loc>https://www.glaciopia.com/projects.html</loc>
     <lastmod>2025-06-01</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
 
   <url>
@@ -31,6 +31,13 @@
 
   <url>
     <loc>https://www.glaciopia.com/socials.html</loc>
+    <lastmod>2025-06-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://www.glaciopia.com/fanart.html</loc>
     <lastmod>2025-06-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

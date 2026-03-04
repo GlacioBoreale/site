@@ -419,7 +419,23 @@ const Radio = (() => {
     updateUI();
   }
 
-  return { build, play, pause, unlockPrestigeTrack };
+  function setVolume(v) {
+    audio.volume = Math.max(0, Math.min(1, v));
+    const slider = document.getElementById('radio-vol-slider');
+    const pct    = document.getElementById('radio-vol-pct');
+    const btn    = document.getElementById('radio-vol-toggle');
+    if (slider) slider.value = Math.round(v * 100);
+    if (pct)    pct.textContent = Math.round(v * 100) + '%';
+    if (btn)    btn.innerHTML = v === 0 ? '<i class="fas fa-volume-xmark"></i>' : v < 0.5 ? '<i class="fas fa-volume-low"></i>' : '<i class="fas fa-volume-high"></i>';
+  }
+
+  function setMuted(m) {
+    audio.muted = m;
+    const btn = document.getElementById('radio-vol-toggle');
+    if (btn) btn.innerHTML = m ? '<i class="fas fa-volume-xmark"></i>' : audio.volume < 0.5 ? '<i class="fas fa-volume-low"></i>' : '<i class="fas fa-volume-high"></i>';
+  }
+
+  return { build, play, pause, unlockPrestigeTrack, setVolume, setMuted };
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -440,6 +456,64 @@ function syncRadioVisibility() {
   }
 }
 
+function syncRadioVisibility() {
+  const w = document.getElementById('radio-widget');
+  if (!G.boomboxUnlocked) {
+    if (w) w.style.display = 'none';
+    const btn = document.getElementById('radio-toggle-btn');
+    if (btn) btn.classList.remove('visible');
+    const lbBtn = document.getElementById('lb-toggle-btn');
+    if (lbBtn) lbBtn.style.display = 'none';
+  } else {
+    if (w) w.style.display = '';
+    buildToggleBtn();
+    const btn = document.getElementById('radio-toggle-btn');
+    if (btn) btn.classList.add('visible');
+    syncLeaderboardBtn(); // <-- aggiunto
+  }
+}
+
+function buildLeaderboardToggleBtn() {
+  if (document.getElementById('lb-toggle-btn')) return;
+  const btn = document.createElement('button');
+  btn.id        = 'lb-toggle-btn';
+  btn.className = 'lb-toggle-btn';
+  btn.title     = 'Leaderboard opt-in';
+  btn.innerHTML = '<i class="fas fa-ranking-star"></i>';
+  btn.addEventListener('click', () => {
+    if (!G.leaderboardUnlocked) return;
+    G.leaderboardOptIn = !G.leaderboardOptIn;
+    syncLeaderboardBtn();
+    saveGame();
+    scheduleCloudSave();
+    pushCloudSave();
+  });
+  document.body.appendChild(btn);
+}
+
+function syncLeaderboardBtn() {
+  buildLeaderboardToggleBtn();
+  const btn = document.getElementById('lb-toggle-btn');
+  if (!btn) return;
+
+  if (!G.leaderboardUnlocked || !G.boomboxUnlocked) {
+    btn.style.display = 'none';
+    return;
+  }
+  btn.style.display = '';
+  btn.classList.toggle('lb-active', G.leaderboardOptIn);
+  btn.title = G.leaderboardOptIn
+    ? 'Sei in classifica — clicca per uscire'
+    : 'Non sei in classifica — clicca per entrare';
+
+  const radioBtn = document.getElementById('radio-toggle-btn');
+  if (radioBtn) {
+    const radioLeft = parseInt(radioBtn.style.left || '0', 10);
+    btn.style.left = Math.max(0, radioLeft - 52) + 'px';
+  }
+}
+
+
 function buildToggleBtn() {
   if (document.getElementById('radio-toggle-btn')) return;
   const btn = document.createElement('button');
@@ -456,6 +530,7 @@ function buildToggleBtn() {
       w.classList.toggle('visible-radio', next);
     }
     btn.style.left = next ? '360px' : '0';
+    syncLeaderboardBtn();
   });
   document.body.appendChild(btn);
 }

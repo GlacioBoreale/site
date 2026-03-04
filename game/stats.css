@@ -168,11 +168,11 @@
   background: rgba(10,10,18,0.92);
   border: 1.5px solid rgba(255,255,255,0.1);
   border-radius: 10px;
-  padding: 0.35rem 0.85rem;
+  padding: 0.4rem 1rem;
   backdrop-filter: blur(12px);
   box-shadow: 0 4px 24px rgba(0,0,0,0.6);
   font-family: 'Fredoka', sans-serif;
-  font-size: 0.82rem;
+  font-size: 0.92rem;
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
@@ -190,14 +190,39 @@
 .spb-label {
   color: var(--sc);
   font-family: 'Fredoka One', sans-serif;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
 }
 .spb-rate {
   color: color-mix(in srgb, var(--sc) 55%, rgba(255,255,255,0.5));
-  font-size: 0.72rem;
+  font-size: 0.8rem;
 }
 .spb-sep {
   color: rgba(255,255,255,0.18);
   margin: 0 0.45rem;
   font-size: 0.78rem;
+}
+
+/* portrait mobile: sposta la bar sopra la sidebar */
+@media (max-width: 600px) {
+  #stats-pinned-bar {
+    bottom: 0.6rem;
+    left: 4rem;
+    right: 0.6rem;
+    transform: none;
+    max-width: calc(100vw - 5rem);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 0.75rem;
+    padding: 0.28rem 0.65rem;
+  }
+}
+
+/* landscape mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  #stats-pinned-bar {
+    bottom: 0.4rem;
+    font-size: 0.72rem;
+    padding: 0.22rem 0.65rem;
+  }
 }

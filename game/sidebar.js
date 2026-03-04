@@ -14,6 +14,11 @@ const SETTINGS_DEFAULT = {
   buyMaxBoards:             true,
   buyMaxPointUpgrades:      false,
   useGameCursor:            true,
+  lightTheme:               false,
+  showConnections:          true,
+  showGrid:                 true,
+  radioVolume:              80,
+  radioMuted:               false,
 };
 let CFG = { ...SETTINGS_DEFAULT };
 
@@ -22,23 +27,18 @@ function loadSettings() {
 }
 function saveSettings() { localStorage.setItem(SETTINGS_KEY, JSON.stringify(CFG)); }
 
-// ══════════════════════════════════════════════════════════════
-//  CONFIG
-//  Ordine: 7 items, il 4° (index 3) è il menu hamburger
-//  Quando aperto: escono in coppie simmetriche partendo dal centro
-//  Pair 1: index 2 e 4  (±1 dal centro)
-//  Pair 2: index 1 e 5  (±2)
-//  Pair 3: index 0 e 6  (±3)
-// ══════════════════════════════════════════════════════════════
+
+
 const ITEMS = [
-  { id: 'settings',     icon: 'fa-gear',         label: 'Impostazioni', color: 'si-c-settings',  panel: 'panel-settings',     wip: false },  // 0 — top
-  { id: 'stats',        icon: 'fa-chart-bar',    label: 'Statistiche',  color: 'si-c-stats',     panel: 'panel-stats',        wip: false },  // 1
-  { id: 'achievements', icon: 'fa-trophy',       label: 'Achievements', color: 'si-c-achiev',    panel: 'panel-achievements', wip: false },  // 2
-  { id: 'menu',         icon: 'fa-bars',         label: '',             color: '',               panel: null,                 wip: false },  // 3 — MENU BTN
-  { id: 'leaderboard',  icon: 'fa-ranking-star', label: 'Leaderboard',  color: 'si-c-leader',    panel: 'panel-leaderboard',  wip: true  },  // 4
-  { id: 'updatelog',    icon: 'fa-scroll',       label: 'Update Log',   color: 'si-c-updatelog', panel: 'panel-updatelog',    wip: true  },  // 5
-  { id: 'maintenance',  icon: 'fa-wrench',       label: 'Manutenzione', color: 'si-c-maintain',  panel: 'panel-maintenance',  wip: true  },  // 6 — bottom
+  { id: 'settings',     icon: 'fa-gear',         labelKey: 'sidebar.settings',     color: 'si-c-settings',  panel: 'panel-settings',     wip: false },
+  { id: 'stats',        icon: 'fa-chart-bar',    labelKey: 'sidebar.stats',        color: 'si-c-stats',     panel: 'panel-stats',        wip: false },
+  { id: 'achievements', icon: 'fa-trophy',       labelKey: 'sidebar.achievements', color: 'si-c-achiev',    panel: 'panel-achievements', wip: false },
+  { id: 'menu',         icon: 'fa-bars',         labelKey: 'sidebar.menu',         color: '',               panel: null,                 wip: false },
+  { id: 'leaderboard',  icon: 'fa-ranking-star', labelKey: 'sidebar.leaderboard',  color: 'si-c-leader',    panel: 'panel-leaderboard',  wip: false  },
+  { id: 'updatelog',    icon: 'fa-scroll',       labelKey: 'sidebar.updatelog',    color: 'si-c-updatelog', panel: 'panel-updatelog',    wip: true  },
+  { id: 'maintenance',  icon: 'fa-wrench',       labelKey: 'sidebar.maintenance',  color: 'si-c-maintain',  panel: 'panel-maintenance',  wip: true  },
 ];
+function _sbLabel(item) { return gt(item.labelKey) || item.labelKey; }
 
 // Pairs to reveal in order (indices into ITEMS, skipping center=3)
 const PAIRS = [[2, 4], [1, 5], [0, 6]];
@@ -63,17 +63,16 @@ function buildSidebar() {
     btn.id = 'sb-btn-' + item.id;
 
     if (i === 3) {
-      // Menu button
       btn.id = 'sb-menu-btn';
       btn.innerHTML = `
         <div class="sb-icon"><i class="fas fa-bars" id="sb-menu-icon"></i></div>
-        <div class="sb-label" id="sb-menu-label">MENU</div>
+        <div class="sb-label" id="sb-menu-label">${_sbLabel(item)}</div>
       `;
       btn.addEventListener('click', toggleMenu);
     } else {
       btn.innerHTML = `
         <div class="sb-icon ${item.color}"><i class="fas ${item.icon}"></i></div>
-        <div class="sb-label">${item.label}</div>
+        <div class="sb-label">${_sbLabel(item)}</div>
       `;
       if (!item.wip && item.panel) {
         btn.addEventListener('click', () => {
@@ -111,7 +110,7 @@ function toggleMenu() {
 
   if (menuOpen) {
     icon.className  = 'fas fa-times';
-    label.textContent = 'CLOSE';
+    label.textContent = gt('sidebar.close') || 'CLOSE';
     PAIRS.forEach(([a, b], i) => {
       setTimeout(() => {
         btnEls[a]?.classList.add('visible');
@@ -120,7 +119,7 @@ function toggleMenu() {
     });
   } else {
     icon.className  = 'fas fa-bars';
-    label.textContent = 'MENU';
+    label.textContent = gt('sidebar.menu') || 'MENU';
     ITEMS.forEach((_, i) => {
       if (i === 3) return;
       const el = btnEls[i];
@@ -146,6 +145,11 @@ function openPanel(panelId) {
   activePanelId = panelId;
   if (panelId === 'panel-achievements') renderGameAchievements('all');
   if (panelId === 'panel-stats') initStatsPanel();
+  if (panelId === 'panel-leaderboard') initLeaderboard();
+  if (panelId === 'panel-settings') {
+    const buyMaxRow = document.querySelector('.set-row.indent[data-key="buyMaxPointUpgrades"]');
+    if (buyMaxRow) buyMaxRow.style.display = (typeof G !== 'undefined' && G.fastAndFurious) ? '' : 'none';
+  }
 }
 
 function closePanel() {
@@ -163,7 +167,7 @@ function closeAll() {
     const icon  = document.getElementById('sb-menu-icon');
     const label = document.getElementById('sb-menu-label');
     if (icon)  icon.className  = 'fas fa-bars';
-    if (label) label.textContent = 'MENU';
+    if (label) label.textContent = gt('sidebar.menu') || 'MENU';
     ITEMS.forEach((_, i) => { if (i !== 3) btnEls[i]?.classList.remove('visible'); });
   }
 }
@@ -177,7 +181,7 @@ function buildPanels() {
   insert(buildSettingsPanel());
   insert(buildStatsPanel());
   insert(buildAchievementsPanel());
-  insert(buildWipPanel('panel-leaderboard',  'Leaderboard',  'fa-ranking-star', 'si-c-leader'));
+  insert(buildLeaderboardPanel());
   insert(buildWipPanel('panel-updatelog',    'Update Log',   'fa-scroll',       'si-c-updatelog'));
   insert(buildWipPanel('panel-maintenance',  'Manutenzione', 'fa-wrench',       'si-c-maintain'));
 
@@ -221,71 +225,108 @@ function buildSettingsPanel() {
   </div>
   <div class="panel-body">
     <div class="settings-tab-content active" data-tab="general">
-      <div class="set-section">Display</div>
+      <div class="set-section" data-sec-key="settings.sectionDisplay">Visualizzazione</div>
       <div class="set-row">
-        <div class="set-row-left"><span class="set-label">stat display mode</span></div>
+        <div class="set-row-left">
+          <span class="set-label">formato numeri</span>
+          <span class="set-sublabel">come vengono mostrati i numeri grandi</span>
+        </div>
         <select class="set-select" id="set-statDisplayMode">
-          <option value="default">default</option>
-          <option value="scientific">scientific</option>
-          <option value="engineering">engineering</option>
+          <option value="default">abbreviato</option>
+          <option value="scientific">scientifico</option>
         </select>
       </div>
       <div class="set-row">
-        <div class="set-row-left"><span class="set-label">ui scale <span id="set-uiScale-val">100</span>%</span></div>
+        <div class="set-row-left"><span class="set-label">scala UI <span id="set-uiScale-val">100</span>%</span></div>
         <div class="set-slider-wrap">
           <input type="range" class="set-slider" id="set-uiScale" min="70" max="130" step="5" value="100">
           <button class="set-reset-btn" id="set-uiScale-reset" title="Reset"><i class="fas fa-rotate-left"></i></button>
         </div>
       </div>
       <div class="set-row">
-        <div class="set-row-left"><span class="set-label">scientific threshold</span></div>
-        <select class="set-select" id="set-scientificThreshold">
-          <option value="never">never</option>
-          <option value="1e6">1M</option>
-          <option value="1e9">1B</option>
-          <option value="1e12">1T</option>
-        </select>
-      </div>
-      <div class="set-row">
-        <div class="set-row-left"><span class="set-label">currency update interval <span id="set-cui-val">3</span>/s</span></div>
+        <div class="set-row-left"><span class="set-label">aggiornamento valuta <span id="set-cui-val">3</span>/s</span>
+          <span class="set-sublabel">frequenza di aggiornamento del display ₽</span>
+        </div>
         <div class="set-slider-wrap">
           <input type="range" class="set-slider" id="set-currencyInterval" min="1" max="20" step="1" value="3">
           <button class="set-reset-btn" id="set-cui-reset" title="Reset"><i class="fas fa-rotate-left"></i></button>
         </div>
       </div>
+      <div class="set-section" data-sec-key="settings.sectionGameplay">Gameplay</div>
       <div class="set-row">
-        <div class="set-row-left"><span class="set-label">compact mode</span></div>
-        <div class="set-checkbox" id="set-compactMode"></div>
-      </div>
-      <div class="set-section">Gameplay</div>
-      <div class="set-row">
-        <div class="set-row-left"><span class="set-label">buy max functionality</span></div>
+        <div class="set-row-left">
+          <span class="set-label">compra massimo</span>
+          <span class="set-sublabel">abilita la funzione compra max</span>
+        </div>
         <div class="set-checkbox" id="set-buyMaxEnabled"></div>
       </div>
       <div class="set-row indent">
-        <div class="set-row-left"><span class="set-label">boards (with right click)</span></div>
+        <div class="set-row-left"><span class="set-label">boards (tasto destro)</span></div>
         <div class="set-checkbox" id="set-buyMaxBoards"></div>
       </div>
-      <div class="set-row indent">
-        <div class="set-row-left"><span class="set-label">point upgrades (from #5p)</span></div>
+      <div class="set-row indent" data-key="buyMaxPointUpgrades">
+        <div class="set-row-left"><span class="set-label">upgrade punti (da #5p)</span></div>
         <div class="set-checkbox" id="set-buyMaxPointUpgrades"></div>
       </div>
       <div class="set-row">
-        <div class="set-row-left"><span class="set-label">use game cursor</span></div>
+        <div class="set-row-left">
+          <span class="set-label">cursore di gioco</span>
+          <span class="set-sublabel">usa il cursore grab sul canvas</span>
+        </div>
         <div class="set-checkbox" id="set-useGameCursor"></div>
       </div>
     </div>
     <div class="settings-tab-content" data-tab="graphics">
-      <div class="panel-wip"><i class="fas fa-palette"></i>Grafiche — coming soon</div>
+      <div class="set-section" data-sec-key="settings.sectionTheme">Tema</div>
+      <div class="set-row">
+        <div class="set-row-left"><span class="set-label">tema scuro / chiaro</span></div>
+        <div class="set-checkbox" id="set-lightTheme"></div>
+      </div>
+      <div class="set-section" data-sec-key="settings.sectionNodes">Nodi</div>
+      <div class="set-row">
+        <div class="set-row-left"><span class="set-label">mostra connessioni</span></div>
+        <div class="set-checkbox" id="set-showConnections"></div>
+      </div>
+      <div class="set-row">
+        <div class="set-row-left"><span class="set-label">mostra griglia</span></div>
+        <div class="set-checkbox" id="set-showGrid"></div>
+      </div>
     </div>
     <div class="settings-tab-content" data-tab="audio">
-      <div class="panel-wip"><i class="fas fa-music"></i>Audio — coming soon</div>
+      <div class="set-section" data-sec-key="settings.sectionRadio">Radio</div>
+      <div class="set-row">
+        <div class="set-row-left"><span class="set-label">volume <span id="set-radioVol-val">80</span>%</span></div>
+        <div class="set-slider-wrap">
+          <input type="range" class="set-slider" id="set-radioVolume" min="0" max="100" step="5" value="80">
+          <button class="set-reset-btn" id="set-radioVol-reset" title="Reset"><i class="fas fa-rotate-left"></i></button>
+        </div>
+      </div>
+      <div class="set-row">
+        <div class="set-row-left"><span class="set-label">muto</span></div>
+        <div class="set-checkbox" id="set-radioMuted"></div>
+      </div>
     </div>
     <div class="settings-tab-content" data-tab="keybinds">
-      <div class="panel-wip"><i class="fas fa-keyboard"></i>Comandi — coming soon</div>
+      <div class="set-section" data-sec-key="settings.sectionCamera">Camera</div>
+      <div class="set-row">
+        <div class="set-row-left"><span class="set-label">ricentra vista</span></div>
+        <span class="set-keybind">Home</span>
+      </div>
+      <div class="set-row">
+        <div class="set-row-left"><span class="set-label">apri menu</span></div>
+        <span class="set-keybind">Tab</span>
+      </div>
+
     </div>
     <div class="settings-tab-content" data-tab="misc">
-      <div class="panel-wip"><i class="fas fa-sliders"></i>Misc. — coming soon</div>
+      <div class="set-section" data-sec-key="settings.sectionPartita">Partita</div>
+      <div class="set-row">
+        <div class="set-row-left">
+          <span class="set-label">Reset partita</span>
+          <span class="set-sublabel">Cancella tutti i progressi e ricomincia da zero</span>
+        </div>
+        <button class="set-danger-btn" id="set-reset-btn"><i class="fas fa-rotate-left"></i> Reset</button>
+      </div>
     </div>
   </div>
 </div>`;
@@ -369,6 +410,92 @@ function renderGameAchievements(cat = 'all') {
   }
 }
 
+// ══════════════════════════════════════════════════════════════
+//  LEADERBOARD
+// ══════════════════════════════════════════════════════════════
+function buildLeaderboardPanel() {
+  return `
+<div class="game-panel" id="panel-leaderboard">
+  <div class="panel-header">
+    <span class="panel-title">
+      <div class="panel-title-icon si-c-leader"><i class="fas fa-ranking-star"></i></div>
+      Leaderboard
+    </span>
+    <button class="panel-close"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="lb-tabs">
+    <button class="lb-tab active" data-lbtab="points">₽ Points</button>
+    <button class="lb-tab" data-lbtab="prestige">✦ Prestige</button>
+    <button class="lb-tab" data-lbtab="xp_level">XP Level</button>
+  </div>
+  <div class="panel-body" id="lb-body">
+    <div class="lb-loading"><i class="fas fa-spinner fa-spin"></i></div>
+  </div>
+</div>`;
+}
+
+let _lbData = null;
+let _lbLoaded = false;
+
+async function loadLeaderboard() {
+  const body = document.getElementById('lb-body');
+  if (!body) return;
+  body.innerHTML = '<div class="lb-loading"><i class="fas fa-spinner fa-spin"></i></div>';
+  try {
+    if (typeof Api === 'undefined') throw new Error('no api');
+    _lbData = await Api.leaderboard.get();
+    _lbLoaded = true;
+    renderLeaderboard();
+  } catch (_) {
+    body.innerHTML = `<div class="panel-wip"><i class="fas fa-ranking-star"></i>${gt('lb.noData') || 'Nessun dato'}</div>`;
+  }
+}
+
+function renderLeaderboard() {
+  const body = document.getElementById('lb-body');
+  if (!body || !_lbData) return;
+  const tab = document.querySelector('.lb-tab.active')?.dataset.lbtab || 'points';
+  const rows = [...(_lbData[tab] || [])].sort((a, b) => b[tab] - a[tab]);
+  const myUser = typeof Auth !== 'undefined' && Auth.isLoggedIn() ? Auth.getUser() : null;
+
+  if (!rows.length) {
+    body.innerHTML = `<div class="panel-wip"><i class="fas fa-ranking-star"></i>${gt('lb.noData') || 'Nessun dato'}</div>`;
+    return;
+  }
+
+  body.innerHTML = rows.map((r, i) => {
+    const isMe = myUser && r.username === myUser.username;
+    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `<span class="lb-rank">#${i + 1}</span>`;
+    const val = tab === 'points' ? fmt(r[tab]) + ' ₽'
+              : tab === 'prestige' ? fmt(r[tab]) + ' ✦'
+              : (gt('lb.level') || 'Lv') + ' ' + r[tab];
+    return `<div class="lb-row${isMe ? ' lb-me' : ''}">
+      <span class="lb-pos">${medal}</span>
+      <span class="lb-name">${r.username}</span>
+      <span class="lb-val">${val}</span>
+    </div>`;
+  }).join('');
+  if (!myUser) {
+    const note = document.createElement('div');
+    note.className = 'lb-guest-note';
+    note.innerHTML = `<i class="fas fa-circle-info"></i> ${gt('lb.loginToAppear') || 'Accedi per apparire in classifica'}`;
+    body.appendChild(note);
+  }
+}
+
+function initLeaderboard() {
+  document.querySelectorAll('.lb-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      if (_lbLoaded) renderLeaderboard();
+    });
+  });
+  loadLeaderboard();
+}
+
+function initLeaderboardPanel() { initLeaderboard(); }
+
 function buildWipPanel(id, title, icon, colorClass) {
   return `
 <div class="game-panel" id="${id}">
@@ -415,6 +542,9 @@ function initSettingsControls() {
   });
 
   document.getElementById('set-uiScale')?.addEventListener('input', e => {
+    document.getElementById('set-uiScale-val').textContent = e.target.value;
+  });
+  document.getElementById('set-uiScale')?.addEventListener('change', e => {
     CFG.uiScale = +e.target.value;
     document.getElementById('set-uiScale-val').textContent = CFG.uiScale;
     saveSettings(); applySettings();
@@ -432,6 +562,59 @@ function initSettingsControls() {
     window._settingsCurrencyInterval = CFG.currencyUpdateInterval;
     saveSettings();
   });
+  // Grafiche
+  document.getElementById('set-lightTheme')?.classList.toggle('checked', !!CFG.lightTheme);
+  document.getElementById('set-lightTheme')?.addEventListener('click', () => {
+    CFG.lightTheme = !CFG.lightTheme;
+    document.getElementById('set-lightTheme')?.classList.toggle('checked', CFG.lightTheme);
+    saveSettings(); applySettings();
+  });
+  document.getElementById('set-showConnections')?.classList.toggle('checked', !!CFG.showConnections);
+  document.getElementById('set-showConnections')?.addEventListener('click', () => {
+    CFG.showConnections = !CFG.showConnections;
+    document.getElementById('set-showConnections')?.classList.toggle('checked', CFG.showConnections);
+    saveSettings(); applySettings();
+  });
+  document.getElementById('set-showGrid')?.classList.toggle('checked', !!CFG.showGrid);
+  document.getElementById('set-showGrid')?.addEventListener('click', () => {
+    CFG.showGrid = !CFG.showGrid;
+    document.getElementById('set-showGrid')?.classList.toggle('checked', CFG.showGrid);
+    saveSettings(); applySettings();
+  });
+
+  // Audio
+  const radioVolEl = document.getElementById('set-radioVolume');
+  const radioVolVal = document.getElementById('set-radioVol-val');
+  if (radioVolEl) { radioVolEl.value = CFG.radioVolume; if (radioVolVal) radioVolVal.textContent = CFG.radioVolume; }
+  radioVolEl?.addEventListener('input', e => {
+    CFG.radioVolume = +e.target.value;
+    if (radioVolVal) radioVolVal.textContent = CFG.radioVolume;
+    saveSettings(); applySettings();
+  });
+  document.getElementById('set-radioVol-reset')?.addEventListener('click', () => {
+    CFG.radioVolume = SETTINGS_DEFAULT.radioVolume;
+    if (radioVolEl) radioVolEl.value = CFG.radioVolume;
+    if (radioVolVal) radioVolVal.textContent = CFG.radioVolume;
+    saveSettings(); applySettings();
+  });
+  document.getElementById('set-radioMuted')?.classList.toggle('checked', !!CFG.radioMuted);
+  document.getElementById('set-radioMuted')?.addEventListener('click', () => {
+    CFG.radioMuted = !CFG.radioMuted;
+    document.getElementById('set-radioMuted')?.classList.toggle('checked', CFG.radioMuted);
+    saveSettings(); applySettings();
+  });
+
+  // Keybinds reali
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT') return;
+    if (e.key === 'Home') { document.getElementById('btn-center')?.click(); }
+    if (e.key === 'Tab')  { e.preventDefault(); document.getElementById('sb-menu-btn')?.click(); }
+  });
+
+  document.getElementById('set-reset-btn')?.addEventListener('click', () => {
+    if (typeof openResetDialog === 'function') openResetDialog();
+  });
+
   document.getElementById('set-cui-reset')?.addEventListener('click', () => {
     CFG.currencyUpdateInterval = SETTINGS_DEFAULT.currencyUpdateInterval;
     const ips = Math.round(1000/CFG.currencyUpdateInterval);
@@ -444,8 +627,46 @@ function initSettingsControls() {
 
 function applySettings() {
   window._settingsCurrencyInterval = CFG.currencyUpdateInterval;
+
+  // cursore canvas
   const canvas = document.getElementById('game-canvas');
   if (canvas) canvas.style.cursor = CFG.useGameCursor ? 'grab' : 'default';
+
+  // tema
+  document.documentElement.setAttribute('data-theme', CFG.lightTheme ? 'light' : 'dark');
+
+  // griglia / connessioni
+  window._cfgShowConnections = CFG.showConnections;
+  window._cfgShowGrid        = CFG.showGrid;
+
+  // scala UI — agisce su sidebar, panels, radio, leveling, stats bar
+  const scale = CFG.uiScale / 100;
+  document.documentElement.style.setProperty('--ui-scale', scale);
+  // scala elementi UI — usa zoom su elementi che hanno già transform propri
+  const spb = document.querySelector('#stats-pinned-bar');
+  if (spb) spb.style.zoom = scale;
+  // sidebar e panels: font-size relativo
+  const sw = document.getElementById('sidebar-wrapper');
+  if (sw) sw.style.zoom = scale;
+  document.querySelectorAll('.game-panel').forEach(el => { el.style.zoom = scale; });
+  // radio
+  const rw = document.getElementById('radio-widget');
+  if (rw) rw.style.zoom = scale;
+
+  // formato numeri: sostituisce la funzione fmt globale
+  window._cfgNumFormat = CFG.statDisplayMode;
+
+  // buy max: disabilita le righe indent se buyMaxEnabled è false
+  const indentRows = document.querySelectorAll('#panel-settings .set-row.indent');
+  indentRows.forEach(r => r.style.opacity = CFG.buyMaxEnabled ? '' : '0.35');
+  window._cfgBuyMaxEnabled = CFG.buyMaxEnabled;
+  window._cfgBuyMaxBoards  = CFG.buyMaxBoards;
+
+  // radio
+  if (typeof Radio !== 'undefined') {
+    Radio.setVolume(CFG.radioVolume / 100);
+    Radio.setMuted(CFG.radioMuted);
+  }
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -456,4 +677,7 @@ document.addEventListener('DOMContentLoaded', () => {
   buildSidebar();
   buildPanels();
   applySettings();
+  _statLoadPins();
+  _statBuildPinnedBar();
+  _statRenderPinnedBar();
 });

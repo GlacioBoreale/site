@@ -1,17 +1,11 @@
 'use strict';
 
-const API_BASE = 'https://v2ffgtoy92.execute-api.eu-north-1.amazonaws.com/prod';
+const API_BASE  = 'https://v2ffgtoy92.execute-api.eu-north-1.amazonaws.com/prod';
 const TOKEN_KEY = 'glaciopia_token';
 
 const Api = (() => {
-  function getToken() {
-    return localStorage.getItem(TOKEN_KEY);
-  }
-
-  function setToken(t) {
-    if (t) localStorage.setItem(TOKEN_KEY, t);
-    else localStorage.removeItem(TOKEN_KEY);
-  }
+  function getToken()  { return localStorage.getItem(TOKEN_KEY); }
+  function setToken(t) { t ? localStorage.setItem(TOKEN_KEY, t) : localStorage.removeItem(TOKEN_KEY); }
 
   async function request(method, path, body) {
     const headers = { 'Content-Type': 'application/json' };
@@ -19,10 +13,27 @@ const Api = (() => {
     if (token) headers['Authorization'] = 'Bearer ' + token;
     const opts = { method, headers };
     if (body) opts.body = JSON.stringify(body);
-    const r = await fetch(API_BASE + path, opts);
+    const r    = await fetch(API_BASE + path, opts);
     const data = await r.json();
     if (!r.ok) throw new Error(data.error || 'Request failed');
     return data;
+  }
+
+  async function uploadFile(file, folder) {
+    const ext  = file.name.split('.').pop().toLowerCase();
+    const mime = file.type || 'application/octet-stream';
+    const { url, publicUrl } = await request('POST', '/upload/presign', {
+      folder,
+      ext,
+      contentType: mime,
+    });
+    const res = await fetch(url, {
+      method:  'PUT',
+      headers: { 'Content-Type': mime },
+      body:    file,
+    });
+    if (!res.ok) throw new Error('Upload S3 fallito');
+    return publicUrl;
   }
 
   return {
@@ -37,7 +48,7 @@ const Api = (() => {
     },
 
     save: {
-      get: () => request('GET', '/save'),
+      get: ()                                    => request('GET', '/save'),
       put: (saveData, points, prestige, xpLevel) =>
         request('PUT', '/save', { save_data: saveData, points, prestige, xp_level: xpLevel }),
     },
@@ -49,6 +60,10 @@ const Api = (() => {
     submit: {
       post: (type, payload, imageUrl) =>
         request('POST', '/submit', { type, payload, image_url: imageUrl }),
+    },
+
+    upload: {
+      file: uploadFile,
     },
   };
 })();

@@ -71,7 +71,9 @@ function initKonamiCode() {
 
 async function init() {
   await loadNavbar();
-  await loadFooter();
+  if (typeof loadFooter === 'function' && document.getElementById('footer-placeholder')) {
+    await loadFooter();
+  }
   await loadTranslations(currentLang);
   if (typeof initAchievements === 'function') initAchievements();
   initKonamiCode();

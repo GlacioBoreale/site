@@ -9,16 +9,26 @@ function updateTooltip() {
   const st    = nodeState[nd.id];
   const maxed = st.level >= nd.maxLevel;
   const isRNode = nd.zone === 'research' && nd.id !== 'researchUnlock';
+  const isPrestNode = !!nd.costInPrestige;
   const cost  = isRNode ? researchCost(nd, st.level) : nodeCost(nd, st.level);
 
-  const descText = typeof nd.desc === 'function' ? nd.desc(true) : nd.desc;
-  let html = `<strong>${nd.title}</strong><br>${descText.replace(/\n/g, '<br>')}`;
-  if (maxed) {
-    html += `<br><em style="color:#4ade80">Maxed!</em>`;
+  const _ttTitle = typeof nd.title === 'function' ? nd.title() : nd.title;
+  const rawDesc = typeof nd.desc === 'function' ? nd.desc(getDescPage(nd.id)) : nd.desc;
+  let descHtml;
+  if (Array.isArray(rawDesc)) {
+    descHtml = rawDesc.map(l => `<span style="${l.color ? 'color:' + l.color : ''}">${l.text}</span>`).join('<br>');
   } else {
-    const canAfford = isRNode ? G.research >= cost : G.points >= cost;
-    const costStr   = isRNode ? cost.toFixed(2) + ' λ' : fmt(cost) + ' ₽';
-    html += `<br>Costo: <span style="color:${canAfford ? '#38bdf8' : '#f87171'}">${costStr}</span>`;
+    descHtml = String(rawDesc).replace(/\n/g, '<br>');
+  }
+  let html = `<strong>${_ttTitle}</strong><br>${descHtml}`;
+  if (maxed) {
+    html += `<br><em style="color:#4ade80">${gt('tooltip.maxed')}</em>`;
+  } else if (isPrestNode && !G.hasPrestiged) {
+    html += `<br><em style="color:#f87171">Richiede almeno 1 Prestige</em>`;
+  } else {
+    const canAfford = isPrestNode ? G.prestige >= cost : isRNode ? G.research >= cost : G.points >= cost;
+    const costStr   = isPrestNode ? cost.toFixed(2) + ' ✦' : isRNode ? cost.toFixed(2) + ' λ' : fmt(cost) + ' ₽';
+    html += `<br>${gt('tooltip.cost')} <span style="color:${canAfford ? '#38bdf8' : '#f87171'}">${costStr}</span>`;
   }
   tooltip.innerHTML    = html;
   tooltip.style.display = 'block';
@@ -41,17 +51,6 @@ function updateHUD(force = false) {
   const _cuiMs2 = window._settingsCurrencyInterval || 300;
   if (!force && now - _lastHudUpdate < _cuiMs2) return;
   _lastHudUpdate = now;
-
-  document.getElementById('hud-points-value').textContent = fmt(G.points) + ' ₽';
-  document.getElementById('hud-pps').textContent = '(+' + fmt(G.pps) + ' ₽/s)';
-
-  const hudPres = document.getElementById('hud-prestige');
-  if (hudPres && G.prestige > 0) {
-    hudPres.style.display = 'flex';
-    document.getElementById('hud-prestige-value').textContent   = fmt(G.prestige) + ' ✦';
-    const gain = pendingPrestige() - G.prestige;
-    document.getElementById('hud-prestige-pending').textContent = gain > 0 ? `(+${gain.toFixed(2)} ✦ pending)` : '';
-  }
   updateConvertPanel();
 }
 
@@ -65,7 +64,7 @@ function updateConvertPanel() {
   convertPanel.style.display = 'flex';
   const pending = pendingResearch();
   if (pending < 1) {
-    convertInfo.innerHTML     = `<strong>${fmt(G.points)} ₽ → ${fmtLambda(pending)} λ</strong><br><span class="convert-warn">Guadagna abbastanza ₽ per ricevere 1 λ</span>`;
+    convertInfo.innerHTML     = `<strong>${fmt(G.points)} ₽ → ${fmtLambda(pending)} λ</strong><br><span class="convert-warn">${gt('convert.notEnough')}</span>`;
     btnConvert.style.display  = 'none';
   } else {
     convertInfo.innerHTML     = `<strong>${fmt(G.points)} ₽ → ${fmtLambda(pending)} λ</strong>`;
@@ -130,9 +129,10 @@ function doPrestige() {
   G.soloLevelingUnlocked = false;
   G.xp                   = 0;
   G.xpLevel              = 0;
-  G.toNewHeightsUnlocked = false;
   G.xpPerClick           = 1;
   G.xpReqDiv             = 1;
+  G.xpClickMulti         = 1;
+  G.toNewHeightsUnlocked = false;
   G.holyGrailUnlocked    = false;
   G.afterHalcyonUnlocked = false;
   G.delayedGratUnlocked  = false;
@@ -155,6 +155,13 @@ function doPrestige() {
     }
   });
   recalcPps();
+  camX = canvas.width  / 2;
+  camY = canvas.height / 2;
+  if (typeof _lpBuilt !== 'undefined') {
+    _lpBuilt = false;
+    _lpEl?.remove();
+    _lpEl = null;
+  }
   if (firstEver && typeof Radio !== 'undefined') Radio.unlockPrestigeTrack();
   saveGame();
   updateHUD(true);
@@ -163,9 +170,8 @@ function doPrestige() {
 // ─── RESET ────────────────────────────────────────────────────────────────────
 const resetOverlay = document.getElementById('reset-overlay');
 
-document.getElementById('btn-reset').addEventListener('click', () => {
-  resetOverlay.classList.add('open');
-});
+function openResetDialog() { resetOverlay.classList.add('open'); }
+
 ['reset-cancel', 'reset-cancel2'].forEach(id => {
   document.getElementById(id).addEventListener('click', () => resetOverlay.classList.remove('open'));
 });
@@ -175,7 +181,6 @@ document.getElementById('reset-confirm').addEventListener('click', () => {
   location.reload();
 });
 
-// ─── PULSANTI HUD ─────────────────────────────────────────────────────────────
 document.getElementById('btn-center').addEventListener('click', () => {
   camX = canvas.width  / 2;
   camY = canvas.height / 2;

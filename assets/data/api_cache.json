@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-03-04T09:40:56Z",
+  "updatedAt": "2026-03-04T10:36:53Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,20 +43,20 @@
     ],
     "randomClips": [
       {
+        "title": "wtf is that sound",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/CuriousAdventurousDadHeyGuys-oDbHErbl88zzZ2WY",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/-4fptaA2xxK25fPM82dlmA/vod-1997814363-offset-5294-preview-480x272.jpg",
+        "views": 39,
+        "duration": 30,
+        "creator": "antokekt"
+      },
+      {
         "title": "Pronto!!!!!!!",
         "url": "https://www.twitch.tv/glacioborealevt/clip/MagnificentWittyInternThisIsSparta-ujpniueNUbiV-77b",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1302910438-preview-480x272.jpg",
         "views": 50,
         "duration": 10.5,
         "creator": "lucaop69"
-      },
-      {
-        "title": "When Tryhard hits...",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/InventiveApatheticApeTwitchRPG-b0Jt3pe210IVYMm2",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1122899254-preview-480x272.jpg",
-        "views": 59,
-        "duration": 48.8,
-        "creator": "GlacioBorealeVT"
       },
       {
         "title": "face reaveal",

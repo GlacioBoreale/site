@@ -7,14 +7,18 @@
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="auth.css">
     <link rel="stylesheet" href="components/navbar/nav.css">
     <link rel="stylesheet" href="components/footer/footer.css">
     <link rel="stylesheet" href="components/achievements/achievements.css">
     <link rel="stylesheet" href="about.css">
+    <script src="api.js"></script>
+    <script src="auth.js"></script>
     <script src="components/navbar/nav.js"></script>
     <script src="components/footer/footer.js"></script>
     <script src="components/achievements/achievements.js"></script>
     <script src="script.js"></script>
+    <script src="submit.js"></script>
 </head>
 <body>
     <div id="navbar-placeholder"></div>
@@ -114,11 +118,18 @@
         <section class="join-section">
             <div class="join-card">
                 <h2 data-i18n="about.join.title">Unisciti al Team!</h2>
-                <p data-i18n="about.join.desc">Vuoi far parte di Glaciopia? Mandaci una email con la tua immagine, nome e descrizione.</p>
-                <a href="mailto:coldesticecube@outlook.com" class="about-join-btn">
-                    <i class="fas fa-envelope"></i>
-                    <span data-i18n="about.join.button">Invia la tua candidatura</span>
-                </a>
+                <p data-i18n="about.join.desc">Vuoi far parte di Glaciopia? Compila il form qui sotto!</p>
+                <div class="join-form">
+                    <input class="join-input" id="about-name" type="text" placeholder="Nome / Username" maxlength="64">
+                    <input class="join-input" id="about-role" type="text" placeholder="Ruolo che vorresti ricoprire" maxlength="64">
+                    <input class="join-input" id="about-email" type="email" placeholder="La tua email">
+                    <textarea class="join-input join-textarea" id="about-desc" placeholder="Presentati brevemente (max 500 caratteri)" maxlength="500" rows="4"></textarea>
+                    <div class="submit-msg" id="about-submit-msg"></div>
+                    <button class="about-join-btn" id="about-submit-btn">
+                        <i class="fas fa-paper-plane"></i>
+                        <span data-i18n="about.join.button">Invia la tua candidatura</span>
+                    </button>
+                </div>
             </div>
         </section>
     </main>

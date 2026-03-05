@@ -143,14 +143,129 @@ function closeLightbox() {
 }
 
 function openSubmitModal() {
-    updateEmailLink();
-    document.getElementById('submit-modal').classList.add('active');
-    document.body.style.overflow = 'hidden';
+  // Richiede login
+  if (typeof Auth === 'undefined' || !Auth.isLoggedIn()) {
+    Auth.openAuthModal();
+    return;
+  }
+  buildApiSubmitModal();
+  document.getElementById('fanart-submit-modal').classList.add('active');
+  document.body.style.overflow = 'hidden';
 }
 
 function closeSubmitModal() {
-    document.getElementById('submit-modal').classList.remove('active');
-    document.body.style.overflow = '';
+  const m = document.getElementById('fanart-submit-modal');
+  if (m) m.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function buildApiSubmitModal() {
+  if (document.getElementById('fanart-submit-modal')) return;
+
+  const m = document.createElement('div');
+  m.id        = 'fanart-submit-modal';
+  m.className = 'submit-modal-overlay';
+  m.innerHTML = `
+    <div class="submit-modal-box">
+      <div class="submit-modal-header">
+        <h2><i class="fas fa-paint-brush"></i> Invia la tua Fanart</h2>
+        <button class="submit-modal-close" id="fs-close"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="submit-modal-body">
+        <div class="submit-rules" style="margin-bottom:1rem">
+          <ul>
+            <li><i class="fas fa-check-circle"></i> Immagini originali tue, max 2.5 MB</li>
+            <li><i class="fas fa-check-circle"></i> Formati: JPG, PNG, GIF, WEBP</li>
+            <li><i class="fas fa-check-circle"></i> Nessun contenuto NSFW</li>
+          </ul>
+        </div>
+
+        <div class="submit-field-row">
+          <label class="submit-label">Titolo *</label>
+          <input id="fs-title" class="auth-input" type="text" placeholder="Titolo dell'opera" maxlength="120">
+        </div>
+        <div class="submit-field-row">
+          <label class="submit-label">Artista / Username *</label>
+          <input id="fs-artist" class="auth-input" type="text" placeholder="Il tuo nome o @username" maxlength="80">
+        </div>
+        <div class="submit-field-row">
+          <label class="submit-label">Link social (opzionale)</label>
+          <input id="fs-social" class="auth-input" type="url" placeholder="https://twitter.com/tu">
+        </div>
+        <div class="submit-field-row">
+          <label class="submit-label">Immagine *</label>
+          <input id="fs-file" type="file" accept="image/jpeg,image/png,image/gif,image/webp" class="submit-file-input">
+          <div id="fs-preview" class="submit-img-preview" style="display:none"></div>
+        </div>
+
+        <div id="fs-error" class="auth-error" style="min-height:1.2rem"></div>
+        <div id="fs-success" class="submit-success" style="display:none">
+          <i class="fas fa-check-circle"></i> Fanart inviata! La revisione richiede qualche giorno.
+        </div>
+      </div>
+
+      <div class="submit-modal-footer">
+        <button class="auth-submit" id="fs-send" style="max-width:200px">
+          <i class="fas fa-paper-plane"></i> Invia
+        </button>
+        <button class="auth-submit" id="fs-cancel" style="max-width:120px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5)">
+          Annulla
+        </button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(m);
+
+  m.querySelector('#fs-file').addEventListener('change', (e) => {
+    const f = e.target.files[0];
+    const prev = m.querySelector('#fs-preview');
+    if (!f) { prev.style.display = 'none'; return; }
+    const url = URL.createObjectURL(f);
+    prev.style.display = '';
+    prev.innerHTML = `<img src="${url}" alt="preview" style="max-height:120px;border-radius:8px">`;
+  });
+
+  m.querySelector('#fs-close').addEventListener('click', closeSubmitModal);
+  m.querySelector('#fs-cancel').addEventListener('click', closeSubmitModal);
+  m.addEventListener('click', (e) => { if (e.target === m) closeSubmitModal(); });
+
+  m.querySelector('#fs-send').addEventListener('click', handleFanartSubmit);
+}
+
+async function handleFanartSubmit() {
+  const btn     = document.getElementById('fs-send');
+  const errEl   = document.getElementById('fs-error');
+  const succEl  = document.getElementById('fs-success');
+  const title   = document.getElementById('fs-title').value.trim();
+  const artist  = document.getElementById('fs-artist').value.trim();
+  const social  = document.getElementById('fs-social').value.trim();
+  const fileEl  = document.getElementById('fs-file');
+  const file    = fileEl.files[0];
+
+  errEl.textContent = '';
+  succEl.style.display = 'none';
+
+  if (!title)  { errEl.textContent = 'Il titolo è obbligatorio.'; return; }
+  if (!artist) { errEl.textContent = 'Il nome artista è obbligatorio.'; return; }
+  if (!file)   { errEl.textContent = "Seleziona un'immagine."; return; }
+  if (file.size > 2.5 * 1024 * 1024) { errEl.textContent = 'Immagine troppo grande (max 2.5 MB).'; return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Invio...';
+
+  try {
+    const imageUrl = await Api.upload.file(file, 'fanart');
+    await Api.submit.post('fanart', { title, artist, social: social || null }, imageUrl);
+
+    succEl.style.display = '';
+    btn.style.display = 'none';
+    setTimeout(closeSubmitModal, 3000);
+  } catch (e) {
+    errEl.textContent = e.message || 'Errore durante l\'invio.';
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Invia';
+  }
 }
 
 function updateEmailLink() {

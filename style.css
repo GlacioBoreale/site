@@ -83,3 +83,84 @@ main {
 @media (max-width: 768px) {
   body { padding-top: 60px; }
 }
+
+/* ── SUBMIT FORMS ─────────────────────────────────────────── */
+.join-form, .vt-form, .fanart-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.join-input {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.join-input:focus { border-color: var(--accent, #667eea); }
+.join-input::placeholder { color: rgba(255,255,255,0.3); }
+.join-textarea { resize: vertical; min-height: 80px; }
+
+.fanart-upload-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 1.5rem;
+  border: 2px dashed rgba(255,255,255,0.15);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  text-align: center;
+  color: rgba(255,255,255,0.4);
+  font-size: 0.88rem;
+}
+.fanart-upload-area i { font-size: 1.6rem; margin-bottom: 0.25rem; }
+.fanart-upload-area:hover, .fanart-upload-area.dragover {
+  border-color: var(--accent, #667eea);
+  background: rgba(102,126,234,0.06);
+  color: rgba(255,255,255,0.7);
+}
+
+.submit-msg {
+  font-size: 0.85rem;
+  min-height: 1.2em;
+  padding: 0 0.2rem;
+}
+.submit-msg.success { color: #4ade80; }
+.submit-msg.error   { color: #f87171; }
+.submit-msg.loading { color: rgba(255,255,255,0.5); }
+
+.submit-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.25rem;
+}
+
+.submit-close-btn {
+  padding: 0.6rem 1.2rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: rgba(255,255,255,0.5);
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.submit-close-btn:hover { background: rgba(255,255,255,0.1); }
+
+.submit-email-btn:disabled, #vt-submit-btn:disabled, #about-submit-btn:disabled, #fanart-submit-btn-send:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

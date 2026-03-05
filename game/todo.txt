@@ -1,0 +1,23 @@
+amazon web services per il database, pushamo 20Gb che dovrebbe essere sotto l'euro
+
+ricreare la playlist Averpyxl in Glacio's Jam, ci piazzi le tue canzoni, plagione
+
+un don cliccabile che fa i rumori fastidiosi di don
+
+fare un cursore custom, la mano del grab esce solo se click e hold lo schermo
+
+right cliccare evita che esca il popup del browser per le solite opzioni del browser
+
+collegare la tab achievement della navbar al gioco
+
+Creare un popup di avviso per i giocatori da mobile (sia in landscape che vertical)
+
+cambiare il volume in audio
+
+rendere visibile la leaderboard anche per chi non è registrato (gli utenti non registrati non appaiono)
+
+creare un bottone a sinistra dello stereo per far sbloccare agli utenti la possibilità di scegliere se essere sulla leaderboard o meno (default è no prima di comprarlo), questa scelta è bloccata dietro un prestigio
+
+tradurre ogni titolo di ogni bottone e aggiungere gain dopo ogni moltiplicatore come quello in #2 o in #10
+
+Far si che i form d'invio mandino al database le richieste

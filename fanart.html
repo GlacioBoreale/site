@@ -8,16 +8,20 @@
     <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="auth.css">
     <link rel="stylesheet" href="components/navbar/nav.css">
     <link rel="stylesheet" href="components/footer/footer.css">
     <link rel="stylesheet" href="components/achievements/achievements.css">
     <link rel="stylesheet" href="fanart.css">
 
+    <script src="api.js"></script>
+    <script src="auth.js"></script>
     <script src="components/navbar/nav.js"></script>
     <script src="components/footer/footer.js"></script>
     <script src="components/achievements/achievements.js"></script>
     <script src="script.js"></script>
     <script src="fanart.js"></script>
+    <script src="submit.js"></script>
 </head>
 <body>
     <div id="navbar-placeholder"></div>
@@ -96,9 +100,6 @@
                 <i class="fas fa-times"></i>
             </button>
             <h2 data-i18n="fanart.submitTitle">Invia la tua Fanart</h2>
-            <p data-i18n="fanart.submitDesc">
-                Vuoi inviare la tua fanart? Clicca il bottone qui sotto per aprire il tuo client email con un template pre-compilato. Ricordati di allegare l'immagine!
-            </p>
 
             <div class="submit-rules">
                 <h3 data-i18n="fanart.submitRules">Regole per l'invio</h3>
@@ -112,12 +113,26 @@
                 </ul>
             </div>
 
-            <div class="submit-actions">
-                <a id="submit-email-link" class="submit-email-btn" href="#">
-                    <i class="fas fa-envelope"></i>
-                    <span data-i18n="fanart.submitEmailBtn">Apri Client Email</span>
-                </a>
-                <button class="submit-close-btn" id="submit-close-btn" data-i18n="fanart.submitClose">Chiudi</button>
+            <div class="fanart-form">
+                <input class="join-input" id="fanart-title" type="text" placeholder="Titolo dell'opera *" maxlength="128">
+                <input class="join-input" id="fanart-artist" type="text" placeholder="Il tuo nome / username *" maxlength="64">
+                <input class="join-input" id="fanart-socials" type="text" placeholder="Link social (Twitter, Instagram, ecc.)" maxlength="256">
+                <input class="join-input" id="fanart-tags" type="text" placeholder="Tag (es. digitale, meme) — separati da virgola" maxlength="128">
+                <div class="fanart-upload-area" id="fanart-upload-area">
+                    <i class="fas fa-image"></i>
+                    <span>Clicca o trascina l'immagine qui</span>
+                    <small>JPG, PNG, GIF, WEBP — max 2.5MB</small>
+                    <input type="file" id="fanart-file" accept="image/jpeg,image/png,image/gif,image/webp" style="display:none">
+                </div>
+                <img id="fanart-preview" src="" alt="preview" style="display:none; max-width:100%; border-radius:8px; margin-top:0.5rem;">
+                <div class="submit-msg" id="fanart-submit-msg"></div>
+                <div class="submit-actions">
+                    <button class="submit-email-btn" id="fanart-submit-btn-send">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Invia Fanart</span>
+                    </button>
+                    <button class="submit-close-btn" id="submit-close-btn">Chiudi</button>
+                </div>
             </div>
         </div>
     </div>

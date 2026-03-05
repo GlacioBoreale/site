@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chi siamo - Glaciopia</title>
-    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="https://glaciopia-images.s3.eu-north-1.amazonaws.com/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="auth.css">
@@ -18,7 +18,6 @@
     <script src="components/footer/footer.js"></script>
     <script src="components/achievements/achievements.js"></script>
     <script src="script.js"></script>
-    <script src="submit.js"></script>
 </head>
 <body>
     <div id="navbar-placeholder"></div>
@@ -35,7 +34,7 @@
 
                 <div class="team-card">
                     <div class="team-avatar">
-                        <img src="assets/images/about/glacio_pfp.png" alt="GlacioBoreale" onerror="this.src='assets/images/placeholder.png'">
+                        <img src="https://glaciopia-images.s3.eu-north-1.amazonaws.com/about/glacio_pfp.png" alt="GlacioBoreale" onerror="this.src='https://glaciopia-images.s3.eu-north-1.amazonaws.com/placeholder.png'">
                     </div>
                     <div class="team-info">
                         <h3 class="team-name" data-i18n="about.members.glacio.name">Glacio Boreale</h3>
@@ -69,7 +68,7 @@
                 
                 <div class="team-card">
                     <div class="team-avatar">
-                        <img src="assets/images/about/rid_pfp.png" alt="its_RID" onerror="this.src='assets/images/placeholder.png'">
+                        <img src="https://glaciopia-images.s3.eu-north-1.amazonaws.com/about/rid_pfp.png" alt="its_RID" onerror="this.src='https://glaciopia-images.s3.eu-north-1.amazonaws.com/placeholder.png'">
                     </div>
                     <div class="team-info">
                         <h3 class="team-name" data-i18n="about.members.rid.name">its_RID</h3>
@@ -81,7 +80,7 @@
 
                 <div class="team-card">
                     <div class="team-avatar">
-                        <img src="assets/images/about/eromo_pfp.png" alt="Eromo" onerror="this.src='assets/images/placeholder.png'">
+                        <img src="https://glaciopia-images.s3.eu-north-1.amazonaws.com/about/eromo_pfp.png" alt="Eromo" onerror="this.src='https://glaciopia-images.s3.eu-north-1.amazonaws.com/placeholder.png'">
                     </div>
                     <div class="team-info">
                         <h3 class="team-name" data-i18n="about.members.eromo.name">Eromo</h3>
@@ -118,18 +117,11 @@
         <section class="join-section">
             <div class="join-card">
                 <h2 data-i18n="about.join.title">Unisciti al Team!</h2>
-                <p data-i18n="about.join.desc">Vuoi far parte di Glaciopia? Compila il form qui sotto!</p>
-                <div class="join-form">
-                    <input class="join-input" id="about-name" type="text" placeholder="Nome / Username" maxlength="64">
-                    <input class="join-input" id="about-role" type="text" placeholder="Ruolo che vorresti ricoprire" maxlength="64">
-                    <input class="join-input" id="about-email" type="email" placeholder="La tua email">
-                    <textarea class="join-input join-textarea" id="about-desc" placeholder="Presentati brevemente (max 500 caratteri)" maxlength="500" rows="4"></textarea>
-                    <div class="submit-msg" id="about-submit-msg"></div>
-                    <button class="about-join-btn" id="about-submit-btn">
-                        <i class="fas fa-paper-plane"></i>
-                        <span data-i18n="about.join.button">Invia la tua candidatura</span>
-                    </button>
-                </div>
+                <p data-i18n="about.join.desc">Vuoi far parte di Glaciopia? Mandaci una email con la tua immagine, nome e descrizione.</p>
+                <a href="mailto:coldesticecube@outlook.com" class="about-join-btn">
+                    <i class="fas fa-envelope"></i>
+                    <span data-i18n="about.join.button">Invia la tua candidatura</span>
+                </a>
             </div>
         </section>
     </main>

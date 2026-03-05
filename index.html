@@ -13,7 +13,7 @@
     <meta property="og:url"         content="https://www.glaciopia.com/">
     <meta property="og:title"       content="Glaciopia">
     <meta property="og:description" content="Il sito ufficiale di Glacio Boreale — VTuber italiano, streamer e creatore di contenuti.">
-    <meta property="og:image"       content="https://www.glaciopia.com/assets/images/logo.png">
+    <meta property="og:image"       content="https://glaciopia-images.s3.eu-north-1.amazonaws.com/logo.png">
     <meta property="og:image:width"  content="1200">
     <meta property="og:image:height" content="267">
     <meta name="theme-color"        content="#5b9cf6">
@@ -21,12 +21,12 @@
     <meta name="twitter:card"        content="summary_large_image">
     <meta name="twitter:title"       content="Glaciopia">
     <meta name="twitter:description" content="Il sito ufficiale di Glacio Boreale — VTuber italiano, streamer e creatore di contenuti.">
-    <meta name="twitter:image"       content="https://www.glaciopia.com/assets/images/logo.png">
+    <meta name="twitter:image"       content="https://glaciopia-images.s3.eu-north-1.amazonaws.com/logo.png">
 
     <link rel="sitemap" type="application/xml" href="/sitemap.xml">
-    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
-    <link rel="icon" type="image/png" href="assets/images/tabLogo.png">
-    <link rel="apple-touch-icon" href="assets/images/tabLogo.png">
+    <link rel="icon" type="image/x-icon" href="https://glaciopia-images.s3.eu-north-1.amazonaws.com/favicon.ico">
+    <link rel="icon" type="image/png" href="https://glaciopia-images.s3.eu-north-1.amazonaws.com/tabLogo.png">
+    <link rel="apple-touch-icon" href="https://glaciopia-images.s3.eu-north-1.amazonaws.com/tabLogo.png">
     <link rel="manifest" href="manifest.json">
     <meta name="description" content="Il sito ufficiale di Glacio Boreale — VTuber italiano, streamer su Twitch e creatore di contenuti.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -49,7 +49,7 @@
 
     <main>
       <section class="home-hero">
-        <img src="assets/images/logo.png" alt="Glaciopia" class="hero-logo">
+        <img src="https://glaciopia-images.s3.eu-north-1.amazonaws.com/logo.png" alt="Glaciopia" class="hero-logo">
         <h1 data-i18n="home.title">Benvenuto su Glaciopia</h1>
         <p class="hero-sub" data-i18n="home.subtitle">Il sito di Glacio Boreale - VTuber italiano, content creator e sviluppatore di questo sito.</p>
         <div class="hero-cta-row">
@@ -67,7 +67,7 @@
         <section class="fade-in-up">
           <div class="about-row">
             <div class="about-image-wrap">
-              <img src="assets/images/vtubers/glacioBoreale/glacio1.png" alt="Glacio Boreale">
+              <img src="https://glaciopia-images.s3.eu-north-1.amazonaws.com/vtubers/glacioBoreale/glacio1.png" alt="Glacio Boreale">
             </div>
             <div class="about-text">
               <p class="section-label" data-i18n="home.aboutLabel">Chi siamo</p>
@@ -165,12 +165,12 @@
 
         const toShow = data.vtubers.filter(vt => !vt.isCTA).slice(0, 4);
         toShow.forEach(vt => {
-          const img = vt.images?.[0] || 'assets/images/vtubers/placeholder.png';
+          const img = vt.images?.[0] || 'https://glaciopia-images.s3.eu-north-1.amazonaws.com/vtubers/placeholder.png';
           const card = document.createElement('a');
           card.href = 'vtpedia.html';
           card.className = 'vtuber-preview-card';
           card.innerHTML = `
-            <img src="${img}" alt="${vt.name}" onerror="this.src='assets/images/vtubers/placeholder.png'">
+            <img src="${img}" alt="${vt.name}" onerror="this.src='https://glaciopia-images.s3.eu-north-1.amazonaws.com/vtubers/placeholder.png'">
             <div class="vtuber-preview-info">
               <div class="name">${vt.name}</div>
               <div class="desc" data-i18n="${vt.shortDescKey}"></div>

@@ -8,13 +8,13 @@
   "theme_color": "#5b9cf6",
   "icons": [
     {
-      "src": "assets/images/tabLogo.png",
+      "src": "https://glaciopia-images.s3.eu-north-1.amazonaws.com/tabLogo.png",
       "sizes": "any",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "assets/images/favicon.ico",
+      "src": "https://glaciopia-images.s3.eu-north-1.amazonaws.com/favicon.ico",
       "sizes": "48x48",
       "type": "image/x-icon"
     }

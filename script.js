@@ -4,6 +4,9 @@
   document.documentElement.setAttribute('data-theme', t);
 })();
 
+const IMG_CDN = 'https://glaciopia-images.s3.eu-north-1.amazonaws.com';
+const AUDIO_CDN = 'https://glaciopia-audio.s3.eu-north-1.amazonaws.com';
+
 let currentLang = localStorage.getItem('language') || 'it';
 let translations = {};
 
@@ -30,11 +33,9 @@ function updatePage() {
   }
 
   document.querySelectorAll('[data-i18n]').forEach(element => {
-    if (element.closest('.game-panel')) return;
     const key = element.getAttribute('data-i18n');
     const translation = getNestedTranslation(key);
-    if (!translation) return;
-    element.textContent = translation;
+    if (translation) element.textContent = translation;
   });
 
   const titleElement = document.querySelector('title[data-i18n]');
@@ -49,11 +50,6 @@ function updatePage() {
 
 function getNestedTranslation(key) {
   return key.split('.').reduce((obj, k) => obj?.[k], translations);
-}
-
-function gt(key) {
-  const val = getNestedTranslation(key);
-  return (val && typeof val === 'string') ? val : '';
 }
 
 function initKonamiCode() {
@@ -78,9 +74,7 @@ function initKonamiCode() {
 
 async function init() {
   await loadNavbar();
-  if (typeof loadFooter === 'function' && document.getElementById('footer-placeholder')) {
-    await loadFooter();
-  }
+  await loadFooter();
   await loadTranslations(currentLang);
   if (typeof initAchievements === 'function') initAchievements();
   initKonamiCode();

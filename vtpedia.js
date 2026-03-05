@@ -59,13 +59,13 @@ function createVTuberCard(vtuber, index) {
         return card;
     }
 
-    const firstImage = vtuber.images?.[0] || 'assets/images/vtubers/placeholder.png';
+    const firstImage = vtuber.images?.[0] || IMG_CDN + '/vtubers/placeholder.png';
     const shortDesc = getNestedTranslation(vtuber.shortDescKey) || vtuber.shortDescKey;
     const showMoreText = getNestedTranslation('vtpedia.showMore') || 'Mostra di più';
 
     card.innerHTML = `
         <div class="card-image">
-            <img src="${firstImage}" alt="${vtuber.name}" onerror="this.src='assets/images/vtubers/placeholder.png'">
+            <img src="${firstImage}" alt="${vtuber.name}" onerror="this.src=IMG_CDN + '/vtubers/placeholder.png'">
             <div class="added-date">Added: ${vtuber.addedDate}</div>
         </div>
         <div class="card-content">
@@ -100,7 +100,7 @@ function createVTuberCard(vtuber, index) {
 function openPopup(vtuber) {
     const popup = document.getElementById('vtuber-popup');
 
-    currentImages = vtuber.images?.length > 0 ? vtuber.images : ['assets/images/vtubers/placeholder.png'];
+    currentImages = vtuber.images?.length > 0 ? vtuber.images : [IMG_CDN + '/vtubers/placeholder.png'];
     currentSlide = 0;
 
     initGallery(currentImages);
@@ -129,7 +129,7 @@ function initGallery(images) {
     images.forEach((image, index) => {
         const slide = document.createElement('div');
         slide.className = 'gallery-slide';
-        slide.innerHTML = `<img src="${image}" alt="Image ${index + 1}" onerror="this.src='assets/images/vtubers/placeholder.png'">`;
+        slide.innerHTML = `<img src="${image}" alt="Image ${index + 1}" onerror="this.src=IMG_CDN + '/vtubers/placeholder.png'">`;
         slidesContainer.appendChild(slide);
 
         const indicator = document.createElement('div');
@@ -241,10 +241,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitOverlay = document.getElementById('submit-popup-overlay');
 
     function openSubmitPopup() {
-        if (!Auth.isLoggedIn()) {
-            Auth.openAuthModal();
-            return;
-        }
         submitPopup.classList.add('active');
         document.body.style.overflow = 'hidden';
     }

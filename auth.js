@@ -169,20 +169,16 @@ const Auth = (() => {
   }
 
   function initNavAuthBtn() {
-    updateNavAuth();
     const btn = document.getElementById('nav-auth-btn');
-    if (btn) {
-      btn.addEventListener('click', () => {
-        if (isLoggedIn()) buildProfileModal();
-        else openAuthModal();
-      });
-    }
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      if (isLoggedIn()) buildProfileModal();
+      else openAuthModal();
+    });
+    updateNavAuth();
   }
 
   document.addEventListener('navbarLoaded', initNavAuthBtn);
-  document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('nav-auth-btn')) initNavAuthBtn();
-  });
 
-  return { register, login, logout, isLoggedIn, getUser, openAuthModal };
+  return { register, login, logout, isLoggedIn, getUser, openAuthModal, initNavAuthBtn };
 })();

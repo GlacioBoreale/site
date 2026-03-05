@@ -241,6 +241,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitOverlay = document.getElementById('submit-popup-overlay');
 
     function openSubmitPopup() {
+        if (!Auth.isLoggedIn()) {
+            Auth.openAuthModal();
+            return;
+        }
         submitPopup.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
@@ -256,124 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeSubmitPopup();
     });
-    const emailBtn = document.querySelector('.submit-email-btn');
-  if (emailBtn) {
-    emailBtn.addEventListener('click', (e) => {
-      if (typeof Auth !== 'undefined' && Auth.isLoggedIn()) {
-        e.preventDefault();
-        openVtpediaSubmitModal();
-      }
-      // Se non loggato, apre il login modal
-      else if (typeof Auth !== 'undefined') {
-        e.preventDefault();
-        Auth.openAuthModal();
-      }
-      // fallback: comportamento email originale
-    });
-  }
 });
-
-function openVtpediaSubmitModal() {
-  if (document.getElementById('vtp-submit-modal')) {
-    document.getElementById('vtp-submit-modal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-    return;
-  }
-  const m = document.createElement('div');
-  m.id = 'vtp-submit-modal';
-  m.className = 'submit-modal-overlay';
-  m.innerHTML = `
-    <div class="submit-modal-box">
-      <div class="submit-modal-header">
-        <h2><i class="fas fa-plus"></i> Invia il tuo VTuber</h2>
-        <button class="submit-modal-close" id="vtp-close"><i class="fas fa-times"></i></button>
-      </div>
-      <div class="submit-modal-body">
-        <div class="submit-field-row">
-          <label class="submit-label">Nome VTuber *</label>
-          <input id="vtp-name" class="auth-input" type="text" placeholder="Nome del VTuber" maxlength="120">
-        </div>
-        <div class="submit-field-row">
-          <label class="submit-label">Link canale principale *</label>
-          <input id="vtp-channel" class="auth-input" type="url" placeholder="https://twitch.tv/...">
-        </div>
-        <div class="submit-field-row">
-          <label class="submit-label">Descrizione breve *</label>
-          <input id="vtp-desc" class="auth-input" type="text" placeholder="Max 300 caratteri" maxlength="300">
-        </div>
-        <div class="submit-field-row">
-          <label class="submit-label">Hashtag ufficiali</label>
-          <input id="vtp-hashtag" class="auth-input" type="text" placeholder="#hashtag">
-        </div>
-        <div class="submit-field-row">
-          <label class="submit-label">Data debut</label>
-          <input id="vtp-debut" class="auth-input" type="text" placeholder="gg/mm/aaaa">
-        </div>
-        <div class="submit-field-row">
-          <label class="submit-label">Metodo sponsorizzazione *</label>
-          <input id="vtp-sponsor" class="auth-input" type="text" placeholder="Es: link Twitch pannello">
-        </div>
-        <div id="vtp-error" class="auth-error" style="min-height:1.2rem"></div>
-        <div id="vtp-success" class="submit-success" style="display:none">
-          <i class="fas fa-check-circle"></i> Richiesta inviata! La revisione richiede qualche giorno.
-        </div>
-      </div>
-      <div class="submit-modal-footer">
-        <button class="auth-submit" id="vtp-send" style="max-width:200px">
-          <i class="fas fa-paper-plane"></i> Invia
-        </button>
-        <button class="auth-submit" id="vtp-cancel" style="max-width:120px;background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5)">
-          Annulla
-        </button>
-      </div>
-    </div>
-  `;
-  document.body.appendChild(m);
-  m.classList.add('active');
-  document.body.style.overflow = 'hidden';
-
-  m.querySelector('#vtp-close').addEventListener('click', () => { m.classList.remove('active'); document.body.style.overflow = ''; });
-  m.querySelector('#vtp-cancel').addEventListener('click', () => { m.classList.remove('active'); document.body.style.overflow = ''; });
-  m.addEventListener('click', (e) => { if (e.target === m) { m.classList.remove('active'); document.body.style.overflow = ''; } });
-  m.querySelector('#vtp-send').addEventListener('click', handleVtpSubmit);
-}
-
-async function handleVtpSubmit() {
-  const btn    = document.getElementById('vtp-send');
-  const errEl  = document.getElementById('vtp-error');
-  const succEl = document.getElementById('vtp-success');
-  const name   = document.getElementById('vtp-name').value.trim();
-  const channel = document.getElementById('vtp-channel').value.trim();
-  const desc   = document.getElementById('vtp-desc').value.trim();
-  const hashtag = document.getElementById('vtp-hashtag').value.trim();
-  const debut  = document.getElementById('vtp-debut').value.trim();
-  const sponsor = document.getElementById('vtp-sponsor').value.trim();
-
-  errEl.textContent = '';
-  succEl.style.display = 'none';
-
-  if (!name)    { errEl.textContent = 'Il nome è obbligatorio.'; return; }
-  if (!channel) { errEl.textContent = 'Il link al canale è obbligatorio.'; return; }
-  if (!desc)    { errEl.textContent = 'La descrizione è obbligatoria.'; return; }
-  if (!sponsor) { errEl.textContent = 'Indica il metodo di sponsorizzazione.'; return; }
-
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Invio...';
-
-  try {
-    await Api.submit.post('vtpedia', { name, channel, desc, hashtag, debut, sponsor }, null);
-    succEl.style.display = '';
-    btn.style.display = 'none';
-    setTimeout(() => {
-      const m = document.getElementById('vtp-submit-modal');
-      if (m) { m.classList.remove('active'); document.body.style.overflow = ''; }
-    }, 3000);
-  } catch (e) {
-    errEl.textContent = e.message || 'Errore durante l\'invio.';
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Invia';
-  }
-}
 
 function copySponsorCmd() {
     const codeEl = document.getElementById('sponsor-cmd-text');

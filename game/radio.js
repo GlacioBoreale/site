@@ -25,7 +25,7 @@ const PLAYLISTS = [
       { title: 'SODA STREED', artist: 'boxed', src: 'assets/audio/radio/Generic1/soda_street.mp3' },
       { title: 'crashout (Tag Mix)', artist: 'nicopatty - untitled tag game', src: 'assets/audio/radio/Generic1/crashout_tag_mix.mp3' },
       { title: 'Last Man Standing', artist: 'Deltom - untitled tag game', src: 'assets/audio/radio/Generic1/last_man_standing.mp3' },
-      { title: 'chill out', artist: 'sprites', src: 'assets/audio/radio/Generic1/chill_out.mp3' },
+      { title: 'chill out', artist: 'sprites', src: 'assets/audio/radio/Generic1/old_chill_out.mp3' },
     ],
   },
   {
@@ -442,6 +442,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('game-canvas')) Radio.build();
 });
 
+
+
 function syncRadioVisibility() {
   const w = document.getElementById('radio-widget');
   if (!G.boomboxUnlocked) {
@@ -455,64 +457,6 @@ function syncRadioVisibility() {
     if (btn) btn.classList.add('visible');
   }
 }
-
-function syncRadioVisibility() {
-  const w = document.getElementById('radio-widget');
-  if (!G.boomboxUnlocked) {
-    if (w) w.style.display = 'none';
-    const btn = document.getElementById('radio-toggle-btn');
-    if (btn) btn.classList.remove('visible');
-    const lbBtn = document.getElementById('lb-toggle-btn');
-    if (lbBtn) lbBtn.style.display = 'none';
-  } else {
-    if (w) w.style.display = '';
-    buildToggleBtn();
-    const btn = document.getElementById('radio-toggle-btn');
-    if (btn) btn.classList.add('visible');
-    syncLeaderboardBtn(); // <-- aggiunto
-  }
-}
-
-function buildLeaderboardToggleBtn() {
-  if (document.getElementById('lb-toggle-btn')) return;
-  const btn = document.createElement('button');
-  btn.id        = 'lb-toggle-btn';
-  btn.className = 'lb-toggle-btn';
-  btn.title     = 'Leaderboard opt-in';
-  btn.innerHTML = '<i class="fas fa-ranking-star"></i>';
-  btn.addEventListener('click', () => {
-    if (!G.leaderboardUnlocked) return;
-    G.leaderboardOptIn = !G.leaderboardOptIn;
-    syncLeaderboardBtn();
-    saveGame();
-    scheduleCloudSave();
-    pushCloudSave();
-  });
-  document.body.appendChild(btn);
-}
-
-function syncLeaderboardBtn() {
-  buildLeaderboardToggleBtn();
-  const btn = document.getElementById('lb-toggle-btn');
-  if (!btn) return;
-
-  if (!G.leaderboardUnlocked || !G.boomboxUnlocked) {
-    btn.style.display = 'none';
-    return;
-  }
-  btn.style.display = '';
-  btn.classList.toggle('lb-active', G.leaderboardOptIn);
-  btn.title = G.leaderboardOptIn
-    ? 'Sei in classifica — clicca per uscire'
-    : 'Non sei in classifica — clicca per entrare';
-
-  const radioBtn = document.getElementById('radio-toggle-btn');
-  if (radioBtn) {
-    const radioLeft = parseInt(radioBtn.style.left || '0', 10);
-    btn.style.left = Math.max(0, radioLeft - 52) + 'px';
-  }
-}
-
 
 function buildToggleBtn() {
   if (document.getElementById('radio-toggle-btn')) return;

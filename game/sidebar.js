@@ -225,7 +225,7 @@ function buildSettingsPanel() {
   </div>
   <div class="panel-body">
     <div class="settings-tab-content active" data-tab="general">
-      <div class="set-section" data-sec-key="settings.sectionDisplay">Visualizzazione</div>
+      <div class="set-section" data-i18n="settings.sectionDisplay"></div>
       <div class="set-row">
         <div class="set-row-left">
           <span class="set-label">formato numeri</span>
@@ -252,7 +252,7 @@ function buildSettingsPanel() {
           <button class="set-reset-btn" id="set-cui-reset" title="Reset"><i class="fas fa-rotate-left"></i></button>
         </div>
       </div>
-      <div class="set-section" data-sec-key="settings.sectionGameplay">Gameplay</div>
+      <div class="set-section" data-i18n="settings.sectionGameplay"></div>
       <div class="set-row">
         <div class="set-row-left">
           <span class="set-label">compra massimo</span>
@@ -277,12 +277,12 @@ function buildSettingsPanel() {
       </div>
     </div>
     <div class="settings-tab-content" data-tab="graphics">
-      <div class="set-section" data-sec-key="settings.sectionTheme">Tema</div>
+      <div class="set-section" data-i18n="settings.sectionTheme"></div>
       <div class="set-row">
         <div class="set-row-left"><span class="set-label">tema scuro / chiaro</span></div>
         <div class="set-checkbox" id="set-lightTheme"></div>
       </div>
-      <div class="set-section" data-sec-key="settings.sectionNodes">Nodi</div>
+      <div class="set-section" data-i18n="settings.sectionNodes"></div>
       <div class="set-row">
         <div class="set-row-left"><span class="set-label">mostra connessioni</span></div>
         <div class="set-checkbox" id="set-showConnections"></div>
@@ -293,7 +293,7 @@ function buildSettingsPanel() {
       </div>
     </div>
     <div class="settings-tab-content" data-tab="audio">
-      <div class="set-section" data-sec-key="settings.sectionRadio">Radio</div>
+      <div class="set-section" data-i18n="settings.sectionRadio"></div>
       <div class="set-row">
         <div class="set-row-left"><span class="set-label">volume <span id="set-radioVol-val">80</span>%</span></div>
         <div class="set-slider-wrap">
@@ -307,7 +307,7 @@ function buildSettingsPanel() {
       </div>
     </div>
     <div class="settings-tab-content" data-tab="keybinds">
-      <div class="set-section" data-sec-key="settings.sectionCamera">Camera</div>
+      <div class="set-section" data-i18n="settings.sectionCamera"></div>
       <div class="set-row">
         <div class="set-row-left"><span class="set-label">ricentra vista</span></div>
         <span class="set-keybind">Home</span>
@@ -319,7 +319,7 @@ function buildSettingsPanel() {
 
     </div>
     <div class="settings-tab-content" data-tab="misc">
-      <div class="set-section" data-sec-key="settings.sectionPartita">Partita</div>
+      <div class="set-section" data-i18n="settings.sectionPartita"></div>
       <div class="set-row">
         <div class="set-row-left">
           <span class="set-label">Reset partita</span>
@@ -423,6 +423,10 @@ function buildLeaderboardPanel() {
     </span>
     <button class="panel-close"><i class="fas fa-times"></i></button>
   </div>
+  <div class="lb-optin-row" id="lb-optin-row">
+    <span class="lb-optin-label" id="lb-optin-label"></span>
+    <button class="lb-optin-btn" id="lb-optin-btn"></button>
+  </div>
   <div class="lb-tabs">
     <button class="lb-tab active" data-lbtab="points">₽ Points</button>
     <button class="lb-tab" data-lbtab="prestige">✦ Prestige</button>
@@ -483,6 +487,30 @@ function renderLeaderboard() {
   }
 }
 
+function _syncLbOptinBtn() {
+  const row = document.getElementById('lb-optin-row');
+  const lbl = document.getElementById('lb-optin-label');
+  const btn = document.getElementById('lb-optin-btn');
+  if (!row || !lbl || !btn) return;
+  const loggedIn = typeof Auth !== 'undefined' && Auth.isLoggedIn();
+  if (!loggedIn) {
+    lbl.textContent = gt('lb.loginToAppear') || 'Accedi per apparire in classifica';
+    btn.style.display = 'none';
+    row.style.display = '';
+    return;
+  }
+  const optIn = !!(typeof G !== 'undefined' && G.leaderboardOptIn);
+  lbl.textContent = optIn
+    ? (gt('lb.optedIn')  || 'Sei visibile in classifica')
+    : (gt('lb.optedOut') || 'Non sei visibile in classifica');
+  btn.textContent = optIn
+    ? (gt('lb.optOut') || 'Rimuoviti')
+    : (gt('lb.optIn')  || 'Partecipa');
+  btn.className = 'lb-optin-btn' + (optIn ? ' lb-optin-btn--in' : '');
+  btn.style.display = '';
+  row.style.display = '';
+}
+
 function initLeaderboard() {
   document.querySelectorAll('.lb-tab').forEach(tab => {
     tab.addEventListener('click', () => {
@@ -491,6 +519,16 @@ function initLeaderboard() {
       if (_lbLoaded) renderLeaderboard();
     });
   });
+  const optBtn = document.getElementById('lb-optin-btn');
+  if (optBtn) {
+    optBtn.addEventListener('click', () => {
+      if (typeof G === 'undefined') return;
+      G.leaderboardOptIn = !G.leaderboardOptIn;
+      _syncLbOptinBtn();
+      if (typeof saveGame === 'function') saveGame();
+    });
+  }
+  _syncLbOptinBtn();
   loadLeaderboard();
 }
 

@@ -11,6 +11,7 @@ async function loadNavbar() {
     initNavLiveBadge();
     initSettingsPanel();
     initTheme();
+    document.dispatchEvent(new Event('navbarLoaded'));
 
   } catch (error) {
     console.error('Errore navbar:', error);

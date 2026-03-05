@@ -55,6 +55,7 @@ function buildSaveObj() {
 
 function saveGame() {
   const save = buildSaveObj();
+  save._savedAt = Date.now();
   localStorage.setItem(SAVE_KEY, JSON.stringify(save));
 }
 

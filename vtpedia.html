@@ -38,6 +38,7 @@
     <script src="components/achievements/achievements.js"></script>
     <script src="script.js"></script>
     <script src="vtpedia.js"></script>
+    <script src="submit.js"></script>
 </head>
 <body>
     <div id="navbar-placeholder"></div>
@@ -152,21 +153,20 @@
                 </div>
 
                 <div class="submit-how">
-                    <h3 data-i18n="vtpedia.howTitle"><i class="fas fa-envelope"></i> Come inviare la richiesta</h3>
-                    <p data-i18n="vtpedia.howDesc">Invia una email con i seguenti dati:</p>
-                    <div class="submit-fields">
-                        <div class="submit-field"><i class="fas fa-user"></i> <span data-i18n="vtpedia.fieldName">Nome del VTuber</span></div>
-                        <div class="submit-field"><i class="fas fa-link"></i> <span data-i18n="vtpedia.fieldChannel">Link al canale principale</span></div>
-                        <div class="submit-field"><i class="fas fa-hashtag"></i> <span data-i18n="vtpedia.fieldHashtag">Hashtag ufficiali</span></div>
-                        <div class="submit-field"><i class="fas fa-calendar"></i> <span data-i18n="vtpedia.fieldDebut">Data di debut</span></div>
-                        <div class="submit-field"><i class="fas fa-image"></i> <span data-i18n="vtpedia.fieldImage">1-3 immagini dell'avatar (max 2MB ciascuna)</span></div>
-                        <div class="submit-field"><i class="fas fa-align-left"></i> <span data-i18n="vtpedia.fieldDesc">Breve descrizione (max 300 caratteri)</span></div>
-                        <div class="submit-field"><i class="fas fa-bullhorn"></i> <span data-i18n="vtpedia.fieldSponsor">Metodo di sponsorizzazione scelto e link/prova</span></div>
+                    <h3><i class="fas fa-paper-plane"></i> Invia la richiesta</h3>
+                    <div class="vt-form">
+                        <input class="join-input" id="vt-name" type="text" placeholder="Nome del VTuber *" maxlength="64">
+                        <input class="join-input" id="vt-channel" type="url" placeholder="Link al canale principale *" maxlength="256">
+                        <input class="join-input" id="vt-hashtag" type="text" placeholder="Hashtag ufficiali (es. #GlacioArt)" maxlength="128">
+                        <input class="join-input" id="vt-debut" type="text" placeholder="Data di debut (es. 01/01/2023)" maxlength="32">
+                        <textarea class="join-input join-textarea" id="vt-desc" placeholder="Breve descrizione (max 300 caratteri) *" maxlength="300" rows="3"></textarea>
+                        <textarea class="join-input join-textarea" id="vt-sponsor" placeholder="Metodo di sponsorizzazione scelto e link/prova *" maxlength="512" rows="2"></textarea>
+                        <div class="submit-msg" id="vt-submit-msg"></div>
+                        <button class="submit-email-btn" id="vt-submit-btn">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>Invia richiesta</span>
+                        </button>
                     </div>
-                    <a href="mailto:glacioborealebusiness@outlook.com?subject=VTPedia%20-%20Richiesta%20aggiunta%20VTuber" class="submit-email-btn">
-                        <i class="fas fa-envelope"></i>
-                        <span data-i18n="vtpedia.sendEmail">Invia richiesta via email</span>
-                    </a>
                 </div>
             </div>
         </div>

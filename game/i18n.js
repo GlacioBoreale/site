@@ -1,191 +1,194 @@
 'use strict';
 
 function gt(key) {
-  const full = 'game.' + key;
-  return full.split('.').reduce((obj, k) => obj?.[k], translations) ?? full.split('.').pop();
+  const val = ('game.' + key).split('.').reduce((obj, k) => obj?.[k], translations);
+  return (val && typeof val === 'string') ? val : '';
 }
-
-window.addEventListener('languageChanged', () => {
-  applyGameTranslations();
-});
 
 function applyGameTranslations() {
-  // HTML statico in game.html
-  const cvTitle = document.querySelector('.convert-title');
-  if (cvTitle) cvTitle.textContent = gt('convert.title');
-
-  const cvDesc = document.querySelector('.convert-desc');
-  if (cvDesc) cvDesc.innerHTML = gt('convert.desc').replace(
-    gt('convert.researchPoints'),
-    `<span>${gt('convert.researchPoints')}</span>`
-  );
-
-  const cvBtn = document.getElementById('btn-convert');
-  if (cvBtn) cvBtn.textContent = gt('convert.btn');
-
-  const modalTitle = document.querySelector('.modal-title');
-  if (modalTitle) modalTitle.textContent = gt('reset.title');
-
-  const modalDesc = document.querySelector('.modal-desc');
-  if (modalDesc) modalDesc.textContent = gt('reset.desc');
-
-  const resetConfirm = document.getElementById('reset-confirm');
-  if (resetConfirm) resetConfirm.textContent = gt('reset.confirm');
-
-  const resetCancel2 = document.getElementById('reset-cancel2');
-  if (resetCancel2) resetCancel2.textContent = gt('reset.cancel');
-
-  // Sidebar labels
-  const sidebarMap = {
-    'settings':    'sidebar.settings',
-    'stats':       'sidebar.stats',
-    'achievements':'sidebar.achievements',
-    'leaderboard': 'sidebar.leaderboard',
-    'updatelog':   'sidebar.updatelog',
-    'maintenance': 'sidebar.maintenance',
-  };
-  Object.entries(sidebarMap).forEach(([id, key]) => {
-    const btn = document.getElementById('sb-btn-' + id);
-    if (btn) {
-      const label = btn.querySelector('.sb-label');
-      if (label) label.textContent = gt(key);
-    }
-  });
+  const s = (id) => document.getElementById(id);
+  const q = (sel) => document.querySelector(sel);
 
   // Panel titles
-  applyPanelTitle('panel-settings',     'sidebar.settings');
-  applyPanelTitle('panel-stats',        'sidebar.stats');
-  applyPanelTitle('panel-achievements', 'sidebar.achievements');
-  applyPanelTitle('panel-leaderboard',  'sidebar.leaderboard');
+  [
+    ['panel-settings',     'sidebar.settings'],
+    ['panel-stats',        'sidebar.stats'],
+    ['panel-achievements', 'sidebar.achievements'],
+    ['panel-leaderboard',  'sidebar.leaderboard'],
+  ].forEach(([id, key]) => {
+    const panel = s(id);
+    if (!panel) return;
+    const titleEl = panel.querySelector('.panel-title');
+    if (!titleEl) return;
+    const text = gt(key);
+    if (!text) return;
+    const icon = titleEl.querySelector('.panel-title-icon');
+    titleEl.childNodes.forEach(n => { if (n.nodeType === Node.TEXT_NODE) n.remove(); });
+    titleEl.appendChild(document.createTextNode(' ' + text));
+  });
+
+  // Sidebar buttons
+  [
+    ['settings',     'sidebar.settings'],
+    ['stats',        'sidebar.stats'],
+    ['achievements', 'sidebar.achievements'],
+    ['leaderboard',  'sidebar.leaderboard'],
+    ['updatelog',    'sidebar.updatelog'],
+    ['maintenance',  'sidebar.maintenance'],
+  ].forEach(([id, key]) => {
+    const label = q('#sb-btn-' + id + ' .sb-label');
+    const text = gt(key);
+    if (label && text) label.textContent = text;
+  });
 
   // Settings tabs
-  applyStab('general',  'settings.tabGeneral');
-  applyStab('graphics', 'settings.tabGraphics');
-  applyStab('audio',    'settings.tabAudio');
-  applyStab('keybinds', 'settings.tabKeybinds');
-  applyStab('misc',     'settings.tabMisc');
+  [
+    ['general',  'settings.tabGeneral'],
+    ['graphics', 'settings.tabGraphics'],
+    ['audio',    'settings.tabAudio'],
+    ['keybinds', 'settings.tabKeybinds'],
+    ['misc',     'settings.tabMisc'],
+  ].forEach(([tab, key]) => {
+    const el = q(`#panel-settings .stab[data-tab="${tab}"]`);
+    const text = gt(key);
+    if (el && text) el.textContent = text;
+  });
 
-  // Settings labels
-  applySetLabel('set-statDisplayMode',   'settings.numFormat',     'settings.numFormatHint');
-  applySetLabel('set-uiScale',           'settings.uiScale');
-  applySetLabel('set-currencyInterval',  'settings.currencyUpdate','settings.currencyUpdateHint');
-  applySetLabel('set-buyMaxEnabled',     'settings.buyMax',        'settings.buyMaxHint');
-  applySetLabel('set-buyMaxBoards',      'settings.buyMaxBoards');
-  applySetLabel('set-buyMaxPointUpgrades','settings.buyMaxPoints');
-  applySetLabel('set-useGameCursor',     'settings.gameCursor',    'settings.gameCursorHint');
-  applySetLabel('set-lightTheme',        'settings.lightTheme');
-  applySetLabel('set-showConnections',   'settings.showConnections');
-  applySetLabel('set-showGrid',          'settings.showGrid');
-  applySetLabel('set-radioVolume',       'settings.radioVolume');
-  applySetLabel('set-radioMuted',        'settings.radioMuted');
-  applySetLabel('set-reset-btn',         'settings.resetLabel',    'settings.resetHint');
+  // Settings sections
+  [
+    ['sectionDisplay',  'settings.sectionDisplay'],
+    ['sectionGameplay', 'settings.sectionGameplay'],
+    ['sectionTheme',    'settings.sectionTheme'],
+    ['sectionNodes',    'settings.sectionNodes'],
+    ['sectionRadio',    'settings.sectionRadio'],
+    ['sectionCamera',   'settings.sectionCamera'],
+    ['sectionPartita',  'settings.sectionPartita'],
+  ].forEach(([i18nKey, translationKey]) => {
+    const el = q(`#panel-settings .set-section[data-i18n="settings.${i18nKey}"]`);
+    const text = gt(translationKey);
+    if (el && text) el.textContent = text;
+  });
 
-  // Settings select options
-  const numFmt = document.getElementById('set-statDisplayMode');
-  if (numFmt) {
-    numFmt.options[0].text = gt('settings.numAbbr');
-    numFmt.options[1].text = gt('settings.numSci');
-  }
+  // Settings labels — [elementId, labelKey, sublabelKey?]
+  // Per le label con span (valore numerico), aggiorna solo il primo text node
+  [
+    ['set-statDisplayMode',    'settings.numFormat',        'settings.numFormatHint'],
+    ['set-uiScale',            'settings.uiScale',          null],
+    ['set-currencyInterval',   'settings.currencyUpdate',   'settings.currencyUpdateHint'],
+    ['set-buyMaxEnabled',      'settings.buyMax',           'settings.buyMaxHint'],
+    ['set-buyMaxBoards',       'settings.buyMaxBoards',     null],
+    ['set-buyMaxPointUpgrades','settings.buyMaxPoints',     null],
+    ['set-useGameCursor',      'settings.gameCursor',       'settings.gameCursorHint'],
+    ['set-lightTheme',         'settings.lightTheme',       null],
+    ['set-showConnections',    'settings.showConnections',  null],
+    ['set-showGrid',           'settings.showGrid',         null],
+    ['set-radioVolume',        'settings.radioVolume',      null],
+    ['set-radioMuted',         'settings.radioMuted',       null],
+    ['set-reset-btn',          'settings.resetLabel',       'settings.resetHint'],
+  ].forEach(([elId, labelKey, sublabelKey]) => {
+    const el = s(elId);
+    if (!el) return;
+    const row = el.closest('.set-row');
+    if (!row) return;
 
-  // Settings section headers
-  applySetSection('settings.sectionDisplay');
-  applySetSection('settings.sectionGameplay');
-  applySetSection('settings.sectionTheme');
-  applySetSection('settings.sectionNodes');
-  applySetSection('settings.sectionRadio');
-  applySetSection('settings.sectionCamera');
-  applySetSection('settings.sectionPartita');
-
-  // Keybinds labels
-  applyKeybindLabel('settings.recenterKey', 'Home');
-  applyKeybindLabel('settings.menuKey', 'Tab');
-
-  // Reset danger btn text
-  const resetDangerBtn = document.getElementById('set-reset-btn');
-  if (resetDangerBtn) resetDangerBtn.innerHTML = `<i class="fas fa-rotate-left"></i> ${gt('settings.resetBtn')}`;
-
-  // Stats tabs
-  applyStatTab('currencies', 'stats.tabCurrencies');
-  applyStatTab('levels',     'stats.tabLevels');
-  applyStatTab('other',      'stats.tabOther');
-
-  // Stats pin count suffix
-  window._gt_pinned   = gt('stats.pinned');
-  window._gt_session  = gt('stats.sessionTime');
-  window._gt_total    = gt('stats.totalTime');
-  window._gt_prestiges = gt('stats.prestiges');
-
-  // Leaderboard tabs
-  applyLbTab('points',    'lb.tabPoints');
-  applyLbTab('prestige',  'lb.tabPrestige');
-  applyLbTab('xp_level',  'lb.tabXp');
-
-  // Leveling panel (se esiste)
-  applyLevelingTranslations();
-}
-
-function applyPanelTitle(panelId, key) {
-  const panel = document.getElementById(panelId);
-  if (!panel) return;
-  const titleEl = panel.querySelector('.panel-title');
-  if (titleEl) {
-    const icon = titleEl.querySelector('.panel-title-icon');
-    titleEl.childNodes.forEach(n => { if (n.nodeType === 3) n.textContent = ' ' + gt(key); });
-    if (!icon) titleEl.textContent = gt(key);
-  }
-}
-
-function applyStab(tab, key) {
-  const el = document.querySelector(`#panel-settings .stab[data-tab="${tab}"]`);
-  if (el) el.textContent = gt(key);
-}
-
-function applySetLabel(checkboxId, labelKey, sublabelKey) {
-  const checkbox = document.getElementById(checkboxId);
-  if (!checkbox) return;
-  const row = checkbox.closest('.set-row') || checkbox.closest('.set-slider-wrap')?.closest('.set-row');
-  if (!row) return;
-  const label = row.querySelector('.set-label');
-  const sublabel = row.querySelector('.set-sublabel');
-  if (label) {
-    // preserva span interni (es. valore numerico)
-    const span = label.querySelector('span');
-    if (span) {
-      label.childNodes.forEach(n => { if (n.nodeType === 3) n.textContent = gt(labelKey) + ' '; });
-    } else {
-      label.firstChild && label.firstChild.nodeType === 3
-        ? label.firstChild.textContent = gt(labelKey)
-        : label.textContent = gt(labelKey);
+    const label = row.querySelector('.set-label');
+    const text = gt(labelKey);
+    if (label && text) {
+      const firstText = [...label.childNodes].find(n => n.nodeType === Node.TEXT_NODE);
+      if (firstText) firstText.textContent = text + ' ';
+      else label.insertBefore(document.createTextNode(text + ' '), label.firstChild);
     }
-  }
-  if (sublabel && sublabelKey) sublabel.textContent = gt(sublabelKey);
-}
 
-function applySetSection(key) {
-  const el = document.querySelector(`#panel-settings .set-section[data-sec-key="${key}"]`);
-  if (el) el.textContent = gt(key);
-}
-
-function applyKeybindLabel(key, keybind) {
-  document.querySelectorAll('#panel-settings .set-keybind').forEach(el => {
-    if (el.textContent === keybind) {
-      const row = el.closest('.set-row');
-      if (row) {
-        const label = row.querySelector('.set-label');
-        if (label) label.textContent = gt(key);
-      }
+    if (sublabelKey) {
+      const sublabel = row.querySelector('.set-sublabel');
+      const subtext = gt(sublabelKey);
+      if (sublabel && subtext) sublabel.textContent = subtext;
     }
   });
-}
 
-function applyStatTab(tab, key) {
-  const el = document.querySelector(`.stats-tab[data-stab="${tab}"]`);
-  if (el) el.textContent = gt(key);
-}
+  // Select options
+  const numFmt = s('set-statDisplayMode');
+  if (numFmt) {
+    const abbr = gt('settings.numAbbr');
+    const sci  = gt('settings.numSci');
+    if (abbr) numFmt.options[0].text = abbr;
+    if (sci)  numFmt.options[1].text = sci;
+  }
 
-function applyLbTab(tab, key) {
-  const el = document.querySelector(`.lb-tab[data-lbtab="${tab}"]`);
-  if (el) el.textContent = gt(key);
+  // Reset button text
+  const resetBtn = s('set-reset-btn');
+  if (resetBtn) {
+    const text = gt('settings.resetBtn');
+    if (text) resetBtn.innerHTML = `<i class="fas fa-rotate-left"></i> ${text}`;
+  }
+
+  // Keybind labels
+  [
+    ['settings.recenterKey', 'Home'],
+    ['settings.menuKey',     'Tab'],
+  ].forEach(([key, keybind]) => {
+    const text = gt(key);
+    if (!text) return;
+    document.querySelectorAll('#panel-settings .set-keybind').forEach(el => {
+      if (el.textContent.trim() !== keybind) return;
+      const label = el.closest('.set-row')?.querySelector('.set-label');
+      if (label) label.textContent = text;
+    });
+  });
+
+  // Stats tabs
+  [
+    ['currencies', 'stats.tabCurrencies'],
+    ['levels',     'stats.tabLevels'],
+    ['other',      'stats.tabOther'],
+  ].forEach(([tab, key]) => {
+    const el = q(`.stats-tab[data-stab="${tab}"]`);
+    const text = gt(key);
+    if (el && text) el.textContent = text;
+  });
+
+  // Leaderboard tabs
+  [
+    ['points',   'lb.tabPoints'],
+    ['prestige', 'lb.tabPrestige'],
+    ['xp_level', 'lb.tabXp'],
+  ].forEach(([tab, key]) => {
+    const el = q(`.lb-tab[data-lbtab="${tab}"]`);
+    const text = gt(key);
+    if (el && text) el.textContent = text;
+  });
+
+  // Stats globals
+  window._gt_pinned    = gt('stats.pinned');
+  window._gt_session   = gt('stats.sessionTime');
+  window._gt_total     = gt('stats.totalTime');
+  window._gt_prestiges = gt('stats.prestiges');
+
+  // Convert panel
+  const cvTitle = q('.convert-title');
+  const cvBtn   = s('btn-convert');
+  if (cvTitle) { const t = gt('convert.title'); if (t) cvTitle.textContent = t; }
+  if (cvBtn)   { const t = gt('convert.btn');   if (t) cvBtn.textContent = t; }
+
+  const cvDesc = q('.convert-desc');
+  if (cvDesc) {
+    const desc = gt('convert.desc');
+    const rp   = gt('convert.researchPoints');
+    if (desc && rp) cvDesc.innerHTML = desc.replace(rp, `<span>${rp}</span>`);
+  }
+
+  // Reset modal
+  const modalTitle   = q('.modal-title');
+  const modalDesc    = q('.modal-desc');
+  const resetConfirm = s('reset-confirm');
+  const resetCancel2 = s('reset-cancel2');
+  if (modalTitle)   { const t = gt('reset.title');   if (t) modalTitle.textContent = t; }
+  if (modalDesc)    { const t = gt('reset.desc');    if (t) modalDesc.textContent = t; }
+  if (resetConfirm) { const t = gt('reset.confirm'); if (t) resetConfirm.textContent = t; }
+  if (resetCancel2) { const t = gt('reset.cancel');  if (t) resetCancel2.textContent = t; }
+
+  // Leveling panel
+  applyLevelingTranslations();
 }
 
 function applyLevelingTranslations() {
@@ -193,23 +196,25 @@ function applyLevelingTranslations() {
   if (!lp) return;
 
   const header = lp.querySelector('#lp-header');
-  if (header) header.textContent = gt('leveling.title');
+  const btn    = document.getElementById('lp-btn');
+  const desc   = document.getElementById('lp-desc');
 
-  const btn = document.getElementById('lp-btn');
-  if (btn) btn.textContent = gt('leveling.btn');
+  if (header) { const t = gt('leveling.title'); if (t) header.textContent = t; }
+  if (btn)    { const t = gt('leveling.btn');   if (t) btn.textContent = t; }
 
-  const desc = document.getElementById('lp-desc');
   if (desc) {
-    const lines = gt('leveling.desc').split('\n');
+    const text = gt('leveling.desc');
+    const sub  = gt('leveling.descReset');
+    if (!text) return;
+    const lines = text.split('\n');
     desc.innerHTML = lines.map((l, i) => {
       if (i === 1) return l
-        .replace(/(Esperienza|Experience|Experien\u021b\u0103)/i, s => `<span style="color:#4ade80">${s}</span>`)
-        .replace(/(Livelli|Levels|Niveluri)/i, s => `<span style="color:#4ade80">${s}</span>`);
+        .replace(/(Esperienza|Experience|Experiență)/i, s => `<span style="color:#4ade80">${s}</span>`)
+        .replace(/(Livelli|Levels|Niveluri)/i,          s => `<span style="color:#4ade80">${s}</span>`);
       return l;
-    }).join('<br>') + `<br><span style="color:rgba(255,255,255,0.3);font-size:.67rem">${gt('leveling.descReset')}</span>`;
+    }).join('<br>') + (sub ? `<br><span style="color:rgba(255,255,255,0.3);font-size:.67rem">${sub}</span>` : '');
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  applyGameTranslations();
-});
+window.addEventListener('languageChanged', applyGameTranslations);
+document.addEventListener('DOMContentLoaded', applyGameTranslations);

@@ -42,4 +42,5 @@ window.addEventListener('DOMContentLoaded', () => {
   loadGame();
   requestAnimationFrame(gameLoop);
   setTimeout(() => { gameReady = true; }, 300);
+  setTimeout(() => { if (typeof syncCloudSave === 'function') syncCloudSave(); }, 1000);
 });

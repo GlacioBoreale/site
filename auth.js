@@ -168,7 +168,7 @@ const Auth = (() => {
     modal.classList.add('open');
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
+  function initNavAuthBtn() {
     updateNavAuth();
     const btn = document.getElementById('nav-auth-btn');
     if (btn) {
@@ -177,6 +177,11 @@ const Auth = (() => {
         else openAuthModal();
       });
     }
+  }
+
+  document.addEventListener('navbarLoaded', initNavAuthBtn);
+  document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('nav-auth-btn')) initNavAuthBtn();
   });
 
   return { register, login, logout, isLoggedIn, getUser, openAuthModal };

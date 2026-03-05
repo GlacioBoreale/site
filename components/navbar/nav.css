@@ -669,3 +669,37 @@
   color: rgba(160,120,0,0.85);
   background: rgba(245,197,66,0.15);
 }
+
+/* ── NAV GAME BTN ─────────────────────────────────────────── */
+.nav-game-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.85rem;
+  background: rgba(102,126,234,0.12);
+  border: 1px solid rgba(102,126,234,0.3);
+  border-radius: 20px;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #a5b4fc;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.nav-game-btn:hover {
+  background: rgba(102,126,234,0.25);
+  border-color: rgba(102,126,234,0.55);
+  color: #fff;
+}
+.nav-game-btn i { font-size: 0.82rem; }
+
+[data-theme="light"] .nav-game-btn {
+  background: rgba(102,126,234,0.08);
+  border-color: rgba(102,126,234,0.25);
+  color: #4f63d2;
+}
+[data-theme="light"] .nav-game-btn:hover {
+  background: rgba(102,126,234,0.18);
+  color: #3b4fc0;
+}

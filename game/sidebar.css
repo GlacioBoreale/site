@@ -2,6 +2,19 @@
    SIDEBAR — AES Game
    ══════════════════════════════════════════════════════════════ */
 
+/* ── NO SELECT ─────────────────────────────────────────────────── */
+#game-canvas,
+.game-panel,
+#sidebar-wrapper,
+#stats-pinned-bar,
+#leveling-panel,
+#radio-widget,
+#research-panel,
+.game-tooltip {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 /* ── WRAPPER (centro sinistro) ───────────────────────────────── */
 #sidebar-wrapper {
   position: fixed;
@@ -560,6 +573,43 @@
 /* ══════════════════════════════════════════════════════════════
    LEADERBOARD
    ══════════════════════════════════════════════════════════════ */
+.lb-optin-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.55rem 1.2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+.lb-optin-label {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.45);
+}
+[data-theme="light"] .lb-optin-label { color: rgba(10,10,20,0.45); }
+.lb-optin-btn {
+  padding: 0.28rem 0.85rem;
+  border-radius: 7px;
+  border: 1px solid rgba(59,130,246,0.35);
+  background: rgba(59,130,246,0.1);
+  color: #60a5fa;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+}
+.lb-optin-btn:hover { background: rgba(59,130,246,0.2); border-color: rgba(59,130,246,0.55); }
+.lb-optin-btn--in {
+  border-color: rgba(248,113,113,0.35);
+  background: rgba(248,113,113,0.1);
+  color: #f87171;
+}
+.lb-optin-btn--in:hover { background: rgba(248,113,113,0.2); border-color: rgba(248,113,113,0.55); }
+
 .lb-tabs {
   display: flex;
   flex-shrink: 0;

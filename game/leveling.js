@@ -121,7 +121,9 @@ function updateLevelingPanel() {
   const needed = xpForLevel(lvl);
   const pct    = Math.min(100, (xp / needed) * 100);
 
-  _lpLevelLabelEl.textContent = (gt('leveling.level') || 'LEVEL') + ' ' + lvl;
+  const _gtLevel  = (typeof gt === 'function' && gt('leveling.level'))  || 'LEVEL';
+  const _gtLvlReq = (typeof gt === 'function' && gt('leveling.lvlReq')) || 'lvl req';
+  _lpLevelLabelEl.textContent = _gtLevel + ' ' + lvl;
   _lpFractionEl.textContent   = xp + ' / ' + needed + ' XP';
   _lpBarEl.style.width        = pct + '%';
 
@@ -131,7 +133,7 @@ function updateLevelingPanel() {
     el.classList.toggle('inactive', !active);
     textNode.textContent = active
       ? buff.labelActive(lvl)
-      : (gt('leveling.lvlReq') || 'lvl req') + ' ' + buff.req;
+      : _gtLvlReq + ' ' + buff.req;
   });
 }
 
@@ -158,6 +160,8 @@ function positionLevelingPanel() {
   _lpEl.style.left = left + 'px';
   _lpEl.style.top  = top  + 'px';
 }
+
+window.addEventListener('languageChanged', () => { if (_lpBuilt) updateLevelingPanel(); });
 
 // chiamato ogni frame
 function tickLevelingPanel() {

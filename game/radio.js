@@ -6,7 +6,7 @@ const PLAYLISTS = [
     name: 'Progression',
     color: '#bb3ac4',
     tracks: [
-    { title: 'Cerebrawl', artist: 'TRACK 1 // supershigi', src: AUDIO_CDN + '/radio/Progression/cerebrawl.mp3' },
+    { title: 'Cerebrawl', artist: 'TRACK 1 // supershigi', src: AUDIO_CDN + '/radio/Progression/Cerebrawl.mp3' },
     ],
   },
   {

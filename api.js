@@ -49,8 +49,8 @@ const Api = (() => {
 
     save: {
       get: ()                                    => request('GET', '/save'),
-      put: (saveData, points, prestige, xpLevel) =>
-        request('PUT', '/save', { save_data: saveData, points, prestige, xp_level: xpLevel }),
+      put: (saveData, points, prestige, xpLevel, optIn) =>
+        request('PUT', '/save', { save_data: saveData, points, prestige, xp_level: xpLevel, opt_in: optIn ?? false }),
     },
 
     leaderboard: {

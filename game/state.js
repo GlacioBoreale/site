@@ -28,6 +28,7 @@ const G = {
   rLambdaMulti:      1,
   passiveLambda:     false,
   fastAndFurious:    false,
+  genericFiller:     false,
   unlazyScientists:  false,
   mat2Unlocked:      false,
   soloLevelingUnlocked: false,

@@ -58,7 +58,7 @@ const NODE_DEFS = [
           { text: 'x1.5 \u20bd bonus', color: null },
         ];
       }
-      return [{ text: 'x2 \u20bd', color: null }];
+      return [{ text: 'x2 \u20bd gain', color: null }];
     },
     descPages: () => (nodeState['flat2x']?.level ?? 0) >= 2 ? 2 : 1,
     maxLevel: 1,
@@ -83,7 +83,7 @@ const NODE_DEFS = [
           { text: 'x2 \u20bd bonus', color: null },
         ];
       }
-      return [{ text: 'x3 \u20bd', color: null }];
+      return [{ text: 'x3 \u20bd gain', color: null }];
     },
     descPages: () => (nodeState['flat3x']?.level ?? 0) >= 2 ? 2 : 1,
     maxLevel: 1,
@@ -125,7 +125,7 @@ const NODE_DEFS = [
     label: '#5',
     title: 'Un incremento avanzato',
     desc: () => [
-      { text: '\u20bd self-boosts', color: null },
+      { text: '\u20bd boosts itself', color: null },
       { text: `x(\u20bd^${G.selfBoostExp.toFixed(2)}, min 1)`, color: '#4ade80' },
     ],
     maxLevel: 1,
@@ -144,8 +144,8 @@ const NODE_DEFS = [
     label: '#6',
     title: 'Cresce',
     desc: [
-      { text: 'For each unlocked base upgrade,', color: null },
-      { text: 'x1.2\u20bd multiplicative', color: '#4ade80' },
+      { text: 'For each point upgrade unlocked,', color: null },
+      { text: 'x1.2\u20bd compounding', color: '#4ade80' },
     ],
     maxLevel: 1,
     baseCost: 500,
@@ -162,7 +162,7 @@ const NODE_DEFS = [
     x: -680, y: -200,
     label: '#7',
     title: 'Ancora pi\u00f9 livelli',
-    desc: [{ text: '+7 max levels to #4', color: '#4ade80' }],
+    desc: [{ text: '+7 level cap to #4', color: '#4ade80' }],
     maxLevel: 1,
     baseCost: 1000,
     costScale: 1,
@@ -219,8 +219,8 @@ const NODE_DEFS = [
     label: '🏆',
     title: 'Nella storia',
     desc: () => [
-      { text: 'Scegli se apparire nella', color: null },
-      { text: 'classifica globale.', color: '#fbbf24' },
+      { text: 'Choose if you want to show up', color: null },
+      { text: 'in the global rankings', color: '#fbbf24' },
       !G.hasPrestiged
         ? { text: 'Richiede almeno 1 Prestige', color: '#f87171' }
         : { text: _nd.perm(), color: '#f87171' },
@@ -244,7 +244,7 @@ const NODE_DEFS = [
     label: '#10',
     title: 'Eccolo qui',
     desc: () => G.rightSideUnlocked
-      ? [{ text: 'x4 \u20bd', color: '#4ade80' }]
+      ? [{ text: 'x4 \u20bd gain', color: '#4ade80' }]
       : [{ text: _nd.right(), color: '#f87171' },
          { text: _nd.lockHint(), color: '#f87171' }],
     maxLevel: 1,
@@ -261,7 +261,7 @@ const NODE_DEFS = [
     label: '#11',
     title: 'Premi per ricercare',
     desc: () => G.leftSideUnlocked
-      ? [{ text: '\u20bd boosted by \u03bb', color: null },
+      ? [{ text: '\u20bd gain is boosted by \u03bb', color: null },
          { text: 'x((50+\u03bb)^0.18, min 1)', color: '#4ade80' }]
       : [{ text: _nd.left(), color: '#f87171' },
          { text: _nd.lockHint(), color: '#f87171' }],
@@ -622,7 +622,7 @@ const NODE_DEFS = [
         { text: gt('nodes.prestigeReset'), color: null },
         { text: gt('nodes.prestigeReset2'), color: null },
         G.points >= 10e15
-          ? { text: `\u20bd \u2192 +${gain.toFixed(2)} \u2726`, color: '#C39131' }
+          ? { text: `\u20bd \u2192 +${fmt(gain)} \u2726`, color: '#C39131' }
           : { text: gt('nodes.prestigeNeedPoints'), color: '#f87171' },
       ];
     },
@@ -649,7 +649,7 @@ const NODE_DEFS = [
     baseCost: 250,
     costScale: 1,
     zone: 'prestige',
-    statLabel: 'not yet implemented',
+    statLabel: () => gt('nodes.checkSettings') || 'controlla le impostazioni',
     parents: ['prestigeUnlock'],
     permanent: true,
     onBuy: () => {},
@@ -720,10 +720,27 @@ const NODE_DEFS = [
     baseCost: 0,
     costScale: 1,
     zone: 'prestige',
-    statLabel: 'not yet implemented',
+    statLabel: () => gt('nodes.checkSettings') || 'controlla le impostazioni',
     parents: ['toNewHeights'],
     permanent: true,
     onBuy: () => { G.fastAndFurious = true; },
+  },
+  {
+    id: 'genericFiller',
+    x: 1960, y: -200,
+    label: '#10p',
+    title: 'Generic Filler',
+    desc: [
+      { text: 'x2 \u20bd and x2 \u2726 gain', color: '#fbbf24' },
+    ],
+    maxLevel: 1,
+    baseCost: 20,
+    costScale: 1,
+    costInPrestige: true,
+    zone: 'prestige',
+    statLabel: (lvl) => lvl > 0 ? 'x2 \u20bd | x2 \u2726' : '',
+    parents: ['fastAndFurious'],
+    onBuy: () => { G.flatMulti *= 2; G.prestigeGainMulti *= 2; recalcPps(); },
   },
   {
     id: 'angelicResearchers',
@@ -762,7 +779,7 @@ const NODE_DEFS = [
   {
     id: 'unlazyScientists',
     x: 1960, y: 700,
-    label: '#9p',
+    label: '#11p',
     title: 'Scenziati non cos\u00ec pigri',
     desc: () => [
       { text: 'Unlocks new upgrades', color: null },
@@ -773,10 +790,27 @@ const NODE_DEFS = [
     baseCost: 10000,
     costScale: 1,
     zone: 'prestige',
-    statLabel: 'not yet implemented',
+    statLabel: () => gt('nodes.checkSettings') || 'controlla le impostazioni',
     parents: ['dupingIq'],
     permanent: true,
     onBuy: () => { G.unlazyScientists = true; },
+  },
+  {
+    id: 'ultraRocketShot',
+    x: 1620, y: 900,
+    label: '#13p',
+    title: 'Rocket Shot Ultra',
+    desc: [
+      { text: '+2x \u20bd per level', color: '#fbbf24' },
+    ],
+    maxLevel: 50,
+    costFn: (lvl) => 50 + lvl * 50,
+    baseCost: 0,
+    costScale: 1,
+    zone: 'prestige',
+    statLabel: (lvl) => `x${1 + lvl * 2} \u20bd`,
+    parents: ['angelicResearchers'],
+    onBuy: () => { G.rMulti += 2; recalcPps(); },
   },
   //  NODI SBLOCCATI DA #3p (Le alte altezze)
   {
@@ -805,7 +839,7 @@ const NODE_DEFS = [
     title: 'Rimpicciolimento',
     desc: () => G.toNewHeightsUnlocked
       ? [{ text: 'Reduces XP requirements', color: '#4ade80' },
-         { text: '\u00f71.5 compounding per level', color: null }]
+         { text: 'by \u00f71.5 compounding', color: null }]
       : [{ text: _nd.p3(), color: '#f87171' },
          { text: _nd.p3zone(), color: '#f87171' }],
     maxLevel: 10,
@@ -841,8 +875,8 @@ const NODE_DEFS = [
     label: '#25',
     title: 'Dopo l\'Halcyon',
     desc: () => G.toNewHeightsUnlocked
-      ? [{ text: '\u20bd raised to ^1.05', color: '#4ade80' },
-         { text: 'after all multipliers', color: null }]
+      ? [{ text: '^1.05 \u20bd gain after all', color: null },
+         { text: 'multipliers', color: null }]
       : [{ text: _nd.p3(), color: '#f87171' },
          { text: _nd.p3zone(), color: '#f87171' }],
     maxLevel: 1,
@@ -859,36 +893,29 @@ const NODE_DEFS = [
     label: '#27',
     title: 'Gratificazione Ritardata',
     desc: () => G.toNewHeightsUnlocked
-      ? [{ text: 'The longer you play, the more \u20bd', color: null },
-         { text: 'x(time^0.65/30+1)', color: '#4ade80' },
-         { text: '(time doesn\'t reset!)', color: '#f87171' }]
+      ? [{ text: 'The longer you have this', color: null },
+         { text: 'upgrade, the more \u20bd you get', color: null },
+         { text: 'x(time^0.65/30+1); time isn\'t reset!', color: '#4ade80' }]
       : [{ text: _nd.p3(), color: '#f87171' },
          { text: _nd.p3zone(), color: '#f87171' }],
     maxLevel: 1,
     baseCost: 50e24,
     costScale: 1,
     zone: 'base',
-    statLabel: '',
+    statLabel: () => {
+      if (!G.delayedGratUnlocked) return '';
+      const t = G.delayedGratTime;
+      const h = Math.floor(t / 3600);
+      const m = Math.floor((t % 3600) / 60);
+      const s = Math.floor(t % 60);
+      const timeStr = h > 0
+        ? `${h}h ${m}m ${s}s`
+        : m > 0 ? `${m}m ${s}s` : `${s}s`;
+      const multi = (Math.pow(t, 0.65) / 30 + 1).toFixed(2);
+      return `x${multi} \u20bd | ${timeStr}`;
+    },
     parents: ['holyGrail'],
     onBuy: () => { G.delayedGratUnlocked = true; recalcPps(); },
-  },
-
-  {
-    id: 'ultraRocketShot',
-    x: 1620, y: 900,
-    label: '#10p',
-    title: 'Rocket Shot Ultra',
-    desc: [
-      { text: '+2x \u20bd per level', color: '#fbbf24' },
-    ],
-    maxLevel: 50,
-    costFn: (lvl) => 50 + lvl * 50,
-    baseCost: 0,
-    costScale: 1,
-    zone: 'prestige',
-    statLabel: (lvl) => `x${1 + lvl * 2} \u20bd`,
-    parents: ['angelicResearchers'],
-    onBuy: () => { G.rMulti += 2; recalcPps(); },
   },
 
 ];

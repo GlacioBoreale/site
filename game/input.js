@@ -20,8 +20,8 @@ canvas.addEventListener('mousemove', e => {
     const dx = e.clientX - dragStart.x;
     const dy = e.clientY - dragStart.y;
     if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasDragged = true;
-    camX = camStart.x + dx;
-    camY = camStart.y + dy;
+    camX = camStart.x + dx / zoom;
+    camY = camStart.y + dy / zoom;
   }
   const w = worldPos(mousePos.x, mousePos.y);
   hoveredNode = nodeAt(w.x, w.y);
@@ -52,6 +52,15 @@ canvas.addEventListener('mouseleave', () => {
 });
 
 // ─── TOUCH ────────────────────────────────────────────────────────────────────
+let _pinchStartDist = 0;
+let _pinchStartZoom = 1;
+
+function _pinchDist(e) {
+  const dx = e.touches[0].clientX - e.touches[1].clientX;
+  const dy = e.touches[0].clientY - e.touches[1].clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
 canvas.addEventListener('touchstart', e => {
   e.preventDefault();
   if (e.touches.length === 1) {
@@ -61,6 +70,10 @@ canvas.addEventListener('touchstart', e => {
     dragStart  = { x: t.clientX, y: t.clientY };
     camStart   = { x: camX,      y: camY };
     touchStart = { x: t.clientX, y: t.clientY };
+  } else if (e.touches.length === 2) {
+    isDragging = false;
+    _pinchStartDist = _pinchDist(e);
+    _pinchStartZoom = zoom;
   }
 }, { passive: false });
 
@@ -71,8 +84,11 @@ canvas.addEventListener('touchmove', e => {
     const dx = t.clientX - dragStart.x;
     const dy = t.clientY - dragStart.y;
     if (Math.abs(dx) > 4 || Math.abs(dy) > 4) hasDragged = true;
-    camX = camStart.x + dx;
-    camY = camStart.y + dy;
+    camX = camStart.x + dx / zoom;
+    camY = camStart.y + dy / zoom;
+  } else if (e.touches.length === 2 && _pinchStartDist > 0) {
+    const newDist = _pinchDist(e);
+    zoom = Math.min(2, Math.max(0.3, _pinchStartZoom * (newDist / _pinchStartDist)));
   }
 }, { passive: false });
 
@@ -90,26 +106,14 @@ canvas.addEventListener('touchend', e => {
 });
 
 function handleNodeRightClick(nd) {
-  if (!gameReady) return;
-  if (!window._cfgBuyMaxEnabled || !window._cfgBuyMaxBoards) return;
-  const st = nodeState[nd.id];
-  if (!isVisible(nd) || isLocked(nd) || nd.zone !== 'base' || nd.isPrestigeBtn) return;
-  let bought = false;
-  while (st.level < nd.maxLevel) {
-    const cost = nodeCost(nd, st.level);
-    if (G.points < cost) break;
-    G.points -= cost;
-    st.level++;
-    nd.onBuy(st.level);
-    bought = true;
-  }
-  if (bought) saveGame();
+  // buy max con tasto destro è esclusivo del Research Center (gestito da research.js)
 }
 
 //  CLICK NODO
 function checkDescPageClick(nd, lx, ly) {
   const totalPages = typeof nd.descPages === 'function' ? nd.descPages() : 1;
   if (totalPages <= 1) return false;
+  const wx = lx / zoom, wy = ly / zoom;
   const nx    = nd.x + camX - NODE_W / 2;
   const ny    = nd.y + camY - NODE_H / 2;
   const PAD   = 11;
@@ -120,11 +124,11 @@ function checkDescPageClick(nd, lx, ly) {
   const bLx   = nx + PAD + 2;
   const bRx   = nx + NODE_W - PAD - btnSz - 2;
   const cur   = getDescPage(nd.id);
-  if (lx >= bLx && lx <= bLx + btnSz && ly >= btnY && ly <= btnY + btnSz) {
+  if (wx >= bLx && wx <= bLx + btnSz && wy >= btnY && wy <= btnY + btnSz) {
     if (cur > 0) setDescPage(nd.id, cur - 1);
     return true;
   }
-  if (lx >= bRx && lx <= bRx + btnSz && ly >= btnY && ly <= btnY + btnSz) {
+  if (wx >= bRx && wx <= bRx + btnSz && wy >= btnY && wy <= btnY + btnSz) {
     if (cur < totalPages - 1) setDescPage(nd.id, cur + 1);
     return true;
   }
@@ -151,7 +155,7 @@ function handleNodeClick(nd, lx, ly) {
   if (isPrestNode && !G.hasPrestiged) return;
 
   const isPointUpgrade = !isRNode && !isPNode && !isPrestNode && nd.zone === 'base';
-  const buyMax = G.fastAndFurious && isPointUpgrade && window._cfgBuyMaxEnabled && (typeof CFG !== 'undefined' ? CFG.buyMaxPointUpgrades : false);
+  const buyMax = G.fastAndFurious && isPointUpgrade;
 
   if (buyMax) {
     let bought = false;

@@ -5,6 +5,7 @@ const canvas = document.getElementById('game-canvas');
 const ctx    = canvas.getContext('2d');
 
 let camX = 0, camY = 0;
+let zoom = 1;
 
 const NODE_W = 240;
 const NODE_H = 120;
@@ -64,11 +65,12 @@ function resize() {
   if (camX === 0 && camY === 0) {
     camX = canvas.width  / 2;
     camY = canvas.height / 2;
+    zoom = canvas.width < 600 ? 0.6 : 1;
   }
 }
 
 function worldPos(cx, cy) {
-  return { x: cx - camX, y: cy - camY };
+  return { x: cx / zoom - camX, y: cy / zoom - camY };
 }
 
 function nodeAt(wx, wy) {
@@ -212,7 +214,7 @@ function hexToRgba(hex, alpha) {
 
 function costStr(cost, isRNode, isPNode, isPrestNode) {
   if (cost === 0) return 'Gratis';
-  if (isPrestNode || isPNode) return cost.toFixed ? cost.toFixed(2) + ' ✦' : fmt(cost) + ' ✦';
+  if (isPrestNode || isPNode) return fmt(cost) + ' ✦';
   return isRNode ? fmtLambda(cost) + ' λ' : fmt(cost) + ' ₽';
 }
 
@@ -442,7 +444,7 @@ function drawCurrencyPanels(T) {
     {
       anchor: 'prestigeUnlock',
       getValue: () => fmt(_currencyCache.prestige) + ' ✦',
-      getRate:  () => _currencyCache.pendingP > 0.005 ? '+' + _currencyCache.pendingP.toFixed(2) + ' ✦ pending' : '',
+      getRate:  () => _currencyCache.pendingP > 0.005 ? '+' + fmt(_currencyCache.pendingP) + ' ✦ pending' : '',
       color:    ZONE_COLORS.prestige.a,
       always:   false,
       check:    () => G.hasPrestiged,

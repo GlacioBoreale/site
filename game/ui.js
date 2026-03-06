@@ -27,7 +27,7 @@ function updateTooltip() {
     html += `<br><em style="color:#f87171">Richiede almeno 1 Prestige</em>`;
   } else {
     const canAfford = isPrestNode ? G.prestige >= cost : isRNode ? G.research >= cost : G.points >= cost;
-    const costStr   = isPrestNode ? cost.toFixed(2) + ' ✦' : isRNode ? cost.toFixed(2) + ' λ' : fmt(cost) + ' ₽';
+    const costStr   = isPrestNode ? fmt(cost) + ' ✦' : isRNode ? fmtLambda(cost) + ' λ' : fmt(cost) + ' ₽';
     html += `<br>${gt('tooltip.cost')} <span style="color:${canAfford ? '#38bdf8' : '#f87171'}">${costStr}</span>`;
   }
   tooltip.innerHTML    = html;

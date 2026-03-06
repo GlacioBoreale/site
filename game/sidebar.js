@@ -142,6 +142,7 @@ function openPanel(panelId) {
   if (!panel) return;
   panel.classList.add('open');
   document.getElementById('panel-overlay').classList.add('open');
+  document.getElementById('sidebar-wrapper')?.classList.add('panel-open');
   activePanelId = panelId;
   if (panelId === 'panel-achievements') renderGameAchievements('all');
   if (panelId === 'panel-stats') initStatsPanel();
@@ -158,6 +159,7 @@ function closePanel() {
     activePanelId = null;
   }
   document.getElementById('panel-overlay')?.classList.remove('open');
+  document.getElementById('sidebar-wrapper')?.classList.remove('panel-open');
 }
 
 function closeAll() {
@@ -443,11 +445,20 @@ let _lbLoaded = false;
 
 async function loadLeaderboard() {
   const body = document.getElementById('lb-body');
+  const row  = document.getElementById('lb-optin-row');
   if (!body) return;
+
+  if (typeof G === 'undefined' || !G.leaderboardUnlocked) {
+    body.innerHTML = `<div class="panel-wip"><i class="fas fa-lock"></i> Sblocca l'upgrade "Nella storia" a sinistra di #9 per partecipare</div>`;
+    if (row) row.style.display = 'none';
+    return;
+  }
+
   body.innerHTML = '<div class="lb-loading"><i class="fas fa-spinner fa-spin"></i></div>';
   try {
     if (typeof Api === 'undefined') throw new Error('no api');
-    _lbData = await Api.leaderboard.get();
+    const raw = await Api.leaderboard.get();
+    _lbData = raw.leaderboard || raw;
     _lbLoaded = true;
     renderLeaderboard();
   } catch (_) {

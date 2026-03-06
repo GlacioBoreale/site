@@ -30,6 +30,7 @@ function buildSaveObj() {
     rLambdaMulti:         G.rLambdaMulti,
     passiveLambda:        G.passiveLambda,
     fastAndFurious:       G.fastAndFurious,
+    genericFiller:        G.genericFiller,
     unlazyScientists:     G.unlazyScientists,
     mat2Unlocked:         G.mat2Unlocked,
     soloLevelingUnlocked: G.soloLevelingUnlocked,
@@ -85,6 +86,7 @@ function applysave(save) {
   G.rLambdaMulti         = save.rLambdaMulti         || 1;
   G.passiveLambda        = save.passiveLambda        || false;
   G.fastAndFurious       = save.fastAndFurious       || false;
+  G.genericFiller        = save.genericFiller        || false;
   G.unlazyScientists     = save.unlazyScientists     || false;
   G.mat2Unlocked         = save.mat2Unlocked         || false;
   G.soloLevelingUnlocked = save.soloLevelingUnlocked || false;
@@ -149,6 +151,7 @@ async function pushCloudSave() {
       Math.floor(G.points),
       parseFloat(G.prestige.toFixed(4)),
       G.xpLevel,
+      G.leaderboardOptIn,
     );
   } catch (e) {
     console.warn('Cloud save fallito:', e.message);

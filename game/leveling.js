@@ -161,7 +161,12 @@ function positionLevelingPanel() {
   _lpEl.style.top  = top  + 'px';
 }
 
-window.addEventListener('languageChanged', () => { if (_lpBuilt) updateLevelingPanel(); });
+window.addEventListener('languageChanged', () => {
+  if (_lpBuilt) {
+    updateLevelingPanel();
+    if (typeof applyLevelingTranslations === 'function') applyLevelingTranslations();
+  }
+});
 
 // chiamato ogni frame
 function tickLevelingPanel() {

@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2026-03-08T20:27:19Z",
+  "updatedAt": "2026-03-08T21:23:41Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
-    "followers": 1186,
+    "followers": 1185,
     "url": "https://twitch.tv/glacioborealevt",
     "isLive": false,
     "stream": {
@@ -43,28 +43,28 @@
     ],
     "randomClips": [
       {
-        "title": "Pronto!!!!!!!",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/MagnificentWittyInternThisIsSparta-ujpniueNUbiV-77b",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1302910438-preview-480x272.jpg",
-        "views": 50,
-        "duration": 10.5,
-        "creator": "lucaop69"
-      },
-      {
-        "title": "lo ho scammato (ezezezezez111!)",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/AgileFrailHamsterBigBrother-4EpT2lO-Enq1aGJe",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CMjefweBKU9pTvhJ6tWhiXg-preview-480x272.jpg",
-        "views": 27,
-        "duration": 34.9,
+        "title": "\"Perché non finisce?\"💀",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/InspiringCuriousWolfFrankerZ-x0jLKt-ggFr_O2mw",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/qNW9YMdIyyrfoIBa_ztpsA/AT-cm%7CqNW9YMdIyyrfoIBa_ztpsA-preview-480x272.jpg",
+        "views": 43,
+        "duration": 18.4,
         "creator": "dabidet87"
       },
       {
-        "title": "no scope memento🗿 (bello il no scope btw)",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/ElegantRelievedSashimiPJSugar-dkfv5Z1lAz_BQPEY",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/eiNtTXZH7-WdZQM_wUDxGA/AT-cm%7CeiNtTXZH7-WdZQM_wUDxGA-preview-480x272.jpg",
-        "views": 29,
-        "duration": 12.6,
-        "creator": "dabidet87"
+        "title": "wtf is that sound",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/CuriousAdventurousDadHeyGuys-oDbHErbl88zzZ2WY",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/-4fptaA2xxK25fPM82dlmA/vod-1997814363-offset-5294-preview-480x272.jpg",
+        "views": 39,
+        "duration": 30,
+        "creator": "antokekt"
+      },
+      {
+        "title": "Nixel Fuori Contesto",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/GrossAttractiveHeronANELE-YNXE5gsWGEIkit6p",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/T3ft3WDVxOYLFhhCJIreqQ/AT-cm%7CT3ft3WDVxOYLFhhCJIreqQ-preview-480x272.jpg",
+        "views": 35,
+        "duration": 7.6,
+        "creator": "Gennarix_"
       }
     ]
   },

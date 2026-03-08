@@ -175,9 +175,12 @@ function openResetDialog() { resetOverlay.classList.add('open'); }
 ['reset-cancel', 'reset-cancel2'].forEach(id => {
   document.getElementById(id).addEventListener('click', () => resetOverlay.classList.remove('open'));
 });
-document.getElementById('reset-confirm').addEventListener('click', () => {
+document.getElementById('reset-confirm').addEventListener('click', async () => {
   window.removeEventListener('beforeunload', saveGame);
-  localStorage.removeItem('glaciopia_idle');
+  localStorage.removeItem(SAVE_KEY);
+  if (typeof Auth !== 'undefined' && Auth.isLoggedIn()) {
+    try { await Api.save.delete(); } catch (_) {}
+  }
   location.reload();
 });
 

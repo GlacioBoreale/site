@@ -33,7 +33,7 @@ const Auth = (() => {
     const data = await Api.auth.login(email, password);
     Api.setToken(data.token);
     setUser(data.user);
-    onAuthChange();
+    onAuthChange(true);
     return data.user;
   }
 
@@ -43,9 +43,9 @@ const Auth = (() => {
     onAuthChange();
   }
 
-  function onAuthChange() {
+  function onAuthChange(forceCloud = false) {
     updateNavAuth();
-    if (typeof syncCloudSave === 'function') syncCloudSave();
+    if (typeof syncCloudSave === 'function') syncCloudSave(forceCloud);
   }
 
   function updateNavAuth() {

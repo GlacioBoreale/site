@@ -158,7 +158,7 @@ async function pushCloudSave() {
   }
 }
 
-async function syncCloudSave() {
+async function syncCloudSave(forceCloud = false) {
   if (!_cloudSaveLoggedIn()) return;
   try {
     const data = await Api.save.get();
@@ -167,7 +167,7 @@ async function syncCloudSave() {
     const localSave = localRaw ? JSON.parse(localRaw) : null;
     const cloudTs = data.updated_at ? new Date(data.updated_at).getTime() : 0;
     const localTs = localSave?._savedAt || 0;
-    if (cloudTs > localTs) {
+    if (forceCloud || cloudTs >= localTs) {
       applysave(data.save_data);
       saveGame();
     }

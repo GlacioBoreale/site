@@ -22,7 +22,7 @@ const NODE_DEFS = [
     id: 'start',
     x: 0, y: 0,
     label: '#1',
-    title: 'Inizio generico',
+    title: 'Generic Beginning',
     desc: (page) => {
       if (page === 1 && G.startGoldLevels > 0) {
         return [
@@ -50,7 +50,7 @@ const NODE_DEFS = [
     id: 'flat2x',
     x: 340, y: 0,
     label: '#2',
-    title: 'Un incremento',
+    title: 'An increment',
     desc: (page) => {
       if (page === 1 && (nodeState['flat2x']?.level ?? 0) >= 2) {
         return [
@@ -75,7 +75,7 @@ const NODE_DEFS = [
     id: 'flat3x',
     x: 340, y: -200,
     label: '#3',
-    title: 'Un maggior incremento',
+    title: 'A bigger increment',
     desc: (page) => {
       if (page === 1 && (nodeState['flat3x']?.level ?? 0) >= 2) {
         return [
@@ -100,7 +100,7 @@ const NODE_DEFS = [
     id: 'multiInc',
     x: 340, y: 200,
     label: '#4',
-    title: 'Molteplici incrementi',
+    title: 'More than one increment',
     desc: [
       { text: '+0.5x \u20bd per level', color: null },
       { text: '(starts at x1)', color: null },
@@ -123,7 +123,7 @@ const NODE_DEFS = [
     id: 'selfBoost',
     x: -340, y: 0,
     label: '#5',
-    title: 'Un incremento avanzato',
+    title: 'An advanced increment',
     desc: () => [
       { text: '\u20bd boosts itself', color: null },
       { text: `x(\u20bd^${G.selfBoostExp.toFixed(2)}, min 1)`, color: '#4ade80' },
@@ -142,7 +142,7 @@ const NODE_DEFS = [
     id: 'grows',
     x: -680, y: 0,
     label: '#6',
-    title: 'Cresce',
+    title: 'It grows...',
     desc: [
       { text: 'For each point upgrade unlocked,', color: null },
       { text: 'x1.2\u20bd compounding', color: '#4ade80' },
@@ -161,7 +161,7 @@ const NODE_DEFS = [
     id: 'morelvls',
     x: -680, y: -200,
     label: '#7',
-    title: 'Ancora pi\u00f9 livelli',
+    title: 'Even more levels',
     desc: [{ text: '+7 level cap to #4', color: '#4ade80' }],
     maxLevel: 1,
     baseCost: 1000,
@@ -179,7 +179,7 @@ const NODE_DEFS = [
     id: 'researchUnlock',
     x: 0, y: -200,
     label: '#8',
-    title: 'Nuove tecnologie',
+    title: 'New Techs',
     desc: () => [
       { text: 'Unlocks the', color: null },
       { text: _nd.rc(), color: '#38bdf8' },
@@ -198,14 +198,14 @@ const NODE_DEFS = [
     id: 'boombox',
     x: 0, y: 400,
     label: '#9',
-    title: 'Ma non \u00e8 totalmente vuoto',
+    title: 'But it\'s not that empty',
     desc: () => [
       { text: 'Unlocks the', color: null },
       { text: _nd.stereo(), color: '#fbbf24' },
       { text: _nd.perm(), color: '#f87171' },
     ],
     maxLevel: 1,
-    baseCost: 10000,
+    baseCost: 1000,
     costScale: 1,
     zone: 'base',
     statLabel: '',
@@ -221,16 +221,13 @@ const NODE_DEFS = [
     desc: () => [
       { text: 'Choose if you want to show up', color: null },
       { text: 'in the global rankings', color: '#fbbf24' },
-      !G.hasPrestiged
-        ? { text: 'Richiede almeno 1 Prestige', color: '#f87171' }
-        : { text: _nd.perm(), color: '#f87171' },
+      { text: _nd.perm(), color: '#f87171' },
     ],
     maxLevel: 1,
-    baseCost: 1,
+    baseCost: 0,
     costScale: 1,
-    costInPrestige: true,
     zone: 'base',
-    statLabel: 'abilita leaderboard',
+    statLabel: 'check the leaderboard',
     parents: ['boombox'],
     permanent: true,
     onBuy: () => {
@@ -259,7 +256,7 @@ const NODE_DEFS = [
     id: 'push4research',
     x: -1020, y: 0,
     label: '#11',
-    title: 'Premi per ricercare',
+    title: 'Press 2 research',
     desc: () => G.leftSideUnlocked
       ? [{ text: '\u20bd gain is boosted by \u03bb', color: null },
          { text: 'x((50+\u03bb)^0.18, min 1)', color: '#4ade80' }]
@@ -279,7 +276,7 @@ const NODE_DEFS = [
     id: 'nowWithExponents',
     x: 1020, y: 0,
     label: '#12',
-    title: 'Ora con esponenti',
+    title: 'Now with exponents',
     desc: () => G.rightSideUnlocked
       ? [{ text: 'x1.3 \u20bd per level', color: '#4ade80' }]
       : [{ text: _nd.right(), color: '#f87171' },
@@ -300,7 +297,7 @@ const NODE_DEFS = [
     id: 'costCutting',
     x: 1020, y: 200,
     label: '#13',
-    title: 'Taglio dei costi',
+    title: 'Cost Cutting',
     desc: () => G.rightSideUnlocked
       ? [{ text: '\u00f7(50^level) to #12 cost', color: '#4ade80' }]
       : [{ text: _nd.right(), color: '#f87171' },
@@ -318,7 +315,7 @@ const NODE_DEFS = [
     id: 'ThatsaLot',
     x: 680, y: -200,
     label: '#14',
-    title: 'Questo \u00e8 tanto',
+    title: 'This is big',
     desc: () => G.rightSideUnlocked
       ? [{ text: 'x5 \u20bd', color: '#4ade80' }]
       : [{ text: _nd.right(), color: '#f87171' },
@@ -335,7 +332,7 @@ const NODE_DEFS = [
     id: 'toomanylvls',
     x: -1020, y: -200,
     label: '#15',
-    title: 'TROPPI LIVELLI',
+    title: 'TOO MANY LEVELS',
     desc: () => G.leftSideUnlocked
       ? [{ text: '+30 max levels to #4', color: '#4ade80' }]
       : [{ text: _nd.left(), color: '#f87171' },
@@ -356,7 +353,7 @@ const NODE_DEFS = [
     id: 'soloLeveling',
     x: 1020, y: -200,
     label: '#16',
-    title: 'Solo Livellamento',
+    title: 'Solo leveling',
     desc: () => G.rightSideUnlocked
       ? [{ text: 'Unlocks the', color: null },
          { text: _nd.lc(), color: '#4ade80' },
@@ -376,7 +373,7 @@ const NODE_DEFS = [
     id: 'moreButDifferent',
     x: 340, y: -400,
     label: '#19',
-    title: 'Maggior aumento, ma diverso',
+    title: 'More but different',
     desc: () => G.rightSideUnlocked
       ? [{ text: 'x3 \u03bb', color: '#38bdf8' }]
       : [{ text: _nd.right(), color: '#f87171' },
@@ -393,7 +390,7 @@ const NODE_DEFS = [
     id: 'upgradeGenetics',
     x: -340, y: 200,
     label: '#21',
-    title: 'Upgrade Genetico',
+    title: 'Genetics Upgrade',
     desc: () => G.leftSideUnlocked
       ? [{ text: '+0.05 exponent to #5', color: '#4ade80' },
          { text: _nd.perm(), color: '#f87171' }]
@@ -413,7 +410,7 @@ const NODE_DEFS = [
     id: 'absolutefrenzy',
     x: -1020, y: -400,
     label: '#30',
-    title: 'FRENESIA assoluta',
+    title: 'Absolute FRENZY',
     desc: () => G.leftSideUnlocked
       ? [{ text: '+250 max levels to #4', color: '#4ade80' }]
       : [{ text: _nd.left(), color: '#f87171' },
@@ -455,7 +452,7 @@ const NODE_DEFS = [
     id: 'r_leftSide',
     x: -340, y: -1200,
     label: 'R2',
-    title: 'Lato Sinistro',
+    title: 'Left side',
     desc: [
       { text: 'Unlocks more upgrades on the left', color: null },
       { text: 'of the main tree', color: null },
@@ -473,7 +470,7 @@ const NODE_DEFS = [
     id: 'r_rightSide',
     x: 340, y: -1200,
     label: 'R3',
-    title: 'Lato Destro',
+    title: 'Right side',
     desc: [
       { text: 'Unlocks more upgrades on the right', color: null },
       { text: 'of the main tree', color: null },
@@ -639,7 +636,7 @@ const NODE_DEFS = [
     id: 'theChallenge',
     x: 1960, y: 200,
     label: '#1p',
-    title: 'La Sfida.',
+    title: 'The Challenge.',
     desc: () => [
       { text: 'Unlocks the', color: null },
       { text: _nd.obelisk(), color: '#B874BA' },
@@ -649,7 +646,7 @@ const NODE_DEFS = [
     baseCost: 250,
     costScale: 1,
     zone: 'prestige',
-    statLabel: () => gt('nodes.checkSettings') || 'controlla le impostazioni',
+    statLabel: () => gt('nodes.checkSettings') || 'Not yet implemented',
     parents: ['prestigeUnlock'],
     permanent: true,
     onBuy: () => {},
@@ -676,7 +673,7 @@ const NODE_DEFS = [
     id: 'toNewHeights',
     x: 1620, y: 0,
     label: '#3p',
-    title: 'Le alte altezze',
+    title: 'The Higher Heights',
     desc: () => [
       { text: 'Expands the points upgrade tree', color: null },
       { text: _nd.perm(), color: '#f87171' },
@@ -694,7 +691,7 @@ const NODE_DEFS = [
     id: 'dupingIq',
     x: 1960, y: 500,
     label: '#4p',
-    title: 'Duplicando IQ',
+    title: 'Duping IQ',
     desc: [
       { text: 'x2 \u03bb earned (compounding)', color: '#38bdf8' },
     ],
@@ -720,7 +717,7 @@ const NODE_DEFS = [
     baseCost: 0,
     costScale: 1,
     zone: 'prestige',
-    statLabel: () => gt('nodes.checkSettings') || 'controlla le impostazioni',
+    statLabel: () => gt('nodes.checkSettings') || 'Check the settings',
     parents: ['toNewHeights'],
     permanent: true,
     onBuy: () => { G.fastAndFurious = true; },
@@ -746,7 +743,7 @@ const NODE_DEFS = [
     id: 'angelicResearchers',
     x: 1620, y: 700,
     label: '#6p',
-    title: 'Ricercatori Angelici',
+    title: 'Angelic Researchers',
     desc: [
       { text: 'Generates 1% of \u03bb', color: '#38bdf8' },
       { text: 'earned every second', color: '#38bdf8' },
@@ -780,7 +777,7 @@ const NODE_DEFS = [
     id: 'unlazyScientists',
     x: 1960, y: 700,
     label: '#11p',
-    title: 'Scenziati non cos\u00ec pigri',
+    title: 'Not so lazy scientists',
     desc: () => [
       { text: 'Unlocks new upgrades', color: null },
       { text: 'in the research zone', color: '#38bdf8' },
@@ -790,7 +787,7 @@ const NODE_DEFS = [
     baseCost: 10000,
     costScale: 1,
     zone: 'prestige',
-    statLabel: () => gt('nodes.checkSettings') || 'controlla le impostazioni',
+    statLabel: () => gt('nodes.checkSettings') || 'Not yet implemented',
     parents: ['dupingIq'],
     permanent: true,
     onBuy: () => { G.unlazyScientists = true; },
@@ -836,7 +833,7 @@ const NODE_DEFS = [
     id: 'downsizing',
     x: 680, y: 400,
     label: '#23',
-    title: 'Rimpicciolimento',
+    title: 'Downsizing',
     desc: () => G.toNewHeightsUnlocked
       ? [{ text: 'Reduces XP requirements', color: '#4ade80' },
          { text: 'by \u00f71.5 compounding', color: null }]
@@ -855,7 +852,7 @@ const NODE_DEFS = [
     id: 'holyGrail',
     x: 1020, y: 600,
     label: '#24',
-    title: 'Santo Graal',
+    title: 'Holy Grail',
     desc: () => G.toNewHeightsUnlocked
       ? [{ text: '\u20bd boosted by Prestige', color: '#fbbf24' },
          { text: 'x((\u2726+5)^0.4, min 1)', color: '#4ade80' }]
@@ -891,7 +888,7 @@ const NODE_DEFS = [
     id: 'delayedGratification',
     x: 1020, y: 800,
     label: '#27',
-    title: 'Gratificazione Ritardata',
+    title: 'Delayed Gratification',
     desc: () => G.toNewHeightsUnlocked
       ? [{ text: 'The longer you have this', color: null },
          { text: 'upgrade, the more \u20bd you get', color: null },

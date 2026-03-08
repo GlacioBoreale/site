@@ -217,7 +217,7 @@ const NODE_DEFS = [
     id: 'leaderboardUnlock',
     x: -340, y: 400,
     label: '🏆',
-    title: 'Nella storia',
+    title: 'Engraved in history',
     desc: () => [
       { text: 'Choose if you want to show up', color: null },
       { text: 'in the global rankings', color: '#fbbf24' },

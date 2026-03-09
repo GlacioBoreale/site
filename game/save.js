@@ -2,7 +2,7 @@
 
 const SAVE_KEY = 'glaciopia_idle';
 
-// ─── SAVE LOCALE ─────────────────────────────────────────────────────────────
+// SAVE LOCALE
 function buildSaveObj() {
   const save = {
     points:               G.points,
@@ -128,7 +128,7 @@ function loadGame() {
   }
 }
 
-// ─── CLOUD SAVE ──────────────────────────────────────────────────────────────
+// CLOUD SAVE
 let _cloudSaveTimer = null;
 const CLOUD_DEBOUNCE_MS = 15000;
 
@@ -158,8 +158,12 @@ async function pushCloudSave() {
   }
 }
 
+let _skipNextCloudSync = !!sessionStorage.getItem('glaciopia_skip_cloud_sync');
+if (_skipNextCloudSync) sessionStorage.removeItem('glaciopia_skip_cloud_sync');
+
 async function syncCloudSave(forceCloud = false) {
   if (!_cloudSaveLoggedIn()) return;
+  if (_skipNextCloudSync) { _skipNextCloudSync = false; return; }
   try {
     const data = await Api.save.get();
     if (!data.save_data) return;
@@ -222,4 +226,6 @@ function topologicalSort() {
 }
 
 setInterval(() => { saveGame(); scheduleCloudSave(); }, 10000);
-window.addEventListener('beforeunload', () => { saveGame(); pushCloudSave(); });
+
+function _onBeforeUnload() { saveGame(); pushCloudSave(); }
+window.addEventListener('beforeunload', _onBeforeUnload);

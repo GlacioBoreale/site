@@ -5,106 +5,133 @@
 </head>
 <nav class="navbar">
   <div class="navbar-container">
+
     <div class="navbar-brand">
       <a class="logo-link">
         <img src="assets/images/logo.png" alt="Glacio Boreale" class="logo-image">
       </a>
     </div>
+
     <ul class="navbar-menu desktop-menu">
-      <li><a href="index.html" data-i18n="nav.home">Home</a></li>
-      <li><a href="about.html" data-i18n="nav.about">Chi siamo</a></li>
+      <li><a href="index.html"    data-i18n="nav.home">Home</a></li>
+      <li><a href="about.html"    data-i18n="nav.about">Chi siamo</a></li>
       <li><a href="projects.html" data-i18n="nav.projects">Progetti</a></li>
-      <li class="hide-on-tablet"><a href="vtpedia.html" data-i18n="nav.VTPedia">VTPedia</a></li>
-      <li class="hide-on-tablet"><a href="socials.html" data-i18n="nav.socials">Socials</a></li>
-      <li><a href="fanart.html" data-i18n="nav.fanart">Fanart</a></li>
+      <li class="hide-on-tablet"><a href="vtpedia.html"  data-i18n="nav.VTPedia">VTPedia</a></li>
+      <li class="hide-on-tablet"><a href="socials.html"  data-i18n="nav.socials">Socials</a></li>
+      <li><a href="fanart.html"   data-i18n="nav.fanart">Fanart</a></li>
     </ul>
 
-    <button class="hamburger-btn" id="hamburger-btn" aria-label="Menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-
-    <a href="game.html" class="nav-game-btn" id="nav-game-btn">
-      <i class="fas fa-gamepad"></i>
-      <span>Gioca</span>
-    </a>
-
-    <a href="socials.html" class="nav-live-btn" id="nav-live-btn">
-      <span class="nav-live-dot"></span>
-      <span id="nav-live-text">Glacio è Offline</span>
-    </a>
-
-    <button id="nav-auth-btn">
-      <span class="nav-auth-avatar" id="nav-auth-avatar"></span>
-      <span id="nav-auth-label">Login</span>
-    </button>
-
-    <div class="nav-settings-wrapper desktop-lang" id="nav-settings-wrapper">
-      <button class="nav-settings-btn" id="nav-settings-btn" aria-label="Impostazioni">
-        <i class="fas fa-gear"></i>
+    <!-- desktop: live + gioca + auth + settings -->
+    <div class="navbar-right desktop-only">
+      <a href="socials.html" class="nav-live-btn" id="nav-live-btn">
+        <span class="nav-live-dot"></span>
+        <span id="nav-live-text">Glacio è Offline</span>
+      </a>
+      <a href="game.html" class="nav-game-btn" id="nav-game-btn">
+        <i class="fas fa-gamepad"></i>
+        <span>Gioca</span>
+      </a>
+      <button id="nav-auth-btn">
+        <span class="nav-auth-avatar" id="nav-auth-avatar"></span>
+        <span id="nav-auth-label">Login</span>
       </button>
-      
-      <div class="settings-panel" id="settings-panel">
-        <div class="settings-panel-arrow"></div>
-        
-        <div class="settings-section">
-          <p class="settings-label" data-i18n="settings.language">Lingua</p>
-          <div class="settings-lang-row" id="settings-lang-row"></div>
-        </div>
-
-        <div class="settings-divider"></div>
-
-        <div class="settings-section">
-          <p class="settings-label" data-i18n="settings.theme">Tema</p>
-          <div class="settings-theme-row">
-            <button class="settings-theme-btn active" data-theme="dark" id="theme-btn-dark">
-              <i class="fas fa-moon"></i>
-              <span data-i18n="settings.dark">Scuro</span>
-            </button>
-            <button class="settings-theme-btn" data-theme="light" id="theme-btn-light">
-              <i class="fas fa-sun"></i>
-              <span data-i18n="settings.light">Chiaro</span>
+      <div class="nav-settings-wrapper desktop-lang" id="nav-settings-wrapper">
+        <button class="nav-settings-btn" id="nav-settings-btn" aria-label="Impostazioni">
+          <i class="fas fa-gear"></i>
+        </button>
+        <div class="settings-panel" id="settings-panel">
+          <div class="settings-panel-arrow"></div>
+          <div class="settings-section">
+            <p class="settings-label" data-i18n="settings.language">Lingua</p>
+            <div class="settings-lang-row" id="settings-lang-row"></div>
+          </div>
+          <div class="settings-divider"></div>
+          <div class="settings-section">
+            <p class="settings-label" data-i18n="settings.theme">Tema</p>
+            <div class="settings-theme-row">
+              <button class="settings-theme-btn active" data-theme="dark" id="theme-btn-dark">
+                <i class="fas fa-moon"></i>
+                <span data-i18n="settings.dark">Scuro</span>
+              </button>
+              <button class="settings-theme-btn" data-theme="light" id="theme-btn-light">
+                <i class="fas fa-sun"></i>
+                <span data-i18n="settings.light">Chiaro</span>
+              </button>
+            </div>
+          </div>
+          <div class="settings-divider"></div>
+          <div class="settings-section">
+            <p class="settings-label" data-i18n="settings.achievements">Achievement</p>
+            <button class="settings-ach-btn" id="open-achievements-btn">
+              <span class="settings-ach-btn-left">
+                <i class="fas fa-trophy"></i>
+                <span data-i18n="settings.yourAchievements">I tuoi achievement</span>
+              </span>
+              <span class="settings-ach-count" id="ach-nav-count">0/0</span>
             </button>
           </div>
         </div>
-
-        <div class="settings-divider"></div>
-
-        <div class="settings-section">
-          <p class="settings-label" data-i18n="settings.achievements">Achievement</p>
-          <button class="settings-ach-btn" id="open-achievements-btn">
-            <span class="settings-ach-btn-left">
-              <i class="fas fa-trophy"></i>
-              <span data-i18n="settings.yourAchievements">I tuoi achievement</span>
-            </span>
-            <span class="settings-ach-count" id="ach-nav-count">0/0</span>
-          </button>
-        </div>
       </div>
     </div>
-  </div>
 
-  <div class="mobile-menu" id="mobile-menu">
-    <ul>
-      <li class="show-on-mobile"><a href="index.html" data-i18n="nav.home">Home</a></li>
-      <li class="show-on-mobile"><a href="about.html" data-i18n="nav.about">Chi siamo</a></li>
-      <li class="show-on-mobile"><a href="projects.html" data-i18n="nav.projects">Progetti</a></li>
-      <li><a href="vtpedia.html" data-i18n="nav.VTPedia">VTPedia</a></li>
-      <li><a href="socials.html" data-i18n="nav.socials">Socials</a></li>
-      <li><a href="fanart.html" data-i18n="nav.fanart">Fanart</a></li>
-    </ul>
-
-    <div class="mobile-lang-container show-on-mobile">
-      <p class="mobile-settings-label" data-i18n="settings.language">Lingua</p>
-      <ul class="lang-dropdown-menu lang-menu-mobile" id="lang-menu-mobile" role="listbox"></ul>
+    <!-- mobile: hamburger unico -->
+    <div class="navbar-right mobile-only">
+      <button class="hamburger-btn" id="hamburger-btn" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </div>
 
-    <div class="mobile-ach-container show-on-mobile">
-      <button class="mobile-ach-btn" id="mobile-open-achievements-btn">
-        <span><i class="fas fa-trophy"></i> <span data-i18n="settings.mobileAch">Achievement</span></span>
-        <span class="mobile-ach-count" id="mobile-ach-count">0/0</span>
+  </div>
+
+  <!-- mobile dropdown -->
+  <div class="mobile-menu" id="mobile-menu">
+
+    <!-- griglia pagine 3 per riga -->
+    <div class="mm-pages-grid">
+      <a href="index.html"    class="mm-page-btn"><i class="fas fa-house"></i><span data-i18n="nav.home">Home</span></a>
+      <a href="about.html"    class="mm-page-btn"><i class="fas fa-users"></i><span data-i18n="nav.about">Chi siamo</span></a>
+      <a href="projects.html" class="mm-page-btn"><i class="fas fa-folder"></i><span data-i18n="nav.projects">Progetti</span></a>
+      <a href="vtpedia.html"  class="mm-page-btn"><i class="fas fa-book"></i><span data-i18n="nav.VTPedia">VTPedia</span></a>
+      <a href="socials.html"  class="mm-page-btn"><i class="fas fa-share-nodes"></i><span data-i18n="nav.socials">Socials</span></a>
+      <a href="fanart.html"   class="mm-page-btn"><i class="fas fa-palette"></i><span data-i18n="nav.fanart">Fanart</span></a>
+      <a href="game.html"     class="mm-page-btn mm-page-game"><i class="fas fa-gamepad"></i><span>Gioca</span></a>
+    </div>
+
+    <div class="mm-divider"></div>
+
+    <!-- riga: lingua + achievement -->
+    <div class="mm-actions-row">
+
+      <!-- lingua dropdown -->
+      <div class="mm-lang-wrap" id="mm-lang-wrap">
+        <button class="mm-lang-trigger" id="mm-lang-trigger">
+          <img id="mm-lang-flag" src="" alt="" class="flag-img">
+          <span id="mm-lang-label">IT</span>
+          <i class="fas fa-chevron-down mm-lang-chevron" id="mm-lang-chevron"></i>
+        </button>
+        <div class="mm-lang-dropdown" id="mm-lang-dropdown"></div>
+      </div>
+
+      <!-- tema -->
+      <div class="mm-theme-row">
+        <button class="mm-theme-btn active" id="mm-theme-dark"><i class="fas fa-moon"></i></button>
+        <button class="mm-theme-btn" id="mm-theme-light"><i class="fas fa-sun"></i></button>
+      </div>
+
+      <!-- achievement -->
+      <button class="mm-ach-btn" id="mobile-open-achievements-btn">
+        <i class="fas fa-trophy"></i>
+        <span class="mm-ach-count" id="mobile-ach-count">0/0</span>
       </button>
+
+      <!-- auth -->
+      <button class="mm-auth-btn" id="mm-auth-btn">
+        <span class="nav-auth-avatar" id="mm-auth-avatar"></span>
+        <span id="mm-auth-label">Login</span>
+      </button>
+
     </div>
   </div>
 </nav>

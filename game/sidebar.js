@@ -1,8 +1,8 @@
 'use strict';
 
-// ══════════════════════════════════════════════════════════════
+// ===============
 //  SETTINGS STATE
-// ══════════════════════════════════════════════════════════════
+// ===============
 const SETTINGS_KEY = 'glaciopia_settings';
 const SETTINGS_DEFAULT = {
   statDisplayMode:          'default',
@@ -50,9 +50,9 @@ let activePanelId = null;
 let btnEls = [];   // parallel array to ITEMS
 let menuAnimating = false;
 
-// ══════════════════════════════════════════════════════════════
+// ======
 //  BUILD
-// ══════════════════════════════════════════════════════════════
+// ======
 function buildSidebar() {
   const wrapper = document.createElement('div');
   wrapper.id = 'sidebar-wrapper';
@@ -95,9 +95,9 @@ function buildSidebar() {
   document.body.appendChild(overlay);
 }
 
-// ══════════════════════════════════════════════════════════════
+// =======
 //  TOGGLE
-// ══════════════════════════════════════════════════════════════
+// =======
 function toggleMenu() {
   if (menuAnimating) return;
   menuOpen = !menuOpen;
@@ -133,9 +133,9 @@ function toggleMenu() {
   setTimeout(() => { menuAnimating = false; }, totalMs);
 }
 
-// ══════════════════════════════════════════════════════════════
+// =======
 //  PANELS
-// ══════════════════════════════════════════════════════════════
+// =======
 function openPanel(panelId) {
   closePanel();
   const panel = document.getElementById(panelId);
@@ -148,8 +148,18 @@ function openPanel(panelId) {
   if (panelId === 'panel-stats') initStatsPanel();
   if (panelId === 'panel-leaderboard') initLeaderboard();
   if (panelId === 'panel-settings') {
-    const buyMaxRow = document.querySelector('.set-row.indent[data-key="buyMaxPointUpgrades"]');
-    if (buyMaxRow) buyMaxRow.style.display = (typeof G !== 'undefined' && G.fastAndFurious) ? '' : 'none';
+    syncBuyMaxPointUpgradesRow();
+  }
+}
+
+function syncBuyMaxPointUpgradesRow() {
+  const row = document.querySelector('.set-row.indent[data-key="buyMaxPointUpgrades"]');
+  if (!row) return;
+  const show = typeof G !== 'undefined' && G.fastAndFurious;
+  row.style.display = show ? '' : 'none';
+  if (show) {
+    const cb = document.getElementById('set-buyMaxPointUpgrades');
+    if (cb) cb.classList.toggle('checked', !!CFG.buyMaxPointUpgrades);
   }
 }
 
@@ -160,6 +170,7 @@ function closePanel() {
   }
   document.getElementById('panel-overlay')?.classList.remove('open');
   document.getElementById('sidebar-wrapper')?.classList.remove('panel-open');
+  document.querySelectorAll('.mtb-btn').forEach(b => b.classList.remove('active'));
 }
 
 function closeAll() {
@@ -174,9 +185,9 @@ function closeAll() {
   }
 }
 
-// ══════════════════════════════════════════════════════════════
+// ==================
 //  BUILD PANELS HTML
-// ══════════════════════════════════════════════════════════════
+// ==================
 function buildPanels() {
   const insert = html => document.body.insertAdjacentHTML('beforeend', html);
 
@@ -412,9 +423,9 @@ function renderGameAchievements(cat = 'all') {
   }
 }
 
-// ══════════════════════════════════════════════════════════════
+// ============
 //  LEADERBOARD
-// ══════════════════════════════════════════════════════════════
+// ============
 function buildLeaderboardPanel() {
   return `
 <div class="game-panel" id="panel-leaderboard">
@@ -561,9 +572,9 @@ function buildWipPanel(id, title, icon, colorClass) {
 </div>`;
 }
 
-// ══════════════════════════════════════════════════════════════
+// ==================
 //  SETTINGS CONTROLS
-// ══════════════════════════════════════════════════════════════
+// ==================
 function initSettingsControls() {
   function syncAll() {
     ['statDisplayMode','scientificThreshold'].forEach(key => {
@@ -702,14 +713,13 @@ function applySettings() {
   const rw = document.getElementById('radio-widget');
   if (rw) rw.style.zoom = scale;
 
-  // formato numeri: sostituisce la funzione fmt globale
   window._cfgNumFormat = CFG.statDisplayMode;
 
-  // buy max: disabilita le righe indent se buyMaxEnabled è false
   const indentRows = document.querySelectorAll('#panel-settings .set-row.indent');
   indentRows.forEach(r => r.style.opacity = CFG.buyMaxEnabled ? '' : '0.35');
   window._cfgBuyMaxEnabled = CFG.buyMaxEnabled;
   window._cfgBuyMaxBoards  = CFG.buyMaxBoards;
+  if (typeof syncBuyMaxPointUpgradesRow === 'function') syncBuyMaxPointUpgradesRow();
 
   // radio
   if (typeof Radio !== 'undefined') {
@@ -718,9 +728,9 @@ function applySettings() {
   }
 }
 
-// ══════════════════════════════════════════════════════════════
+// =====
 //  INIT
-// ══════════════════════════════════════════════════════════════
+// =====
 document.addEventListener('DOMContentLoaded', () => {
   loadSettings();
   buildSidebar();
@@ -729,4 +739,55 @@ document.addEventListener('DOMContentLoaded', () => {
   _statLoadPins();
   _statBuildPinnedBar();
   _statRenderPinnedBar();
+  buildMobileTabBar();
 });
+
+function buildMobileTabBar() {
+  const TAB_ITEMS = [
+    { id: 'settings',     icon: 'fa-gear',         label: 'Settings',  panel: 'panel-settings',     color: '#4a6cf7' },
+    { id: 'stats',        icon: 'fa-chart-bar',    label: 'Stats',     panel: 'panel-stats',        color: '#22c55e' },
+    { id: 'achievements', icon: 'fa-trophy',       label: 'Achiev.',   panel: 'panel-achievements', color: '#f59e0b' },
+    { id: 'leaderboard',  icon: 'fa-ranking-star', label: 'Ranking',   panel: 'panel-leaderboard',  color: '#3b82f6' },
+  ];
+
+  const bar = document.createElement('div');
+  bar.id = 'mobile-tab-bar';
+
+  TAB_ITEMS.forEach(item => {
+    const btn = document.createElement('button');
+    btn.className = 'mtb-btn';
+    btn.id = 'mtb-' + item.id;
+    btn.innerHTML = `
+      <div class="mtb-active-bar"></div>
+      <i class="fas ${item.icon}"></i>
+      <span>${item.label}</span>
+    `;
+    btn.addEventListener('click', () => {
+      if (activePanelId === item.panel) {
+        closePanel();
+        btn.classList.remove('active');
+      } else {
+        document.querySelectorAll('.mtb-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        openPanel(item.panel);
+      }
+    });
+    bar.appendChild(btn);
+  });
+
+  document.body.appendChild(bar);
+
+  const _origClosePanel = closePanel;
+  const _origCloseAll   = closeAll;
+
+  const _syncMtbActive = () => {
+    document.querySelectorAll('.mtb-btn').forEach(b => b.classList.remove('active'));
+    if (activePanelId) {
+      const match = TAB_ITEMS.find(t => t.panel === activePanelId);
+      if (match) document.getElementById('mtb-' + match.id)?.classList.add('active');
+    }
+  };
+
+  const _origOpen = openPanel;
+  window._mtbSyncActive = _syncMtbActive;
+}

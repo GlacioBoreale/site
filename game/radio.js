@@ -73,7 +73,8 @@ const Radio = (() => {
   let rafId          = null;
 
   const audio = new Audio();
-  audio.volume = 0.05;
+  audio.volume = 0.8;
+  audio.muted   = false;
 
   audio.addEventListener('ended', () => {
     if (isLooping) {
@@ -365,16 +366,30 @@ const Radio = (() => {
     const volBtn    = document.getElementById('radio-vol-toggle');
     const volSlider = document.getElementById('radio-vol-slider');
     const volPct    = document.getElementById('radio-vol-pct');
+    if (typeof CFG !== 'undefined') {
+      audio.volume = CFG.radioVolume / 100;
+      audio.muted  = !!CFG.radioMuted;
+    }
     volSlider.value = audio.volume * 100;
+    if (volPct) volPct.textContent = Math.round(audio.volume * 100) + '%';
+    volBtn.innerHTML = audio.muted ? '<i class="fas fa-volume-xmark"></i>' : audio.volume < 0.5 ? '<i class="fas fa-volume-low"></i>' : '<i class="fas fa-volume-high"></i>';
     volSlider.oninput = () => {
       audio.volume = volSlider.value / 100;
       audio.muted  = false;
       volPct.textContent = volSlider.value + '%';
       volBtn.innerHTML = audio.volume === 0 ? '<i class="fas fa-volume-xmark"></i>' : audio.volume < 0.5 ? '<i class="fas fa-volume-low"></i>' : '<i class="fas fa-volume-high"></i>';
+      if (typeof CFG !== 'undefined') { CFG.radioVolume = +volSlider.value; CFG.radioMuted = false; if (typeof saveSettings === 'function') saveSettings(); }
+      const setSlider = document.getElementById('set-radioVolume');
+      const setVal    = document.getElementById('set-radioVol-val');
+      if (setSlider) setSlider.value = volSlider.value;
+      if (setVal)    setVal.textContent = volSlider.value;
     };
     volBtn.onclick = () => {
       audio.muted = !audio.muted;
       volBtn.innerHTML = audio.muted ? '<i class="fas fa-volume-xmark"></i>' : audio.volume < 0.5 ? '<i class="fas fa-volume-low"></i>' : '<i class="fas fa-volume-high"></i>';
+      if (typeof CFG !== 'undefined') { CFG.radioMuted = audio.muted; if (typeof saveSettings === 'function') saveSettings(); }
+      const mutedCb = document.getElementById('set-radioMuted');
+      if (mutedCb) mutedCb.classList.toggle('checked', audio.muted);
     };
 
     const volWrap  = document.getElementById('radio-vol-wrap');
@@ -419,7 +434,22 @@ const Radio = (() => {
     updateUI();
   }
 
-  return { build, play, pause, unlockPrestigeTrack };
+  function setVolume(v) {
+    audio.volume = Math.max(0, Math.min(1, v));
+    const volSlider = document.getElementById('radio-vol-slider');
+    const volPct    = document.getElementById('radio-vol-pct');
+    const volBtn    = document.getElementById('radio-vol-toggle');
+    if (volSlider) volSlider.value = v * 100;
+    if (volPct)    volPct.textContent = Math.round(v * 100) + '%';
+    if (volBtn)    volBtn.innerHTML = v === 0 ? '<i class="fas fa-volume-xmark"></i>' : v < 0.5 ? '<i class="fas fa-volume-low"></i>' : '<i class="fas fa-volume-high"></i>';
+  }
+  function setMuted(m) {
+    audio.muted = !!m;
+    const volBtn = document.getElementById('radio-vol-toggle');
+    if (volBtn) volBtn.innerHTML = audio.muted ? '<i class="fas fa-volume-xmark"></i>' : audio.volume < 0.5 ? '<i class="fas fa-volume-low"></i>' : '<i class="fas fa-volume-high"></i>';
+  }
+
+  return { build, play, pause, unlockPrestigeTrack, setVolume, setMuted };
 })();
 
 document.addEventListener('DOMContentLoaded', () => {

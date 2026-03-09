@@ -155,7 +155,7 @@ function handleNodeClick(nd, lx, ly) {
   if (isPrestNode && !G.hasPrestiged) return;
 
   const isPointUpgrade = !isRNode && !isPNode && !isPrestNode && nd.zone === 'base';
-  const buyMax = G.fastAndFurious && isPointUpgrade;
+  const buyMax = G.fastAndFurious && isPointUpgrade && (typeof CFG === 'undefined' || CFG.buyMaxPointUpgrades !== false);
 
   if (buyMax) {
     let bought = false;

@@ -174,3 +174,14 @@
 [data-theme="light"] .lp-desc             { color: rgba(10,30,15,0.55); }
 [data-theme="light"] .lp-level-fraction   { color: rgba(10,30,15,0.45); }
 [data-theme="light"] .lp-buff-tip         { background: rgba(240,252,245,0.98); color: rgba(10,30,15,0.8); }
+
+@media (max-width: 600px) {
+  #leveling-panel {
+    width: calc(100vw - 2rem) !important;
+    max-width: 380px !important;
+  }
+  .lp-buffs    { width: 110px; }
+  .lp-header   { font-size: 0.8rem; padding: 0.5rem 0.8rem; }
+  .lp-btn      { font-size: 0.82rem; }
+  .lp-level-label { font-size: 0.95rem; }
+}

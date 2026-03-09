@@ -11,7 +11,7 @@ function gameLoop(ts) {
   if (G.passiveLambda) {
     G.research += pendingResearch() * 0.01 * dt;
   }
-  if (G.delayedGratUnlocked) {
+  if (G.delayedGratUnlocked && nodeState['delayedGratification']?.level > 0) {
     G.delayedGratTime += dt;
     recalcPps();
   }
@@ -42,8 +42,13 @@ function gameLoop(ts) {
 
 window.addEventListener('DOMContentLoaded', () => {
   resize();
+  centerCamera();
   loadGame();
   requestAnimationFrame(gameLoop);
   setTimeout(() => { gameReady = true; }, 300);
   setTimeout(() => { if (typeof syncCloudSave === 'function') syncCloudSave(); }, 1000);
+});
+
+window.addEventListener('resize', () => {
+  resize();
 });

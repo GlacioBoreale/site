@@ -46,9 +46,14 @@ body {
   color: var(--text);
   background: var(--bg);
   min-height: 100vh;
+  min-height: 100dvh;
   padding-top: 70px;
   position: relative;
   transition: background 0.35s ease, color 0.35s ease;
+}
+
+@media (max-width: 900px) {
+  body { padding-top: 56px; }
 }
 
 body::before {

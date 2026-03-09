@@ -138,27 +138,27 @@ function updateLevelingPanel() {
 }
 
 function positionLevelingPanel() {
+  if (!_lpEl) return;
+  _lpEl.style.position  = 'absolute';
+  _lpEl.style.transform = '';
+  _lpEl.style.bottom    = '';
+  _lpEl.style.maxHeight = '';
+  _lpEl.style.overflowY = '';
+
   const nd = NODE_DEFS.find(n => n.id === 'soloLeveling');
   if (!nd || !isVisible(nd)) return;
 
-  const gameMain = document.querySelector('.game-main');
-  const gw = gameMain.offsetWidth;
-  const gh = gameMain.offsetHeight;
+  const GAP    = 14;
 
-  const panelW = _lpEl.offsetWidth  || 310;
-  const panelH = _lpEl.offsetHeight || 220;
-  const GAP    = 14; // px tra nodo e pannello
+  const panelW = (_lpEl.offsetWidth  || 310) * zoom;
+  const panelH = (_lpEl.offsetHeight || 220) * zoom;
+  const sx = (nd.x + camX) * zoom;
+  const sy = (nd.y + camY) * zoom;
 
-  // centro del nodo in coordinate schermo
-  const sx = nd.x + camX;
-  const sy = nd.y + camY;
-
-  // posizione ideale: centrato sopra il nodo
-  let left = sx - panelW / 2;
-  let top  = sy - (NODE_H / 2) - panelH - GAP;
-
-  _lpEl.style.left = left + 'px';
-  _lpEl.style.top  = top  + 'px';
+  _lpEl.style.left            = (sx - panelW / 2) + 'px';
+  _lpEl.style.top             = (sy - NODE_H * zoom / 2 - panelH - GAP) + 'px';
+  _lpEl.style.transformOrigin = 'top left';
+  _lpEl.style.transform       = `scale(${zoom})`;
 }
 
 window.addEventListener('languageChanged', () => {

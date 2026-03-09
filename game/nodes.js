@@ -226,8 +226,9 @@ const NODE_DEFS = [
     maxLevel: 1,
     baseCost: 0,
     costScale: 1,
+    costInPrestige: true,
     zone: 'base',
-    statLabel: 'check the leaderboard',
+    statLabel: lvl => lvl > 0 ? 'check the leaderboard' : '',
     parents: ['boombox'],
     permanent: true,
     onBuy: () => {
@@ -259,7 +260,7 @@ const NODE_DEFS = [
     title: 'Press 2 research',
     desc: () => G.leftSideUnlocked
       ? [{ text: '\u20bd gain is boosted by \u03bb', color: null },
-         { text: 'x((50+\u03bb)^0.18, min 1)', color: '#4ade80' }]
+         { text: '', color: '#4ade80' }]
       : [{ text: _nd.left(), color: '#f87171' },
          { text: _nd.lockHint(), color: '#f87171' }],
     maxLevel: 1,
@@ -720,7 +721,15 @@ const NODE_DEFS = [
     statLabel: () => gt('nodes.checkSettings') || 'Check the settings',
     parents: ['toNewHeights'],
     permanent: true,
-    onBuy: () => { G.fastAndFurious = true; },
+    onBuy: () => {
+      G.fastAndFurious = true;
+      if (typeof CFG !== 'undefined') {
+        CFG.buyMaxPointUpgrades = true;
+        if (typeof saveSettings === 'function') saveSettings();
+        if (typeof applySettings === 'function') applySettings();
+        if (typeof syncBuyMaxPointUpgradesRow === 'function') syncBuyMaxPointUpgradesRow();
+      }
+    },
   },
   {
     id: 'genericFiller',
@@ -771,7 +780,7 @@ const NODE_DEFS = [
     zone: 'prestige',
     statLabel: (lvl) => lvl > 0 ? `x${Math.pow(2, lvl)} XP/click` : 'x2 XP/click per lvl',
     parents: ['dupingIq'],
-    onBuy: () => { G.xpClickMulti = (G.xpClickMulti || 1) * 2; },
+    onBuy: (lvl) => { G.xpClickMulti = Math.pow(2, lvl); },
   },
   {
     id: 'unlazyScientists',

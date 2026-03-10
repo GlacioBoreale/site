@@ -470,12 +470,6 @@ async function loadLeaderboard() {
   try {
     if (typeof Api === 'undefined') throw new Error('no api');
     const raw = await Api.leaderboard.get();
-<<<<<<< HEAD
-    _lbData = raw.leaderboard || raw;
-    _lbLoaded = true;
-    renderLeaderboard();
-  } catch (_) {
-=======
     const data = raw.leaderboard || raw;
     if (Array.isArray(data)) {
       _lbData = { points: data, prestige: data, xp_level: data };
@@ -488,7 +482,6 @@ async function loadLeaderboard() {
     renderLeaderboard();
   } catch (err) {
     console.error('[LB error]', err);
->>>>>>> 9abfa7c (fix leaderboard parsing + mobile bottom bar)
     body.innerHTML = `<div class="panel-wip"><i class="fas fa-ranking-star"></i>${gt('lb.noData') || 'Nessun dato'}</div>`;
   }
 }

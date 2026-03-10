@@ -969,13 +969,13 @@
 body.page-game {
   padding-top: 0 !important;
   overflow: hidden;
+  background: #0a0a0f;
+}
+[data-theme="light"] body.page-game {
+  background: #eef2ff;
 }
 
-@media (max-width: 600px) {
-  body.page-game .game-main {
-    bottom: 62px;
-  }
-}
+
 
 
 
@@ -1048,3 +1048,27 @@ body.page-game {
   transition: background 0.15s;
 }
 .reset-btn-confirm:hover { background: #b91c1c; }
+
+@media (max-width: 900px) {
+  #radio-widget {
+    bottom: calc(1.5rem + 64px);
+  }
+  #radio-toggle-btn {
+    bottom: calc(1.5rem + 64px);
+  }
+  #game-bg-mobile {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: #0a0a0f;
+    pointer-events: none;
+  }
+  [data-theme="light"] #game-bg-mobile {
+    background: #eef2ff;
+  }
+  body.page-game .game-main {
+    bottom: 64px;
+    z-index: 1;
+  }
+}

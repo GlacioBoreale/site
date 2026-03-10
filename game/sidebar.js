@@ -171,6 +171,7 @@ function closePanel() {
   document.getElementById('panel-overlay')?.classList.remove('open');
   document.getElementById('sidebar-wrapper')?.classList.remove('panel-open');
   document.querySelectorAll('.mtb-btn').forEach(b => b.classList.remove('active'));
+  if (typeof window._mtbSyncActive === 'function') window._mtbSyncActive();
 }
 
 function closeAll() {
@@ -708,7 +709,9 @@ function applySettings() {
   // sidebar e panels: font-size relativo
   const sw = document.getElementById('sidebar-wrapper');
   if (sw) sw.style.zoom = scale;
-  document.querySelectorAll('.game-panel').forEach(el => { el.style.zoom = scale; });
+  if (window.innerWidth > 900) {
+    document.querySelectorAll('.game-panel').forEach(el => { el.style.zoom = scale; });
+  }
   // radio
   const rw = document.getElementById('radio-widget');
   if (rw) rw.style.zoom = scale;
@@ -743,51 +746,41 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function buildMobileTabBar() {
-  const TAB_ITEMS = [
-    { id: 'settings',     icon: 'fa-gear',         label: 'Settings',  panel: 'panel-settings',     color: '#4a6cf7' },
-    { id: 'stats',        icon: 'fa-chart-bar',    label: 'Stats',     panel: 'panel-stats',        color: '#22c55e' },
-    { id: 'achievements', icon: 'fa-trophy',       label: 'Achiev.',   panel: 'panel-achievements', color: '#f59e0b' },
-    { id: 'leaderboard',  icon: 'fa-ranking-star', label: 'Ranking',   panel: 'panel-leaderboard',  color: '#3b82f6' },
+  const bar = document.getElementById('mobile-bottom-bar');
+  if (!bar) return;
+
+  const MBB_ITEMS = [
+    { id: 'settings',    panel: 'panel-settings'    },
+    { id: 'stats',       panel: 'panel-stats'        },
+    { id: 'achievements',panel: 'panel-achievements' },
+    { id: 'leaderboard', panel: 'panel-leaderboard'  },
+    { id: 'updatelog',   panel: 'panel-updatelog'    },
+    { id: 'maintenance', panel: 'panel-maintenance'  },
   ];
 
-  const bar = document.createElement('div');
-  bar.id = 'mobile-tab-bar';
-
-  TAB_ITEMS.forEach(item => {
-    const btn = document.createElement('button');
-    btn.className = 'mtb-btn';
-    btn.id = 'mtb-' + item.id;
-    btn.innerHTML = `
-      <div class="mtb-active-bar"></div>
-      <i class="fas ${item.icon}"></i>
-      <span>${item.label}</span>
-    `;
+  MBB_ITEMS.forEach(item => {
+    const btn = document.getElementById('mbb-' + item.id);
+    if (!btn) return;
     btn.addEventListener('click', () => {
       if (activePanelId === item.panel) {
         closePanel();
-        btn.classList.remove('active');
       } else {
-        document.querySelectorAll('.mtb-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+        MBB_ITEMS.forEach(it => document.getElementById('mbb-' + it.id)?.classList.remove('mbb-active'));
+        btn.classList.add('mbb-active');
         openPanel(item.panel);
       }
     });
-    bar.appendChild(btn);
   });
 
-  document.body.appendChild(bar);
+  document.getElementById('panel-overlay')?.addEventListener('click', () => {
+    MBB_ITEMS.forEach(it => document.getElementById('mbb-' + it.id)?.classList.remove('mbb-active'));
+  });
 
-  const _origClosePanel = closePanel;
-  const _origCloseAll   = closeAll;
-
-  const _syncMtbActive = () => {
-    document.querySelectorAll('.mtb-btn').forEach(b => b.classList.remove('active'));
+  window._mtbSyncActive = () => {
+    MBB_ITEMS.forEach(it => document.getElementById('mbb-' + it.id)?.classList.remove('mbb-active'));
     if (activePanelId) {
-      const match = TAB_ITEMS.find(t => t.panel === activePanelId);
-      if (match) document.getElementById('mtb-' + match.id)?.classList.add('active');
+      const match = MBB_ITEMS.find(t => t.panel === activePanelId);
+      if (match) document.getElementById('mbb-' + match.id)?.classList.add('mbb-active');
     }
   };
-
-  const _origOpen = openPanel;
-  window._mtbSyncActive = _syncMtbActive;
 }

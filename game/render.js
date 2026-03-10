@@ -152,8 +152,11 @@ function lerpBg(dt) {
 }
 
 function drawBackground() {
-  ctx.fillStyle = `rgb(${Math.round(bgCur[0])},${Math.round(bgCur[1])},${Math.round(bgCur[2])})`;
+  const col = `rgb(${Math.round(bgCur[0])},${Math.round(bgCur[1])},${Math.round(bgCur[2])})`;
+  ctx.fillStyle = col;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const mobileBg = document.getElementById('game-bg-mobile');
+  if (mobileBg) mobileBg.style.background = col;
 }
 
 function roundRect(x, y, w, h, r) {
@@ -173,14 +176,17 @@ function roundRect(x, y, w, h, r) {
 // GRIGLIA
 function drawGrid(T) {
   if (window._cfgShowGrid === false) return;
-  const offX = ((camX % GRID) + GRID) % GRID;
-  const offY = ((camY % GRID) + GRID) % GRID;
+  if (window.innerWidth <= 900) return;
+  if (canvas.width < 900) return;
+  const scaledGrid = GRID * zoom;
+  const offX = ((camX * zoom % scaledGrid) + scaledGrid) % scaledGrid;
+  const offY = ((camY * zoom % scaledGrid) + scaledGrid) % scaledGrid;
   ctx.strokeStyle = T.grid;
   ctx.lineWidth = 1;
-  for (let x = offX; x < canvas.width;  x += GRID) {
+  for (let x = offX; x < canvas.width;  x += scaledGrid) {
     ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
   }
-  for (let y = offY; y < canvas.height; y += GRID) {
+  for (let y = offY; y < canvas.height; y += scaledGrid) {
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
   }
 }

@@ -19,6 +19,25 @@ Benvenuto nel caos TOTALMENTE organizzato di Glacio Boreale
 
 ---
 
+## 📅 Changelog
+
+### 06/03/2026
+- Migrazione di tutti gli asset statici (immagini e audio) da GitHub Pages a bucket AWS S3 (`glaciopia-images`, `glaciopia-audio`) con policy pubblica in lettura e CORS configurato
+- Costanti globali `IMG_CDN` e `AUDIO_CDN` aggiunte in `script.js` per centralizzare i riferimenti S3
+- Fix `game.html`: aggiunto `game/i18n.js` (definisce `gt()`) e rimosso footer dalla pagina di gioco
+- Fix traduzioni gioco al caricamento: rimosso `DOMContentLoaded` da `i18n.js`, le traduzioni ora si applicano tramite evento `languageChanged` dopo che `script.js` ha caricato i JSON
+- Fix panel Leveling: testi aggiornati correttamente alla lingua al primo caricamento
+- Buy max tasto destro rimosso dai nodi base — ora esclusivo del Research Center (già gestito da `research.js`)
+- Buy max tasto sinistro attivato automaticamente per i nodi base quando `G.fastAndFurious` è `true` (nodo #5p), rimossi i vecchi check sulle impostazioni
+- `statLabel` di #5p, #1p, #9p aggiornati da `'not yet implemented'` a `'controlla le impostazioni'`
+- `statLabel` di #27 (Gratificazione Ritardata) mostra in tempo reale il moltiplicatore e il tempo accumulato
+- Tutte le valute (✦ prestige, λ lambda) ora usano `fmt()` / `fmtLambda()` invece di `.toFixed(2)` in tooltip, pannello stats, pannello valute e nodo prestige
+- Aggiunto nodo #10p "Generic Filler" (x: 1960, y: -200), figlio di #5p, costa 20 ✦, applica x2 ₽ e x2 ✦ gain
+- Leaderboard: mostra messaggio di blocco se il nodo "Nella storia" non è stato acquistato
+- Leaderboard: aggiunta colonna `opt_in` nella tabella `game_saves` su RDS, query filtra solo utenti che hanno fatto opt-in; `opt_in` viene salvato nel cloud save
+
+---
+
 ## ✅ Implementato
 
 - [x] Sistema multilingua (IT / EN / RO) con preferenza salvata

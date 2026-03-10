@@ -217,4 +217,3 @@ function applyLevelingTranslations() {
 }
 
 window.addEventListener('languageChanged', applyGameTranslations);
-document.addEventListener('DOMContentLoaded', applyGameTranslations);

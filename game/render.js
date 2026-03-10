@@ -1,10 +1,11 @@
 'use strict';
 
-// ─── CANVAS ───────────────────────────────────────────────────────────────────
+// CANVAS
 const canvas = document.getElementById('game-canvas');
 const ctx    = canvas.getContext('2d');
 
 let camX = 0, camY = 0;
+let zoom = 1;
 
 const NODE_W = 240;
 const NODE_H = 120;
@@ -15,7 +16,7 @@ let _now = 0;
 let _lastCurrencyUpdate = 0;
 let _currencyCache = { points: 0, pps: 0, research: 0, pendingR: 0, prestige: 0, pendingP: 0 };
 
-// ─── STAT LABEL CACHE (throttled) ────────────────────────────────────────────
+// STAT LABEL CACHE (throttled)
 let _lastStatUpdate = 0;
 const _statCache = {};
 
@@ -36,7 +37,7 @@ function getStatLabel(nd, lvl) {
   return label;
 }
 
-// ─── FMT MOLTIPLICATORE ───────────────────────────────────────────────────────
+// FMT MOLTIPLICATORE
 // Abbrevia valori grandi mantenendo leggibile il tipo (x, ÷, ^)
 function fmtMulti(val) {
   if (!isFinite(val) || isNaN(val)) return '?';
@@ -61,14 +62,22 @@ function setDescPage(id, p) { nodeDescPages[id] = p; }
 function resize() {
   canvas.width  = canvas.offsetWidth;
   canvas.height = canvas.offsetHeight;
-  if (camX === 0 && camY === 0) {
+}
+
+function centerCamera() {
+  if (canvas.width < 600) {
+    zoom = canvas.width / 600;
+    camX = canvas.width  / 2 / zoom;
+    camY = canvas.height / 2 / zoom;
+  } else {
+    zoom = 1;
     camX = canvas.width  / 2;
     camY = canvas.height / 2;
   }
 }
 
 function worldPos(cx, cy) {
-  return { x: cx - camX, y: cy - camY };
+  return { x: cx / zoom - camX, y: cy / zoom - camY };
 }
 
 function nodeAt(wx, wy) {
@@ -80,7 +89,7 @@ function nodeAt(wx, wy) {
   }) || null;
 }
 
-// ─── TEMA ─────────────────────────────────────────────────────────────────────
+// TEMA
 const ZONE_COLORS = {
   base:       { a: '#ffffff', b: '#cccccc', glow: 'rgba(255,255,255,0.10)', border: 'rgba(255,255,255,0.55)' },
   research:   { a: '#38bdf8', b: '#7dd3fc', glow: 'rgba(56,189,248,0.12)',  border: 'rgba(56,189,248,0.55)'  },
@@ -108,7 +117,7 @@ function getTheme() {
   };
 }
 
-// ─── SFONDO ZONA ─────────────────────────────────────────────────────────────
+// SFONDO ZONA
 const ZONE_BG = {
   base:       [20,  20,  22],
   research:   [30,  36,  58],
@@ -143,8 +152,11 @@ function lerpBg(dt) {
 }
 
 function drawBackground() {
-  ctx.fillStyle = `rgb(${Math.round(bgCur[0])},${Math.round(bgCur[1])},${Math.round(bgCur[2])})`;
+  const col = `rgb(${Math.round(bgCur[0])},${Math.round(bgCur[1])},${Math.round(bgCur[2])})`;
+  ctx.fillStyle = col;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const mobileBg = document.getElementById('game-bg-mobile');
+  if (mobileBg) mobileBg.style.background = col;
 }
 
 function roundRect(x, y, w, h, r) {
@@ -161,22 +173,25 @@ function roundRect(x, y, w, h, r) {
   ctx.closePath();
 }
 
-// ─── GRIGLIA ──────────────────────────────────────────────────────────────────
+// GRIGLIA
 function drawGrid(T) {
   if (window._cfgShowGrid === false) return;
-  const offX = ((camX % GRID) + GRID) % GRID;
-  const offY = ((camY % GRID) + GRID) % GRID;
+  if (window.innerWidth <= 900) return;
+  if (canvas.width < 900) return;
+  const scaledGrid = GRID * zoom;
+  const offX = ((camX * zoom % scaledGrid) + scaledGrid) % scaledGrid;
+  const offY = ((camY * zoom % scaledGrid) + scaledGrid) % scaledGrid;
   ctx.strokeStyle = T.grid;
   ctx.lineWidth = 1;
-  for (let x = offX; x < canvas.width;  x += GRID) {
+  for (let x = offX; x < canvas.width;  x += scaledGrid) {
     ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
   }
-  for (let y = offY; y < canvas.height; y += GRID) {
+  for (let y = offY; y < canvas.height; y += scaledGrid) {
     ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
   }
 }
 
-// ─── CONNESSIONI ──────────────────────────────────────────────────────────────
+// CONNESSIONI
 function drawConnections(T) {
   if (window._cfgShowConnections === false) return;
   NODE_DEFS.forEach(nd => {
@@ -200,7 +215,7 @@ function drawConnections(T) {
   });
 }
 
-// ─── UTILITY ──────────────────────────────────────────────────────────────────
+// UTILITY
 function hexToRgba(hex, alpha) {
   hex = hex.replace('#', '');
   if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
@@ -211,12 +226,13 @@ function hexToRgba(hex, alpha) {
 }
 
 function costStr(cost, isRNode, isPNode, isPrestNode) {
-  if (cost === 0) return 'Gratis';
-  if (isPrestNode || isPNode) return cost.toFixed ? cost.toFixed(2) + ' ✦' : fmt(cost) + ' ✦';
+  if (isPrestNode && !G.hasPrestiged) return 'You need to prestige at least once';
+  if (cost === 0) return 'Free';
+  if (isPrestNode || isPNode) return fmt(cost) + ' ✦';
   return isRNode ? fmtLambda(cost) + ' λ' : fmt(cost) + ' ₽';
 }
 
-// ─── NODI ─────────────────────────────────────────────────────────────────────
+// NODI
 function drawNodes(T) {
   NODE_DEFS.forEach(nd => {
     if (!isVisible(nd)) return;
@@ -242,7 +258,7 @@ function drawNodes(T) {
 
     const pulse = 0.5 + 0.5 * Math.sin(_now / 210);
 
-    // ── 1. PULSE VERDE (hover + buyable) ─────────────────────────────────────
+    // 1. PULSE VERDE (hover + buyable)
     if (isHover && buyable) {
       const fillAlpha = 0.06 + 0.08 * pulse;
       roundRect(nx, ny, NODE_W, NODE_H, CORNER);
@@ -258,7 +274,7 @@ function drawNodes(T) {
       ctx.restore();
     }
 
-    // ── 2. GLOW zona (buyable, non hover) ────────────────────────────────────
+    // 2. GLOW zona (buyable, non hover)
     if (buyable && !isHover) {
       ctx.save();
       ctx.shadowColor = zc.a;
@@ -270,7 +286,7 @@ function drawNodes(T) {
       ctx.restore();
     }
 
-    // ── 3. SFONDO opaco ───────────────────────────────────────────────────────
+    // 3. SFONDO opaco
     roundRect(nx, ny, NODE_W, NODE_H, CORNER);
     ctx.fillStyle = T.light ? '#edf0ff' : '#12121e';
     ctx.fill();
@@ -282,7 +298,7 @@ function drawNodes(T) {
     }
     ctx.fill();
 
-    // ── 4. BORDO principale ───────────────────────────────────────────────────
+    // 4. BORDO principale
     roundRect(nx, ny, NODE_W, NODE_H, CORNER);
     if (maxed || bought) {
       ctx.strokeStyle = hexToRgba(zc.a, '0.18');
@@ -299,7 +315,7 @@ function drawNodes(T) {
     }
     ctx.stroke();
 
-    // ── 4b. BORDO ORO (se il nodo ha livelli oro) ─────────────────────────────
+    // 4b. BORDO ORO (se il nodo ha livelli oro) 
     const isGold = typeof nd.gold === 'function' ? nd.gold() : false;
     if (isGold) {
       ctx.save();
@@ -311,10 +327,23 @@ function drawNodes(T) {
       ctx.stroke();
       ctx.restore();
     }
+    
+    // 4b. BORDO DIAMANTE (se il nodo ha livelli diamante) NON ANCORA IMPLEMENTATO
+    const isDiam = typeof nd.diamond === 'function' ? nd.diamond() : false;
+    if (isDiam) {
+      ctx.save();
+      ctx.shadowColor = 'rgba(36, 244, 251, 0.6)';
+      ctx.shadowBlur  = 18 + 10 * pulse;
+      roundRect(nx - 1, ny - 1, NODE_W + 2, NODE_H + 2, CORNER + 1);
+      ctx.strokeStyle = `rgba(251,191,36,${(0.6 + 0.3 * pulse).toFixed(3)})`;
+      ctx.lineWidth   = 2.5;
+      ctx.stroke();
+      ctx.restore();
+    }
 
 
 
-    // ── 6. TESTI ──────────────────────────────────────────────────────────────
+    // 6. TESTI
     const row1Y = ny + PAD + 12;
     ctx.textAlign = 'left';
     ctx.font      = 'bold 12px Fredoka, sans-serif';
@@ -404,7 +433,7 @@ function drawNodes(T) {
           ctx.fillText(maxed ? 'Maxed!' : costStr(cost, isRNode, isPNode, isPrestNode), nx + NODE_W - PAD, row2Y);
         } else {
           const cs = costStr(cost, isRNode, isPNode, isPrestNode);
-          ctx.fillStyle = cs === 'Gratis' ? T.green : canAfford ? T.textMuted : 'rgba(248,113,113,0.9)';
+          ctx.fillStyle = cs === 'Free' ? T.green : (cs === 'You need to prestige at least once' ? 'rgba(248,113,113,0.9)' : canAfford ? T.textMuted : 'rgba(248,113,113,0.9)');
           ctx.fillText(cs, nx + NODE_W - PAD, row2Y);
         }
       } else {
@@ -417,7 +446,7 @@ function drawNodes(T) {
   });
 }
 
-// ─── PANNELLI VALUTA ZONA ────────────────────────────────────────────────────
+//  PANNELLI VALUTA ZONA 
 function drawCurrencyPanels(T) {
   const _cuiMs = window._settingsCurrencyInterval || 300;
   if (_now - _lastCurrencyUpdate >= _cuiMs) {
@@ -442,7 +471,7 @@ function drawCurrencyPanels(T) {
     {
       anchor: 'prestigeUnlock',
       getValue: () => fmt(_currencyCache.prestige) + ' ✦',
-      getRate:  () => _currencyCache.pendingP > 0.005 ? '+' + _currencyCache.pendingP.toFixed(2) + ' ✦ pending' : '',
+      getRate:  () => _currencyCache.pendingP > 0.005 ? '+' + fmt(_currencyCache.pendingP) + ' ✦ pending' : '',
       color:    ZONE_COLORS.prestige.a,
       always:   false,
       check:    () => G.hasPrestiged,

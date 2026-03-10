@@ -1,6 +1,6 @@
 'use strict';
 
-// ─── TOOLTIP ──────────────────────────────────────────────────────────────────
+// TOOLTIP
 const tooltip = document.getElementById('game-tooltip');
 
 function updateTooltip() {
@@ -24,11 +24,12 @@ function updateTooltip() {
   if (maxed) {
     html += `<br><em style="color:#4ade80">${gt('tooltip.maxed')}</em>`;
   } else if (isPrestNode && !G.hasPrestiged) {
-    html += `<br><em style="color:#f87171">Richiede almeno 1 Prestige</em>`;
+    html += `<br><em style="color:#f87171">Requires at least 1 Prestige</em>`;
   } else {
     const canAfford = isPrestNode ? G.prestige >= cost : isRNode ? G.research >= cost : G.points >= cost;
-    const costStr   = isPrestNode ? cost.toFixed(2) + ' ✦' : isRNode ? cost.toFixed(2) + ' λ' : fmt(cost) + ' ₽';
-    html += `<br>${gt('tooltip.cost')} <span style="color:${canAfford ? '#38bdf8' : '#f87171'}">${costStr}</span>`;
+    const costStr   = isPrestNode ? fmt(cost) + ' ✦' : isRNode ? fmtLambda(cost) + ' λ' : fmt(cost) + ' ₽';
+    if (cost > 0) html += `<br>${gt('tooltip.cost')} <span style="color:${canAfford ? '#38bdf8' : '#f87171'}">${costStr}</span>`;
+    else html += `<br><span style="color:#4ade80">Free</span>`;
   }
   tooltip.innerHTML    = html;
   tooltip.style.display = 'block';
@@ -43,7 +44,7 @@ function updateTooltip() {
 
 function hideTooltip() { tooltip.style.display = 'none'; }
 
-// ─── HUD ──────────────────────────────────────────────────────────────────────
+// HUD
 let _lastHudUpdate = 0;
 
 function updateHUD(force = false) {
@@ -54,7 +55,7 @@ function updateHUD(force = false) {
   updateConvertPanel();
 }
 
-// ─── CONVERSIONE ──────────────────────────────────────────────────────────────
+// CONVERSIONE
 const convertPanel = document.getElementById('convert-panel');
 const convertInfo  = document.getElementById('convert-info');
 const btnConvert   = document.getElementById('btn-convert');
@@ -100,7 +101,7 @@ btnConvert.addEventListener('click', () => {
   updateHUD(true);
 });
 
-// ─── PRESTIGE ─────────────────────────────────────────────────────────────────
+// PRESTIGE
 function doPrestige() {
   const gained = pendingPrestige() - G.prestige;
   if (gained <= 0) return;
@@ -155,8 +156,7 @@ function doPrestige() {
     }
   });
   recalcPps();
-  camX = canvas.width  / 2;
-  camY = canvas.height / 2;
+  centerCamera();
   if (typeof _lpBuilt !== 'undefined') {
     _lpBuilt = false;
     _lpEl?.remove();
@@ -167,21 +167,27 @@ function doPrestige() {
   updateHUD(true);
 }
 
-// ─── RESET ────────────────────────────────────────────────────────────────────
-const resetOverlay = document.getElementById('reset-overlay');
+// RESET
+const resetOverlay = document.querySelector('.game-reset-overlay');
 
-function openResetDialog() { resetOverlay.classList.add('open'); }
+function openResetDialog() {
+  resetOverlay.classList.add('open');
+}
 
 ['reset-cancel', 'reset-cancel2'].forEach(id => {
-  document.getElementById(id).addEventListener('click', () => resetOverlay.classList.remove('open'));
+  document.getElementById(id)?.addEventListener('click', () => resetOverlay.classList.remove('open'));
 });
-document.getElementById('reset-confirm').addEventListener('click', () => {
-  window.removeEventListener('beforeunload', saveGame);
-  localStorage.removeItem('glaciopia_idle');
+
+document.getElementById('reset-confirm').addEventListener('click', async () => {
+  window.removeEventListener('beforeunload', _onBeforeUnload);
+  localStorage.removeItem(SAVE_KEY);
+  sessionStorage.setItem('glaciopia_skip_cloud_sync', '1');
+  if (typeof Auth !== 'undefined' && Auth.isLoggedIn()) {
+    try { await Api.save.delete(); } catch (_) {}
+  }
   location.reload();
 });
 
 document.getElementById('btn-center').addEventListener('click', () => {
-  camX = canvas.width  / 2;
-  camY = canvas.height / 2;
+  centerCamera();
 });

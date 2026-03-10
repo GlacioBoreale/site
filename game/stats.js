@@ -26,7 +26,7 @@ const STATS_DEFS = {
     {
       id:      'prestige',
       label:   () => fmt(G.prestige) + ' ✦',
-      rate:    () => { const p = pendingPrestige() - G.prestige; return p > 0.005 ? '+' + p.toFixed(2) + ' ✦/pending' : ''; },
+      rate:    () => { const p = pendingPrestige() - G.prestige; return p > 0.005 ? '+' + fmt(p) + ' ✦/pending' : ''; },
       color:   '#fbbf24',
       bg:      'rgba(251,191,36,0.13)',
       icon:    '✦',

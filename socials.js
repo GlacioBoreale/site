@@ -60,7 +60,7 @@ function renderTwitch(twitch) {
         offlineMedia.style.display = 'block';
         const offlineImg = document.getElementById('twitch-offline-img');
         if (offlineImg) {
-            offlineImg.src = 'assets/images/twitchOffline.png';
+            offlineImg.src = IMG_CDN + '/twitchOffline.png';
             offlineImg.onerror = () => {
                 if (twitch.offlineImage) offlineImg.src = twitch.offlineImage;
                 else offlineImg.style.display = 'none';

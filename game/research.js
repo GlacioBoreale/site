@@ -61,7 +61,7 @@ const RC_LAYOUT = {
   r_pointGain1b:  { x:  -RC_GAP_X,   y: RC_GAP_Y * 3 },
 };
 
-/* ── BUILD ──────────────────────────────────────────────────────── */
+//  BUILD
 function buildResearchPanel() {
   if (_rcBuilt) return;
   _rcBuilt = true;
@@ -97,8 +97,7 @@ function buildResearchPanel() {
   `;
 
   el.appendChild(detail);
-  const gameMain = document.querySelector('.game-main');
-  gameMain.appendChild(el);
+  document.querySelector('.game-main').appendChild(el);
   _rcEl         = el;
   _rcCurrencyEl = el.querySelector('#rc-currency');
   _rcGainEl     = el.querySelector('#rc-gain');
@@ -109,6 +108,7 @@ function buildResearchPanel() {
   _rcResizeCanvas();
   _rcCenterCamera();
   _rcInitCanvasDrag();
+  _rcInitResizeObserver();
 
   el.querySelector('#rc-center-btn').addEventListener('click', () => {
     _rcCenterCamera();
@@ -130,19 +130,33 @@ function buildResearchPanel() {
 
 function _rcResizeCanvas() {
   const wrap = _rcCanvas.parentElement;
-  _rcCanvas.width  = wrap.clientWidth  || 520;
-  _rcCanvas.height = wrap.clientHeight || 340;
+  const w = wrap.clientWidth  || wrap.offsetWidth  || 520;
+  const h = wrap.clientHeight || wrap.offsetHeight || 340;
+  if (w < 10 || h < 10) return;
+  _rcCanvas.width  = w;
+  _rcCanvas.height = h;
+}
+
+function _rcInitResizeObserver() {
+  if (!_rcCanvas) return;
+  const wrap = _rcCanvas.parentElement;
+  if (!wrap) return;
+  const ro = new ResizeObserver(() => {
+    if (_rcCanvas.parentElement.clientWidth > 10 && _rcCanvas.parentElement.clientHeight > 10) {
+      _rcResizeCanvas();
+      _rcCenterCamera();
+    }
+  });
+  ro.observe(wrap);
 }
 
 function _rcCenterCamera() {
-  /* centra su Point Gain 1 (origine del layout locale) */
+  // centra su Point Gain 1 (origine del layout locale) 
   _rcCamX = _rcCanvas.width  / 2;
-  _rcCamY = 60; /* piccolo margine in alto */
+  _rcCamY = _rcCanvas.height / 2;
 }
 
-/* drag panel rimosso — posizione gestita da positionResearchPanel() */
-
-/* ── DRAG CANVAS INTERNO ───────────────────────────────────────── */
+// DRAG CANVAS INTERNO
 function _rcInitCanvasDrag() {
   _rcCanvas.addEventListener('mousedown', e => {
     _rcCanDragging = true;
@@ -180,7 +194,7 @@ function _rcInitCanvasDrag() {
     if (!(G.settings?.rcRightClickMax === false)) _rcBuyMax(nd);
   });
 
-  /* touch */
+  // touch 
   let _tcStart = null;
   _rcCanvas.addEventListener('touchstart', e => {
     e.preventDefault();
@@ -208,7 +222,7 @@ function _rcInitCanvasDrag() {
   });
 }
 
-/* ── HIT TEST ──────────────────────────────────────────────────── */
+// HIT TEST
 function _rcNodeAt(cx, cy) {
   for (const id of RC_NODES) {
     const pos = RC_LAYOUT[id];
@@ -223,7 +237,7 @@ function _rcNodeAt(cx, cy) {
   return null;
 }
 
-/* ── CLICK ─────────────────────────────────────────────────────── */
+// CLICK
 function _rcHandleClick(cx, cy) {
   const nd = _rcNodeAt(cx, cy);
   if (!nd) { _rcCloseDetail(); return; }
@@ -234,7 +248,7 @@ function _rcHandleClick(cx, cy) {
   _rcDetailEl.classList.add('open');
 }
 
-/* ── DETAIL ────────────────────────────────────────────────────── */
+// DETAIL
 function _rcCloseDetail() {
   _rcDetailEl.classList.remove('open');
   _rcSelectedId = null;
@@ -280,9 +294,9 @@ function _rcUpdateDetail() {
   max.disabled = maxed || !canAf;
 }
 
-/* ── BUY ───────────────────────────────────────────────────────── */
+// BUY
 function _rcIsVisible(nd) {
-  /* un nodo RC è visibile solo se tutti i parent RC sono stati acquistati */
+  // un nodo RC è visibile solo se tutti i parent RC sono stati acquistati 
   const rcParents = nd.parents.filter(pid => RC_NODES.includes(pid));
   if (rcParents.length === 0) return true;
   return rcParents.every(pid => (nodeState[pid]?.level ?? 0) >= 1);
@@ -319,7 +333,7 @@ function _rcBuyMax(nd) {
   if (bought) { saveGame(); if (_rcSelectedId === nd.id) _rcUpdateDetail(); }
 }
 
-/* ── RENDER ────────────────────────────────────────────────────── */
+// RENDER
 function _rcRR(x, y, w, h, r) {
   const ctx = _rcCtx;
   ctx.beginPath();
@@ -338,11 +352,11 @@ function _rcDrawNodes() {
   const now   = performance.now();
   const pulse = 0.5 + 0.5 * Math.sin(now / 210);
 
-  /* sfondo */
+  // sfondo 
   ctx.fillStyle = light ? '#c5eaf8' : '#0d1620';
   ctx.fillRect(0, 0, cw, ch);
 
-  /* griglia */
+  // griglia 
   const G60 = 60;
   const ox = ((_rcCamX % G60) + G60) % G60;
   const oy = ((_rcCamY % G60) + G60) % G60;
@@ -351,9 +365,9 @@ function _rcDrawNodes() {
   for (let x = ox; x < cw; x += G60) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,ch); ctx.stroke(); }
   for (let y = oy; y < ch; y += G60) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(cw,y); ctx.stroke(); }
 
-  /* niente connessioni */
+  // niente connessioni 
 
-  /* nodi */
+  // nodi 
   RC_NODES.forEach(id => {
     const nd  = NODE_DEFS.find(n => n.id === id);
     const pos = RC_LAYOUT[id];
@@ -371,7 +385,7 @@ function _rcDrawNodes() {
     const nx = sx - RC_NW/2,   ny = sy - RC_NH/2;
     const CY = '#38bdf8';
 
-    /* glow selected */
+    // glow selected 
     if (sel) {
       ctx.save();
       ctx.shadowColor = '#7dd3fc'; ctx.shadowBlur = 18;
@@ -379,7 +393,7 @@ function _rcDrawNodes() {
       ctx.strokeStyle = '#7dd3fc'; ctx.lineWidth = 2.5; ctx.stroke();
       ctx.restore();
     }
-    /* glow buyable */
+    // glow buyable 
     if (buy && !sel) {
       ctx.save();
       ctx.shadowColor = CY; ctx.shadowBlur = 14 + 8*pulse;
@@ -388,46 +402,46 @@ function _rcDrawNodes() {
       ctx.restore();
     }
 
-    /* opacity — solo sul bordo/sfondo, non sul testo */
+    // opacity — solo sul bordo/sfondo, non sul testo 
     const nodeAlpha = !avail ? 0.25 : (!canAf && !maxed ? 0.48 : 1);
 
-    /* sfondo nodo */
+    // sfondo nodo 
     ctx.globalAlpha = nodeAlpha;
     _rcRR(nx,ny,RC_NW,RC_NH,RC_CR);
     ctx.fillStyle = light ? '#edf0ff' : '#12121e'; ctx.fill();
     _rcRR(nx,ny,RC_NW,RC_NH,RC_CR);
     ctx.fillStyle = light ? 'rgba(235,240,255,0.97)' : 'rgba(18,18,30,0.97)'; ctx.fill();
 
-    /* bordo */
+    // bordo 
     _rcRR(nx,ny,RC_NW,RC_NH,RC_CR);
     if (buy)        { ctx.strokeStyle = CY; ctx.lineWidth = 2.5; }
     else if (maxed) { ctx.strokeStyle = 'rgba(56,189,248,0.45)'; ctx.lineWidth = 1.5; }
     else            { ctx.strokeStyle = 'rgba(56,189,248,0.18)'; ctx.lineWidth = 1; }
     ctx.stroke();
-    ctx.globalAlpha = 1; /* testo sempre pieno */
+    ctx.globalAlpha = 1; // testo sempre pieno 
 
-    /* ── TESTO ── */
+    // TESTO
     const titleColor = RC_TITLE_COLOR[id] || CY;
 
-    /* TITOLO — centrato in alto, colore unico per nodo */
+    // TITOLO — centrato in alto, colore unico per nodo 
     ctx.textAlign = 'center';
     ctx.font      = 'bold 11px "Fredoka One", sans-serif';
     ctx.fillStyle = titleColor;
     ctx.fillText(nd.title, sx, ny + RC_PAD + 10);
 
-    /* separatore */
+    // separatore 
     const sepY = ny + RC_PAD + 16;
     ctx.beginPath(); ctx.moveTo(nx+RC_PAD, sepY); ctx.lineTo(nx+RC_NW-RC_PAD, sepY);
     ctx.strokeStyle = light ? 'rgba(10,10,20,0.10)' : 'rgba(255,255,255,0.07)';
     ctx.lineWidth = 1; ctx.stroke();
 
-    /* LIVELLI — sempre bianco puro */
+    // LIVELLI — sempre bianco puro 
     ctx.textAlign = 'center';
     ctx.font      = 'bold 18px "Fredoka One", sans-serif';
     ctx.fillStyle = light ? '#1a1a2e' : '#ffffff';
     ctx.fillText(lvl + '/' + nd.maxLevel, sx, sy + 6);
 
-    /* COSTO — sempre azzurro */
+    // COSTO — sempre azzurro 
     const row2Y = ny + RC_NH - RC_PAD;
     ctx.textAlign = 'center';
     ctx.font      = '600 10px Fredoka, sans-serif';
@@ -439,7 +453,7 @@ function _rcDrawNodes() {
   });
 }
 
-/* ── CURRENCY ──────────────────────────────────────────────────── */
+//  CURRENCY  
 function _rcUpdateCurrency() {
   if (_rcCurrencyEl) _rcCurrencyEl.textContent = fmtLambda(G.research) + ' λ';
   if (_rcGainEl) {
@@ -448,31 +462,42 @@ function _rcUpdateCurrency() {
   }
 }
 
-/* ── POSITION PANEL ────────────────────────────────────────────── */
+//  POSITION PANEL  
 function positionResearchPanel() {
   if (!_rcEl) return;
-  const pw  = _rcEl.offsetWidth  || 520;
-  const ph  = _rcEl.offsetHeight || 400;
-  const GAP = 20;
-  const sx  = RC_ANCHOR_X + camX;
-  const sy  = RC_ANCHOR_Y + camY;
-  const left = sx - pw / 2;
-  const top  = sy - NODE_H / 2 - ph - GAP;
-  _rcEl.style.left = left + 'px';
-  _rcEl.style.top  = top  + 'px';
+  _rcEl.style.position  = 'absolute';
+  _rcEl.style.transform = '';
+  _rcEl.style.bottom    = '';
+  _rcEl.style.maxHeight = '';
+  _rcEl.style.overflowY = '';
 
-  /* posiziona convert-panel a destra del research panel */
+  const GAP = 20;
+
+  const pw  = (_rcEl.offsetWidth  || 520) * zoom;
+  const ph  = (_rcEl.offsetHeight || 400) * zoom;
+  const sx  = (RC_ANCHOR_X + camX) * zoom;
+  const sy  = (RC_ANCHOR_Y + camY) * zoom;
+
+  const left = sx - pw / 2;
+  const top  = sy - NODE_H * zoom / 2 - ph - GAP;
+
+  _rcEl.style.left            = left + 'px';
+  _rcEl.style.top             = top  + 'px';
+  _rcEl.style.transformOrigin = 'top left';
+  _rcEl.style.transform       = `scale(${zoom})`;
+
   const cp = document.getElementById('convert-panel');
   if (cp && G.researchUnlocked) {
-    const cpW = cp.offsetWidth || 220;
-    cp.style.left      = (left + pw + 12) + 'px';
-    cp.style.top       = top + 'px';
-    cp.style.bottom    = 'auto';
-    cp.style.transform = 'none';
+    cp.style.display        = '';
+    cp.style.left           = (left + pw + 12) + 'px';
+    cp.style.top            = top + 'px';
+    cp.style.bottom         = 'auto';
+    cp.style.transformOrigin = 'top left';
+    cp.style.transform      = `scale(${zoom})`;
   }
 }
 
-/* ── TICK ──────────────────────────────────────────────────────── */
+//  TICK  
 function tickResearchPanel() {
   if (!G.researchUnlocked) {
     if (_rcEl) _rcEl.classList.remove('rc-visible');
@@ -487,7 +512,7 @@ function tickResearchPanel() {
     const _selNd = NODE_DEFS.find(n => n.id === _rcSelectedId);
     if (_selNd) {
       _rcPositionDetail(_selNd);
-      /* chiudi il popup se il nodo è fuori dal canvas visibile */
+      // chiudi il popup se il nodo è fuori dal canvas visibile 
       const pos = RC_LAYOUT[_selNd.id];
       if (pos) {
         const sx = pos.x + _rcCamX;

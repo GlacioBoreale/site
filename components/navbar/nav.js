@@ -11,11 +11,24 @@ async function loadNavbar() {
     initNavLiveBadge();
     initSettingsPanel();
     initTheme();
+    _updateNavHeight();
+
+    const ro = new ResizeObserver(_updateNavHeight);
+    const nav = document.querySelector('.navbar');
+    if (nav) ro.observe(nav);
+
     document.dispatchEvent(new Event('navbarLoaded'));
 
   } catch (error) {
     console.error('Errore navbar:', error);
   }
+}
+
+function _updateNavHeight() {
+  const nav = document.querySelector('.navbar');
+  if (!nav) return;
+  const h = nav.getBoundingClientRect().height;
+  document.documentElement.style.setProperty('--nav-h', h + 'px');
 }
 
 const languages = [
@@ -228,10 +241,108 @@ function initMobileMenu() {
     closeSettingsPanel();
   });
 
-  mobileMenu.querySelectorAll('a').forEach(link => {
+  mobileMenu.querySelectorAll('.mm-page-btn').forEach(link => {
     link.addEventListener('click', () => {
       hamburgerBtn.classList.remove('active');
       mobileMenu.classList.remove('active');
     });
   });
+
+  _initMobileLangDropdown();
+  _initMobileTheme();
+  _initMobileAuth();
+
+  document.getElementById('mobile-open-achievements-btn')?.addEventListener('click', () => {
+    hamburgerBtn.classList.remove('active');
+    mobileMenu.classList.remove('active');
+    if (typeof openAchievementPopup === 'function') openAchievementPopup();
+  });
+
+  document.addEventListener('click', e => {
+    const wrap = document.getElementById('mm-lang-wrap');
+    if (wrap && !wrap.contains(e.target)) wrap.classList.remove('open');
+  });
+}
+
+function _initMobileLangDropdown() {
+  const trigger  = document.getElementById('mm-lang-trigger');
+  const wrap     = document.getElementById('mm-lang-wrap');
+  const dropdown = document.getElementById('mm-lang-dropdown');
+  if (!trigger || !dropdown) return;
+
+  languages.forEach(lang => {
+    const opt = document.createElement('div');
+    opt.className = 'mm-lang-option';
+    opt.dataset.value = lang.value;
+    opt.innerHTML = `<img src="${lang.flag}" srcset="${lang.flag2x} 2x" alt="${lang.label}" class="flag-img"> <span>${lang.label}</span>`;
+    opt.addEventListener('click', () => {
+      setLang(lang.value);
+      _updateMobileLangTrigger(lang.value);
+      wrap.classList.remove('open');
+    });
+    dropdown.appendChild(opt);
+  });
+
+  trigger.addEventListener('click', e => {
+    e.stopPropagation();
+    wrap.classList.toggle('open');
+  });
+
+  _updateMobileLangTrigger(currentLang);
+}
+
+function _updateMobileLangTrigger(val) {
+  const lang = languages.find(l => l.value === val);
+  if (!lang) return;
+  const flag  = document.getElementById('mm-lang-flag');
+  const label = document.getElementById('mm-lang-label');
+  if (flag)  { flag.src = lang.flag; flag.srcset = lang.flag2x + ' 2x'; flag.alt = lang.label; }
+  if (label) label.textContent = lang.code;
+  document.querySelectorAll('.mm-lang-option').forEach(o => o.classList.toggle('active', o.dataset.value === val));
+}
+
+function _initMobileTheme() {
+  const saved = localStorage.getItem('glaciopia_theme') || 'dark';
+  _syncMobileTheme(saved);
+  document.getElementById('mm-theme-dark')?.addEventListener('click',  () => { applyTheme('dark',  true); _syncMobileTheme('dark');  });
+  document.getElementById('mm-theme-light')?.addEventListener('click', () => { applyTheme('light', true); _syncMobileTheme('light'); });
+}
+
+function _syncMobileTheme(theme) {
+  document.getElementById('mm-theme-dark')?.classList.toggle('active',  theme === 'dark');
+  document.getElementById('mm-theme-light')?.classList.toggle('active', theme === 'light');
+}
+
+function _initMobileAuth() {
+  const btn    = document.getElementById('mm-auth-btn');
+  const avatar = document.getElementById('mm-auth-avatar');
+  const label  = document.getElementById('mm-auth-label');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    document.getElementById('hamburger-btn')?.classList.remove('active');
+    document.getElementById('mobile-menu')?.classList.remove('active');
+    if (typeof Auth !== 'undefined') {
+      if (Auth.isLoggedIn()) Auth.buildProfileModal?.() || Auth.openAuthModal?.();
+      else Auth.openAuthModal();
+    }
+  });
+  document.addEventListener('navbarLoaded', () => _syncMobileAuthBtn());
+  document.addEventListener('authChange',   () => _syncMobileAuthBtn());
+}
+
+function _syncMobileAuthBtn() {
+  const btn    = document.getElementById('mm-auth-btn');
+  const avatar = document.getElementById('mm-auth-avatar');
+  const label  = document.getElementById('mm-auth-label');
+  if (!btn) return;
+  if (typeof Auth !== 'undefined' && Auth.isLoggedIn()) {
+    const user = Auth.getUser();
+    if (avatar) avatar.textContent = user?.username?.charAt(0).toUpperCase() || '';
+    if (label)  label.textContent  = user?.username || 'Profilo';
+    btn.classList.add('logged-in');
+  } else {
+    if (avatar) avatar.textContent = '';
+    if (label)  label.textContent  = 'Login';
+    btn.classList.remove('logged-in');
+  }
 }

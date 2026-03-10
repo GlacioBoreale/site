@@ -2,7 +2,7 @@
 
 const SAVE_KEY = 'glaciopia_idle';
 
-// ─── SAVE LOCALE ─────────────────────────────────────────────────────────────
+// SAVE LOCALE
 function buildSaveObj() {
   const save = {
     points:               G.points,
@@ -30,6 +30,7 @@ function buildSaveObj() {
     rLambdaMulti:         G.rLambdaMulti,
     passiveLambda:        G.passiveLambda,
     fastAndFurious:       G.fastAndFurious,
+    genericFiller:        G.genericFiller,
     unlazyScientists:     G.unlazyScientists,
     mat2Unlocked:         G.mat2Unlocked,
     soloLevelingUnlocked: G.soloLevelingUnlocked,
@@ -85,6 +86,7 @@ function applysave(save) {
   G.rLambdaMulti         = save.rLambdaMulti         || 1;
   G.passiveLambda        = save.passiveLambda        || false;
   G.fastAndFurious       = save.fastAndFurious       || false;
+  G.genericFiller        = save.genericFiller        || false;
   G.unlazyScientists     = save.unlazyScientists     || false;
   G.mat2Unlocked         = save.mat2Unlocked         || false;
   G.soloLevelingUnlocked = save.soloLevelingUnlocked || false;
@@ -126,7 +128,7 @@ function loadGame() {
   }
 }
 
-// ─── CLOUD SAVE ──────────────────────────────────────────────────────────────
+// CLOUD SAVE
 let _cloudSaveTimer = null;
 const CLOUD_DEBOUNCE_MS = 15000;
 
@@ -149,14 +151,19 @@ async function pushCloudSave() {
       Math.floor(G.points),
       parseFloat(G.prestige.toFixed(4)),
       G.xpLevel,
+      G.leaderboardOptIn,
     );
   } catch (e) {
     console.warn('Cloud save fallito:', e.message);
   }
 }
 
-async function syncCloudSave() {
+let _skipNextCloudSync = !!sessionStorage.getItem('glaciopia_skip_cloud_sync');
+if (_skipNextCloudSync) sessionStorage.removeItem('glaciopia_skip_cloud_sync');
+
+async function syncCloudSave(forceCloud = false) {
   if (!_cloudSaveLoggedIn()) return;
+  if (_skipNextCloudSync) { _skipNextCloudSync = false; return; }
   try {
     const data = await Api.save.get();
     if (!data.save_data) return;
@@ -164,7 +171,7 @@ async function syncCloudSave() {
     const localSave = localRaw ? JSON.parse(localRaw) : null;
     const cloudTs = data.updated_at ? new Date(data.updated_at).getTime() : 0;
     const localTs = localSave?._savedAt || 0;
-    if (cloudTs > localTs) {
+    if (forceCloud || cloudTs >= localTs) {
       applysave(data.save_data);
       saveGame();
     }
@@ -219,4 +226,6 @@ function topologicalSort() {
 }
 
 setInterval(() => { saveGame(); scheduleCloudSave(); }, 10000);
-window.addEventListener('beforeunload', () => { saveGame(); pushCloudSave(); });
+
+function _onBeforeUnload() { saveGame(); pushCloudSave(); }
+window.addEventListener('beforeunload', _onBeforeUnload);

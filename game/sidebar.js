@@ -1,8 +1,8 @@
 'use strict';
 
-// ══════════════════════════════════════════════════════════════
+// ===============
 //  SETTINGS STATE
-// ══════════════════════════════════════════════════════════════
+// ===============
 const SETTINGS_KEY = 'glaciopia_settings';
 const SETTINGS_DEFAULT = {
   statDisplayMode:          'default',
@@ -50,9 +50,9 @@ let activePanelId = null;
 let btnEls = [];   // parallel array to ITEMS
 let menuAnimating = false;
 
-// ══════════════════════════════════════════════════════════════
+// ======
 //  BUILD
-// ══════════════════════════════════════════════════════════════
+// ======
 function buildSidebar() {
   const wrapper = document.createElement('div');
   wrapper.id = 'sidebar-wrapper';
@@ -95,9 +95,9 @@ function buildSidebar() {
   document.body.appendChild(overlay);
 }
 
-// ══════════════════════════════════════════════════════════════
+// =======
 //  TOGGLE
-// ══════════════════════════════════════════════════════════════
+// =======
 function toggleMenu() {
   if (menuAnimating) return;
   menuOpen = !menuOpen;
@@ -133,22 +133,33 @@ function toggleMenu() {
   setTimeout(() => { menuAnimating = false; }, totalMs);
 }
 
-// ══════════════════════════════════════════════════════════════
+// =======
 //  PANELS
-// ══════════════════════════════════════════════════════════════
+// =======
 function openPanel(panelId) {
   closePanel();
   const panel = document.getElementById(panelId);
   if (!panel) return;
   panel.classList.add('open');
   document.getElementById('panel-overlay').classList.add('open');
+  document.getElementById('sidebar-wrapper')?.classList.add('panel-open');
   activePanelId = panelId;
   if (panelId === 'panel-achievements') renderGameAchievements('all');
   if (panelId === 'panel-stats') initStatsPanel();
   if (panelId === 'panel-leaderboard') initLeaderboard();
   if (panelId === 'panel-settings') {
-    const buyMaxRow = document.querySelector('.set-row.indent[data-key="buyMaxPointUpgrades"]');
-    if (buyMaxRow) buyMaxRow.style.display = (typeof G !== 'undefined' && G.fastAndFurious) ? '' : 'none';
+    syncBuyMaxPointUpgradesRow();
+  }
+}
+
+function syncBuyMaxPointUpgradesRow() {
+  const row = document.querySelector('.set-row.indent[data-key="buyMaxPointUpgrades"]');
+  if (!row) return;
+  const show = typeof G !== 'undefined' && G.fastAndFurious;
+  row.style.display = show ? '' : 'none';
+  if (show) {
+    const cb = document.getElementById('set-buyMaxPointUpgrades');
+    if (cb) cb.classList.toggle('checked', !!CFG.buyMaxPointUpgrades);
   }
 }
 
@@ -158,6 +169,9 @@ function closePanel() {
     activePanelId = null;
   }
   document.getElementById('panel-overlay')?.classList.remove('open');
+  document.getElementById('sidebar-wrapper')?.classList.remove('panel-open');
+  document.querySelectorAll('.mtb-btn').forEach(b => b.classList.remove('active'));
+  if (typeof window._mtbSyncActive === 'function') window._mtbSyncActive();
 }
 
 function closeAll() {
@@ -172,9 +186,9 @@ function closeAll() {
   }
 }
 
-// ══════════════════════════════════════════════════════════════
+// ==================
 //  BUILD PANELS HTML
-// ══════════════════════════════════════════════════════════════
+// ==================
 function buildPanels() {
   const insert = html => document.body.insertAdjacentHTML('beforeend', html);
 
@@ -410,9 +424,9 @@ function renderGameAchievements(cat = 'all') {
   }
 }
 
-// ══════════════════════════════════════════════════════════════
+// ============
 //  LEADERBOARD
-// ══════════════════════════════════════════════════════════════
+// ============
 function buildLeaderboardPanel() {
   return `
 <div class="game-panel" id="panel-leaderboard">
@@ -443,11 +457,20 @@ let _lbLoaded = false;
 
 async function loadLeaderboard() {
   const body = document.getElementById('lb-body');
+  const row  = document.getElementById('lb-optin-row');
   if (!body) return;
+
+  if (typeof G === 'undefined' || !G.leaderboardUnlocked) {
+    body.innerHTML = `<div class="panel-wip"><i class="fas fa-lock"></i> Sblocca l'upgrade "Nella storia" a sinistra di #9 per partecipare</div>`;
+    if (row) row.style.display = 'none';
+    return;
+  }
+
   body.innerHTML = '<div class="lb-loading"><i class="fas fa-spinner fa-spin"></i></div>';
   try {
     if (typeof Api === 'undefined') throw new Error('no api');
-    _lbData = await Api.leaderboard.get();
+    const raw = await Api.leaderboard.get();
+    _lbData = raw.leaderboard || raw;
     _lbLoaded = true;
     renderLeaderboard();
   } catch (_) {
@@ -550,9 +573,9 @@ function buildWipPanel(id, title, icon, colorClass) {
 </div>`;
 }
 
-// ══════════════════════════════════════════════════════════════
+// ==================
 //  SETTINGS CONTROLS
-// ══════════════════════════════════════════════════════════════
+// ==================
 function initSettingsControls() {
   function syncAll() {
     ['statDisplayMode','scientificThreshold'].forEach(key => {
@@ -686,19 +709,20 @@ function applySettings() {
   // sidebar e panels: font-size relativo
   const sw = document.getElementById('sidebar-wrapper');
   if (sw) sw.style.zoom = scale;
-  document.querySelectorAll('.game-panel').forEach(el => { el.style.zoom = scale; });
+  if (window.innerWidth > 900) {
+    document.querySelectorAll('.game-panel').forEach(el => { el.style.zoom = scale; });
+  }
   // radio
   const rw = document.getElementById('radio-widget');
   if (rw) rw.style.zoom = scale;
 
-  // formato numeri: sostituisce la funzione fmt globale
   window._cfgNumFormat = CFG.statDisplayMode;
 
-  // buy max: disabilita le righe indent se buyMaxEnabled è false
   const indentRows = document.querySelectorAll('#panel-settings .set-row.indent');
   indentRows.forEach(r => r.style.opacity = CFG.buyMaxEnabled ? '' : '0.35');
   window._cfgBuyMaxEnabled = CFG.buyMaxEnabled;
   window._cfgBuyMaxBoards  = CFG.buyMaxBoards;
+  if (typeof syncBuyMaxPointUpgradesRow === 'function') syncBuyMaxPointUpgradesRow();
 
   // radio
   if (typeof Radio !== 'undefined') {
@@ -707,9 +731,9 @@ function applySettings() {
   }
 }
 
-// ══════════════════════════════════════════════════════════════
+// =====
 //  INIT
-// ══════════════════════════════════════════════════════════════
+// =====
 document.addEventListener('DOMContentLoaded', () => {
   loadSettings();
   buildSidebar();
@@ -718,4 +742,45 @@ document.addEventListener('DOMContentLoaded', () => {
   _statLoadPins();
   _statBuildPinnedBar();
   _statRenderPinnedBar();
+  buildMobileTabBar();
 });
+
+function buildMobileTabBar() {
+  const bar = document.getElementById('mobile-bottom-bar');
+  if (!bar) return;
+
+  const MBB_ITEMS = [
+    { id: 'settings',    panel: 'panel-settings'    },
+    { id: 'stats',       panel: 'panel-stats'        },
+    { id: 'achievements',panel: 'panel-achievements' },
+    { id: 'leaderboard', panel: 'panel-leaderboard'  },
+    { id: 'updatelog',   panel: 'panel-updatelog'    },
+    { id: 'maintenance', panel: 'panel-maintenance'  },
+  ];
+
+  MBB_ITEMS.forEach(item => {
+    const btn = document.getElementById('mbb-' + item.id);
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      if (activePanelId === item.panel) {
+        closePanel();
+      } else {
+        MBB_ITEMS.forEach(it => document.getElementById('mbb-' + it.id)?.classList.remove('mbb-active'));
+        btn.classList.add('mbb-active');
+        openPanel(item.panel);
+      }
+    });
+  });
+
+  document.getElementById('panel-overlay')?.addEventListener('click', () => {
+    MBB_ITEMS.forEach(it => document.getElementById('mbb-' + it.id)?.classList.remove('mbb-active'));
+  });
+
+  window._mtbSyncActive = () => {
+    MBB_ITEMS.forEach(it => document.getElementById('mbb-' + it.id)?.classList.remove('mbb-active'));
+    if (activePanelId) {
+      const match = MBB_ITEMS.find(t => t.panel === activePanelId);
+      if (match) document.getElementById('mbb-' + match.id)?.classList.add('mbb-active');
+    }
+  };
+}

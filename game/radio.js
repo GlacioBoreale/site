@@ -6,7 +6,7 @@ const PLAYLISTS = [
     name: 'Progression',
     color: '#bb3ac4',
     tracks: [
-    { title: 'Cerebrawl', artist: 'TRACK 1 // supershigi', src: 'assets/audio/radio/Progression/cerebrawl.mp3' },
+    { title: 'Cerebrawl', artist: 'TRACK 1 // supershigi', src: AUDIO_CDN + '/radio/Progression/Cerebrawl.mp3' },
     ],
   },
   {
@@ -14,18 +14,18 @@ const PLAYLISTS = [
     name: 'Averpyxl\'s Jam',
     color: '#c47a3a',
     tracks: [
-      { title: 'you win again', artist: 'vehiculersspamton - untitled tag game', src: 'assets/audio/radio/Generic1/you_win_again.mp3' },
-      { title: 'c u l8tr aligator', artist: 'fearless - untitled tag game', src: 'assets/audio/radio/Generic1/c_u_l8tr_aligator.mp3' },
-      { title: 'Tag U', artist: 'boxed - untitled tag game', src: 'assets/audio/radio/Generic1/tag_u.mp3' },
-      { title: 'On Board', artist: 'Funki', src: 'assets/audio/radio/Generic1/on_board.mp3' },
-      { title: 'Picnic', artist: 'kupi', src: 'assets/audio/radio/Generic1/picnic.mp3' },
-      { title: 'Bloxy Blox V2', artist: 'kupi - untitled tag game', src: 'assets/audio/radio/Generic1/Bloxy_Blox_V2.mp3' },
-      { title: 'telecaster', artist: 'hazerred (ft. palm)', src: 'assets/audio/radio/Generic1/telecaster.mp3' },
-      { title: 'go long', artist: 'hazerred', src: 'assets/audio/radio/Generic1/go_long.mp3' },
-      { title: 'SODA STREED', artist: 'boxed', src: 'assets/audio/radio/Generic1/soda_street.mp3' },
-      { title: 'crashout (Tag Mix)', artist: 'nicopatty - untitled tag game', src: 'assets/audio/radio/Generic1/crashout_tag_mix.mp3' },
-      { title: 'Last Man Standing', artist: 'Deltom - untitled tag game', src: 'assets/audio/radio/Generic1/last_man_standing.mp3' },
-      { title: 'chill out', artist: 'sprites', src: 'assets/audio/radio/Generic1/old_chill_out.mp3' },
+      { title: 'you win again', artist: 'vehiculersspamton - untitled tag game', src: AUDIO_CDN + '/radio/Generic1/you_win_again.mp3' },
+      { title: 'c u l8tr aligator', artist: 'fearless - untitled tag game', src: AUDIO_CDN + '/radio/Generic1/c_u_l8tr_aligator.mp3' },
+      { title: 'Tag U', artist: 'boxed - untitled tag game', src: AUDIO_CDN + '/radio/Generic1/tag_u.mp3' },
+      { title: 'On Board', artist: 'Funki', src: AUDIO_CDN + '/radio/Generic1/On_Board.mp3' },
+      { title: 'Picnic', artist: 'kupi', src: AUDIO_CDN + '/radio/Generic1/picnic.mp3' },
+      { title: 'Bloxy Blox V2', artist: 'kupi - untitled tag game', src: AUDIO_CDN + '/radio/Generic1/Bloxy_Blox_V2.mp3' },
+      { title: 'telecaster', artist: 'hazerred (ft. palm)', src: AUDIO_CDN + '/radio/Generic1/telecaster.mp3' },
+      { title: 'go long', artist: 'hazerred', src: AUDIO_CDN + '/radio/Generic1/go_long.mp3' },
+      { title: 'SODA STREED', artist: 'boxed', src: AUDIO_CDN + '/radio/Generic1/SODA_STREET.mp3' },
+      { title: 'crashout (Tag Mix)', artist: 'nicopatty - untitled tag game', src: AUDIO_CDN + '/radio/Generic1/crashout_tag_mix.mp3' },
+      { title: 'Last Man Standing', artist: 'Deltom - untitled tag game', src: AUDIO_CDN + '/radio/Generic1/Last_Man_Standing.mp3' },
+      { title: 'chill out', artist: 'sprites', src: AUDIO_CDN + '/radio/Generic1/old_chill_out.mp3' },
     ],
   },
   {
@@ -39,7 +39,7 @@ const PLAYLISTS = [
     name: 'Eromonfire FM',
     color: '#c43a6a',
     tracks: [
-      { title: 'Iced Up', artist: 'Eromo', src: 'assets/audio/radio/Eromonfire/iceup.mp3' },
+      { title: 'Iced Up', artist: 'Eromo', src: AUDIO_CDN + '/radio/Eromonfire/iceup.mp3' },
     ],
   },
   {
@@ -47,7 +47,7 @@ const PLAYLISTS = [
     name: 'Goofy Pack',
     color: '#54c44a',
     tracks: [
-      { title: 'Im Goofing It', artist: 'Eromo', src: 'assets/audio/radio/goofy_pack/goofy_song.mp3' },
+      { title: 'Im Goofing It', artist: 'Eromo', src: AUDIO_CDN + '/radio/goofy_pack/goofy_song.mp3' },
     ],
   },
   {
@@ -55,9 +55,9 @@ const PLAYLISTS = [
     name: 'NCS',
     color: '#c4c44a',
     tracks: [
-      { title: 'Hope', artist: 'Tobu', src: 'assets/audio/radio/NCS/hope.mp3' },
-      { title: 'Infectious', artist: 'Tobu', src: 'assets/audio/radio/NCS/infectious.mp3' },
-      { title: 'Retro Respawn', artist: 'Octave', src: 'assets/audio/radio/NCS/retro_respawn.mp3' },
+      { title: 'Hope', artist: 'Tobu', src: AUDIO_CDN + '/radio/NCS/hope.mp3' },
+      { title: 'Infectious', artist: 'Tobu', src: AUDIO_CDN + '/radio/NCS/infectious.mp3' },
+      { title: 'Retro Respawn', artist: 'Octave', src: AUDIO_CDN + '/radio/NCS/retro_respawn.mp3' },
     ],
   },
 ];
@@ -73,7 +73,8 @@ const Radio = (() => {
   let rafId          = null;
 
   const audio = new Audio();
-  audio.volume = 0.05;
+  audio.volume = 0.8;
+  audio.muted   = false;
 
   audio.addEventListener('ended', () => {
     if (isLooping) {
@@ -229,7 +230,7 @@ const Radio = (() => {
     const artDisc = document.getElementById('radio-art-disc');
     if (artImg) {
       const slug = pl.id.toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
-      const src  = 'assets/images/radio/' + slug + '.png';
+      const src  = IMG_CDN + '/radio/' + slug + '.png';
       if (artImg.dataset.src !== src) {
         artImg.dataset.src = src;
         // fade out entrambi prima del cambio
@@ -365,16 +366,30 @@ const Radio = (() => {
     const volBtn    = document.getElementById('radio-vol-toggle');
     const volSlider = document.getElementById('radio-vol-slider');
     const volPct    = document.getElementById('radio-vol-pct');
+    if (typeof CFG !== 'undefined') {
+      audio.volume = CFG.radioVolume / 100;
+      audio.muted  = !!CFG.radioMuted;
+    }
     volSlider.value = audio.volume * 100;
+    if (volPct) volPct.textContent = Math.round(audio.volume * 100) + '%';
+    volBtn.innerHTML = audio.muted ? '<i class="fas fa-volume-xmark"></i>' : audio.volume < 0.5 ? '<i class="fas fa-volume-low"></i>' : '<i class="fas fa-volume-high"></i>';
     volSlider.oninput = () => {
       audio.volume = volSlider.value / 100;
       audio.muted  = false;
       volPct.textContent = volSlider.value + '%';
       volBtn.innerHTML = audio.volume === 0 ? '<i class="fas fa-volume-xmark"></i>' : audio.volume < 0.5 ? '<i class="fas fa-volume-low"></i>' : '<i class="fas fa-volume-high"></i>';
+      if (typeof CFG !== 'undefined') { CFG.radioVolume = +volSlider.value; CFG.radioMuted = false; if (typeof saveSettings === 'function') saveSettings(); }
+      const setSlider = document.getElementById('set-radioVolume');
+      const setVal    = document.getElementById('set-radioVol-val');
+      if (setSlider) setSlider.value = volSlider.value;
+      if (setVal)    setVal.textContent = volSlider.value;
     };
     volBtn.onclick = () => {
       audio.muted = !audio.muted;
       volBtn.innerHTML = audio.muted ? '<i class="fas fa-volume-xmark"></i>' : audio.volume < 0.5 ? '<i class="fas fa-volume-low"></i>' : '<i class="fas fa-volume-high"></i>';
+      if (typeof CFG !== 'undefined') { CFG.radioMuted = audio.muted; if (typeof saveSettings === 'function') saveSettings(); }
+      const mutedCb = document.getElementById('set-radioMuted');
+      if (mutedCb) mutedCb.classList.toggle('checked', audio.muted);
     };
 
     const volWrap  = document.getElementById('radio-vol-wrap');
@@ -408,9 +423,9 @@ const Radio = (() => {
 
   function unlockPrestigeTrack() {
     const pl = PLAYLISTS[0];
-    const already = pl.tracks.some(t => t.src === 'assets/audio/radio/Progression/A_Tale_of_Eternity.mp3');
+    const already = pl.tracks.some(t => t.src === AUDIO_CDN + '/radio/Progression/A_Tale_of_Eternity.mp3');
     if (already) return;
-    pl.tracks.push({ title: 'A Tale of Eternity', artist: 'TRACK 7 // Nighthawk22', src: 'assets/audio/radio/Progression/A_Tale_of_Eternity.mp3' });
+    pl.tracks.push({ title: 'A Tale of Eternity', artist: 'TRACK 7 // Nighthawk22', src: AUDIO_CDN + '/radio/Progression/A_Tale_of_Eternity.mp3' });
     const plPanel = document.getElementById('radio-playlist-panel');
     if (plPanel) {
       const items = plPanel.querySelectorAll('.radio-pl-item');
@@ -421,18 +436,17 @@ const Radio = (() => {
 
   function setVolume(v) {
     audio.volume = Math.max(0, Math.min(1, v));
-    const slider = document.getElementById('radio-vol-slider');
-    const pct    = document.getElementById('radio-vol-pct');
-    const btn    = document.getElementById('radio-vol-toggle');
-    if (slider) slider.value = Math.round(v * 100);
-    if (pct)    pct.textContent = Math.round(v * 100) + '%';
-    if (btn)    btn.innerHTML = v === 0 ? '<i class="fas fa-volume-xmark"></i>' : v < 0.5 ? '<i class="fas fa-volume-low"></i>' : '<i class="fas fa-volume-high"></i>';
+    const volSlider = document.getElementById('radio-vol-slider');
+    const volPct    = document.getElementById('radio-vol-pct');
+    const volBtn    = document.getElementById('radio-vol-toggle');
+    if (volSlider) volSlider.value = v * 100;
+    if (volPct)    volPct.textContent = Math.round(v * 100) + '%';
+    if (volBtn)    volBtn.innerHTML = v === 0 ? '<i class="fas fa-volume-xmark"></i>' : v < 0.5 ? '<i class="fas fa-volume-low"></i>' : '<i class="fas fa-volume-high"></i>';
   }
-
   function setMuted(m) {
-    audio.muted = m;
-    const btn = document.getElementById('radio-vol-toggle');
-    if (btn) btn.innerHTML = m ? '<i class="fas fa-volume-xmark"></i>' : audio.volume < 0.5 ? '<i class="fas fa-volume-low"></i>' : '<i class="fas fa-volume-high"></i>';
+    audio.muted = !!m;
+    const volBtn = document.getElementById('radio-vol-toggle');
+    if (volBtn) volBtn.innerHTML = audio.muted ? '<i class="fas fa-volume-xmark"></i>' : audio.volume < 0.5 ? '<i class="fas fa-volume-low"></i>' : '<i class="fas fa-volume-high"></i>';
   }
 
   return { build, play, pause, unlockPrestigeTrack, setVolume, setMuted };
@@ -441,8 +455,6 @@ const Radio = (() => {
 document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('game-canvas')) Radio.build();
 });
-
-
 
 function syncRadioVisibility() {
   const w = document.getElementById('radio-widget');
@@ -474,7 +486,6 @@ function buildToggleBtn() {
       w.classList.toggle('visible-radio', next);
     }
     btn.style.left = next ? '360px' : '0';
-    syncLeaderboardBtn();
   });
   document.body.appendChild(btn);
 }

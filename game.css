@@ -38,9 +38,9 @@
 #game-canvas:active { cursor: grabbing; }
 
 .btn-center-fixed {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
   width: 38px;
   height: 38px;
   border-radius: 10px;
@@ -68,6 +68,7 @@
   color: rgba(10,10,20,0.5);
 }
 [data-theme="light"] .btn-center-fixed:hover { color: #0a0a14; }
+@media (max-width: 900px) { .btn-center-fixed { display: none; } }
 
 .hud-points {
   display: flex;

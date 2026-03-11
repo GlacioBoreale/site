@@ -47,6 +47,7 @@ const G = {
   rMulti:            1,
   leaderboardUnlocked: false,
   leaderboardOptIn:    false,
+  autonio:           0,
 };
 
 // ─── STATO NODI ───────────────────────────────────────────────────────────────

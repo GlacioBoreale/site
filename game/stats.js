@@ -32,6 +32,15 @@ const STATS_DEFS = {
       icon:    '✦',
       check:   () => G.hasPrestiged,
     },
+    {
+      id:      'automation',
+      label:   () => fmt(G.automation) + ' ✦',
+      rate:    () => {'+' + ftmAuto(G.autonio)},// gain a parte
+      color:   '#be453c',
+      bg:      'rgba(37, 20, 20, 0.13)',
+      icon:    '✦',
+      check:   () => G.hasPrestiged,
+    },
   ],
   levels: [
     {

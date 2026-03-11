@@ -240,7 +240,7 @@ const NODE_DEFS = [
     id: 'thereItIs',
     x: 680, y: 0,
     label: '#10',
-    title: 'Eccolo qui',
+    title: 'There it is',
     desc: () => G.rightSideUnlocked
       ? [{ text: 'x4 \u20bd gain', color: '#4ade80' }]
       : [{ text: _nd.right(), color: '#f87171' },
@@ -257,7 +257,7 @@ const NODE_DEFS = [
     id: 'push4research',
     x: -1020, y: 0,
     label: '#11',
-    title: 'Press 2 research',
+    title: 'Press 4 research',
     desc: () => G.leftSideUnlocked
       ? [{ text: '\u20bd gain is boosted by \u03bb', color: null },
          { text: '', color: '#4ade80' }]

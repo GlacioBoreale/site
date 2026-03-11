@@ -172,8 +172,13 @@ async function syncCloudSave(forceCloud = false) {
     const cloudTs = data.updated_at ? new Date(data.updated_at).getTime() : 0;
     const localTs = localSave?._savedAt || 0;
     if (forceCloud || cloudTs >= localTs) {
-      applysave(data.save_data);
-      saveGame();
+      if (typeof G !== 'undefined' && typeof nodeState !== 'undefined' && typeof applysave === 'function') {
+        applysave(data.save_data);
+        saveGame();
+      } else {
+        localStorage.setItem(SAVE_KEY, JSON.stringify({ ...data.save_data, _savedAt: cloudTs || Date.now() }));
+        location.reload();
+      }
     }
   } catch (e) {
     console.warn('Cloud load fallito:', e.message);

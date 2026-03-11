@@ -46,7 +46,12 @@ window.addEventListener('DOMContentLoaded', () => {
   loadGame();
   requestAnimationFrame(gameLoop);
   setTimeout(() => { gameReady = true; }, 300);
-  setTimeout(() => { if (typeof syncCloudSave === 'function') syncCloudSave(); }, 1000);
+  setTimeout(() => {
+    if (typeof syncCloudSave === 'function') {
+      const isLogged = typeof Auth !== 'undefined' && Auth.isLoggedIn();
+      syncCloudSave(isLogged);
+    }
+  }, 1000);
 });
 
 window.addEventListener('resize', () => {

@@ -177,7 +177,6 @@ async function syncCloudSave(forceCloud = false) {
         saveGame();
       } else {
         localStorage.setItem(SAVE_KEY, JSON.stringify({ ...data.save_data, _savedAt: cloudTs || Date.now() }));
-        location.reload();
       }
     }
   } catch (e) {

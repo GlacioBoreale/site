@@ -460,12 +460,6 @@ async function loadLeaderboard() {
   const row  = document.getElementById('lb-optin-row');
   if (!body) return;
 
-  if (typeof G === 'undefined' || !G.leaderboardUnlocked) {
-    body.innerHTML = `<div class="panel-wip"><i class="fas fa-lock"></i> Sblocca l'upgrade "Nella storia" a sinistra di #9 per partecipare</div>`;
-    if (row) row.style.display = 'none';
-    return;
-  }
-
   body.innerHTML = '<div class="lb-loading"><i class="fas fa-spinner fa-spin"></i></div>';
   try {
     if (typeof Api === 'undefined') throw new Error('no api');
@@ -524,8 +518,11 @@ function _syncLbOptinBtn() {
   const btn = document.getElementById('lb-optin-btn');
   if (!row || !lbl || !btn) return;
   const loggedIn = typeof Auth !== 'undefined' && Auth.isLoggedIn();
-  if (!loggedIn) {
-    lbl.textContent = gt('lb.loginToAppear') || 'Accedi per apparire in classifica';
+  const unlocked  = typeof G !== 'undefined' && G.leaderboardUnlocked;
+  if (!loggedIn || !unlocked) {
+    lbl.textContent = !loggedIn
+      ? (gt('lb.loginToAppear') || 'Accedi per apparire in classifica')
+      : (gt('lb.unlockToAppear') || 'Sblocca "Nella storia" per partecipare');
     btn.style.display = 'none';
     row.style.display = '';
     return;

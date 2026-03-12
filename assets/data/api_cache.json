@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-03-12T20:35:44Z",
+  "updatedAt": "2026-03-12T21:33:25Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
     "followers": 1185,
     "url": "https://twitch.tv/glacioborealevt",
-    "isLive": true,
+    "isLive": false,
     "stream": {
-      "title": "FINALMENTE! Del tempo libero! | ► Vtuber ITA ◄ | !ds !ig",
-      "game": "Five Nights at Freddy's: Secret of the Mimic",
-      "gameBoxArt": "https://static-cdn.jtvnw.net/ttv-boxart/602694215_IGDB-144x192.jpg",
-      "viewers": 2,
-      "startedAt": "2026-03-12T19:30:05Z",
-      "thumbnail": "https://static-cdn.jtvnw.net/previews-ttv/live_user_glacioborealevt-1280x720.jpg"
+      "title": "",
+      "game": "",
+      "gameBoxArt": "",
+      "viewers": 0,
+      "startedAt": "",
+      "thumbnail": ""
     },
     "offlineImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/101d761a-4950-4c4e-87f7-f81e912529c8-channel_offline_image-1920x1080.png",
     "topClips": [
@@ -51,20 +51,20 @@
         "creator": "auremdunknown"
       },
       {
-        "title": "è un disegno quello lo sai?",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableRenownedAuberginePMSTwin",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C979372397-preview-480x272.jpg",
-        "views": 39,
-        "duration": 7.1,
-        "creator": "andreaproob"
+        "title": "When Tryhard hits...",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/InventiveApatheticApeTwitchRPG-b0Jt3pe210IVYMm2",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1122899254-preview-480x272.jpg",
+        "views": 59,
+        "duration": 48.8,
+        "creator": "GlacioBorealeVT"
       },
       {
-        "title": "Pronto!!!!!!!",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/MagnificentWittyInternThisIsSparta-ujpniueNUbiV-77b",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1302910438-preview-480x272.jpg",
-        "views": 50,
-        "duration": 10.5,
-        "creator": "lucaop69"
+        "title": "Il saving, ez",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/ResourcefulDependableHamBatChest-8RO63Cu2CHD0E6H4",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CaJX_E_ETutwrtghw9BOh-A-preview-480x272.jpg",
+        "views": 53,
+        "duration": 14,
+        "creator": "dabidet87"
       }
     ]
   },

@@ -152,6 +152,8 @@ async function pushCloudSave() {
       parseFloat(G.prestige.toFixed(4)),
       G.xpLevel,
       G.leaderboardOptIn,
+      parseFloat(G.research.toFixed(4)),
+      Math.floor(G.totalTimeSec || 0),
     );
   } catch (e) {
     console.warn('Cloud save fallito:', e.message);
@@ -199,14 +201,29 @@ function replayEffects() {
   G.researchUnlocked     = false;
   G.rBasePps             = 0;
   G.rMulti               = 1;
+  G.rLambdaMulti         = 1;
+  G.prestigeGainMulti    = 1;
+  G.passiveLambda        = false;
+  G.fastAndFurious       = false;
+  G.unlazyScientists     = false;
+  G.boomboxUnlocked      = false;
+  G.leaderboardUnlocked  = false;
+  G.soloLevelingUnlocked = false;
   G.toNewHeightsUnlocked = false;
   G.xpPerClick           = 1;
   G.xpReqDiv             = 1;
+  G.xpClickMulti         = 1;
   G.holyGrailUnlocked    = false;
   G.afterHalcyonUnlocked = false;
   G.delayedGratUnlocked  = false;
+  G.startGoldLevels      = 0;
+  G.startGoldMultiP      = 1;
+  G.startGoldMultiL      = 1;
+  G.mat2Unlocked         = false;
   NODE_DEFS.find(n => n.id === 'multiInc').maxLevel = 3;
   NODE_DEFS.find(n => n.id === 'start').maxLevel    = 1;
+  NODE_DEFS.find(n => n.id === 'flat2x').maxLevel   = 1;
+  NODE_DEFS.find(n => n.id === 'flat3x').maxLevel   = 1;
   topologicalSort().forEach(nd => {
     const lvl = nodeState[nd.id].level;
     for (let i = 0; i < lvl; i++) nd.onBuy(i + 1);

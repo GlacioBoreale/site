@@ -49,7 +49,7 @@ const Api = (() => {
 
     save: {
       get:    ()                                          => request('GET',    '/save'),
-      put:    (saveData, points, prestige, xpLevel, optIn) => request('PUT',    '/save', { save_data: saveData, points, prestige, xp_level: xpLevel, opt_in: optIn ?? false }),
+      put:    (saveData, points, prestige, xpLevel, optIn, research, totalTimeSec) => request('PUT', '/save', { save_data: saveData, points, prestige, xp_level: xpLevel, opt_in: optIn ?? false, research: research ?? 0, total_time_sec: totalTimeSec ?? 0 }),
       delete: ()                                          => request('DELETE', '/save'),
     },
 

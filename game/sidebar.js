@@ -40,14 +40,12 @@ const ITEMS = [
 ];
 function _sbLabel(item) { return gt(item.labelKey) || item.labelKey; }
 
-// Pairs to reveal in order (indices into ITEMS, skipping center=3)
 const PAIRS = [[2, 4], [1, 5], [0, 6]];
-// Delay between each pair appearing (ms) — matches video ~150ms
 const PAIR_DELAY = 150;
 
 let menuOpen = false;
 let activePanelId = null;
-let btnEls = [];   // parallel array to ITEMS
+let btnEls = [];
 let menuAnimating = false;
 
 // ======
@@ -88,7 +86,6 @@ function buildSidebar() {
 
   document.body.appendChild(wrapper);
 
-  // Overlay
   const overlay = document.createElement('div');
   overlay.id = 'panel-overlay';
   overlay.addEventListener('click', closeAll);
@@ -105,7 +102,6 @@ function toggleMenu() {
 
   const icon  = document.getElementById('sb-menu-icon');
   const label = document.getElementById('sb-menu-label');
-  // total anim duration = last pair delay + transition duration
   const totalMs = (PAIRS.length - 1) * PAIR_DELAY + 300;
 
   if (menuOpen) {
@@ -147,9 +143,7 @@ function openPanel(panelId) {
   if (panelId === 'panel-achievements') renderGameAchievements('all');
   if (panelId === 'panel-stats') initStatsPanel();
   if (panelId === 'panel-leaderboard') initLeaderboard();
-  if (panelId === 'panel-settings') {
-    syncBuyMaxPointUpgradesRow();
-  }
+  if (panelId === 'panel-settings') syncBuyMaxPointUpgradesRow();
 }
 
 function syncBuyMaxPointUpgradesRow() {
@@ -330,7 +324,6 @@ function buildSettingsPanel() {
         <div class="set-row-left"><span class="set-label">apri menu</span></div>
         <span class="set-keybind">Tab</span>
       </div>
-
     </div>
     <div class="settings-tab-content" data-tab="misc">
       <div class="set-section" data-i18n="settings.sectionPartita"></div>
@@ -374,7 +367,6 @@ function renderGameAchievements(cat = 'all') {
   const bar  = document.getElementById('game-ach-bar');
   if (!list) return;
 
-  // usa loadData / ACHIEVEMENTS dal sistema sito
   const data = typeof loadData === 'function' ? loadData() : {};
   const achs = typeof ACHIEVEMENTS !== 'undefined' ? ACHIEVEMENTS : [];
 
@@ -442,9 +434,16 @@ function buildLeaderboardPanel() {
     <button class="lb-optin-btn" id="lb-optin-btn"></button>
   </div>
   <div class="lb-tabs">
-    <button class="lb-tab active" data-lbtab="points">₽ Points</button>
-    <button class="lb-tab" data-lbtab="prestige">✦ Prestige</button>
-    <button class="lb-tab" data-lbtab="xp_level">XP Level</button>
+    <button class="lb-tab active" data-lbtab="points"><i class="fas fa-coins"></i> Points</button>
+    <button class="lb-tab" data-lbtab="research"><i class="fas fa-flask"></i> Research</button>
+    <button class="lb-tab" data-lbtab="prestige"><i class="fas fa-star"></i> Prestige</button>
+    <button class="lb-tab" data-lbtab="xp_level"><i class="fas fa-bolt"></i> XP Level</button>
+    <button class="lb-tab" data-lbtab="total_time_sec"><i class="fas fa-clock"></i> Time</button>
+  </div>
+  <div class="lb-table-header">
+    <span class="lb-th-rank">#</span>
+    <span class="lb-th-name">Username</span>
+    <span class="lb-th-val" id="lb-col-label">Points</span>
   </div>
   <div class="panel-body" id="lb-body">
     <div class="lb-loading"><i class="fas fa-spinner fa-spin"></i></div>
@@ -452,23 +451,39 @@ function buildLeaderboardPanel() {
 </div>`;
 }
 
+function _fmtLbTime(sec) {
+  sec = Math.floor(sec || 0);
+  const d = Math.floor(sec / 86400);
+  const h = Math.floor((sec % 86400) / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  if (d > 0) return d + 'd ' + h + 'h';
+  if (h > 0) return h + 'h ' + m + 'm';
+  return m + 'm';
+}
+
+const LB_TAB_META = {
+  points:         { colLabel: 'Points',   fmtVal: r => fmt(r.points)              + ' ₽' },
+  research:       { colLabel: 'Research', fmtVal: r => fmtLambda(r.research)      + ' λ' },
+  prestige:       { colLabel: 'Prestige', fmtVal: r => fmt(r.prestige)            + ' ✦' },
+  xp_level:       { colLabel: 'Level',    fmtVal: r => 'Lv ' + (r.xp_level || 0) },
+  total_time_sec: { colLabel: 'Time',     fmtVal: r => _fmtLbTime(r.total_time_sec) },
+};
+
 let _lbData = null;
 let _lbLoaded = false;
 
 async function loadLeaderboard() {
   const body = document.getElementById('lb-body');
-  const row  = document.getElementById('lb-optin-row');
   if (!body) return;
-
   body.innerHTML = '<div class="lb-loading"><i class="fas fa-spinner fa-spin"></i></div>';
   try {
     if (typeof Api === 'undefined') throw new Error('no api');
     const raw = await Api.leaderboard.get();
     const data = raw.leaderboard || raw;
-    if (Array.isArray(data)) {
-      _lbData = { points: data, prestige: data, xp_level: data };
-    } else if (data && typeof data === 'object') {
+    if (data && typeof data === 'object' && !Array.isArray(data)) {
       _lbData = data;
+    } else if (Array.isArray(data)) {
+      _lbData = { points: data, research: data, prestige: data, xp_level: data, total_time_sec: data };
     } else {
       throw new Error('unexpected format');
     }
@@ -476,38 +491,39 @@ async function loadLeaderboard() {
     renderLeaderboard();
   } catch (err) {
     console.error('[LB error]', err);
-    body.innerHTML = `<div class="panel-wip"><i class="fas fa-ranking-star"></i>${gt('lb.noData') || 'Nessun dato'}</div>`;
+    body.innerHTML = '<div class="panel-wip"><i class="fas fa-ranking-star"></i>Nessun dato</div>';
   }
 }
 
 function renderLeaderboard() {
   const body = document.getElementById('lb-body');
   if (!body || !_lbData) return;
-  const tab = document.querySelector('.lb-tab.active')?.dataset.lbtab || 'points';
-  const rows = [...(_lbData[tab] || [])].sort((a, b) => b[tab] - a[tab]);
+  const tab  = document.querySelector('.lb-tab.active')?.dataset.lbtab || 'points';
+  const meta = LB_TAB_META[tab] || LB_TAB_META.points;
+  const colLabel = document.getElementById('lb-col-label');
+  if (colLabel) colLabel.textContent = meta.colLabel;
+  const rows   = [...(_lbData[tab] || [])];
   const myUser = typeof Auth !== 'undefined' && Auth.isLoggedIn() ? Auth.getUser() : null;
 
   if (!rows.length) {
-    body.innerHTML = `<div class="panel-wip"><i class="fas fa-ranking-star"></i>${gt('lb.noData') || 'Nessun dato'}</div>`;
+    body.innerHTML = '<div class="panel-wip"><i class="fas fa-ranking-star"></i>Nessun dato</div>';
     return;
   }
 
   body.innerHTML = rows.map((r, i) => {
-    const isMe = myUser && r.username === myUser.username;
-    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `<span class="lb-rank">#${i + 1}</span>`;
-    const val = tab === 'points' ? fmt(r[tab]) + ' ₽'
-              : tab === 'prestige' ? fmt(r[tab]) + ' ✦'
-              : (gt('lb.level') || 'Lv') + ' ' + r[tab];
-    return `<div class="lb-row${isMe ? ' lb-me' : ''}">
-      <span class="lb-pos">${medal}</span>
-      <span class="lb-name">${r.username}</span>
-      <span class="lb-val">${val}</span>
-    </div>`;
+    const isMe  = myUser && r.username === myUser.username;
+    const medal = i < 3;
+    const pos   = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
+    return '<div class="lb-row' + (isMe ? ' lb-me' : '') + (medal ? ' lb-medal' : '') + '">' +
+      '<span class="lb-pos">' + pos + '</span>' +
+      '<span class="lb-name">' + r.username + '</span>' +
+      '<span class="lb-val">' + meta.fmtVal(r) + '</span>' +
+      '</div>';
   }).join('');
   if (!myUser) {
     const note = document.createElement('div');
     note.className = 'lb-guest-note';
-    note.innerHTML = `<i class="fas fa-circle-info"></i> ${gt('lb.loginToAppear') || 'Accedi per apparire in classifica'}`;
+    note.innerHTML = '<i class="fas fa-circle-info"></i> Accedi per apparire in classifica';
     body.appendChild(note);
   }
 }
@@ -518,7 +534,7 @@ function _syncLbOptinBtn() {
   const btn = document.getElementById('lb-optin-btn');
   if (!row || !lbl || !btn) return;
   const loggedIn = typeof Auth !== 'undefined' && Auth.isLoggedIn();
-  const unlocked  = typeof G !== 'undefined' && G.leaderboardUnlocked;
+  const unlocked = typeof G !== 'undefined' && G.leaderboardUnlocked;
   if (!loggedIn || !unlocked) {
     lbl.textContent = !loggedIn
       ? (gt('lb.loginToAppear') || 'Accedi per apparire in classifica')
@@ -628,7 +644,6 @@ function initSettingsControls() {
     window._settingsCurrencyInterval = CFG.currencyUpdateInterval;
     saveSettings();
   });
-  // Grafiche
   document.getElementById('set-lightTheme')?.classList.toggle('checked', !!CFG.lightTheme);
   document.getElementById('set-lightTheme')?.addEventListener('click', () => {
     CFG.lightTheme = !CFG.lightTheme;
@@ -648,8 +663,7 @@ function initSettingsControls() {
     saveSettings(); applySettings();
   });
 
-  // Audio
-  const radioVolEl = document.getElementById('set-radioVolume');
+  const radioVolEl  = document.getElementById('set-radioVolume');
   const radioVolVal = document.getElementById('set-radioVol-val');
   if (radioVolEl) { radioVolEl.value = CFG.radioVolume; if (radioVolVal) radioVolVal.textContent = CFG.radioVolume; }
   radioVolEl?.addEventListener('input', e => {
@@ -670,7 +684,6 @@ function initSettingsControls() {
     saveSettings(); applySettings();
   });
 
-  // Keybinds reali
   document.addEventListener('keydown', e => {
     if (e.target.tagName === 'INPUT') return;
     if (e.key === 'Home') { document.getElementById('btn-center')?.click(); }
@@ -694,30 +707,23 @@ function initSettingsControls() {
 function applySettings() {
   window._settingsCurrencyInterval = CFG.currencyUpdateInterval;
 
-  // cursore canvas
   const canvas = document.getElementById('game-canvas');
   if (canvas) canvas.style.cursor = CFG.useGameCursor ? 'grab' : 'default';
 
-  // tema
   document.documentElement.setAttribute('data-theme', CFG.lightTheme ? 'light' : 'dark');
 
-  // griglia / connessioni
   window._cfgShowConnections = CFG.showConnections;
   window._cfgShowGrid        = CFG.showGrid;
 
-  // scala UI — agisce su sidebar, panels, radio, leveling, stats bar
   const scale = CFG.uiScale / 100;
   document.documentElement.style.setProperty('--ui-scale', scale);
-  // scala elementi UI — usa zoom su elementi che hanno già transform propri
   const spb = document.querySelector('#stats-pinned-bar');
   if (spb) spb.style.zoom = scale;
-  // sidebar e panels: font-size relativo
   const sw = document.getElementById('sidebar-wrapper');
   if (sw) sw.style.zoom = scale;
   if (window.innerWidth > 900) {
     document.querySelectorAll('.game-panel').forEach(el => { el.style.zoom = scale; });
   }
-  // radio
   const rw = document.getElementById('radio-widget');
   if (rw) rw.style.zoom = scale;
 
@@ -729,7 +735,6 @@ function applySettings() {
   window._cfgBuyMaxBoards  = CFG.buyMaxBoards;
   if (typeof syncBuyMaxPointUpgradesRow === 'function') syncBuyMaxPointUpgradesRow();
 
-  // radio
   if (typeof Radio !== 'undefined') {
     Radio.setVolume(CFG.radioVolume / 100);
     Radio.setMuted(CFG.radioMuted);
@@ -755,12 +760,12 @@ function buildMobileTabBar() {
   if (!bar) return;
 
   const MBB_ITEMS = [
-    { id: 'settings',    panel: 'panel-settings'    },
-    { id: 'stats',       panel: 'panel-stats'        },
-    { id: 'achievements',panel: 'panel-achievements' },
-    { id: 'leaderboard', panel: 'panel-leaderboard'  },
-    { id: 'updatelog',   panel: 'panel-updatelog'    },
-    { id: 'maintenance', panel: 'panel-maintenance'  },
+    { id: 'settings',     panel: 'panel-settings'    },
+    { id: 'stats',        panel: 'panel-stats'        },
+    { id: 'achievements', panel: 'panel-achievements' },
+    { id: 'leaderboard',  panel: 'panel-leaderboard'  },
+    { id: 'updatelog',    panel: 'panel-updatelog'    },
+    { id: 'maintenance',  panel: 'panel-maintenance'  },
   ];
 
   MBB_ITEMS.forEach(item => {

@@ -32,15 +32,7 @@ const STATS_DEFS = {
       icon:    '✦',
       check:   () => G.hasPrestiged,
     },
-    {
-      id:      'automation',
-      label:   () => fmt(G.automation) + ' ✦',
-      rate:    () => {'+' + ftmAuto(G.autonio)},// gain a parte
-      color:   '#be453c',
-      bg:      'rgba(37, 20, 20, 0.13)',
-      icon:    '✦',
-      check:   () => G.hasPrestiged,
-    },
+
   ],
   levels: [
     {
@@ -176,6 +168,8 @@ function initStatsPanel() {
   _statLoadPins();
 
   document.querySelectorAll('.stats-tab').forEach(tab => {
+    if (tab.dataset.listenerAdded) return;
+    tab.dataset.listenerAdded = '1';
     tab.addEventListener('click', () => {
       document.querySelectorAll('.stats-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
@@ -245,12 +239,15 @@ function _statsUpdatePanel() {
     cnt.textContent = n + ' ' + (window._gt_pinned || 'PINNED');
   }
 
-  body.querySelectorAll('.stats-pin-btn').forEach(btn => {
-    btn.addEventListener('click', e => {
+  if (!body.dataset.delegated) {
+    body.dataset.delegated = '1';
+    body.addEventListener('click', e => {
+      const btn = e.target.closest('.stats-pin-btn');
+      if (!btn) return;
       e.stopPropagation();
       _statTogglePin(btn.dataset.sid);
     });
-  });
+  }
 }
 
 // ══════════════════════════════════════════════════════════════

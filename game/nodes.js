@@ -724,6 +724,7 @@ const NODE_DEFS = [
     onBuy: () => {
       G.fastAndFurious = true;
       if (typeof CFG !== 'undefined') {
+        CFG.buyMaxEnabled = true;
         CFG.buyMaxPointUpgrades = true;
         if (typeof saveSettings === 'function') saveSettings();
         if (typeof applySettings === 'function') applySettings();

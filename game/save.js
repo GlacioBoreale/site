@@ -133,6 +133,7 @@ let _cloudSaveTimer = null;
 const CLOUD_DEBOUNCE_MS = 15000;
 
 function scheduleCloudSave() {
+  console.log('[CLOUD] scheduleCloudSave called, logged in:', _cloudSaveLoggedIn());
   if (!_cloudSaveLoggedIn()) return;
   if (_cloudSaveTimer) clearTimeout(_cloudSaveTimer);
   _cloudSaveTimer = setTimeout(pushCloudSave, CLOUD_DEBOUNCE_MS);
@@ -143,6 +144,7 @@ function _cloudSaveLoggedIn() {
 }
 
 async function pushCloudSave() {
+  console.log('[CLOUD] pushCloudSave called, logged in:', _cloudSaveLoggedIn());
   if (!_cloudSaveLoggedIn()) return;
   try {
     const save = buildSaveObj();

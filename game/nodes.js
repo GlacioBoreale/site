@@ -620,7 +620,7 @@ const NODE_DEFS = [
         { text: gt('nodes.prestigeReset'), color: null },
         { text: gt('nodes.prestigeReset2'), color: null },
         G.points >= 10e15
-          ? { text: `\u20bd \u2192 +${fmt(gain)} \u2726`, color: '#C39131' }
+          ? { text: `\u20bd \u2192 +${fmt(gain)} \u00a5`, color: '#C39131' }
           : { text: gt('nodes.prestigeNeedPoints'), color: '#f87171' },
       ];
     },
@@ -628,7 +628,7 @@ const NODE_DEFS = [
     baseCost: 0,
     costScale: 1,
     zone: 'prestige',
-    statLabel: () => G.prestige > 0 ? `${fmt(G.prestige)} \u2726 total` : '',
+    statLabel: () => G.prestige > 0 ? `${fmt(G.prestige)} \u00a5 total` : '',
     parents: ['nowWithExponents'],
     permanent: true,
     onBuy: () => {},
@@ -738,14 +738,14 @@ const NODE_DEFS = [
     label: '#10p',
     title: 'Generic Filler',
     desc: [
-      { text: 'x2 \u20bd and x2 \u2726 gain', color: '#fbbf24' },
+      { text: 'x2 \u20bd and x2 \u00a5 gain', color: '#fbbf24' },
     ],
     maxLevel: 1,
     baseCost: 20,
     costScale: 1,
     costInPrestige: true,
     zone: 'prestige',
-    statLabel: (lvl) => lvl > 0 ? 'x2 \u20bd | x2 \u2726' : '',
+    statLabel: (lvl) => lvl > 0 ? 'x2 \u20bd | x2 \u00a5' : '',
     parents: ['fastAndFurious'],
     onBuy: () => { G.flatMulti *= 2; G.prestigeGainMulti *= 2; recalcPps(); },
   },
@@ -865,7 +865,7 @@ const NODE_DEFS = [
     title: 'Holy Grail',
     desc: () => G.toNewHeightsUnlocked
       ? [{ text: '\u20bd boosted by Prestige', color: '#fbbf24' },
-         { text: 'x((\u2726+5)^0.4, min 1)', color: '#4ade80' }]
+         { text: 'x((\u00a5+5)^0.4, min 1)', color: '#4ade80' }]
       : [{ text: _nd.p3(), color: '#f87171' },
          { text: _nd.p3zone(), color: '#f87171' }],
     maxLevel: 1,

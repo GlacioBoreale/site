@@ -48,6 +48,8 @@ const G = {
   leaderboardUnlocked: false,
   leaderboardOptIn:    false,
   autonio:           0,
+  bits:              0,
+  bitsUnlocked:      false,
 };
 
 // ─── STATO NODI ───────────────────────────────────────────────────────────────
@@ -100,7 +102,8 @@ const PRESTIGE_SCALE = 10e15;
 function pendingPrestige() {
   if (G.points <= 0) return 0;
   const lvlMPres = G.soloLevelingUnlocked ? levelMultiPrestige() : 1;
-  return (Math.pow(G.points / PRESTIGE_SCALE, 0.16) + G.prestige) * G.prestigeGainMulti * lvlMPres;
+  const gain = Math.pow(G.points / PRESTIGE_SCALE, 0.16) * G.prestigeGainMulti * lvlMPres;
+  return G.prestige + gain;
 }
 
 // ─── HELPERS / LEVELING ───────────────────────────────────────────────────────

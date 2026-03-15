@@ -296,7 +296,7 @@ function _rcUpdateDetail() {
 
 // BUY
 function _rcIsVisible(nd) {
-  // un nodo RC è visibile solo se tutti i parent RC sono stati acquistati 
+  if (nd.id === 'r_materialize2' && !G.mat2Unlocked && (nodeState['r_materialize']?.level ?? 0) < 1) return false;
   const rcParents = nd.parents.filter(pid => RC_NODES.includes(pid));
   if (rcParents.length === 0) return true;
   return rcParents.every(pid => (nodeState[pid]?.level ?? 0) >= 1);

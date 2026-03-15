@@ -464,7 +464,7 @@ function _fmtLbTime(sec) {
 const LB_TAB_META = {
   points:         { colLabel: 'Points',   fmtVal: r => fmt(r.points)              + ' ₽' },
   research:       { colLabel: 'Research', fmtVal: r => fmtLambda(r.research)      + ' λ' },
-  prestige:       { colLabel: 'Prestige', fmtVal: r => fmt(r.prestige)            + ' ✦' },
+  prestige:       { colLabel: 'Prestige', fmtVal: r => fmt(r.prestige)            + ' ¥' },
   xp_level:       { colLabel: 'Level',    fmtVal: r => 'Lv ' + (r.xp_level || 0) },
   total_time_sec: { colLabel: 'Time',     fmtVal: r => _fmtLbTime(r.total_time_sec) },
 };
@@ -570,6 +570,7 @@ function initLeaderboard() {
       G.leaderboardOptIn = !G.leaderboardOptIn;
       _syncLbOptinBtn();
       if (typeof saveGame === 'function') saveGame();
+      if (typeof scheduleCloudSave === 'function') scheduleCloudSave();
     });
   }
   _syncLbOptinBtn();

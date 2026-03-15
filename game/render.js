@@ -29,7 +29,7 @@ function getStatLabel(nd, lvl) {
   const raw = typeof nd.statLabel === 'function' ? nd.statLabel(lvl) : (nd.statLabel || '');
   let label = raw;
   if (raw && /x[\d.]/.test(raw) && !raw.includes('gain')) {
-    if (raw.includes('\u20bd') || raw.includes('\u03bb') || raw.includes('\u2726')) {
+    if (raw.includes('\u20bd') || raw.includes('\u03bb') || raw.includes('\u2726') || raw.includes('\u00a5')) {
       label = raw + ' gain';
     }
   }
@@ -228,7 +228,7 @@ function hexToRgba(hex, alpha) {
 function costStr(cost, isRNode, isPNode, isPrestNode) {
   if (isPrestNode && !G.hasPrestiged) return 'You need to prestige at least once';
   if (cost === 0) return 'Free';
-  if (isPrestNode || isPNode) return fmt(cost) + ' ✦';
+  if (isPrestNode || isPNode) return fmt(cost) + ' ¥';
   return isRNode ? fmtLambda(cost) + ' λ' : fmt(cost) + ' ₽';
 }
 
@@ -470,8 +470,8 @@ function drawCurrencyPanels(T) {
 
     {
       anchor: 'prestigeUnlock',
-      getValue: () => fmt(_currencyCache.prestige) + ' ✦',
-      getRate:  () => _currencyCache.pendingP > 0.005 ? '+' + fmt(_currencyCache.pendingP) + ' ✦ pending' : '',
+      getValue: () => fmt(_currencyCache.prestige) + ' ¥',
+      getRate:  () => _currencyCache.pendingP > 0.005 ? '+' + fmt(_currencyCache.pendingP) + ' ¥ pending' : '',
       color:    ZONE_COLORS.prestige.a,
       always:   false,
       check:    () => G.hasPrestiged,

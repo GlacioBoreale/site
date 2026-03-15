@@ -133,7 +133,6 @@ let _cloudSaveTimer = null;
 const CLOUD_DEBOUNCE_MS = 15000;
 
 function scheduleCloudSave() {
-  console.log('[CLOUD] scheduleCloudSave called, logged in:', _cloudSaveLoggedIn());
   if (!_cloudSaveLoggedIn()) return;
   if (_cloudSaveTimer) clearTimeout(_cloudSaveTimer);
   _cloudSaveTimer = setTimeout(pushCloudSave, CLOUD_DEBOUNCE_MS);
@@ -144,7 +143,6 @@ function _cloudSaveLoggedIn() {
 }
 
 async function pushCloudSave() {
-  console.log('[CLOUD] pushCloudSave called, logged in:', _cloudSaveLoggedIn());
   if (!_cloudSaveLoggedIn()) return;
   try {
     const save = buildSaveObj();
@@ -248,7 +246,7 @@ function topologicalSort() {
   return result;
 }
 
-setInterval(() => { saveGame(); scheduleCloudSave(); }, 10000);
+setInterval(() => { saveGame(); pushCloudSave(); }, 30000);
 
 function _onBeforeUnload() { saveGame(); pushCloudSave(); }
 window.addEventListener('beforeunload', _onBeforeUnload);

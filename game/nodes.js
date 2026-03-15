@@ -620,7 +620,7 @@ const NODE_DEFS = [
         { text: gt('nodes.prestigeReset'), color: null },
         { text: gt('nodes.prestigeReset2'), color: null },
         G.points >= 10e15
-          ? { text: `\u20bd \u2192 +${fmt(gain)} \u00a5`, color: '#C39131' }
+          ? { text: `\u20bd \u2192 +${fmtLambda(gain)} \u00a5`, color: '#C39131' }
           : { text: gt('nodes.prestigeNeedPoints'), color: '#f87171' },
       ];
     },
@@ -628,7 +628,7 @@ const NODE_DEFS = [
     baseCost: 0,
     costScale: 1,
     zone: 'prestige',
-    statLabel: () => G.prestige > 0 ? `${fmt(G.prestige)} \u00a5 total` : '',
+    statLabel: () => G.prestige > 0 ? `${fmtLambda(G.prestige)} \u00a5 total` : `\u00a5 = (\u20bd/10Qd)^0.16`,
     parents: ['nowWithExponents'],
     permanent: true,
     onBuy: () => {},

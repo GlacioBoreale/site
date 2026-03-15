@@ -15,6 +15,10 @@ const Api = (() => {
     if (body) opts.body = JSON.stringify(body);
     const r    = await fetch(API_BASE + path, opts);
     const data = await r.json();
+    if (r.status === 401 && token) {
+      Api.setToken(null);
+      if (typeof Auth !== 'undefined') Auth.logout();
+    }
     if (!r.ok) throw new Error(data.error || 'Request failed');
     return data;
   }

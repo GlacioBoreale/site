@@ -470,8 +470,8 @@ function drawCurrencyPanels(T) {
 
     {
       anchor: 'prestigeUnlock',
-      getValue: () => fmt(_currencyCache.prestige) + ' ¥',
-      getRate:  () => _currencyCache.pendingP > 0.005 ? '+' + fmt(_currencyCache.pendingP) + ' ¥ pending' : '',
+      getValue: () => fmtLambda(_currencyCache.prestige) + ' ¥',
+      getRate:  () => _currencyCache.pendingP > 0.005 ? '+' + fmtLambda(_currencyCache.pendingP) + ' ¥ pending' : '',
       color:    ZONE_COLORS.prestige.a,
       always:   false,
       check:    () => G.hasPrestiged,

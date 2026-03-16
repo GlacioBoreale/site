@@ -146,7 +146,7 @@ async function pushCloudSave() {
   if (!_cloudSaveLoggedIn()) return;
   try {
     const save = buildSaveObj();
-    await Api.save.put(
+    const result = await Api.save.put(
       save,
       Math.floor(G.points),
       parseFloat(G.prestige.toFixed(4)),
@@ -155,8 +155,9 @@ async function pushCloudSave() {
       parseFloat(G.research.toFixed(4)),
       Math.floor(G.totalTimeSec || 0),
     );
+    console.log('[CLOUD] save ok:', result);
   } catch (e) {
-    console.warn('Cloud save fallito:', e.message);
+    console.warn('[CLOUD] save fallito:', e.message, e);
   }
 }
 

@@ -436,14 +436,14 @@ function buildLeaderboardPanel() {
   <div class="lb-tabs">
     <button class="lb-tab active" data-lbtab="points"><i class="fas fa-coins"></i> Points</button>
     <button class="lb-tab" data-lbtab="research"><i class="fas fa-flask"></i> Research</button>
-    <button class="lb-tab" data-lbtab="prestige"><i class="fas fa-star"></i> Prestige</button>
+    <button class="lb-tab" data-lbtab="prestige"><i class="fas fa-yen-sign"></i> Prestige</button>
     <button class="lb-tab" data-lbtab="xp_level"><i class="fas fa-bolt"></i> XP Level</button>
     <button class="lb-tab" data-lbtab="total_time_sec"><i class="fas fa-clock"></i> Time</button>
   </div>
   <div class="lb-table-header">
     <span class="lb-th-rank">#</span>
-    <span class="lb-th-name">Username</span>
-    <span class="lb-th-val" id="lb-col-label">Points</span>
+    <span class="lb-th-name">USERNAME</span>
+    <span class="lb-th-val" id="lb-col-label">POINTS</span>
   </div>
   <div class="panel-body" id="lb-body">
     <div class="lb-loading"><i class="fas fa-spinner fa-spin"></i></div>
@@ -462,11 +462,11 @@ function _fmtLbTime(sec) {
 }
 
 const LB_TAB_META = {
-  points:         { colLabel: 'Points',   fmtVal: r => fmt(r.points)              + ' ₽' },
-  research:       { colLabel: 'Research', fmtVal: r => fmtLambda(r.research)      + ' λ' },
-  prestige:       { colLabel: 'Prestige', fmtVal: r => fmt(r.prestige)            + ' ¥' },
-  xp_level:       { colLabel: 'Level',    fmtVal: r => 'Lv ' + (r.xp_level || 0) },
-  total_time_sec: { colLabel: 'Time',     fmtVal: r => _fmtLbTime(r.total_time_sec) },
+  points:         { colLabel: 'Points',   color: '#ffffff', fmtVal: r => fmt(r.points)              + ' ₽' },
+  research:       { colLabel: 'Research', color: '#38bdf8', fmtVal: r => fmtLambda(r.research)      + ' λ' },
+  prestige:       { colLabel: 'Prestige', color: '#fbbf24', fmtVal: r => fmtLambda(r.prestige)       + ' ¥' },
+  xp_level:       { colLabel: 'Level',    color: '#a3e635', fmtVal: r => 'Lv ' + (r.xp_level || 0) },
+  total_time_sec: { colLabel: 'Time',     color: '#fb923c', fmtVal: r => _fmtLbTime(r.total_time_sec) },
 };
 
 let _lbData = null;
@@ -502,8 +502,9 @@ function renderLeaderboard() {
   const meta = LB_TAB_META[tab] || LB_TAB_META.points;
   const colLabel = document.getElementById('lb-col-label');
   if (colLabel) colLabel.textContent = meta.colLabel;
-  const rows   = [...(_lbData[tab] || [])];
+  const rows   = [...(_lbData[tab] || [])].slice(0, 10);
   const myUser = typeof Auth !== 'undefined' && Auth.isLoggedIn() ? Auth.getUser() : null;
+  const color  = meta.color || '#fff';
 
   if (!rows.length) {
     body.innerHTML = '<div class="panel-wip"><i class="fas fa-ranking-star"></i>Nessun dato</div>';
@@ -512,9 +513,8 @@ function renderLeaderboard() {
 
   body.innerHTML = rows.map((r, i) => {
     const isMe  = myUser && r.username === myUser.username;
-    const medal = i < 3;
     const pos   = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
-    return '<div class="lb-row' + (isMe ? ' lb-me' : '') + (medal ? ' lb-medal' : '') + '">' +
+    return '<div class="lb-row' + (isMe ? ' lb-me' : '') + '" style="--lb-color:' + color + '">' +
       '<span class="lb-pos">' + pos + '</span>' +
       '<span class="lb-name">' + r.username + '</span>' +
       '<span class="lb-val">' + meta.fmtVal(r) + '</span>' +

@@ -357,7 +357,7 @@ const NODE_DEFS = [
     title: 'Solo leveling',
     desc: () => G.rightSideUnlocked
       ? [{ text: 'Unlocks the', color: null },
-         { text: _nd.lc(), color: '#4ade80' },
+         { text: _nd.lc(), color: '#a3e635' },
          { text: _nd.perm(), color: '#f87171' }]
       : [{ text: _nd.right(), color: '#f87171' },
          { text: _nd.lockHint(), color: '#f87171' }],

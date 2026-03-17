@@ -577,32 +577,43 @@
 
 .lb-table-header {
   display: grid;
-  grid-template-columns: 48px 1fr auto;
-  padding: 0.4rem 1rem;
-  font-size: 0.7rem;
+  grid-template-columns: 52px 1fr auto;
+  padding: 0.35rem 1rem;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.68rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.3);
   border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
 }
-.lb-th-val { text-align: right; }
+.lb-th-rank { text-align: center; }
+.lb-th-val  { text-align: right; }
 
 .lb-row {
   display: grid;
-  grid-template-columns: 48px 1fr auto;
+  grid-template-columns: 52px 1fr auto;
   align-items: center;
-  padding: 0.55rem 1rem;
+  padding: 0.6rem 1rem;
   border-bottom: 1px solid rgba(255,255,255,0.04);
   transition: background 0.15s;
+  font-family: 'Fredoka', sans-serif;
 }
-.lb-row:hover { background: rgba(255,255,255,0.04); }
-.lb-row.lb-me { background: rgba(91,156,246,0.12); }
-.lb-row.lb-medal { background: rgba(255,255,255,0.03); }
-.lb-pos { font-size: 1.1rem; text-align: center; }
-.lb-name { font-size: 0.88rem; color: rgba(255,255,255,0.85); }
-.lb-val  { font-size: 0.82rem; color: rgba(255,255,255,0.55); text-align: right; font-variant-numeric: tabular-nums; }
-.lb-row.lb-me .lb-name { color: #5b9cf6; font-weight: 600; }
+.lb-row:nth-child(odd)  { background: rgba(255,255,255,0.015); }
+.lb-row:nth-child(even) { background: rgba(0,0,0,0.1); }
+.lb-row:hover { background: rgba(255,255,255,0.05) !important; }
+.lb-row.lb-me { background: rgba(91,156,246,0.1) !important; border-bottom-color: rgba(91,156,246,0.2); }
+.lb-pos  { font-size: 1.15rem; text-align: center; line-height: 1; }
+.lb-name { font-size: 0.92rem; font-weight: 600; color: #fff; }
+.lb-val  {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 0.88rem;
+  color: var(--lb-color, #fff);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.lb-row.lb-me .lb-name { color: #5b9cf6; }
 .lb-row.lb-me .lb-val  { color: #5b9cf6; }
 
 .lb-tabs {
@@ -611,12 +622,14 @@
   border-bottom: 1px solid rgba(255,255,255,0.08);
   overflow-x: auto;
   scrollbar-width: none;
+  flex-shrink: 0;
 }
 .lb-tabs::-webkit-scrollbar { display: none; }
 .lb-tab {
   flex: 1;
   min-width: 0;
   padding: 0.5rem 0.25rem;
+  font-family: 'Fredoka', sans-serif;
   font-size: 0.72rem;
   font-weight: 600;
   color: rgba(255,255,255,0.4);
@@ -628,7 +641,11 @@
   transition: color 0.15s, border-color 0.15s;
 }
 .lb-tab i { margin-right: 0.2rem; }
-.lb-tab.active { color: #fff; border-bottom-color: #5b9cf6; }
+.lb-tab[data-lbtab="points"].active         { color: #ffffff; border-bottom-color: #ffffff; }
+.lb-tab[data-lbtab="research"].active       { color: #38bdf8; border-bottom-color: #38bdf8; }
+.lb-tab[data-lbtab="prestige"].active       { color: #fbbf24; border-bottom-color: #fbbf24; }
+.lb-tab[data-lbtab="xp_level"].active       { color: #a3e635; border-bottom-color: #a3e635; }
+.lb-tab[data-lbtab="total_time_sec"].active { color: #fb923c; border-bottom-color: #fb923c; }
 .lb-tab:hover:not(.active) { color: rgba(255,255,255,0.7); }
 
 @media (max-width: 900px) {

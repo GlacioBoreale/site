@@ -34,8 +34,8 @@ const LP_BUFFS = [
   {
     id:          'presGain',
     req:         15,
-    labelActive: (lvl) => (1 + (lvl - 14) * 0.1).toFixed(1) + ' ✦ gain',
-    tooltip:     'x(1+(lvl-14)×0.1) ✦ gain',
+    labelActive: (lvl) => (1 + (lvl - 14) * 0.1).toFixed(1) + ' ¥ gain',
+    tooltip:     'x(1+(lvl-14)×0.1) ¥ gain',
   },
 ];
 

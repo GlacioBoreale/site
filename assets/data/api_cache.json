@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2026-03-18T19:56:10Z",
+  "updatedAt": "2026-03-18T20:37:29Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
-    "followers": 1185,
+    "followers": 1184,
     "url": "https://twitch.tv/glacioborealevt",
     "isLive": true,
     "stream": {
       "title": "#fnaf sta trasformato jumpscares in contenuti! | ► Vtuber ITA ◄ | !ds !ig",
       "game": "Just Chatting",
       "gameBoxArt": "https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg",
-      "viewers": 4,
+      "viewers": 3,
       "startedAt": "2026-03-18T19:30:06Z",
       "thumbnail": "https://static-cdn.jtvnw.net/previews-ttv/live_user_glacioborealevt-1280x720.jpg"
     },
@@ -43,28 +43,28 @@
     ],
     "randomClips": [
       {
-        "title": "Il saving, ez",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/ResourcefulDependableHamBatChest-8RO63Cu2CHD0E6H4",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CaJX_E_ETutwrtghw9BOh-A-preview-480x272.jpg",
-        "views": 53,
-        "duration": 14,
-        "creator": "dabidet87"
+        "title": "AHAHAAH",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/CoySilkyJuiceKappaRoss-wI0uSDy-6120KAAv",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/JjN_28CNLkg8vutdtCgALw/AT-cm%7CJjN_28CNLkg8vutdtCgALw-preview-480x272.jpg",
+        "views": 31,
+        "duration": 11.3,
+        "creator": "OriginalEromo"
       },
       {
-        "title": "Nuh-uh ✨✨",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/ImportantSmellyQueleaGrammarKing-g7bfcOfJhMxoUW_w",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/e_mYB4O233DnyYTMaFFv8A/AT-cm%7Ce_mYB4O233DnyYTMaFFv8A-preview-480x272.jpg",
-        "views": 33,
-        "duration": 11,
-        "creator": "dabidet87"
+        "title": "wtf is that sound",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/CuriousAdventurousDadHeyGuys-oDbHErbl88zzZ2WY",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/-4fptaA2xxK25fPM82dlmA/vod-1997814363-offset-5294-preview-480x272.jpg",
+        "views": 40,
+        "duration": 30,
+        "creator": "antokekt"
       },
       {
-        "title": "*fence di tronco di legno nero*",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/RealFairDinosaurPipeHype-PSVPhKBODLDg4H8G",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1276219802-preview-480x272.jpg",
-        "views": 35,
-        "duration": 8.6,
-        "creator": "Chompy_Sellino"
+        "title": "no scope memento🗿 (bello il no scope btw)",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/ElegantRelievedSashimiPJSugar-dkfv5Z1lAz_BQPEY",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/eiNtTXZH7-WdZQM_wUDxGA/AT-cm%7CeiNtTXZH7-WdZQM_wUDxGA-preview-480x272.jpg",
+        "views": 29,
+        "duration": 12.6,
+        "creator": "dabidet87"
       }
     ]
   },

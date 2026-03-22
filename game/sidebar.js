@@ -595,7 +595,17 @@ function _syncLbOptinBtn() {
   row.style.display = '';
 }
 
+let _lbInited = false;
+
 function initLeaderboard() {
+  _syncLbOptinBtn();
+  if (_lbInited) {
+    if (_lbLoaded) renderLeaderboard();
+    else loadLeaderboard();
+    return;
+  }
+  _lbInited = true;
+
   document.querySelectorAll('.lb-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
@@ -603,6 +613,7 @@ function initLeaderboard() {
       if (_lbLoaded) renderLeaderboard();
     });
   });
+
   const optBtn = document.getElementById('lb-optin-btn');
   if (optBtn) {
     optBtn.addEventListener('click', () => {
@@ -613,7 +624,7 @@ function initLeaderboard() {
       if (typeof scheduleCloudSave === 'function') scheduleCloudSave();
     });
   }
-  _syncLbOptinBtn();
+
   loadLeaderboard();
 }
 

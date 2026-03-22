@@ -535,10 +535,10 @@ function renderLeaderboard() {
         '<span class="lb-val">' + meta.fmtVal(r) + '</span>' +
         '</div>';
     } else {
-      html += '<div class="lb-row" style="--lb-color:' + color + '; opacity:0.22">' +
-        '<span class="lb-pos"><span class="lb-pos-num">' + (i + 1) + '</span></span>' +
-        '<span class="lb-name">—</span>' +
-        '<span class="lb-val">—</span>' +
+      html += '<div class="lb-row lb-empty">' +
+        '<span class="lb-pos">' + (i + 1) + '</span>' +
+        '<span class="lb-name"></span>' +
+        '<span class="lb-val"></span>' +
         '</div>';
     }
   }

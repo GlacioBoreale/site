@@ -1326,13 +1326,8 @@
 }
 
 .lb-rows {
-  flex: 1;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.06) transparent;
+  overflow: visible;
 }
-.lb-rows::-webkit-scrollbar { width: 3px; }
-.lb-rows::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.07); border-radius: 2px; }
 
 .lb-optin-row {
   display: flex;
@@ -1408,14 +1403,14 @@
 .lb-table-header {
   display: grid;
   grid-template-columns: 38px 1fr auto;
-  padding: 0.4rem 1.1rem;
+  padding: 0.3rem 1.1rem;
   font-family: 'Fredoka One', sans-serif;
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  color: rgba(255,255,255,0.28);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.25);
   flex-shrink: 0;
   border-bottom: 1px solid rgba(255,255,255,0.07);
-  background: rgba(255,255,255,0.02);
+  background: rgba(255,255,255,0.015);
 }
 .lb-th-rank { text-align: left; }
 .lb-th-name { text-align: left; }
@@ -1425,81 +1420,87 @@
   display: flex;
   flex-direction: column;
   padding: 0 !important;
-  overflow-y: auto;
+  overflow: visible;
 }
 
 .lb-row {
   display: grid;
   grid-template-columns: 38px 1fr auto;
   align-items: center;
-  padding: 0.55rem 1.1rem;
+  padding: 0.32rem 1.1rem;
   font-family: 'Fredoka', sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
+  border-radius: 0;
+  border: none;
   border-bottom: 1px solid rgba(255,255,255,0.04);
-  transition: background 0.12s;
+  transition: background 0.1s;
 }
-.lb-row:nth-child(odd)  { background: rgba(255,255,255,0.015); }
-.lb-row:nth-child(even) { background: rgba(0,0,0,0.1); }
-.lb-row:hover { background: rgba(255,255,255,0.05); }
+.lb-row:nth-child(odd)  { background: rgba(255,255,255,0.018); }
+.lb-row:nth-child(even) { background: rgba(0,0,0,0.12); }
+.lb-row:hover { background: rgba(255,255,255,0.05) !important; }
 
 .lb-row.lb-me {
-  background: rgba(91,156,246,0.1) !important;
-  border-left: 2px solid var(--lb-color, #5b9cf6);
+  background: rgba(91,156,246,0.12) !important;
+  border-left: 2px solid rgba(91,156,246,0.6);
 }
+.lb-row.lb-me .lb-name { color: #7eb8f7; }
+.lb-row.lb-me .lb-val  { color: #7eb8f7; }
 
 .lb-row.lb-empty {
-  cursor: default;
-  opacity: 0.28;
+  opacity: 0.2;
+  pointer-events: none;
 }
-.lb-row.lb-empty:hover { background: inherit; }
 
 .lb-pos {
-  font-family: 'Fredoka One', sans-serif;
-  font-size: 0.88rem;
-  color: rgba(255,255,255,0.4);
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.35);
   text-align: left;
+  line-height: 1;
 }
-.lb-row.lb-top3 .lb-pos { font-size: 1rem; }
 
 .lb-name {
+  font-family: 'Fredoka', sans-serif;
   font-weight: 600;
+  font-size: 0.88rem;
   color: #fff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  padding-right: 0.4rem;
 }
-.lb-row.lb-empty .lb-name { color: rgba(255,255,255,0.0); }
 
 .lb-val {
   font-family: 'Fredoka One', sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   color: var(--lb-color, #fff);
   text-align: right;
   white-space: nowrap;
 }
-.lb-row.lb-empty .lb-val { color: rgba(255,255,255,0.0); }
 
 .lb-separator {
   height: 1px;
-  background: rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.12);
   margin: 0;
   flex-shrink: 0;
 }
 
+/* Riga posizione utente — fissa in fondo, separata dalla top */
+/* Per estendere la top a 25: aumentare il loop in renderLeaderboard da 10 a 25 */
 .lb-my-row {
   display: grid;
   grid-template-columns: 38px 1fr auto;
   align-items: center;
-  padding: 0.55rem 1.1rem;
+  padding: 0.38rem 1.1rem;
   font-family: 'Fredoka', sans-serif;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   background: rgba(91,156,246,0.08);
-  border-top: 1px solid rgba(91,156,246,0.2);
+  border-top: 1px solid rgba(91,156,246,0.18);
   flex-shrink: 0;
 }
-.lb-my-pos  { font-family: 'Fredoka One', sans-serif; font-size: 0.88rem; color: rgba(255,255,255,0.5); }
-.lb-my-name { font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.lb-my-val  { font-family: 'Fredoka One', sans-serif; font-size: 0.9rem; color: var(--lb-color, #5b9cf6); text-align: right; white-space: nowrap; }
+.lb-my-pos  { font-family: 'Fredoka', sans-serif; font-size: 0.82rem; color: rgba(255,255,255,0.45); }
+.lb-my-name { font-weight: 600; color: #7eb8f7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 0.4rem; }
+.lb-my-val  { font-family: 'Fredoka One', sans-serif; font-size: 0.82rem; color: #7eb8f7; text-align: right; white-space: nowrap; }
 
 .lb-loading {
   display: flex;

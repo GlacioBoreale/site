@@ -1320,13 +1320,23 @@
 .lb-table {
   display: flex;
   flex-direction: column;
-  flex: 1;
   overflow: hidden;
-  min-height: 0;
 }
 
 .lb-rows {
-  overflow: visible;
+  overflow: hidden;
+  /* altezza esatta per 10 righe: padding 0.64rem + testo ~1.23rem per riga */
+  height: calc(10 * (0.64rem + 1.23rem));
+}
+
+.lb-footer {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.lb-footer.lb-footer--visible {
+  border-top: 2px solid rgba(255,255,255,0.08);
 }
 
 .lb-optin-row {

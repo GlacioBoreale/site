@@ -446,11 +446,14 @@ function buildLeaderboardPanel() {
       <span class="lb-th-name">USERNAME</span>
       <span class="lb-th-val" id="lb-col-label">POINTS</span>
     </div>
-    <div class="lb-rows" id="lb-rows"></div>
-    <div class="lb-divider" id="lb-divider" style="display:none"></div>
-    <div id="lb-me-row"></div>
-    <div id="lb-guest-note"></div>
-    <div class="lb-loading" id="lb-loading"><i class="fas fa-spinner fa-spin"></i></div>
+    <div class="lb-rows" id="lb-rows">
+      <div class="lb-loading" id="lb-loading"><i class="fas fa-spinner fa-spin"></i></div>
+    </div>
+    <div class="lb-footer" id="lb-footer">
+      <div class="lb-separator" id="lb-divider" style="display:none"></div>
+      <div id="lb-me-row"></div>
+      <div id="lb-guest-note"></div>
+    </div>
   </div>
 </div>`;
 }
@@ -480,8 +483,7 @@ async function loadLeaderboard() {
   const loadingEl = document.getElementById('lb-loading');
   const rowsEl    = document.getElementById('lb-rows');
   if (!rowsEl) return;
-  if (loadingEl) loadingEl.style.display = 'flex';
-  rowsEl.innerHTML = '';
+  if (loadingEl) { loadingEl.style.display = 'flex'; rowsEl.innerHTML = ''; rowsEl.appendChild(loadingEl); }
   try {
     if (typeof Api === 'undefined') throw new Error('no api');
     const raw = await Api.leaderboard.get();
@@ -503,7 +505,7 @@ async function loadLeaderboard() {
   }
 }
 
-function renderLeaderboard() {
+function renderLeaderboard(forcedTab) {
   const rowsEl    = document.getElementById('lb-rows');
   const dividerEl = document.getElementById('lb-divider');
   const meRowEl   = document.getElementById('lb-me-row');
@@ -511,7 +513,7 @@ function renderLeaderboard() {
   const colLabel  = document.getElementById('lb-col-label');
   if (!rowsEl || !_lbData) return;
 
-  const tab   = document.querySelector('.lb-tab.active')?.dataset.lbtab || 'points';
+  const tab   = forcedTab || document.querySelector('.lb-tab.active')?.dataset.lbtab || 'points';
   const meta  = LB_TAB_META[tab] || LB_TAB_META.points;
   const color = meta.color || '#fff';
   if (colLabel) colLabel.textContent = meta.colLabel;
@@ -520,17 +522,13 @@ function renderLeaderboard() {
   const allRows = [...(_lbData[tab] || [])];
   const top10   = allRows.slice(0, 10);
 
-  const MEDALS = ['🥇', '🥈', '🥉'];
   let html = '';
   for (let i = 0; i < 10; i++) {
     const r    = top10[i];
     const isMe = myUser && r && r.username === myUser.username;
-    const posStr = i < 3
-      ? MEDALS[i]
-      : '<span class="lb-pos-num">' + (i + 1) + '</span>';
     if (r) {
       html += '<div class="lb-row' + (isMe ? ' lb-me' : '') + '" style="--lb-color:' + color + '">' +
-        '<span class="lb-pos">' + posStr + '</span>' +
+        '<span class="lb-pos">' + (i + 1) + '</span>' +
         '<span class="lb-name">' + r.username + '</span>' +
         '<span class="lb-val">' + meta.fmtVal(r) + '</span>' +
         '</div>';
@@ -544,27 +542,28 @@ function renderLeaderboard() {
   }
   rowsEl.innerHTML = html;
 
-  const myInTop = myUser && top10.some(r => r && r.username === myUser.username);
-  const myIdx   = myUser ? allRows.findIndex(r => r && r.username === myUser.username) : -1;
+  const myInTop  = myUser && top10.some(r => r && r.username === myUser.username);
+  const myIdx    = myUser ? allRows.findIndex(r => r && r.username === myUser.username) : -1;
+  const footerEl = document.getElementById('lb-footer');
+
+  if (dividerEl) dividerEl.style.display = 'none';
 
   if (myUser && !myInTop && myIdx !== -1) {
     const r = allRows[myIdx];
-    if (dividerEl) dividerEl.style.display = '';
     if (meRowEl) meRowEl.innerHTML =
       '<div class="lb-me-row" style="--lb-color:' + color + '">' +
-      '<span class="lb-pos"><span class="lb-pos-num">' + (myIdx + 1) + '</span></span>' +
-      '<span class="lb-name">' + r.username + ' <span style="font-size:0.7rem;opacity:0.55">(tu)</span></span>' +
-      '<span class="lb-val">' + meta.fmtVal(r) + '</span>' +
+      '<span class="lb-my-pos">' + (myIdx + 1) + '</span>' +
+      '<span class="lb-my-name">' + r.username + ' <span style="font-size:0.7rem;opacity:0.55">(tu)</span></span>' +
+      '<span class="lb-my-val">' + meta.fmtVal(r) + '</span>' +
       '</div>';
+    if (guestEl) guestEl.innerHTML = '';
+    if (footerEl) footerEl.classList.add('lb-footer--visible');
   } else {
-    if (dividerEl) dividerEl.style.display = 'none';
-    if (meRowEl)   meRowEl.innerHTML = '';
-  }
-
-  if (guestEl) {
-    guestEl.innerHTML = !myUser
+    if (meRowEl) meRowEl.innerHTML = '';
+    if (guestEl) guestEl.innerHTML = !myUser
       ? '<div class="lb-guest-note"><i class="fas fa-circle-info"></i> Accedi per apparire in classifica</div>'
       : '';
+    if (footerEl) footerEl.classList.toggle('lb-footer--visible', !myUser);
   }
 }
 
@@ -610,7 +609,7 @@ function initLeaderboard() {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
-      if (_lbLoaded) renderLeaderboard();
+      if (_lbLoaded) renderLeaderboard(tab.dataset.lbtab);
     });
   });
 

@@ -440,13 +440,17 @@ function buildLeaderboardPanel() {
     <button class="lb-tab" data-lbtab="xp_level"><i class="fas fa-bolt"></i> XP Level</button>
     <button class="lb-tab" data-lbtab="total_time_sec"><i class="fas fa-clock"></i> Time</button>
   </div>
-  <div class="lb-table-header">
-    <span class="lb-th-rank">#</span>
-    <span class="lb-th-name">USERNAME</span>
-    <span class="lb-th-val" id="lb-col-label">POINTS</span>
-  </div>
-  <div class="panel-body" id="lb-body">
-    <div class="lb-loading"><i class="fas fa-spinner fa-spin"></i></div>
+  <div class="lb-table">
+    <div class="lb-table-header">
+      <span class="lb-th-rank">#</span>
+      <span class="lb-th-name">USERNAME</span>
+      <span class="lb-th-val" id="lb-col-label">POINTS</span>
+    </div>
+    <div class="lb-rows" id="lb-rows"></div>
+    <div class="lb-divider" id="lb-divider" style="display:none"></div>
+    <div id="lb-me-row"></div>
+    <div id="lb-guest-note"></div>
+    <div class="lb-loading" id="lb-loading"><i class="fas fa-spinner fa-spin"></i></div>
   </div>
 </div>`;
 }
@@ -462,20 +466,22 @@ function _fmtLbTime(sec) {
 }
 
 const LB_TAB_META = {
-  points:         { colLabel: 'Points',   color: '#ffffff', fmtVal: r => fmt(r.points)              + ' ₽' },
-  research:       { colLabel: 'Research', color: '#38bdf8', fmtVal: r => fmtLambda(r.research)      + ' λ' },
-  prestige:       { colLabel: 'Prestige', color: '#fbbf24', fmtVal: r => fmtLambda(r.prestige)       + ' ¥' },
-  xp_level:       { colLabel: 'Level',    color: '#a3e635', fmtVal: r => 'Lv ' + (r.xp_level || 0) },
-  total_time_sec: { colLabel: 'Time',     color: '#fb923c', fmtVal: r => _fmtLbTime(r.total_time_sec) },
+  points:         { colLabel: 'POINTS',   color: '#ffffff', fmtVal: r => fmt(r.points)              + ' ₽' },
+  research:       { colLabel: 'RESEARCH', color: '#38bdf8', fmtVal: r => fmtLambda(r.research)      + ' λ' },
+  prestige:       { colLabel: 'PRESTIGE', color: '#fbbf24', fmtVal: r => fmtLambda(r.prestige)      + ' ¥' },
+  xp_level:       { colLabel: 'LEVEL',    color: '#a3e635', fmtVal: r => 'Lv ' + (r.xp_level || 0) },
+  total_time_sec: { colLabel: 'TIME',     color: '#fb923c', fmtVal: r => _fmtLbTime(r.total_time_sec) },
 };
 
 let _lbData = null;
 let _lbLoaded = false;
 
 async function loadLeaderboard() {
-  const body = document.getElementById('lb-body');
-  if (!body) return;
-  body.innerHTML = '<div class="lb-loading"><i class="fas fa-spinner fa-spin"></i></div>';
+  const loadingEl = document.getElementById('lb-loading');
+  const rowsEl    = document.getElementById('lb-rows');
+  if (!rowsEl) return;
+  if (loadingEl) loadingEl.style.display = 'flex';
+  rowsEl.innerHTML = '';
   try {
     if (typeof Api === 'undefined') throw new Error('no api');
     const raw = await Api.leaderboard.get();
@@ -488,43 +494,77 @@ async function loadLeaderboard() {
       throw new Error('unexpected format');
     }
     _lbLoaded = true;
+    if (loadingEl) loadingEl.style.display = 'none';
     renderLeaderboard();
   } catch (err) {
     console.error('[LB error]', err);
-    body.innerHTML = '<div class="panel-wip"><i class="fas fa-ranking-star"></i>Nessun dato</div>';
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (rowsEl) rowsEl.innerHTML = '<div class="panel-wip"><i class="fas fa-ranking-star"></i>Nessun dato</div>';
   }
 }
 
 function renderLeaderboard() {
-  const body = document.getElementById('lb-body');
-  if (!body || !_lbData) return;
-  const tab  = document.querySelector('.lb-tab.active')?.dataset.lbtab || 'points';
-  const meta = LB_TAB_META[tab] || LB_TAB_META.points;
-  const colLabel = document.getElementById('lb-col-label');
+  const rowsEl    = document.getElementById('lb-rows');
+  const dividerEl = document.getElementById('lb-divider');
+  const meRowEl   = document.getElementById('lb-me-row');
+  const guestEl   = document.getElementById('lb-guest-note');
+  const colLabel  = document.getElementById('lb-col-label');
+  if (!rowsEl || !_lbData) return;
+
+  const tab   = document.querySelector('.lb-tab.active')?.dataset.lbtab || 'points';
+  const meta  = LB_TAB_META[tab] || LB_TAB_META.points;
+  const color = meta.color || '#fff';
   if (colLabel) colLabel.textContent = meta.colLabel;
-  const rows   = [...(_lbData[tab] || [])].slice(0, 10);
-  const myUser = typeof Auth !== 'undefined' && Auth.isLoggedIn() ? Auth.getUser() : null;
-  const color  = meta.color || '#fff';
 
-  if (!rows.length) {
-    body.innerHTML = '<div class="panel-wip"><i class="fas fa-ranking-star"></i>Nessun dato</div>';
-    return;
+  const myUser  = typeof Auth !== 'undefined' && Auth.isLoggedIn() ? Auth.getUser() : null;
+  const allRows = [...(_lbData[tab] || [])];
+  const top10   = allRows.slice(0, 10);
+
+  const MEDALS = ['🥇', '🥈', '🥉'];
+  let html = '';
+  for (let i = 0; i < 10; i++) {
+    const r    = top10[i];
+    const isMe = myUser && r && r.username === myUser.username;
+    const posStr = i < 3
+      ? MEDALS[i]
+      : '<span class="lb-pos-num">' + (i + 1) + '</span>';
+    if (r) {
+      html += '<div class="lb-row' + (isMe ? ' lb-me' : '') + '" style="--lb-color:' + color + '">' +
+        '<span class="lb-pos">' + posStr + '</span>' +
+        '<span class="lb-name">' + r.username + '</span>' +
+        '<span class="lb-val">' + meta.fmtVal(r) + '</span>' +
+        '</div>';
+    } else {
+      html += '<div class="lb-row" style="--lb-color:' + color + '; opacity:0.22">' +
+        '<span class="lb-pos"><span class="lb-pos-num">' + (i + 1) + '</span></span>' +
+        '<span class="lb-name">—</span>' +
+        '<span class="lb-val">—</span>' +
+        '</div>';
+    }
   }
+  rowsEl.innerHTML = html;
 
-  body.innerHTML = rows.map((r, i) => {
-    const isMe  = myUser && r.username === myUser.username;
-    const pos   = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
-    return '<div class="lb-row' + (isMe ? ' lb-me' : '') + '" style="--lb-color:' + color + '">' +
-      '<span class="lb-pos">' + pos + '</span>' +
-      '<span class="lb-name">' + r.username + '</span>' +
+  const myInTop = myUser && top10.some(r => r && r.username === myUser.username);
+  const myIdx   = myUser ? allRows.findIndex(r => r && r.username === myUser.username) : -1;
+
+  if (myUser && !myInTop && myIdx !== -1) {
+    const r = allRows[myIdx];
+    if (dividerEl) dividerEl.style.display = '';
+    if (meRowEl) meRowEl.innerHTML =
+      '<div class="lb-me-row" style="--lb-color:' + color + '">' +
+      '<span class="lb-pos"><span class="lb-pos-num">' + (myIdx + 1) + '</span></span>' +
+      '<span class="lb-name">' + r.username + ' <span style="font-size:0.7rem;opacity:0.55">(tu)</span></span>' +
       '<span class="lb-val">' + meta.fmtVal(r) + '</span>' +
       '</div>';
-  }).join('');
-  if (!myUser) {
-    const note = document.createElement('div');
-    note.className = 'lb-guest-note';
-    note.innerHTML = '<i class="fas fa-circle-info"></i> Accedi per apparire in classifica';
-    body.appendChild(note);
+  } else {
+    if (dividerEl) dividerEl.style.display = 'none';
+    if (meRowEl)   meRowEl.innerHTML = '';
+  }
+
+  if (guestEl) {
+    guestEl.innerHTML = !myUser
+      ? '<div class="lb-guest-note"><i class="fas fa-circle-info"></i> Accedi per apparire in classifica</div>'
+      : '';
   }
 }
 

@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-03-26T19:06:14Z",
+  "updatedAt": "2026-03-26T20:36:20Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
-    "followers": 1184,
+    "followers": 1185,
     "url": "https://twitch.tv/glacioborealevt",
-    "isLive": false,
+    "isLive": true,
     "stream": {
-      "title": "",
-      "game": "",
-      "gameBoxArt": "",
-      "viewers": 0,
-      "startedAt": "",
-      "thumbnail": ""
+      "title": "Should we be back? | ► Vtuber ITA ◄ | !ds !ig",
+      "game": "Just Chatting",
+      "gameBoxArt": "https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg",
+      "viewers": 2,
+      "startedAt": "2026-03-26T20:08:58Z",
+      "thumbnail": "https://static-cdn.jtvnw.net/previews-ttv/live_user_glacioborealevt-1280x720.jpg"
     },
     "offlineImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/101d761a-4950-4c4e-87f7-f81e912529c8-channel_offline_image-1920x1080.png",
     "topClips": [
@@ -43,28 +43,28 @@
     ],
     "randomClips": [
       {
-        "title": "AHAHAAH",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/CoySilkyJuiceKappaRoss-wI0uSDy-6120KAAv",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/JjN_28CNLkg8vutdtCgALw/AT-cm%7CJjN_28CNLkg8vutdtCgALw-preview-480x272.jpg",
-        "views": 31,
-        "duration": 11.3,
-        "creator": "OriginalEromo"
-      },
-      {
-        "title": "lo ho scammato (ezezezezez111!)",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/AgileFrailHamsterBigBrother-4EpT2lO-Enq1aGJe",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CMjefweBKU9pTvhJ6tWhiXg-preview-480x272.jpg",
-        "views": 27,
-        "duration": 34.9,
-        "creator": "dabidet87"
-      },
-      {
         "title": "Mi serve moderazione non Pix",
         "url": "https://www.twitch.tv/glacioborealevt/clip/PoliteSolidHawkEleGiggle-6wdUnkC3uEyFMwle",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1269549042-preview-480x272.jpg",
         "views": 28,
         "duration": 5,
         "creator": "BrainSedge"
+      },
+      {
+        "title": "When Tryhard hits...",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/InventiveApatheticApeTwitchRPG-b0Jt3pe210IVYMm2",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1122899254-preview-480x272.jpg",
+        "views": 59,
+        "duration": 48.8,
+        "creator": "GlacioBorealeVT"
+      },
+      {
+        "title": "Nixel Fuori Contesto",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/GrossAttractiveHeronANELE-YNXE5gsWGEIkit6p",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/T3ft3WDVxOYLFhhCJIreqQ/AT-cm%7CT3ft3WDVxOYLFhhCJIreqQ-preview-480x272.jpg",
+        "views": 36,
+        "duration": 7.6,
+        "creator": "Gennarix_"
       }
     ]
   },

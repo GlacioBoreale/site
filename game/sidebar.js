@@ -35,7 +35,7 @@ const ITEMS = [
   { id: 'achievements', icon: 'fa-trophy',       labelKey: 'sidebar.achievements', color: 'si-c-achiev',    panel: 'panel-achievements', wip: false },
   { id: 'menu',         icon: 'fa-bars',         labelKey: 'sidebar.menu',         color: '',               panel: null,                 wip: false },
   { id: 'leaderboard',  icon: 'fa-ranking-star', labelKey: 'sidebar.leaderboard',  color: 'si-c-leader',    panel: 'panel-leaderboard',  wip: false  },
-  { id: 'updatelog',    icon: 'fa-scroll',       labelKey: 'sidebar.updatelog',    color: 'si-c-updatelog', panel: 'panel-updatelog',    wip: true  },
+  { id: 'saves',        icon: 'fa-floppy-disk',  labelKey: 'sidebar.saves',        color: 'si-c-saves',     panel: 'panel-saves',        wip: false },
   { id: 'maintenance',  icon: 'fa-wrench',       labelKey: 'sidebar.maintenance',  color: 'si-c-maintain',  panel: 'panel-maintenance',  wip: true  },
 ];
 function _sbLabel(item) { return gt(item.labelKey) || item.labelKey; }
@@ -144,6 +144,7 @@ function openPanel(panelId) {
   if (panelId === 'panel-stats') initStatsPanel();
   if (panelId === 'panel-leaderboard') initLeaderboard();
   if (panelId === 'panel-settings') syncBuyMaxPointUpgradesRow();
+  if (panelId === 'panel-saves') initSavesPanel();
 }
 
 function syncBuyMaxPointUpgradesRow() {
@@ -190,7 +191,7 @@ function buildPanels() {
   insert(buildStatsPanel());
   insert(buildAchievementsPanel());
   insert(buildLeaderboardPanel());
-  insert(buildWipPanel('panel-updatelog',    'Update Log',   'fa-scroll',       'si-c-updatelog'));
+  insert(buildSavesPanel());
   insert(buildWipPanel('panel-maintenance',  'Manutenzione', 'fa-wrench',       'si-c-maintain'));
 
   document.querySelectorAll('.panel-close').forEach(btn => btn.addEventListener('click', closeAll));
@@ -629,6 +630,316 @@ function initLeaderboard() {
 
 function initLeaderboardPanel() { initLeaderboard(); }
 
+// ==========
+//  SAVES PANEL
+// ==========
+
+const SV_KEY        = 'glaciopia_saves';      // localStorage key per i 3 slot manuali
+const SV_AUTO_KEY   = 'glaciopia_autosave';   // localStorage key per l'autosave
+const SV_SAVE_CD    = 30000;   // 30s cooldown S e L
+const SV_LOAD_CD    = 30000;
+const SV_STAR_CD    = 1800000; // 30 min cooldown stella predefinita
+const SV_CONFIRM_MS = 15000;   // 15s hold-to-confirm
+const SV_AUTO_MS    = 180000;  // autosave ogni 3 min
+
+const _svCd  = { save: {}, load: {} }; // { slotId: timestamp }
+let   _svStarCdUntil = 0;
+let   _svConfirmTimer = null;
+let   _svConfirmRaf   = null;
+let   _svHealthTimer  = null;
+let   _svAutosaveInt  = null;
+
+function _svLoadSlots() {
+  try { return JSON.parse(localStorage.getItem(SV_KEY)) || {}; } catch { return {}; }
+}
+function _svSaveSlots(slots) {
+  localStorage.setItem(SV_KEY, JSON.stringify(slots));
+}
+function _svLoadAuto() {
+  try { return JSON.parse(localStorage.getItem(SV_AUTO_KEY)); } catch { return null; }
+}
+
+function _svFmtTime(sec) {
+  sec = Math.floor(sec || 0);
+  const d = Math.floor(sec / 86400);
+  const h = Math.floor((sec % 86400) / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  return d + 'd ' + String(h).padStart(2,'0') + 'h:' + String(m).padStart(2,'0') + 'm';
+}
+
+function buildSavesPanel() {
+  return `
+<div class="game-panel" id="panel-saves">
+  <div class="panel-header">
+    <span class="panel-title">
+      <div class="panel-title-icon si-c-saves"><i class="fas fa-floppy-disk"></i></div>
+      Salvataggi
+    </span>
+    <button class="panel-close"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="panel-body" id="sv-body"></div>
+</div>`;
+}
+
+function initSavesPanel() {
+  renderSavesPanel();
+  if (!_svAutosaveInt) {
+    _svAutosaveInt = setInterval(_svDoAutosave, SV_AUTO_MS);
+  }
+}
+
+function renderSavesPanel() {
+  const body = document.getElementById('sv-body');
+  if (!body) return;
+
+  const slots    = _svLoadSlots();
+  const autoSave = _svLoadAuto();
+  const now      = Date.now();
+
+  const defaultSlot = Object.keys(slots).find(k => slots[k]?.isDefault) || null;
+
+  let html = '';
+
+  for (let i = 1; i <= 3; i++) {
+    const id   = 'slot' + i;
+    const slot = slots[id];
+    const isEmpty = !slot;
+    const isDef   = defaultSlot === id;
+    const starLocked = !isEmpty && _svStarCdUntil > now && !isDef;
+
+    const saveCdLeft = (_svCd.save[id] || 0) - now;
+    const loadCdLeft = (_svCd.load[id] || 0) - now;
+    const saveDis = saveCdLeft > 0;
+    const loadDis = loadCdLeft > 0 || isEmpty;
+    const delDis  = isEmpty;
+
+    const timeStr = slot ? _svFmtTime(slot.totalTimeSec || 0) : '';
+
+    html += `
+    <div class="sv-slot${isEmpty ? ' sv-empty' : ''}" data-slot="${id}">
+      <span class="sv-star${isDef ? ' active' : ''}${starLocked ? ' locked' : ''}" data-star="${id}" title="Predefinito (classifica)">
+        ${isDef ? '★' : '☆'}
+      </span>
+      <div class="sv-info">
+        <span class="sv-name">Save #${i}${isEmpty ? ' — vuoto' : ''}</span>
+        ${!isEmpty ? `<span class="sv-time">Time: ${timeStr}</span>` : ''}
+      </div>
+      <div class="sv-actions">
+        <button class="sv-btn sv-save" data-slot="${id}" title="Salva" ${saveDis ? 'disabled' : ''}>
+          <i class="fas fa-floppy-disk"></i>
+          <span class="sv-btn-cooldown" id="sv-cd-save-${id}"></span>
+        </button>
+        <button class="sv-btn sv-load" data-slot="${id}" title="Carica" ${loadDis ? 'disabled' : ''}>
+          <i class="fas fa-file-import"></i>
+          <span class="sv-btn-cooldown" id="sv-cd-load-${id}"></span>
+        </button>
+        <button class="sv-btn sv-del" data-slot="${id}" title="Elimina" ${delDis ? 'disabled' : ''}>
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>`;
+  }
+
+  const autoTime = autoSave ? _svFmtTime(autoSave.totalTimeSec || 0) : '';
+  html += `
+  <div class="sv-autosave">
+    <div class="sv-info">
+      <span class="sv-name">Autosave${autoSave ? '' : ' — vuoto'}</span>
+      ${autoSave ? `<span class="sv-time">Time: ${autoTime}</span>` : ''}
+    </div>
+    <div class="sv-actions">
+      <button class="sv-btn sv-load" data-slot="auto" title="Carica autosave" ${!autoSave ? 'disabled' : ''}>
+        <i class="fas fa-file-import"></i>
+        <span class="sv-btn-cooldown" id="sv-cd-load-auto"></span>
+      </button>
+      <button class="sv-btn sv-del" data-slot="auto" title="Elimina autosave" ${!autoSave ? 'disabled' : ''}>
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+  </div>`;
+
+  html += `
+  <div class="sv-divider"></div>
+  <button class="sv-confirm-btn" id="sv-confirm-btn">
+    <span class="sv-confirm-fill" id="sv-confirm-fill"></span>
+    <i class="fas fa-shield-halved"></i>
+    <span id="sv-confirm-label">Tieni premuto per confermare</span>
+  </button>
+  <div class="sv-health" id="sv-health"></div>`;
+
+  body.innerHTML = html;
+  _svBindEvents();
+  _svRestartCooldownBars();
+}
+
+function _svBindEvents() {
+  document.querySelectorAll('.sv-star').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.star;
+      if (el.classList.contains('locked') || el.classList.contains('active')) return;
+      const slots = _svLoadSlots();
+      if (!slots[id]) return;
+      Object.keys(slots).forEach(k => { if (slots[k]) slots[k].isDefault = false; });
+      slots[id].isDefault = true;
+      _svSaveSlots(slots);
+      _svStarCdUntil = Date.now() + SV_STAR_CD;
+      renderSavesPanel();
+    });
+  });
+
+  document.querySelectorAll('.sv-btn.sv-save').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.slot;
+      const now = Date.now();
+      if ((_svCd.save[id] || 0) > now) return;
+      _svDoSave(id);
+      _svCd.save[id] = now + SV_SAVE_CD;
+      renderSavesPanel();
+      _svStartCooldownBar('sv-cd-save-' + id, SV_SAVE_CD);
+    });
+  });
+
+  document.querySelectorAll('.sv-btn.sv-load').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id  = btn.dataset.slot;
+      const now = Date.now();
+      if ((_svCd.load[id] || 0) > now) return;
+      _svDoLoad(id);
+      _svCd.load[id] = now + SV_LOAD_CD;
+      renderSavesPanel();
+      _svStartCooldownBar('sv-cd-load-' + id, SV_LOAD_CD);
+    });
+  });
+
+  document.querySelectorAll('.sv-btn.sv-del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.slot;
+      if (id === 'auto') {
+        localStorage.removeItem(SV_AUTO_KEY);
+      } else {
+        const slots = _svLoadSlots();
+        delete slots[id];
+        _svSaveSlots(slots);
+      }
+      renderSavesPanel();
+    });
+  });
+
+  const confirmBtn  = document.getElementById('sv-confirm-btn');
+  const confirmFill = document.getElementById('sv-confirm-fill');
+  const confirmLbl  = document.getElementById('sv-confirm-label');
+  if (!confirmBtn) return;
+
+  const startHold = () => {
+    if (_svConfirmTimer) return;
+    confirmBtn.classList.add('sv-confirm-active');
+    const start = Date.now();
+    const tick = () => {
+      const pct = Math.min(1, (Date.now() - start) / SV_CONFIRM_MS);
+      confirmFill.style.transform = 'scaleX(' + pct + ')';
+      if (pct < 1) {
+        _svConfirmRaf = requestAnimationFrame(tick);
+      } else {
+        _svRunHealthCheck();
+        resetHold();
+      }
+    };
+    _svConfirmRaf = requestAnimationFrame(tick);
+    _svConfirmTimer = setTimeout(() => {}, SV_CONFIRM_MS);
+  };
+
+  const resetHold = () => {
+    clearTimeout(_svConfirmTimer); _svConfirmTimer = null;
+    cancelAnimationFrame(_svConfirmRaf); _svConfirmRaf = null;
+    confirmBtn.classList.remove('sv-confirm-active');
+    confirmFill.style.transform = 'scaleX(0)';
+  };
+
+  confirmBtn.addEventListener('mousedown',   startHold);
+  confirmBtn.addEventListener('touchstart',  startHold, { passive: true });
+  confirmBtn.addEventListener('mouseup',     resetHold);
+  confirmBtn.addEventListener('mouseleave',  resetHold);
+  confirmBtn.addEventListener('touchend',    resetHold);
+  confirmBtn.addEventListener('touchcancel', resetHold);
+}
+
+function _svDoSave(slotId) {
+  const save = typeof buildSaveObj === 'function' ? buildSaveObj() : {};
+  save._savedAt    = Date.now();
+  const slots      = _svLoadSlots();
+  const isFirst    = Object.keys(slots).length === 0;
+  slots[slotId]    = { ...save, isDefault: isFirst && slotId === 'slot1' ? true : (slots[slotId]?.isDefault || false) };
+  _svSaveSlots(slots);
+}
+
+function _svDoLoad(slotId) {
+  try {
+    let data;
+    if (slotId === 'auto') {
+      data = _svLoadAuto();
+    } else {
+      const slots = _svLoadSlots();
+      data = slots[slotId];
+    }
+    if (!data) return;
+    if (typeof applysave === 'function') applysave(data);
+    if (typeof saveGame  === 'function') saveGame();
+  } catch (e) {
+    console.warn('[SV] Load failed:', e);
+  }
+}
+
+function _svDoAutosave() {
+  const save = typeof buildSaveObj === 'function' ? buildSaveObj() : {};
+  save._savedAt = Date.now();
+  localStorage.setItem(SV_AUTO_KEY, JSON.stringify(save));
+  const body = document.getElementById('sv-body');
+  if (body) renderSavesPanel();
+}
+
+function _svRunHealthCheck() {
+  const health = document.getElementById('sv-health');
+  if (!health) return;
+  clearTimeout(_svHealthTimer);
+  try {
+    const raw = localStorage.getItem('glaciopia_idle');
+    if (!raw) throw new Error('Nessun save locale trovato');
+    const parsed = JSON.parse(raw);
+    if (typeof parsed.points === 'undefined') throw new Error('Save corrotto');
+    health.className = 'sv-health ok';
+    health.textContent = '✓ Health check superato';
+  } catch (e) {
+    health.className = 'sv-health err';
+    health.textContent = '✗ ' + e.message;
+  }
+  _svHealthTimer = setTimeout(() => {
+    if (health) { health.className = 'sv-health'; health.textContent = ''; }
+  }, 10000);
+}
+
+function _svStartCooldownBar(elId, durationMs) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.style.transition = 'none';
+  el.style.transform  = 'scaleX(1)';
+  requestAnimationFrame(() => {
+    el.style.transition = 'transform ' + (durationMs / 1000) + 's linear';
+    el.style.transform  = 'scaleX(0)';
+  });
+}
+
+function _svRestartCooldownBars() {
+  const now = Date.now();
+  ['slot1','slot2','slot3'].forEach(id => {
+    const sLeft = (_svCd.save[id] || 0) - now;
+    const lLeft = (_svCd.load[id] || 0) - now;
+    if (sLeft > 0) _svStartCooldownBar('sv-cd-save-' + id, sLeft);
+    if (lLeft > 0) _svStartCooldownBar('sv-cd-load-' + id, lLeft);
+  });
+  const aLeft = (_svCd.load['auto'] || 0) - now;
+  if (aLeft > 0) _svStartCooldownBar('sv-cd-load-auto', aLeft);
+}
+
 function buildWipPanel(id, title, icon, colorClass) {
   return `
 <div class="game-panel" id="${id}">
@@ -815,7 +1126,7 @@ function buildMobileTabBar() {
     { id: 'stats',        panel: 'panel-stats'        },
     { id: 'achievements', panel: 'panel-achievements' },
     { id: 'leaderboard',  panel: 'panel-leaderboard'  },
-    { id: 'updatelog',    panel: 'panel-updatelog'    },
+    { id: 'saves',        panel: 'panel-saves'        },
     { id: 'maintenance',  panel: 'panel-maintenance'  },
   ];
 

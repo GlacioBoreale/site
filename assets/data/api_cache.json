@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-04-05T12:58:11Z",
+  "updatedAt": "2026-04-05T13:57:26Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
-    "followers": 1185,
+    "followers": 1188,
     "url": "https://twitch.tv/glacioborealevt",
-    "isLive": false,
+    "isLive": true,
     "stream": {
-      "title": "",
-      "game": "",
-      "gameBoxArt": "",
-      "viewers": 0,
-      "startedAt": "",
-      "thumbnail": ""
+      "title": "MODEL REVEAL!!! BUONA PASQUA!!! Nuovo server minecraft aperto a tutti! | ► Vtuber ITA ◄ | !ds !ig",
+      "game": "Just Chatting",
+      "gameBoxArt": "https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg",
+      "viewers": 13,
+      "startedAt": "2026-04-05T13:00:17Z",
+      "thumbnail": "https://static-cdn.jtvnw.net/previews-ttv/live_user_glacioborealevt-1280x720.jpg"
     },
     "offlineImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/101d761a-4950-4c4e-87f7-f81e912529c8-channel_offline_image-1920x1080.png",
     "topClips": [
@@ -43,20 +43,20 @@
     ],
     "randomClips": [
       {
-        "title": "è un disegno quello lo sai?",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableRenownedAuberginePMSTwin",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C979372397-preview-480x272.jpg",
-        "views": 39,
-        "duration": 7.1,
-        "creator": "andreaproob"
+        "title": "Mi serve moderazione non Pix",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/PoliteSolidHawkEleGiggle-6wdUnkC3uEyFMwle",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1269549042-preview-480x272.jpg",
+        "views": 28,
+        "duration": 5,
+        "creator": "BrainSedge"
       },
       {
-        "title": "lo ho scammato (ezezezezez111!)",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/AgileFrailHamsterBigBrother-4EpT2lO-Enq1aGJe",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CMjefweBKU9pTvhJ6tWhiXg-preview-480x272.jpg",
-        "views": 27,
-        "duration": 34.9,
-        "creator": "dabidet87"
+        "title": "*fence di tronco di legno nero*",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/RealFairDinosaurPipeHype-PSVPhKBODLDg4H8G",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1276219802-preview-480x272.jpg",
+        "views": 35,
+        "duration": 8.6,
+        "creator": "Chompy_Sellino"
       },
       {
         "title": "Il saving, ez",

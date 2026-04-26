@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-04-26T16:42:24Z",
+  "updatedAt": "2026-04-26T17:38:31Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
     "followers": 1189,
     "url": "https://twitch.tv/glacioborealevt",
-    "isLive": true,
+    "isLive": false,
     "stream": {
-      "title": "POTREMMO ESSERE TORNATI! | ► Vtuber ITA ◄ | !ds !ig",
-      "game": "Beat Saber",
-      "gameBoxArt": "https://static-cdn.jtvnw.net/ttv-boxart/503116_IGDB-144x192.jpg",
-      "viewers": 4,
-      "startedAt": "2026-04-26T14:10:49Z",
-      "thumbnail": "https://static-cdn.jtvnw.net/previews-ttv/live_user_glacioborealevt-1280x720.jpg"
+      "title": "",
+      "game": "",
+      "gameBoxArt": "",
+      "viewers": 0,
+      "startedAt": "",
+      "thumbnail": ""
     },
     "offlineImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/101d761a-4950-4c4e-87f7-f81e912529c8-channel_offline_image-1920x1080.png",
     "topClips": [
@@ -43,20 +43,12 @@
     ],
     "randomClips": [
       {
-        "title": "\"Perché non finisce?\"💀",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/InspiringCuriousWolfFrankerZ-x0jLKt-ggFr_O2mw",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/qNW9YMdIyyrfoIBa_ztpsA/AT-cm%7CqNW9YMdIyyrfoIBa_ztpsA-preview-480x272.jpg",
-        "views": 43,
-        "duration": 18.4,
-        "creator": "dabidet87"
-      },
-      {
-        "title": "è un disegno quello lo sai?",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableRenownedAuberginePMSTwin",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C979372397-preview-480x272.jpg",
-        "views": 39,
-        "duration": 7.1,
-        "creator": "andreaproob"
+        "title": "AHAHAAH",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/CoySilkyJuiceKappaRoss-wI0uSDy-6120KAAv",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/JjN_28CNLkg8vutdtCgALw/AT-cm%7CJjN_28CNLkg8vutdtCgALw-preview-480x272.jpg",
+        "views": 31,
+        "duration": 11.3,
+        "creator": "OriginalEromo"
       },
       {
         "title": "Pronto!!!!!!!",
@@ -65,6 +57,14 @@
         "views": 50,
         "duration": 10.5,
         "creator": "lucaop69"
+      },
+      {
+        "title": "\"Perché non finisce?\"💀",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/InspiringCuriousWolfFrankerZ-x0jLKt-ggFr_O2mw",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/qNW9YMdIyyrfoIBa_ztpsA/AT-cm%7CqNW9YMdIyyrfoIBa_ztpsA-preview-480x272.jpg",
+        "views": 43,
+        "duration": 18.4,
+        "creator": "dabidet87"
       }
     ]
   },

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-29T02:52:56Z",
+  "updatedAt": "2026-04-29T05:54:44Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,28 +43,28 @@
     ],
     "randomClips": [
       {
+        "title": "*fence di tronco di legno nero*",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/RealFairDinosaurPipeHype-PSVPhKBODLDg4H8G",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1276219802-preview-480x272.jpg",
+        "views": 35,
+        "duration": 8.6,
+        "creator": "Chompy_Sellino"
+      },
+      {
+        "title": "Il saving, ez",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/ResourcefulDependableHamBatChest-8RO63Cu2CHD0E6H4",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CaJX_E_ETutwrtghw9BOh-A-preview-480x272.jpg",
+        "views": 53,
+        "duration": 14,
+        "creator": "dabidet87"
+      },
+      {
         "title": "AHAHAAH",
         "url": "https://www.twitch.tv/glacioborealevt/clip/CoySilkyJuiceKappaRoss-wI0uSDy-6120KAAv",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/JjN_28CNLkg8vutdtCgALw/AT-cm%7CJjN_28CNLkg8vutdtCgALw-preview-480x272.jpg",
         "views": 31,
         "duration": 11.3,
         "creator": "OriginalEromo"
-      },
-      {
-        "title": "è un disegno quello lo sai?",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableRenownedAuberginePMSTwin",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C979372397-preview-480x272.jpg",
-        "views": 39,
-        "duration": 7.1,
-        "creator": "andreaproob"
-      },
-      {
-        "title": "face reaveal",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/NastyTardyRuffBuddhaBar-e6YHVBz2APguBcQX",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CFKYn33umB1Qc9gD4LgXEFw-preview-480x272.jpg",
-        "views": 39,
-        "duration": 5,
-        "creator": "auremdunknown"
       }
     ]
   },

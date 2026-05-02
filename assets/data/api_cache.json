@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-02T14:46:43Z",
+  "updatedAt": "2026-05-02T15:45:48Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,14 +43,6 @@
     ],
     "randomClips": [
       {
-        "title": "è un disegno quello lo sai?",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableRenownedAuberginePMSTwin",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C979372397-preview-480x272.jpg",
-        "views": 39,
-        "duration": 7.1,
-        "creator": "andreaproob"
-      },
-      {
         "title": "Nuh-uh ✨✨",
         "url": "https://www.twitch.tv/glacioborealevt/clip/ImportantSmellyQueleaGrammarKing-g7bfcOfJhMxoUW_w",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/e_mYB4O233DnyYTMaFFv8A/AT-cm%7Ce_mYB4O233DnyYTMaFFv8A-preview-480x272.jpg",
@@ -59,19 +51,27 @@
         "creator": "dabidet87"
       },
       {
-        "title": "Pronto!!!!!!!",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/MagnificentWittyInternThisIsSparta-ujpniueNUbiV-77b",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/58411f9e-18f1-4a70-aba4-33db15ba0c2d/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 50,
-        "duration": 10.5,
-        "creator": "lucaop69"
+        "title": "AHAHAAH",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/CoySilkyJuiceKappaRoss-wI0uSDy-6120KAAv",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/0d21e85a-1313-4df5-bcac-d0e93fc5768d/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 31,
+        "duration": 11.4,
+        "creator": "OriginalEromo"
+      },
+      {
+        "title": "*fence di tronco di legno nero*",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/RealFairDinosaurPipeHype-PSVPhKBODLDg4H8G",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1276219802-preview-480x272.jpg",
+        "views": 35,
+        "duration": 8.6,
+        "creator": "Chompy_Sellino"
       }
     ]
   },
   "youtube": {
     "displayName": "Glacio Boreale",
     "thumbnail": "https://yt3.ggpht.com/ouF6Phe2YjqSFMP7YdxYFTm5l9tyT0-MfdrfDJCcUt2mecJe8JV8h96luOECIiI9vtCjj9pX=s88-c-k-c0x00ffffff-no-rj",
-    "subscribers": 155,
+    "subscribers": 156,
     "url": "https://www.youtube.com/@glacioborealevt",
     "recentVideos": [
       {
@@ -80,7 +80,7 @@
         "thumbnail": "https://i.ytimg.com/vi/D6MsiuipRpo/mqdefault.jpg",
         "publishedAt": "2026-05-02T12:30:14Z",
         "url": "https://www.youtube.com/watch?v=D6MsiuipRpo",
-        "viewCount": 19
+        "viewCount": 22
       },
       {
         "title": "Non Pensavo che 2 Baroni Fossero Così FORTI [Reupload]",
@@ -96,7 +96,7 @@
         "thumbnail": "https://i.ytimg.com/vi/xg3McGnp1tc/mqdefault.jpg",
         "publishedAt": "2026-02-17T07:30:36Z",
         "url": "https://www.youtube.com/watch?v=xg3McGnp1tc",
-        "viewCount": 90
+        "viewCount": 89
       }
     ]
   },

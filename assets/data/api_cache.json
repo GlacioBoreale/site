@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-02T11:44:47Z",
+  "updatedAt": "2026-05-02T13:12:08Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,12 +43,12 @@
     ],
     "randomClips": [
       {
-        "title": "Mi serve moderazione non Pix",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/PoliteSolidHawkEleGiggle-6wdUnkC3uEyFMwle",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1269549042-preview-480x272.jpg",
-        "views": 28,
-        "duration": 5,
-        "creator": "BrainSedge"
+        "title": "Il saving, ez",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/ResourcefulDependableHamBatChest-8RO63Cu2CHD0E6H4",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CaJX_E_ETutwrtghw9BOh-A-preview-480x272.jpg",
+        "views": 53,
+        "duration": 14,
+        "creator": "dabidet87"
       },
       {
         "title": "è un disegno quello lo sai?",
@@ -59,12 +59,12 @@
         "creator": "andreaproob"
       },
       {
-        "title": "*fence di tronco di legno nero*",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/RealFairDinosaurPipeHype-PSVPhKBODLDg4H8G",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1276219802-preview-480x272.jpg",
-        "views": 35,
-        "duration": 8.6,
-        "creator": "Chompy_Sellino"
+        "title": "face reaveal",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/NastyTardyRuffBuddhaBar-e6YHVBz2APguBcQX",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CFKYn33umB1Qc9gD4LgXEFw-preview-480x272.jpg",
+        "views": 39,
+        "duration": 5,
+        "creator": "auremdunknown"
       }
     ]
   },
@@ -74,6 +74,14 @@
     "subscribers": 155,
     "url": "https://www.youtube.com/@glacioborealevt",
     "recentVideos": [
+      {
+        "title": "Minecraft Horror ma l'editor non ha pippato abbastanza",
+        "videoId": "D6MsiuipRpo",
+        "thumbnail": "https://i.ytimg.com/vi/D6MsiuipRpo/mqdefault.jpg",
+        "publishedAt": "2026-05-02T12:30:14Z",
+        "url": "https://www.youtube.com/watch?v=D6MsiuipRpo",
+        "viewCount": 16
+      },
       {
         "title": "Non Pensavo che 2 Baroni Fossero Così FORTI [Reupload]",
         "videoId": "MKUd3bB70Ko",
@@ -89,14 +97,6 @@
         "publishedAt": "2026-02-17T07:30:36Z",
         "url": "https://www.youtube.com/watch?v=xg3McGnp1tc",
         "viewCount": 89
-      },
-      {
-        "title": "ODIAVO Expedition 33, Ma Ora Sono Cambiato.",
-        "videoId": "62vl_jn_POY",
-        "thumbnail": "https://i.ytimg.com/vi/62vl_jn_POY/mqdefault.jpg",
-        "publishedAt": "2025-12-27T09:44:38Z",
-        "url": "https://www.youtube.com/watch?v=62vl_jn_POY",
-        "viewCount": 148
       }
     ]
   },

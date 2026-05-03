@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-03T08:46:00Z",
+  "updatedAt": "2026-05-03T10:04:14Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,35 +43,35 @@
     ],
     "randomClips": [
       {
+        "title": "è un disegno quello lo sai?",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableRenownedAuberginePMSTwin",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C979372397-preview-480x272.jpg",
+        "views": 39,
+        "duration": 7.1,
+        "creator": "andreaproob"
+      },
+      {
+        "title": "no scope memento🗿 (bello il no scope btw)",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/ElegantRelievedSashimiPJSugar-dkfv5Z1lAz_BQPEY",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/eiNtTXZH7-WdZQM_wUDxGA/AT-cm%7CeiNtTXZH7-WdZQM_wUDxGA-preview-480x272.jpg",
+        "views": 29,
+        "duration": 12.6,
+        "creator": "dabidet87"
+      },
+      {
         "title": "face reaveal",
         "url": "https://www.twitch.tv/glacioborealevt/clip/NastyTardyRuffBuddhaBar-e6YHVBz2APguBcQX",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CFKYn33umB1Qc9gD4LgXEFw-preview-480x272.jpg",
         "views": 39,
         "duration": 5,
         "creator": "auremdunknown"
-      },
-      {
-        "title": "Il saving, ez",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/ResourcefulDependableHamBatChest-8RO63Cu2CHD0E6H4",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7CaJX_E_ETutwrtghw9BOh-A-preview-480x272.jpg",
-        "views": 53,
-        "duration": 14,
-        "creator": "dabidet87"
-      },
-      {
-        "title": "\"Perché non finisce?\"💀",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/InspiringCuriousWolfFrankerZ-x0jLKt-ggFr_O2mw",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/qNW9YMdIyyrfoIBa_ztpsA/AT-cm%7CqNW9YMdIyyrfoIBa_ztpsA-preview-480x272.jpg",
-        "views": 43,
-        "duration": 18.4,
-        "creator": "dabidet87"
       }
     ]
   },
   "youtube": {
     "displayName": "Glacio Boreale",
     "thumbnail": "https://yt3.ggpht.com/ouF6Phe2YjqSFMP7YdxYFTm5l9tyT0-MfdrfDJCcUt2mecJe8JV8h96luOECIiI9vtCjj9pX=s88-c-k-c0x00ffffff-no-rj",
-    "subscribers": 157,
+    "subscribers": 159,
     "url": "https://www.youtube.com/@glacioborealevt",
     "recentVideos": [
       {

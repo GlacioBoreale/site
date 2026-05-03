@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-03T18:59:33Z",
+  "updatedAt": "2026-05-03T19:56:50Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -51,20 +51,20 @@
         "creator": "dabidet87"
       },
       {
-        "title": "Pronto!!!!!!!",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/MagnificentWittyInternThisIsSparta-ujpniueNUbiV-77b",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/58411f9e-18f1-4a70-aba4-33db15ba0c2d/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 50,
-        "duration": 10.5,
-        "creator": "lucaop69"
-      },
-      {
         "title": "Mi serve moderazione non Pix",
         "url": "https://www.twitch.tv/glacioborealevt/clip/PoliteSolidHawkEleGiggle-6wdUnkC3uEyFMwle",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/AT-cm%7C1269549042-preview-480x272.jpg",
         "views": 28,
         "duration": 5,
         "creator": "BrainSedge"
+      },
+      {
+        "title": "non ridete",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/EndearingConsiderateGazelle4Head-uRdAcYrWkqUWIEsi",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-clips/l53robkXQHGK1pKlFiBLIg/AT-cm%7Cl53robkXQHGK1pKlFiBLIg-preview-480x272.jpg",
+        "views": 26,
+        "duration": 28,
+        "creator": "schilla0"
       }
     ]
   },

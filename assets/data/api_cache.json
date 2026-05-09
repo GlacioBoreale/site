@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-05-09T14:50:27Z",
+  "updatedAt": "2026-05-09T15:52:35Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
     "followers": 1187,
     "url": "https://twitch.tv/glacioborealevt",
-    "isLive": true,
+    "isLive": false,
     "stream": {
-      "title": "Parlando con chat (in modo performativo)  (con orientamento orizzontale)| ► Vtuber ITA ◄ | !ds !ig",
-      "game": "PowerWash Simulator 2",
-      "gameBoxArt": "https://static-cdn.jtvnw.net/ttv-boxart/532988445_IGDB-144x192.jpg",
-      "viewers": 2,
-      "startedAt": "2026-05-09T13:26:18Z",
-      "thumbnail": "https://static-cdn.jtvnw.net/previews-ttv/live_user_glacioborealevt-1280x720.jpg"
+      "title": "",
+      "game": "",
+      "gameBoxArt": "",
+      "viewers": 0,
+      "startedAt": "",
+      "thumbnail": ""
     },
     "offlineImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/101d761a-4950-4c4e-87f7-f81e912529c8-channel_offline_image-1920x1080.png",
     "topClips": [
@@ -43,12 +43,20 @@
     ],
     "randomClips": [
       {
-        "title": "lo ho scammato (ezezezezez111!)",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/AgileFrailHamsterBigBrother-4EpT2lO-Enq1aGJe",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/bea0d82f-417a-44fa-b06f-1b12ea256955/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 27,
-        "duration": 34.9,
-        "creator": "dabidet87"
+        "title": "face reaveal",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/NastyTardyRuffBuddhaBar-e6YHVBz2APguBcQX",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d21ebf4b-0fb8-4254-850a-a9d87f52b6c7/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 39,
+        "duration": 5,
+        "creator": "auremdunknown"
+      },
+      {
+        "title": "Nixel Fuori Contesto",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/GrossAttractiveHeronANELE-YNXE5gsWGEIkit6p",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/168d92a3-fea4-481c-92c9-4dea74a052bf/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 36,
+        "duration": 7.7,
+        "creator": "Gennarix_"
       },
       {
         "title": "streamers luck ",
@@ -57,14 +65,6 @@
         "views": 55,
         "duration": 51.8,
         "creator": "sachiiscorner"
-      },
-      {
-        "title": "non ridete",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/EndearingConsiderateGazelle4Head-uRdAcYrWkqUWIEsi",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/6bd098a0-58a9-4716-adb1-9881ce4ed341/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 26,
-        "duration": 28,
-        "creator": "schilla0"
       }
     ]
   },
@@ -80,7 +80,7 @@
         "thumbnail": "https://i.ytimg.com/vi/D6MsiuipRpo/mqdefault.jpg",
         "publishedAt": "2026-05-02T12:30:14Z",
         "url": "https://www.youtube.com/watch?v=D6MsiuipRpo",
-        "viewCount": 124
+        "viewCount": 126
       },
       {
         "title": "Non Pensavo che 2 Baroni Fossero Così FORTI [Reupload]",

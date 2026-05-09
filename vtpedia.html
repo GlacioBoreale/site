@@ -7,7 +7,6 @@
     <meta name="keywords" content="Nixel Nova, Glacio Boreale, GlacioBorealeVT, GlacioBoreale, Glaciopia, VTuber italiano, VtuberIta, ITVtuber, streamer, content creator, Twitch, YouTube, Discord, Instagram, TikTok">
     <title>VTPedia - Glaciopia</title>
 
-    <!-- Open Graph / Discord e altro (spero) -->
     <meta property="og:type"        content="website">
     <meta property="og:url"         content="https://www.glaciopia.com/vtpedia.html">
     <meta property="og:title"       content="VTPedia — Glaciopia">
@@ -16,7 +15,6 @@
     <meta property="og:image:width"  content="1200">
     <meta property="og:image:height" content="267">
     <meta name="theme-color"        content="#667eea">
-    <!-- Twitter Card -->
     <meta name="twitter:card"        content="summary_large_image">
     <meta name="twitter:title"       content="VTPedia — Glaciopia">
     <meta name="twitter:description" content="L'enciclopedia dei VTuber italiani. Scopri i VTuber che fanno parte della community di Glaciopia!">
@@ -41,7 +39,7 @@
 </head>
 <body>
     <div id="navbar-placeholder"></div>
-    
+
     <div class="avviso" id="avviso">
         <span data-i18n="vtpedia.bannerText" class="banner-text">Per inviare un VTuber devi prima registrarti</span>
     </div>
@@ -51,25 +49,25 @@
             <h1 data-i18n="vtpedia.title">VTPedia</h1>
             <p class="subtitle" data-i18n="vtpedia.subtitle">Enciclopedia dei VTuber</p>
             <p class="description" data-i18n="vtpedia.description">Scopri i VTuber che hanno chiesto di partecipare a questa enciclopedia!</p>
-            
             <button class="submit-btn" id="submit-vtuber-btn">
                 <i class="fas fa-plus"></i>
                 <span data-i18n="vtpedia.submit">Invia un VTuber</span>
             </button>
         </section>
-        <section class="vtuber-grid" id="vtuber-grid">
-        </section>
+        <section class="vtuber-grid" id="vtuber-grid"></section>
     </main>
 
+    <!-- Submit popup -->
     <div class="popup submit-popup" id="submit-popup">
         <div class="popup-overlay" id="submit-popup-overlay"></div>
         <div class="popup-content submit-popup-content">
             <button class="popup-close" id="submit-popup-close"><i class="fas fa-times"></i></button>
             <div class="submit-popup-body">
+
                 <div class="submit-popup-header">
                     <i class="fas fa-paper-plane submit-icon"></i>
                     <h2 data-i18n="vtpedia.submitTitle">Invia il tuo VTuber</h2>
-                    <p data-i18n="vtpedia.submitSubtitle">Vuoi far parte della VTPedia? Leggi le regole e contattaci!</p>
+                    <p data-i18n="vtpedia.submitSubtitle">Compila il form — la richiesta arriverà direttamente al database.</p>
                 </div>
 
                 <div class="submit-rules">
@@ -77,22 +75,19 @@
                     <ul id="submit-rules-list">
                         <li data-i18n="vtpedia.rule1">Devi essere un VTuber attivo da almeno 3 mesi</li>
                         <li data-i18n="vtpedia.rule2">Devi avere almeno un canale attivo (Twitch, YouTube o simili)</li>
-                        <li data-i18n="vtpedia.rule3">Devi fornire almeno un'immagine del tuo avatar/modello</li>
-                        <li data-i18n="vtpedia.rule4">I contenuti del tuo canale devono essere adatti a un pubblico generale o chiaramente indicare i limiti d'età</li>
+                        <li data-i18n="vtpedia.rule3">Devi fornire almeno un'immagine del tuo avatar/modello (max 15 MB)</li>
+                        <li data-i18n="vtpedia.rule4">I contenuti devono essere adatti a un pubblico generale o chiaramente indicare i limiti d'età</li>
                         <li data-i18n="vtpedia.rule5">La richiesta deve essere inviata dal diretto interessato o con sua autorizzazione esplicita</li>
                         <li data-i18n="vtpedia.rule6">Ci riserviamo il diritto di rifiutare richieste senza obbligo di motivazione</li>
                     </ul>
                 </div>
 
                 <div class="submit-sponsor">
-                    <h3 data-i18n="vtpedia.sponsorTitle"><i class="fas fa-bullhorn"></i> Sponsorizzazione richiesta</h3>
-                    <p class="submit-sponsor-desc" data-i18n="vtpedia.sponsorDesc">Per essere incluso nella VTPedia, devi sponsorizzare Glaciopia sulla tua piattaforma principale. Scegli almeno una delle opzioni:</p>
+                    <h3><i class="fas fa-bullhorn"></i> <span data-i18n="vtpedia.sponsorTitle">Sponsorizzazione richiesta</span></h3>
+                    <p class="submit-sponsor-desc" data-i18n="vtpedia.sponsorDesc">Per essere incluso nella VTPedia devi sponsorizzare Glaciopia sulla tua piattaforma principale.</p>
 
                     <div class="sponsor-platform twitch-sponsor">
-                        <div class="sponsor-platform-header">
-                            <i class="fab fa-twitch"></i>
-                            <span>Twitch</span>
-                        </div>
+                        <div class="sponsor-platform-header"><i class="fab fa-twitch"></i> <span>Twitch</span></div>
                         <div class="sponsor-options">
                             <div class="sponsor-option">
                                 <i class="fas fa-link"></i>
@@ -117,10 +112,7 @@
                     </div>
 
                     <div class="sponsor-platform youtube-sponsor">
-                        <div class="sponsor-platform-header">
-                            <i class="fab fa-youtube"></i>
-                            <span>YouTube</span>
-                        </div>
+                        <div class="sponsor-platform-header"><i class="fab fa-youtube"></i> <span>YouTube</span></div>
                         <div class="sponsor-options">
                             <div class="sponsor-option">
                                 <i class="fas fa-link"></i>
@@ -133,10 +125,7 @@
                     </div>
 
                     <div class="sponsor-platform other-sponsor">
-                        <div class="sponsor-platform-header">
-                            <i class="fas fa-share-nodes"></i>
-                            <span data-i18n="vtpedia.sponsorOther">Altra piattaforma</span>
-                        </div>
+                        <div class="sponsor-platform-header"><i class="fas fa-share-nodes"></i> <span data-i18n="vtpedia.sponsorOther">Altra piattaforma</span></div>
                         <div class="sponsor-options">
                             <div class="sponsor-option">
                                 <i class="fas fa-link"></i>
@@ -148,51 +137,102 @@
                         </div>
                     </div>
 
-                    <p class="sponsor-note" data-i18n="vtpedia.sponsorNote">⚠️ Indica nell'email quale metodo hai scelto e su quale piattaforma, così possiamo verificarlo.</p>
+                    <p class="sponsor-note" data-i18n="vtpedia.sponsorNote">⚠️ Indica nel form quale metodo hai scelto e su quale piattaforma, così possiamo verificarlo.</p>
                 </div>
 
-                <div class="submit-how">
-                    <h3 data-i18n="vtpedia.howTitle"><i class="fas fa-envelope"></i> Come inviare la richiesta</h3>
-                    <p data-i18n="vtpedia.howDesc">Invia una email con i seguenti dati:</p>
-                    <div class="submit-fields">
-                        <div class="submit-field"><i class="fas fa-user"></i> <span data-i18n="vtpedia.fieldName">Nome del VTuber</span></div>
-                        <div class="submit-field"><i class="fas fa-link"></i> <span data-i18n="vtpedia.fieldChannel">Link al canale principale</span></div>
-                        <div class="submit-field"><i class="fas fa-hashtag"></i> <span data-i18n="vtpedia.fieldHashtag">Hashtag ufficiali</span></div>
-                        <div class="submit-field"><i class="fas fa-calendar"></i> <span data-i18n="vtpedia.fieldDebut">Data di debut</span></div>
-                        <div class="submit-field"><i class="fas fa-image"></i> <span data-i18n="vtpedia.fieldImage">1-3 immagini dell'avatar (max 2MB ciascuna)</span></div>
-                        <div class="submit-field"><i class="fas fa-align-left"></i> <span data-i18n="vtpedia.fieldDesc">Breve descrizione (max 300 caratteri)</span></div>
-                        <div class="submit-field"><i class="fas fa-bullhorn"></i> <span data-i18n="vtpedia.fieldSponsor">Metodo di sponsorizzazione scelto e link/prova</span></div>
+                <!-- FORM -->
+                <div class="submit-form-section">
+                    <h3><i class="fas fa-pen-to-square"></i> <span>Compila la richiesta</span></h3>
+
+                    <div class="sf-group">
+                        <label class="sf-label" for="sf-name">Nome del VTuber <span class="sf-req">*</span></label>
+                        <input class="sf-input" id="sf-name" type="text" placeholder="Es. Glacio Boreale" maxlength="80" required>
                     </div>
-                    <a href="mailto:glacioborealebusiness@outlook.com?subject=VTPedia%20-%20Richiesta%20aggiunta%20VTuber" class="submit-email-btn">
-                        <i class="fas fa-envelope"></i>
-                        <span data-i18n="vtpedia.sendEmail">Invia richiesta via email</span>
-                    </a>
+
+                    <div class="sf-group">
+                        <label class="sf-label" for="sf-fullname">Nome completo / personaggio</label>
+                        <input class="sf-input" id="sf-fullname" type="text" placeholder="Es. Glacio Boreale VT" maxlength="120">
+                    </div>
+
+                    <div class="sf-group">
+                        <label class="sf-label" for="sf-channel">Link canale principale <span class="sf-req">*</span></label>
+                        <input class="sf-input" id="sf-channel" type="url" placeholder="https://twitch.tv/..." required>
+                    </div>
+
+                    <div class="sf-group">
+                        <label class="sf-label" for="sf-hashtag">Hashtag ufficiali</label>
+                        <input class="sf-input" id="sf-hashtag" type="text" placeholder="#GlacioBoreale #GlacioVT">
+                    </div>
+
+                    <div class="sf-group">
+                        <label class="sf-label" for="sf-debut">Data di debut</label>
+                        <input class="sf-input" id="sf-debut" type="text" placeholder="Es. 01/01/2023">
+                    </div>
+
+                    <div class="sf-group">
+                        <label class="sf-label" for="sf-desc">Descrizione breve <span class="sf-req">*</span></label>
+                        <textarea class="sf-input sf-textarea" id="sf-desc" placeholder="Max 300 caratteri..." maxlength="300" rows="3" required></textarea>
+                        <span class="sf-charcount"><span id="sf-desc-count">0</span>/300</span>
+                    </div>
+
+                    <div class="sf-group">
+                        <label class="sf-label">Immagine avatar <span class="sf-req">*</span></label>
+                        <div class="sf-dropzone" id="sf-dropzone">
+                            <input type="file" id="sf-image-file" accept="image/jpeg,image/png,image/gif,image/webp" hidden>
+                            <div class="sf-dropzone-inner" id="sf-dropzone-inner">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span class="sf-dropzone-label">Trascina qui o <button type="button" class="sf-dropzone-pick" id="sf-pick-btn">scegli file</button></span>
+                                <span class="sf-hint">JPG, PNG, GIF, WEBP — max 15 MB</span>
+                            </div>
+                            <div class="sf-dropzone-preview" id="sf-preview" style="display:none;">
+                                <img id="sf-preview-img" src="" alt="">
+                                <button type="button" class="sf-dropzone-remove" id="sf-remove-btn"><i class="fas fa-times"></i></button>
+                                <span class="sf-dropzone-filename" id="sf-filename"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sf-group">
+                        <label class="sf-label" for="sf-sponsor">Metodo di sponsorizzazione <span class="sf-req">*</span></label>
+                        <select class="sf-input sf-select" id="sf-sponsor" required>
+                            <option value="" disabled selected>Seleziona...</option>
+                            <option value="twitch_panel">Twitch — Link nel pannello</option>
+                            <option value="twitch_cmd">Twitch — Comando chat</option>
+                            <option value="youtube_desc">YouTube — Link nella descrizione</option>
+                            <option value="other_bio">Altra piattaforma — Link in bio</option>
+                        </select>
+                    </div>
+
+                    <div class="sf-group">
+                        <label class="sf-label" for="sf-proof">Link/prova della sponsorizzazione <span class="sf-req">*</span></label>
+                        <input class="sf-input" id="sf-proof" type="url" placeholder="https://..." required>
+                    </div>
+
+                    <div class="sf-feedback" id="sf-feedback"></div>
+
+                    <button class="sf-submit-btn" id="sf-submit-btn" type="button">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Invia richiesta</span>
+                    </button>
                 </div>
+
             </div>
         </div>
     </div>
 
+    <!-- VTuber detail popup -->
     <div class="popup" id="vtuber-popup">
         <div class="popup-overlay" id="popup-overlay"></div>
         <div class="popup-content">
-            <button class="popup-close" id="popup-close">
-                <i class="fas fa-times"></i>
-            </button>
+            <button class="popup-close" id="popup-close"><i class="fas fa-times"></i></button>
             <div class="popup-body">
                 <div class="popup-gallery" id="popup-gallery">
                     <div class="gallery-counter" id="gallery-counter">1 / 1</div>
-                    
                     <div class="gallery-container">
                         <div class="gallery-slides" id="gallery-slides"></div>
                     </div>
-
-                    <button class="gallery-nav prev" id="gallery-prev">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-
-                    <button class="gallery-nav next" id="gallery-next">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
+                    <button class="gallery-nav prev" id="gallery-prev"><i class="fas fa-chevron-left"></i></button>
+                    <button class="gallery-nav next" id="gallery-next"><i class="fas fa-chevron-right"></i></button>
                     <div class="gallery-indicators" id="gallery-indicators"></div>
                 </div>
                 <div class="popup-info">
@@ -202,17 +242,14 @@
                             <i class="fas fa-user"></i>
                             <span><strong data-i18n="vtpedia.popupName">Nome:</strong> <span id="popup-full-name"></span></span>
                         </div>
-                        
                         <div class="detail-item">
                             <i class="fas fa-calendar"></i>
                             <span><strong data-i18n="vtpedia.popupDebut">Debut:</strong> <span id="popup-debut"></span></span>
                         </div>
-                        
                         <div class="detail-item">
                             <i class="fas fa-hashtag"></i>
                             <span><strong data-i18n="vtpedia.popupHashtags">Hashtags:</strong> <span id="popup-hashtag"></span></span>
                         </div>
-                        
                         <div class="detail-item">
                             <i class="fab fa-twitch"></i>
                             <span><strong data-i18n="vtpedia.popupChannel">Canale:</strong> <a id="popup-channel" href="" target="_blank"></a></span>
@@ -226,6 +263,7 @@
             </div>
         </div>
     </div>
+
     <div id="footer-placeholder"></div>
 </body>
 </html>

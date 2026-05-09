@@ -1,20 +1,6 @@
-:root {
-  --accent: #5b9cf6;
-  --accent2: #a78bfa;
-  --glass: rgba(255,255,255,0.04);
-  --border: rgba(255,255,255,0.08);
-  --twitch: #9146FF;
-  --youtube: #FF0000;
-  --discord: #5865F2;
-  --instagram: #E1306C;
-  --x: #b3b3b3;
-  --ko-fi: #FF5A16;
-  --gunslol: #fff;
-}
-
 .about-hero {
   text-align: center;
-  padding: 4rem 2rem 2rem;
+  padding: 3.5rem 2rem 2rem;
   max-width: 800px;
   margin: 0 auto;
   animation: fadeDown 0.8s cubic-bezier(0.16,1,0.3,1) both;
@@ -24,29 +10,29 @@
 
 .about-label {
   font-family: 'Fredoka One', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.7rem;
 }
 
 .about-hero h1 {
   font-family: 'Fredoka One', sans-serif;
-  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 400;
-  background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+  background: linear-gradient(135deg, var(--text) 30%, var(--accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.7rem;
 }
 
 .about-subtitle {
   font-family: 'Fredoka', sans-serif;
-  font-size: 1rem;
-  color: rgba(255,255,255,0.4);
+  font-size: 0.97rem;
+  color: var(--text-muted);
 }
 
 .team-section {
@@ -58,24 +44,24 @@
 .team-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(460px, 100%), 1fr));
-  gap: 1.5rem;
+  gap: 1.2rem;
   justify-content: center;
 }
 
 .team-card {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 16px;
-  padding: 1.8rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.6rem;
   display: flex;
   align-items: flex-start;
-  gap: 1.5rem;
-  transition: all 0.3s ease;
+  gap: 1.4rem;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
 }
 
 .team-card:hover {
-  border-color: rgba(255,255,255,0.2);
-  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  border-color: var(--border-mid);
+  box-shadow: var(--shadow-md);
   transform: translateY(-3px);
 }
 
@@ -89,12 +75,12 @@
 }
 
 .team-avatar {
-  width: 80px;
-  height: 80px;
+  width: 76px;
+  height: 76px;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
-  border: 2px solid rgba(255,255,255,0.15);
+  border: 2px solid var(--border-mid);
 }
 
 .team-avatar img {
@@ -104,82 +90,82 @@
 }
 
 .team-avatar--empty {
-  background: rgba(255,255,255,0.05);
+  background: var(--card-hover);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.8rem;
-  color: rgba(255,255,255,0.3);
+  color: var(--text-dim);
 }
 
 .team-info {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.35rem;
 }
 
 .team-name {
   font-family: 'Fredoka One', sans-serif;
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 400;
-  color: white;
+  color: var(--text);
 }
 
 .team-role {
   font-family: 'Fredoka', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--accent);
   background: rgba(91,156,246,0.1);
   border: 1px solid rgba(91,156,246,0.2);
-  padding: 0.2rem 0.6rem;
-  border-radius: 6px;
+  padding: 0.18rem 0.55rem;
+  border-radius: var(--radius-sm);
   display: inline-block;
   width: fit-content;
 }
 
 .team-desc {
   font-family: 'Fredoka', sans-serif;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 400;
-  color: rgba(255,255,255,0.5);
+  color: var(--text-muted);
   line-height: 1.6;
-  margin-top: 0.3rem;
+  margin-top: 0.25rem;
 }
 
 .team-links {
   display: flex;
-  gap: 0.5rem;
-  margin-top: 0.6rem;
+  gap: 0.45rem;
+  margin-top: 0.5rem;
 }
 
 .team-link {
   width: 34px;
   height: 34px;
-  border-radius: 8px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.7);
+  border-radius: var(--radius-sm);
+  background: var(--card-hover);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1rem;
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
 }
 
-.team-link:hover { color: white; transform: translateY(-2px); }
+.team-link:hover { transform: translateY(-2px); text-decoration: none; }
 .team-link.twitch:hover    { background: rgba(145,70,255,0.15);  border-color: #9146FF; color: #9146FF; }
 .team-link.youtube:hover   { background: rgba(255,0,0,0.15);      border-color: #FF0000; color: #FF0000; }
 .team-link.discord:hover   { background: rgba(88,101,242,0.15);   border-color: #5865F2; color: #5865F2; }
 .team-link.instagram:hover { background: rgba(225,48,108,0.15);   border-color: #E1306C; color: #E1306C; }
-.team-link.x:hover         { background: rgba(255,255,255,0.08);  border-color: rgba(255,255,255,0.3); color: #fff; }
-.team-link.github:hover    { background: rgba(255,255,255,0.1);   border-color: #fff; color: #fff; }
+.team-link.x:hover         { background: var(--card-hover); border-color: var(--border-mid); color: var(--text); }
+.team-link.github:hover    { background: var(--card-hover); border-color: var(--border-mid); color: var(--text); }
 .team-link.ko-fi:hover     { background: rgba(255,90,22,0.15);    border-color: #FF5A16; color: #FF5A16; }
-.team-link.gunslol:hover   { background: rgba(255,255,255,0.15);  border-color: #fff; color: #fff; }
+.team-link.gunslol:hover   { background: var(--card-hover); border-color: var(--border-mid); color: var(--text); }
 
 .team-link.tiktok {
   position: relative;
@@ -203,7 +189,7 @@
 .team-link.tiktok:hover {
   background: linear-gradient(-45deg, rgba(236,14,83,0.15), rgba(4,187,199,0.15));
   border-color: transparent;
-  color: #fff;
+  color: var(--text);
 }
 .team-link.tiktok:hover::before { opacity: 1; }
 
@@ -215,28 +201,28 @@
 
 .join-card {
   background: rgba(91,156,246,0.06);
-  border: 1px solid rgba(91,156,246,0.2);
-  border-radius: 16px;
-  padding: 2.5rem;
+  border: 1px solid rgba(91,156,246,0.18);
+  border-radius: var(--radius-md);
+  padding: 2.2rem;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 0.9rem;
 }
 
 .join-card h2 {
   font-family: 'Fredoka One', sans-serif;
-  font-size: 1.8rem;
+  font-size: 1.7rem;
   font-weight: 400;
-  color: white;
+  color: var(--text);
 }
 
 .join-card p {
   font-family: 'Fredoka', sans-serif;
-  color: rgba(255,255,255,0.5);
-  font-size: 1rem;
-  max-width: 500px;
+  color: var(--text-muted);
+  font-size: 0.97rem;
+  max-width: 480px;
 }
 
 .about-join-btn {
@@ -247,18 +233,19 @@
   background: linear-gradient(135deg, var(--accent), var(--accent2));
   color: white;
   text-decoration: none;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   font-family: 'Fredoka', sans-serif;
   font-size: 1rem;
   font-weight: 600;
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 20px rgba(91,156,246,0.3);
+  box-shadow: 0 4px 20px rgba(91,156,246,0.28);
   margin-top: 0.5rem;
 }
 
 .about-join-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(91,156,246,0.45);
+  box-shadow: 0 8px 28px rgba(91,156,246,0.42);
+  text-decoration: none;
 }
 
 .stagger-item {
@@ -277,31 +264,9 @@
 }
 
 @media (max-width: 600px) {
-  .about-hero h1 { font-size: 2.2rem; }
+  .about-hero h1 { font-size: 2rem; }
   .team-card { flex-direction: column; align-items: center; text-align: center; }
   .team-role { margin: 0 auto; }
   .team-links { justify-content: center; }
   .join-card { padding: 1.8rem 1.2rem; }
 }
-
-[data-theme="light"] .about-hero h1 {
-  background: linear-gradient(135deg, #0a0a14 30%, var(--accent) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-[data-theme="light"] .about-subtitle { color: rgba(10,10,20,0.4); }
-[data-theme="light"] .team-card {
-  background: rgba(255,255,255,0.6);
-  border-color: rgba(10,10,20,0.1);
-}
-[data-theme="light"] .team-card:hover { border-color: rgba(10,10,20,0.2); box-shadow: 0 8px 30px rgba(10,10,20,0.08); }
-[data-theme="light"] .team-avatar { border-color: rgba(10,10,20,0.15); }
-[data-theme="light"] .team-avatar--empty { background: rgba(10,10,20,0.05); color: rgba(10,10,20,0.3); }
-[data-theme="light"] .team-name { color: #0a0a14; }
-[data-theme="light"] .team-desc { color: rgba(10,10,20,0.5); }
-[data-theme="light"] .team-link { background: rgba(10,10,20,0.04); border-color: rgba(10,10,20,0.1); color: rgba(10,10,20,0.6); }
-[data-theme="light"] .join-card { background: rgba(91,156,246,0.07); }
-[data-theme="light"] .join-card h2 { color: #0a0a14; }
-[data-theme="light"] .join-card p { color: rgba(10,10,20,0.5); }
-[data-theme="light"] .join-input { background: rgba(10,10,20,0.04); border-color: rgba(10,10,20,0.15); color: #0a0a14; }
-[data-theme="light"] .join-input::placeholder { color: rgba(10,10,20,0.35); }

@@ -45,6 +45,7 @@ const Auth = (() => {
 
   function onAuthChange(forceCloud = false) {
     updateNavAuth();
+    document.dispatchEvent(new Event('authChange'));
     if (typeof syncCloudSave === 'function') syncCloudSave(forceCloud);
   }
 
@@ -135,15 +136,18 @@ const Auth = (() => {
   function openAuthModal() {
     buildAuthModal();
     document.getElementById('auth-modal').classList.add('open');
+    document.body.classList.add('modal-open');
   }
 
   function closeAuthModal() {
     document.getElementById('auth-modal')?.classList.remove('open');
+    document.body.classList.remove('modal-open');
   }
 
   function buildProfileModal() {
     if (document.getElementById('profile-modal')) {
       document.getElementById('profile-modal').classList.add('open');
+      document.body.classList.add('modal-open');
       return;
     }
     const modal = document.createElement('div');
@@ -160,12 +164,17 @@ const Auth = (() => {
       </div>
     `;
     document.body.appendChild(modal);
-    modal.querySelector('.auth-backdrop').addEventListener('click', () => modal.classList.remove('open'));
+    modal.querySelector('.auth-backdrop').addEventListener('click', () => {
+      modal.classList.remove('open');
+      document.body.classList.remove('modal-open');
+    });
     document.getElementById('profile-logout-btn').addEventListener('click', () => {
       logout();
       modal.classList.remove('open');
+      document.body.classList.remove('modal-open');
     });
     modal.classList.add('open');
+    document.body.classList.add('modal-open');
   }
 
   function initNavAuthBtn() {

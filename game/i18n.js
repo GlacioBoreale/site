@@ -33,7 +33,7 @@ function applyGameTranslations() {
     ['stats',        'sidebar.stats'],
     ['achievements', 'sidebar.achievements'],
     ['leaderboard',  'sidebar.leaderboard'],
-    ['updatelog',    'sidebar.updatelog'],
+    ['saves',        'sidebar.saves'],
     ['maintenance',  'sidebar.maintenance'],
   ].forEach(([id, key]) => {
     const label = q('#sb-btn-' + id + ' .sb-label');

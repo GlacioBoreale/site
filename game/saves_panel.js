@@ -17,8 +17,7 @@ let _holdTimer        = null;
 let _holdInterval     = null;
 let _healthClearTimer = null;
 let _holdInited       = false;
-
-let _pendingAction    = null;
+let _pendingDefault   = null;
 
 function _fmtSlotTime(sec) {
   if (!sec) return '—';
@@ -69,14 +68,14 @@ function _setCooldown(key) {
   _slotCooldowns[key] = Date.now() + SLOT_ACTION_DELAY_MS;
 }
 
-function _setPendingAction(action) {
-  _pendingAction = action;
+function _setPendingDefault(slot) {
+  _pendingDefault = slot;
   _updateHoldBtn();
   _updateHighlight();
 }
 
-function _clearPendingAction() {
-  _pendingAction = null;
+function _clearPendingDefault() {
+  _pendingDefault = null;
   _updateHoldBtn();
   _updateHighlight();
 }
@@ -85,35 +84,22 @@ function _updateHoldBtn() {
   const label = document.getElementById('sv-hold-label');
   const btn   = document.getElementById('sv-hold-btn');
   if (!label || !btn) return;
-  label.textContent = 'Tieni premuto per confermare le modifiche';
-  btn.disabled = !_pendingAction;
-  btn.classList.toggle('sv-hold-btn--pending', !!_pendingAction);
+  if (_pendingDefault !== null) {
+    label.textContent = 'Tieni premuto per confermare le modifiche';
+    btn.disabled = false;
+    btn.classList.add('sv-hold-btn--pending');
+  } else {
+    label.textContent = 'Tieni premuto per confermare le modifiche';
+    btn.disabled = true;
+    btn.classList.remove('sv-hold-btn--pending');
+  }
 }
 
 function _updateHighlight() {
   document.querySelectorAll('.sv-slot-row').forEach(row => row.classList.remove('sv-slot-row--pending'));
-  document.querySelector('.sv-autosave-row')?.classList.remove('sv-slot-row--pending');
-  if (!_pendingAction) return;
-
-  const { type, slot, source } = _pendingAction;
-
-  if (source === 'autosave') {
-    document.querySelector('.sv-autosave-row')?.classList.add('sv-slot-row--pending');
-    return;
-  }
-
-  const target = document.querySelector('.sv-slot-row[data-slot="' + slot + '"]');
+  if (_pendingDefault === null) return;
+  const target = document.querySelector('.sv-slot-row[data-slot="' + _pendingDefault + '"]');
   if (target) target.classList.add('sv-slot-row--pending');
-}
-
-function _actionLabel(action) {
-  const { type, slot, source } = action;
-  const who = source === 'autosave' ? 'Autosave' : 'Slot ' + slot;
-  if (type === 'save')    return who + ': Salva';
-  if (type === 'load')    return who + ': Carica';
-  if (type === 'delete')  return who + ': Elimina';
-  if (type === 'default') return 'Slot ' + slot + ': Imposta predefinito';
-  return '';
 }
 
 function buildSavesPanel() {
@@ -172,11 +158,11 @@ function _renderSlots() {
   container.innerHTML = '';
 
   for (let i = 1; i <= 3; i++) {
-    const data             = _getSlotData(i);
-    const isDefault        = (meta.defaultSlot || 1) === i;
-    const isEmpty          = !data;
-    const timeSec          = data?.totalTimeSec || null;
-    const isPending        = _pendingAction && _pendingAction.slot === i && _pendingAction.source !== 'autosave';
+    const data      = _getSlotData(i);
+    const isDefault = (meta.defaultSlot || 1) === i;
+    const isEmpty   = !data;
+    const timeSec   = data?.totalTimeSec || null;
+    const isPending = _pendingDefault === i;
 
     const row = document.createElement('div');
     row.className = 'sv-slot-row' + (isPending ? ' sv-slot-row--pending' : '');
@@ -209,21 +195,9 @@ function _refreshAutosaveRow() {
   const timeEl  = document.getElementById('sv-auto-time');
   const loadBtn = document.getElementById('sv-auto-load');
   const delBtn  = document.getElementById('sv-auto-del');
-
   if (timeEl)  timeEl.textContent = data?.totalTimeSec ? _fmtSlotTime(data.totalTimeSec) : '—';
   if (loadBtn) loadBtn.disabled = !data;
   if (delBtn)  delBtn.disabled  = !data;
-}
-
-function _trySetPending(action) {
-  if (_pendingAction &&
-      _pendingAction.type   === action.type &&
-      _pendingAction.slot   === action.slot &&
-      _pendingAction.source === action.source) {
-    _clearPendingAction();
-    return;
-  }
-  _setPendingAction(action);
 }
 
 function _attachSlotListeners() {
@@ -233,33 +207,39 @@ function _attachSlotListeners() {
       const meta = _loadSlotsMeta();
       if ((meta.defaultSlot || 1) === slot) return;
       if (_defaultCooldown > Date.now()) {
-        _showHealth('Attendi prima di cambiare il salvataggio predefinito.', false);
+        _showHealth('Attendi prima di cambiare il predefinito.', false);
         return;
       }
-      _trySetPending({ type: 'default', slot, source: 'slot' });
+      if (_pendingDefault === slot) { _clearPendingDefault(); return; }
+      _setPendingDefault(slot);
     });
   });
 
   document.querySelectorAll('.sv-btn-save').forEach(btn => {
     btn.addEventListener('click', () => {
       const slot = +btn.dataset.slot;
-      if (_isCoolingDown('save_' + slot)) {
-        _showHealth('Attendi 30s: azione già confermata di recente.', false);
-        return;
-      }
-      _trySetPending({ type: 'save', slot, source: 'slot' });
+      const key  = 'save_' + slot;
+      if (_isCoolingDown(key)) { _showHealth('Attendi 30s prima di salvare di nuovo.', false); return; }
+      const save = buildSaveObj();
+      save._savedAt = Date.now();
+      _setSlotData(slot, save);
+      _setCooldown(key);
+      _renderSlots();
+      _showHealth('Slot ' + slot + ' salvato.', true);
     });
   });
 
   document.querySelectorAll('.sv-btn-load').forEach(btn => {
     btn.addEventListener('click', () => {
       const slot = +btn.dataset.slot;
-      if (!_getSlotData(slot)) return;
-      if (_isCoolingDown('load_' + slot)) {
-        _showHealth('Attendi 30s: azione già confermata di recente.', false);
-        return;
-      }
-      _trySetPending({ type: 'load', slot, source: 'slot' });
+      const key  = 'load_' + slot;
+      if (_isCoolingDown(key)) { _showHealth('Attendi 30s prima di caricare di nuovo.', false); return; }
+      const data = _getSlotData(slot);
+      if (!data) return;
+      applysave(data);
+      saveGame();
+      _setCooldown(key);
+      _showHealth('Slot ' + slot + ' caricato.', true);
     });
   });
 
@@ -267,22 +247,31 @@ function _attachSlotListeners() {
     btn.addEventListener('click', () => {
       const slot = +btn.dataset.slot;
       if (!_getSlotData(slot)) return;
-      _trySetPending({ type: 'delete', slot, source: 'slot' });
+      _deleteSlotData(slot);
+      const meta = _loadSlotsMeta();
+      if ((meta.defaultSlot || 1) === slot) { meta.defaultSlot = 1; _saveSlotsMeta(meta); }
+      if (_pendingDefault === slot) _clearPendingDefault();
+      _renderSlots();
+      _showHealth('Slot ' + slot + ' eliminato.', true);
     });
   });
 
   document.getElementById('sv-auto-load')?.addEventListener('click', () => {
-    if (!_getAutosaveData()) return;
-    if (_isCoolingDown('load_auto')) {
-      _showHealth('Attendi 30s: azione già confermata di recente.', false);
-      return;
-    }
-    _trySetPending({ type: 'load', slot: null, source: 'autosave' });
+    const key = 'load_auto';
+    if (_isCoolingDown(key)) { _showHealth('Attendi 30s prima di caricare di nuovo.', false); return; }
+    const data = _getAutosaveData();
+    if (!data) return;
+    applysave(data);
+    saveGame();
+    _setCooldown(key);
+    _showHealth('Autosave caricato.', true);
   });
 
   document.getElementById('sv-auto-del')?.addEventListener('click', () => {
     if (!_getAutosaveData()) return;
-    _trySetPending({ type: 'delete', slot: null, source: 'autosave' });
+    _deleteAutosaveData();
+    _refreshAutosaveRow();
+    _showHealth('Autosave eliminato.', true);
   });
 }
 
@@ -317,9 +306,7 @@ function _initHoldBtn() {
       _holdInterval = null;
       fill.style.width = '100%';
       btn.classList.remove('sv-hold-btn--active');
-
-      _executePendingAction();
-
+      _applyPendingDefault();
       setTimeout(() => {
         fill.style.transition = 'width 0.4s ease';
         fill.style.width      = '0%';
@@ -336,67 +323,16 @@ function _initHoldBtn() {
   btn.addEventListener('touchcancel', _resetHold);
 }
 
-function _executePendingAction() {
-  if (!_pendingAction) return;
-  const { type, slot, source } = _pendingAction;
-  _clearPendingAction();
-
-  if (type === 'default') {
-    const meta = _loadSlotsMeta();
-    meta.defaultSlot = slot;
-    _saveSlotsMeta(meta);
-    _defaultCooldown = Date.now() + DEFAULT_CHANGE_DELAY_MS;
-    _renderSlots();
-    _showHealth('Slot ' + slot + ' impostato come predefinito.', true);
-    return;
-  }
-
-  if (type === 'save' && source === 'slot') {
-    const save = buildSaveObj();
-    save._savedAt = Date.now();
-    _setSlotData(slot, save);
-    _setCooldown('save_' + slot);
-    _renderSlots();
-    _showHealth('Slot ' + slot + ' salvato.', true);
-    return;
-  }
-
-  if (type === 'load' && source === 'slot') {
-    const data = _getSlotData(slot);
-    if (!data) { _showHealth('Slot ' + slot + ' vuoto.', false); return; }
-    applysave(data);
-    saveGame();
-    _setCooldown('load_' + slot);
-    _showHealth('Slot ' + slot + ' caricato.', true);
-    return;
-  }
-
-  if (type === 'delete' && source === 'slot') {
-    _deleteSlotData(slot);
-    const meta = _loadSlotsMeta();
-    if ((meta.defaultSlot || 1) === slot) { meta.defaultSlot = 1; _saveSlotsMeta(meta); }
-    _renderSlots();
-    _showHealth('Slot ' + slot + ' eliminato.', true);
-    return;
-  }
-
-  if (type === 'load' && source === 'autosave') {
-    const data = _getAutosaveData();
-    if (!data) { _showHealth('Nessun autosave disponibile.', false); return; }
-    applysave(data);
-    saveGame();
-    _setCooldown('load_auto');
-    _refreshAutosaveRow();
-    _showHealth('Autosave caricato.', true);
-    return;
-  }
-
-  if (type === 'delete' && source === 'autosave') {
-    _deleteAutosaveData();
-    _refreshAutosaveRow();
-    _showHealth('Autosave eliminato.', true);
-    return;
-  }
+function _applyPendingDefault() {
+  if (_pendingDefault === null) return;
+  const slot = _pendingDefault;
+  const meta = _loadSlotsMeta();
+  meta.defaultSlot = slot;
+  _saveSlotsMeta(meta);
+  _defaultCooldown = Date.now() + DEFAULT_CHANGE_DELAY_MS;
+  _clearPendingDefault();
+  _renderSlots();
+  _showHealth('Slot ' + slot + ' impostato come predefinito.', true);
 }
 
 function _showHealth(msg, ok) {

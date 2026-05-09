@@ -126,29 +126,85 @@ function initSettingsPanel() {
 
 function initTheme() {
   const saved = localStorage.getItem('glaciopia_theme') || 'dark';
-  applyTheme(saved, false);
+  applyTheme(saved, false, null);
 
-  document.getElementById('theme-btn-dark')?.addEventListener('click', () => applyTheme('dark', true));
-  document.getElementById('theme-btn-light')?.addEventListener('click', () => applyTheme('light', true));
+  document.getElementById('theme-btn-dark')?.addEventListener('click',  (e) => applyTheme('dark',  true, e));
+  document.getElementById('theme-btn-light')?.addEventListener('click', (e) => applyTheme('light', true, e));
 }
 
-function applyTheme(theme, save) {
-  document.documentElement.setAttribute('data-theme', theme);
-  if (save) localStorage.setItem('glaciopia_theme', theme);
+function applyTheme(theme, save, event) {
+  const doApply = () => {
+    document.documentElement.setAttribute('data-theme', theme);
+    if (save) localStorage.setItem('glaciopia_theme', theme);
+    document.getElementById('theme-btn-dark')?.classList.toggle('active',  theme === 'dark');
+    document.getElementById('theme-btn-light')?.classList.toggle('active', theme === 'light');
+    _syncMobileTheme(theme);
+    if (save && theme === 'light') {
+      if (typeof unlockAchievement === 'function') unlockAchievement('whiteTheme');
+    }
+  };
 
-  document.getElementById('theme-btn-dark')?.classList.toggle('active', theme === 'dark');
-  document.getElementById('theme-btn-light')?.classList.toggle('active', theme === 'light');
+  if (!save || !event) {
+    doApply();
+    return;
+  }
 
-  if (save && theme === 'light') {
-    if (typeof unlockAchievement === 'function') unlockAchievement('whiteTheme');
+  if (theme === 'light') {
+    _flashbangTransition(doApply);
+  } else {
+    _circleTransition(event, doApply);
   }
 }
 
+function _flashbangTransition(doApply) {
+  const flash = document.createElement('div');
+  flash.style.cssText = `
+    position: fixed; inset: 0; z-index: 99999;
+    background: #fff;
+    opacity: 0;
+    pointer-events: none;
+  `;
+  document.body.appendChild(flash);
+
+  flash.animate(
+    [
+      { opacity: 0 },
+      { opacity: 1, offset: 0.15 },
+      { opacity: 1, offset: 0.25 },
+      { opacity: 0 }
+    ],
+    { duration: 600, easing: 'ease-out', fill: 'forwards' }
+  ).finished.then(() => flash.remove());
+
+  setTimeout(doApply, 80);
+}
+
+function _circleTransition(event, doApply) {
+  if (!document.startViewTransition) {
+    doApply();
+    return;
+  }
+
+  const x = event.clientX;
+  const y = event.clientY;
+  const maxR = Math.hypot(
+    Math.max(x, window.innerWidth  - x),
+    Math.max(y, window.innerHeight - y)
+  );
+
+  const transition = document.startViewTransition(() => { doApply(); });
+
+  transition.ready.then(() => {
+    document.documentElement.animate(
+      { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${maxR}px at ${x}px ${y}px)`] },
+      { duration: 500, easing: 'ease-in-out', pseudoElement: '::view-transition-new(root)' }
+    );
+  });
+}
+
 function openSettingsPanel() {
-  const btn   = document.getElementById('nav-settings-btn');
-  const panel = document.getElementById('settings-panel');
-  btn?.classList.add('open');
-  panel?.classList.add('open');
+  document.getElementById('nav-settings-btn')?.classList.add('open');
+  document.getElementById('settings-panel')?.classList.add('open');
 }
 
 function closeSettingsPanel() {
@@ -175,7 +231,6 @@ function initMirage() {
     clickCount++;
     clearTimeout(clickTimer);
     clickTimer = setTimeout(() => { clickCount = 0; }, 800);
-
     if (clickCount >= 5) {
       clickCount = 0;
       clearTimeout(clickTimer);
@@ -187,15 +242,11 @@ function initMirage() {
 function showMirage() {
   const overlay = document.getElementById('mirage-overlay');
   if (!overlay || overlay.classList.contains('active')) return;
-
   overlay.classList.add('active');
   if (typeof unlockAchievement === 'function') unlockAchievement('mirage');
-
   setTimeout(() => {
     overlay.classList.add('dissolve');
-    setTimeout(() => {
-      overlay.classList.remove('active', 'dissolve');
-    }, 1400);
+    setTimeout(() => overlay.classList.remove('active', 'dissolve'), 1400);
   }, 2800);
 }
 
@@ -212,7 +263,6 @@ async function initNavLiveBadge() {
     if (!res.ok) return;
     const data = await res.json();
     const isLive = data?.twitch?.isLive;
-
     const t = window._translations || {};
     const ach = t.ach || {};
     if (isLive) {
@@ -226,8 +276,7 @@ async function initNavLiveBadge() {
       btn.target = '';
       text.textContent = ach.liveOffline || 'Glacio è Offline';
     }
-  } catch(e) {
-  }
+  } catch(e) {}
 }
 
 function initMobileMenu() {
@@ -304,8 +353,8 @@ function _updateMobileLangTrigger(val) {
 function _initMobileTheme() {
   const saved = localStorage.getItem('glaciopia_theme') || 'dark';
   _syncMobileTheme(saved);
-  document.getElementById('mm-theme-dark')?.addEventListener('click',  () => { applyTheme('dark',  true); _syncMobileTheme('dark');  });
-  document.getElementById('mm-theme-light')?.addEventListener('click', () => { applyTheme('light', true); _syncMobileTheme('light'); });
+  document.getElementById('mm-theme-dark')?.addEventListener('click',  (e) => applyTheme('dark',  true, e));
+  document.getElementById('mm-theme-light')?.addEventListener('click', (e) => applyTheme('light', true, e));
 }
 
 function _syncMobileTheme(theme) {
@@ -314,9 +363,7 @@ function _syncMobileTheme(theme) {
 }
 
 function _initMobileAuth() {
-  const btn    = document.getElementById('mm-auth-btn');
-  const avatar = document.getElementById('mm-auth-avatar');
-  const label  = document.getElementById('mm-auth-label');
+  const btn = document.getElementById('mm-auth-btn');
   if (!btn) return;
   btn.addEventListener('click', () => {
     document.getElementById('hamburger-btn')?.classList.remove('active');

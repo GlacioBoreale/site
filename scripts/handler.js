@@ -1,247 +1,348 @@
-'use strict';
+import pg from 'pg';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+const { Pool } = pg;
 
-const { Pool }       = require('pg');
-const jwt            = require('jsonwebtoken');
-const bcrypt         = require('bcryptjs');
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
-const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
-const { randomUUID } = require('crypto');
-
-// ─── DB ───────────────────────────────────────────────────────────────────────
 const pool = new Pool({
   host:     process.env.DB_HOST,
-  port:     parseInt(process.env.DB_PORT || '5432'),
+  port:     process.env.DB_PORT,
   database: process.env.DB_NAME,
   user:     process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  ssl:      { rejectUnauthorized: false },
-  max:      3,
-  idleTimeoutMillis: 30000,
+  ssl:      { rejectUnauthorized: false }
 });
 
-// ─── S3 ───────────────────────────────────────────────────────────────────────
-const s3     = new S3Client({ region: 'eu-north-1' });
-const BUCKET = process.env.S3_BUCKET; // es. "glaciopia-submissions"
-
-// ─── HELPERS ──────────────────────────────────────────────────────────────────
 const JWT_SECRET  = process.env.JWT_SECRET;
-const JWT_EXPIRES = '30d';
+const ADMIN_EMAIL = 'coldesticecube@outlook.com';
 
-function resp(statusCode, body, headers = {}) {
+const ALLOWED_ORIGINS = [
+  'https://www.glaciopia.com',
+  'https://glaciopia.com',
+];
+
+function getCorsHeaders(event) {
+  const origin  = event.headers?.origin || event.headers?.Origin || '';
+  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
   return {
-    statusCode,
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin':  '*',
-      'Access-Control-Allow-Headers': 'Content-Type,Authorization',
-      'Access-Control-Allow-Methods': 'GET,POST,PUT,OPTIONS',
-      ...headers,
-    },
-    body: JSON.stringify(body),
+    'Content-Type':                'application/json',
+    'Access-Control-Allow-Origin': allowed,
+    'Access-Control-Allow-Headers':'Content-Type,Authorization',
+    'Access-Control-Allow-Methods':'GET,POST,PUT,DELETE,PATCH,OPTIONS',
+    'Access-Control-Allow-Credentials':'true',
   };
 }
 
-function ok(body)          { return resp(200, body); }
-function created(body)     { return resp(201, body); }
-function badReq(msg)       { return resp(400, { error: msg }); }
-function unauth(msg)       { return resp(401, { error: msg }); }
-function forbidden(msg)    { return resp(403, { error: msg }); }
-function notFound(msg)     { return resp(404, { error: msg }); }
-function serverErr(msg)    { return resp(500, { error: msg }); }
-
-function signToken(userId) {
-  return jwt.sign({ sub: userId }, JWT_SECRET, { expiresIn: JWT_EXPIRES });
+function res(statusCode, body, event) {
+  return { statusCode, headers: getCorsHeaders(event || {}), body: JSON.stringify(body) };
 }
 
-function verifyToken(event) {
-  const auth = event.headers?.Authorization || event.headers?.authorization || '';
-  const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
-  if (!token) return null;
-  try { return jwt.verify(token, JWT_SECRET); }
+function authMiddleware(event) {
+  const auth = event.headers?.Authorization || event.headers?.authorization;
+  if (!auth || !auth.startsWith('Bearer ')) return null;
+  try   { return jwt.verify(auth.slice(7), JWT_SECRET); }
   catch { return null; }
 }
 
-function requireAuth(event) {
-  const payload = verifyToken(event);
-  if (!payload) throw { status: 401, message: 'Non autenticato' };
-  return payload.sub;
+function requireAdmin(event) {
+  const user = authMiddleware(event);
+  if (!user)                        return { error: 'Unauthorized', status: 401 };
+  if (user.email !== ADMIN_EMAIL)   return { error: 'Forbidden',    status: 403 };
+  return { user };
 }
 
-function parseBody(event) {
-  try { return JSON.parse(event.body || '{}'); }
-  catch { return {}; }
-}
+export const handler = async (event) => {
+  if (event.httpMethod === 'OPTIONS') return res(200, {}, event);
 
-// ─── ROUTES ───────────────────────────────────────────────────────────────────
-const ROUTES = {
-  'POST /auth/register': authRegister,
-  'POST /auth/login':    authLogin,
-  'GET /save':           saveGet,
-  'PUT /save':           savePut,
-  'GET /leaderboard':    leaderboardGet,
-  'POST /submit':        submitPost,
-  'POST /upload/presign': uploadPresign,
-};
+  const path   = event.path   || '';
+  const method = event.httpMethod || event.action;
+  const body   = event.body ? JSON.parse(event.body) : (event || {});
 
-exports.handler = async (event) => {
-  const method = event.httpMethod || event.requestContext?.http?.method || 'GET';
-  const path   = event.path || event.rawPath || '/';
-
-  if (method === 'OPTIONS') return resp(200, {});
-
-  const key     = `${method} ${path}`;
-  const handler = ROUTES[key];
-  if (!handler) return notFound(`Route ${key} non trovata`);
-
-  try {
-    return await handler(event);
-  } catch (e) {
-    if (e.status) return resp(e.status, { error: e.message });
-    console.error(e);
-    return serverErr('Errore interno');
+  // ── INIT DB ──────────────────────────────────────────────────
+  if (body.action === 'init_db') {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        username      VARCHAR(32) UNIQUE NOT NULL,
+        email         VARCHAR(255) UNIQUE NOT NULL,
+        password_hash TEXT NOT NULL,
+        avatar_url    TEXT,
+        created_at    TIMESTAMP DEFAULT NOW()
+      );
+      CREATE TABLE IF NOT EXISTS game_saves (
+        user_id        UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+        save_data      JSONB,
+        points         NUMERIC DEFAULT 0,
+        prestige       NUMERIC DEFAULT 0,
+        xp_level       INT DEFAULT 0,
+        research       NUMERIC DEFAULT 0,
+        total_time_sec NUMERIC DEFAULT 0,
+        opt_in         BOOLEAN DEFAULT FALSE,
+        updated_at     TIMESTAMP DEFAULT NOW()
+      );
+      CREATE TABLE IF NOT EXISTS submissions (
+        id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id    UUID REFERENCES users(id) ON DELETE SET NULL,
+        type       VARCHAR(20) NOT NULL,
+        payload    JSONB,
+        image_url  TEXT,
+        status     VARCHAR(10) DEFAULT 'pending',
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+    return res(200, { message: 'Tables created!' }, event);
   }
-};
 
-// ─── AUTH ─────────────────────────────────────────────────────────────────────
-async function authRegister(event) {
-  const { username, email, password } = parseBody(event);
-  if (!username || !email || !password) return badReq('Campi mancanti');
-  if (username.length < 3 || username.length > 32) return badReq('Username: 3-32 caratteri');
-  if (password.length < 6) return badReq('Password troppo corta (min 6)');
+  // ── REGISTER ─────────────────────────────────────────────────
+  if (path.endsWith('/auth/register') && method === 'POST') {
+    const { username, email, password } = body;
+    if (!username || !email || !password)
+      return res(400, { error: 'Missing fields' }, event);
+    const hash = await bcrypt.hash(password, 10);
+    try {
+      const r = await pool.query(
+        'INSERT INTO users (username, email, password_hash) VALUES ($1,$2,$3) RETURNING id, username, email, created_at',
+        [username, email, hash]
+      );
+      const user  = r.rows[0];
+      const token = jwt.sign({ id: user.id, username: user.username, email: user.email }, JWT_SECRET, { expiresIn: '30d' });
+      return res(201, { token, user }, event);
+    } catch (e) {
+      if (e.code === '23505') return res(409, { error: 'Username or email already exists' }, event);
+      return res(500, { error: e.message }, event);
+    }
+  }
 
-  const hash = await bcrypt.hash(password, 10);
-  try {
-    const res = await pool.query(
-      `INSERT INTO users (username, email, password_hash)
-       VALUES ($1, $2, $3)
-       RETURNING id, username, email, avatar_url, created_at`,
-      [username.trim(), email.toLowerCase().trim(), hash],
+  // ── LOGIN ─────────────────────────────────────────────────────
+  if (path.endsWith('/auth/login') && method === 'POST') {
+    const { email, password } = body;
+    if (!email || !password) return res(400, { error: 'Missing fields' }, event);
+    const r = await pool.query('SELECT * FROM users WHERE email=$1', [email]);
+    const user = r.rows[0];
+    if (!user || !(await bcrypt.compare(password, user.password_hash)))
+      return res(401, { error: 'Invalid credentials' }, event);
+    const token = jwt.sign({ id: user.id, username: user.username, email: user.email }, JWT_SECRET, { expiresIn: '30d' });
+    return res(200, { token, user: { id: user.id, username: user.username, email: user.email, avatar_url: user.avatar_url, created_at: user.created_at } }, event);
+  }
+
+  // ── GET SAVE ──────────────────────────────────────────────────
+  if (path.endsWith('/save') && method === 'GET') {
+    const user = authMiddleware(event);
+    if (!user) return res(401, { error: 'Unauthorized' }, event);
+    const r = await pool.query('SELECT * FROM game_saves WHERE user_id=$1', [user.id]);
+    return res(200, r.rows[0] || {}, event);
+  }
+
+  // ── PUT SAVE ──────────────────────────────────────────────────
+  if (path.endsWith('/save') && method === 'PUT') {
+    const user = authMiddleware(event);
+    if (!user) return res(401, { error: 'Unauthorized' }, event);
+    try {
+      const { save_data, points, prestige, xp_level, opt_in, research, total_time_sec } = body;
+      await pool.query(`ALTER TABLE game_saves ALTER COLUMN prestige TYPE NUMERIC`);
+      await pool.query(`ALTER TABLE game_saves ADD COLUMN IF NOT EXISTS research       NUMERIC  DEFAULT 0`);
+      await pool.query(`ALTER TABLE game_saves ADD COLUMN IF NOT EXISTS total_time_sec NUMERIC  DEFAULT 0`);
+      await pool.query(`ALTER TABLE game_saves ADD COLUMN IF NOT EXISTS opt_in         BOOLEAN  DEFAULT FALSE`);
+      await pool.query(`
+        INSERT INTO game_saves (user_id, save_data, points, prestige, xp_level, research, total_time_sec, opt_in, updated_at)
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,NOW())
+        ON CONFLICT (user_id) DO UPDATE
+        SET save_data=$2, points=$3, prestige=$4, xp_level=$5, research=$6, total_time_sec=$7, opt_in=$8, updated_at=NOW()
+      `, [user.id, save_data, points||0, prestige||0, xp_level||0, research||0, total_time_sec||0, opt_in??false]);
+      return res(200, { message: 'Saved' }, event);
+    } catch(e) {
+      console.error('PUT /save error:', e.message, e.stack);
+      return res(500, { error: e.message }, event);
+    }
+  }
+
+  // ── DELETE SAVE ───────────────────────────────────────────────
+  if (path.endsWith('/save') && method === 'DELETE') {
+    const user = authMiddleware(event);
+    if (!user) return res(401, { error: 'Unauthorized' }, event);
+    await pool.query('DELETE FROM game_saves WHERE user_id=$1', [user.id]);
+    return res(200, { message: 'Save deleted' }, event);
+  }
+
+  // ── LEADERBOARD ───────────────────────────────────────────────
+  if (path.endsWith('/leaderboard') && method === 'GET') {
+    await pool.query(`
+      ALTER TABLE game_saves
+        ADD COLUMN IF NOT EXISTS opt_in         BOOLEAN DEFAULT FALSE,
+        ADD COLUMN IF NOT EXISTS research       NUMERIC DEFAULT 0,
+        ADD COLUMN IF NOT EXISTS total_time_sec NUMERIC DEFAULT 0
+    `);
+    const base = `
+      SELECT u.username, s.points, s.prestige, s.xp_level, s.research, s.total_time_sec
+      FROM game_saves s JOIN users u ON s.user_id = u.id
+      WHERE s.opt_in = TRUE
+    `;
+    const [rPts, rPres, rXp, rRes, rTime] = await Promise.all([
+      pool.query(base + ' ORDER BY s.points          DESC LIMIT 100'),
+      pool.query(base + ' ORDER BY s.prestige        DESC LIMIT 100'),
+      pool.query(base + ' ORDER BY s.xp_level        DESC LIMIT 100'),
+      pool.query(base + ' ORDER BY s.research        DESC LIMIT 100'),
+      pool.query(base + ' ORDER BY s.total_time_sec  DESC LIMIT 100'),
+    ]);
+    return res(200, {
+      leaderboard: {
+        points:         rPts.rows,
+        prestige:       rPres.rows,
+        xp_level:       rXp.rows,
+        research:       rRes.rows,
+        total_time_sec: rTime.rows,
+      }
+    }, event);
+  }
+
+  // ── SUBMISSION ────────────────────────────────────────────────
+  if (path.endsWith('/submit') && method === 'POST') {
+    const user = authMiddleware(event);
+    if (!user) return res(401, { error: 'Unauthorized' }, event);
+    const { type, payload, image_url } = body;
+    if (!type || !payload) return res(400, { error: 'Missing fields' }, event);
+    await pool.query(
+      'INSERT INTO submissions (user_id, type, payload, image_url) VALUES ($1,$2,$3,$4)',
+      [user.id, type, payload, image_url || null]
     );
-    const user  = res.rows[0];
-    const token = signToken(user.id);
-    return created({ token, user });
-  } catch (e) {
-    if (e.code === '23505') return badReq('Username o email già in uso');
-    throw e;
-  }
-}
-
-async function authLogin(event) {
-  const { email, password } = parseBody(event);
-  if (!email || !password) return badReq('Campi mancanti');
-
-  const res = await pool.query(
-    'SELECT id, username, email, avatar_url, created_at, password_hash FROM users WHERE email = $1',
-    [email.toLowerCase().trim()],
-  );
-  const user = res.rows[0];
-  if (!user) return unauth('Credenziali non valide');
-
-  const match = await bcrypt.compare(password, user.password_hash);
-  if (!match) return unauth('Credenziali non valide');
-
-  const { password_hash, ...safeUser } = user;
-  const token = signToken(user.id);
-  return ok({ token, user: safeUser });
-}
-
-// ─── SAVE ─────────────────────────────────────────────────────────────────────
-async function saveGet(event) {
-  const uid = requireAuth(event);
-  const res = await pool.query(
-    'SELECT save_data, points, prestige, xp_level, updated_at FROM game_saves WHERE user_id = $1',
-    [uid],
-  );
-  if (!res.rows[0]) return ok({ save_data: null });
-  return ok(res.rows[0]);
-}
-
-async function savePut(event) {
-  const uid = requireAuth(event);
-  const { save_data, points, prestige, xp_level } = parseBody(event);
-  if (save_data === undefined) return badReq('save_data mancante');
-
-  // Rispetta opt-in leaderboard: aggiorna visible solo se il flag è attivo nel save
-  const leaderboardOptIn = save_data?.leaderboardOptIn === true;
-
-  await pool.query(
-    `INSERT INTO game_saves (user_id, save_data, points, prestige, xp_level, updated_at)
-     VALUES ($1, $2, $3, $4, $5, NOW())
-     ON CONFLICT (user_id) DO UPDATE
-       SET save_data  = EXCLUDED.save_data,
-           points     = EXCLUDED.points,
-           prestige   = EXCLUDED.prestige,
-           xp_level   = EXCLUDED.xp_level,
-           updated_at = NOW()`,
-    [uid, JSON.stringify(save_data), points || 0, prestige || 0, xp_level || 0],
-  );
-
-  // Aggiorna flag visibilità leaderboard (colonna da aggiungere in game_saves)
-  await pool.query(
-    `UPDATE game_saves SET leaderboard_visible = $1 WHERE user_id = $2`,
-    [leaderboardOptIn, uid],
-  );
-
-  return ok({ saved: true });
-}
-
-// ─── LEADERBOARD ─────────────────────────────────────────────────────────────
-// Pubblica: chiunque può vederla, solo gli opt-in appaiono.
-async function leaderboardGet() {
-  const res = await pool.query(
-    `SELECT u.username, u.avatar_url, gs.points, gs.prestige, gs.xp_level
-     FROM game_saves gs
-     JOIN users u ON u.id = gs.user_id
-     WHERE gs.leaderboard_visible = TRUE
-     ORDER BY gs.points DESC
-     LIMIT 100`,
-  );
-  return ok({ entries: res.rows });
-}
-
-// ─── SUBMIT ───────────────────────────────────────────────────────────────────
-async function submitPost(event) {
-  const uid = requireAuth(event);
-  const { type, payload, image_url } = parseBody(event);
-
-  const ALLOWED_TYPES = ['fanart', 'vtpedia'];
-  if (!ALLOWED_TYPES.includes(type)) return badReq('Tipo non valido');
-  if (!payload || typeof payload !== 'object') return badReq('Payload mancante');
-
-  // Validazioni base per tipo
-  if (type === 'fanart') {
-    if (!payload.title || !payload.artist) return badReq('title e artist obbligatori');
-  }
-  if (type === 'vtpedia') {
-    if (!payload.name || !payload.channel) return badReq('name e channel obbligatori');
+    return res(201, { message: 'Submission received' }, event);
   }
 
-  const res = await pool.query(
-    `INSERT INTO submissions (user_id, type, payload, image_url, status, created_at)
-     VALUES ($1, $2, $3, $4, 'pending', NOW())
-     RETURNING id`,
-    [uid, type, JSON.stringify(payload), image_url || null],
-  );
-  return created({ id: res.rows[0].id, status: 'pending' });
-}
+  // ── UPLOAD PRESIGN ────────────────────────────────────────────
+  if (path.endsWith('/upload/presign') && method === 'POST') {
+    const user = authMiddleware(event);
+    if (!user) return res(401, { error: 'Unauthorized' }, event);
+    const { folder, ext, contentType } = body;
+    const ALLOWED_FOLDERS = ['fanart', 'vtubers', 'team'];
+    const ALLOWED_EXTS    = ['jpg','jpeg','png','gif','webp'];
+    if (!ALLOWED_FOLDERS.includes(folder))                return res(400, { error: 'Folder non valida' },       event);
+    if (!ALLOWED_EXTS.includes((ext||'').toLowerCase()))  return res(400, { error: 'Estensione non supportata' }, event);
+    const { S3Client, PutObjectCommand } = await import('@aws-sdk/client-s3');
+    const { getSignedUrl }               = await import('@aws-sdk/s3-request-presigner');
+    const { randomUUID }                 = await import('crypto');
+    const s3  = new S3Client({ region: 'eu-north-1' });
+    const key = `submissions/${folder}/${randomUUID()}.${ext.toLowerCase()}`;
+    const cmd = new PutObjectCommand({ Bucket: process.env.S3_BUCKET, Key: key, ContentType: contentType || 'application/octet-stream' });
+    const url = await getSignedUrl(s3, cmd, { expiresIn: 300 });
+    const publicUrl = `https://${process.env.S3_BUCKET}.s3.eu-north-1.amazonaws.com/${key}`;
+    return res(200, { url, publicUrl }, event);
+  }
 
-// ─── UPLOAD PRESIGN ───────────────────────────────────────────────────────────
-async function uploadPresign(event) {
-  requireAuth(event); // solo utenti loggati
-  const { folder, ext, contentType } = parseBody(event);
+  // ════════════════════════════════════════════════════════════
+  // ── ADMIN ROUTES ─────────────────────────────────────────────
+  // ════════════════════════════════════════════════════════════
 
-  const ALLOWED_FOLDERS = ['fanart', 'vtpedia'];
-  const ALLOWED_EXTS    = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-  if (!ALLOWED_FOLDERS.includes(folder)) return badReq('Folder non valida');
-  if (!ALLOWED_EXTS.includes((ext || '').toLowerCase())) return badReq('Estensione non supportata');
+  // GET /admin/stats
+  if (path.endsWith('/admin/stats') && method === 'GET') {
+    const { error, status } = requireAdmin(event);
+    if (error) return res(status, { error }, event);
 
-  const key = `submissions/${folder}/${randomUUID()}.${ext.toLowerCase()}`;
-  const cmd = new PutObjectCommand({
-    Bucket:      BUCKET,
-    Key:         key,
-    ContentType: contentType || 'application/octet-stream',
-  });
-  const url = await getSignedUrl(s3, cmd, { expiresIn: 300 }); // 5 min
-  const publicUrl = `https://${BUCKET}.s3.eu-north-1.amazonaws.com/${key}`;
-  return ok({ url, publicUrl });
-}
+    const [users, saves, subs, subByType, subByStatus] = await Promise.all([
+      pool.query('SELECT COUNT(*) FROM users'),
+      pool.query('SELECT COUNT(*) FROM game_saves'),
+      pool.query('SELECT COUNT(*) FROM submissions'),
+      pool.query(`SELECT type, COUNT(*) FROM submissions GROUP BY type`),
+      pool.query(`SELECT status, COUNT(*) FROM submissions GROUP BY status`),
+    ]);
+
+    return res(200, {
+      users:     parseInt(users.rows[0].count),
+      saves:     parseInt(saves.rows[0].count),
+      submissions: parseInt(subs.rows[0].count),
+      by_type:   Object.fromEntries(subByType.rows.map(r => [r.type, parseInt(r.count)])),
+      by_status: Object.fromEntries(subByStatus.rows.map(r => [r.status, parseInt(r.count)])),
+    }, event);
+  }
+
+  // GET /admin/submissions
+  if (path.endsWith('/admin/submissions') && method === 'GET') {
+    const { error, status } = requireAdmin(event);
+    if (error) return res(status, { error }, event);
+
+    const r = await pool.query(`
+      SELECT s.*, u.username, u.email AS user_email
+      FROM submissions s
+      LEFT JOIN users u ON s.user_id = u.id
+      ORDER BY s.created_at DESC
+    `);
+    return res(200, { submissions: r.rows }, event);
+  }
+
+  // PATCH /admin/submissions/:id
+  if (path.match(/\/admin\/submissions\/[^/]+$/) && method === 'PATCH') {
+    const { error, status } = requireAdmin(event);
+    if (error) return res(status, { error }, event);
+
+    const id        = path.split('/').pop();
+    const { status: newStatus, note } = body;
+    if (!['pending','approved','rejected'].includes(newStatus))
+      return res(400, { error: 'Status non valido' }, event);
+
+    await pool.query(
+      `UPDATE submissions SET status=$1 ${note !== undefined ? ', payload = payload || jsonb_build_object(\'admin_note\', $3::text)' : ''} WHERE id=$2`,
+      note !== undefined ? [newStatus, id, note] : [newStatus, id]
+    );
+    return res(200, { ok: true }, event);
+  }
+
+  // DELETE /admin/submissions/:id
+  if (path.match(/\/admin\/submissions\/[^/]+$/) && method === 'DELETE') {
+    const { error, status } = requireAdmin(event);
+    if (error) return res(status, { error }, event);
+
+    const id = path.split('/').pop();
+    await pool.query('DELETE FROM submissions WHERE id=$1', [id]);
+    return res(200, { ok: true }, event);
+  }
+
+  // GET /admin/users
+  if (path.endsWith('/admin/users') && method === 'GET') {
+    const { error, status } = requireAdmin(event);
+    if (error) return res(status, { error }, event);
+
+    const r = await pool.query(`
+      SELECT u.id, u.username, u.email, u.created_at,
+             gs.points, gs.prestige, gs.xp_level, gs.research,
+             gs.total_time_sec, gs.opt_in, gs.updated_at AS last_save
+      FROM users u
+      LEFT JOIN game_saves gs ON gs.user_id = u.id
+      ORDER BY u.created_at DESC
+    `);
+    return res(200, { users: r.rows }, event);
+  }
+
+  // DELETE /admin/users/:id
+  if (path.match(/\/admin\/users\/[^/]+$/) && method === 'DELETE') {
+    const { error, status } = requireAdmin(event);
+    if (error) return res(status, { error }, event);
+
+    const id = path.split('/').pop();
+    await pool.query('DELETE FROM users WHERE id=$1', [id]);
+    return res(200, { ok: true }, event);
+  }
+
+  // GET /admin/saves
+  if (path.endsWith('/admin/saves') && method === 'GET') {
+    const { error, status } = requireAdmin(event);
+    if (error) return res(status, { error }, event);
+
+    const r = await pool.query(`
+      SELECT gs.*, u.username, u.email
+      FROM game_saves gs
+      JOIN users u ON gs.user_id = u.id
+      ORDER BY gs.updated_at DESC
+    `);
+    return res(200, { saves: r.rows }, event);
+  }
+
+  // DELETE /admin/saves/:userId
+  if (path.match(/\/admin\/saves\/[^/]+$/) && method === 'DELETE') {
+    const { error, status } = requireAdmin(event);
+    if (error) return res(status, { error }, event);
+
+    const userId = path.split('/').pop();
+    await pool.query('DELETE FROM game_saves WHERE user_id=$1', [userId]);
+    return res(200, { ok: true }, event);
+  }
+
+  return res(404, { error: 'Not found' }, event);
+};

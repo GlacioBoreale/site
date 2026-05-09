@@ -12,7 +12,7 @@ const Api = (() => {
     const token = getToken();
     if (token) headers['Authorization'] = 'Bearer ' + token;
     const opts = { method, headers };
-    if (body) opts.body = JSON.stringify(body);
+    if (body !== undefined) opts.body = JSON.stringify(body);
     const r    = await fetch(API_BASE + path, opts);
     const data = await r.json();
     if (r.status === 401 && token) {
@@ -26,17 +26,9 @@ const Api = (() => {
   async function uploadFile(file, folder) {
     const ext  = file.name.split('.').pop().toLowerCase();
     const mime = file.type || 'application/octet-stream';
-    const { url, publicUrl } = await request('POST', '/upload/presign', {
-      folder,
-      ext,
-      contentType: mime,
-    });
-    const res = await fetch(url, {
-      method:  'PUT',
-      headers: { 'Content-Type': mime },
-      body:    file,
-    });
-    if (!res.ok) throw new Error('Upload S3 fallito');
+    const { url, publicUrl } = await request('POST', '/upload/presign', { folder, ext, contentType: mime });
+    const r = await fetch(url, { method: 'PUT', headers: { 'Content-Type': mime }, body: file });
+    if (!r.ok) throw new Error('Upload S3 fallito');
     return publicUrl;
   }
 
@@ -52,9 +44,10 @@ const Api = (() => {
     },
 
     save: {
-      get:    ()                                          => request('GET',    '/save'),
-      put:    (saveData, points, prestige, xpLevel, optIn, research, totalTimeSec) => request('PUT', '/save', { save_data: saveData, points, prestige, xp_level: xpLevel, opt_in: optIn ?? false, research: research ?? 0, total_time_sec: totalTimeSec ?? 0 }),
-      delete: ()                                          => request('DELETE', '/save'),
+      get:    () => request('GET', '/save'),
+      put:    (saveData, points, prestige, xpLevel, optIn, research, totalTimeSec) =>
+        request('PUT', '/save', { save_data: saveData, points, prestige, xp_level: xpLevel, opt_in: optIn ?? false, research: research ?? 0, total_time_sec: totalTimeSec ?? 0 }),
+      delete: () => request('DELETE', '/save'),
     },
 
     leaderboard: {
@@ -68,6 +61,17 @@ const Api = (() => {
 
     upload: {
       file: uploadFile,
+    },
+
+    admin: {
+      getStats:           ()             => request('GET',    '/admin/stats'),
+      getSubmissions:     ()             => request('GET',    '/admin/submissions'),
+      updateSubmission:   (id, status, note) => request('PATCH',  `/admin/submissions/${id}`, { status, note }),
+      deleteSubmission:   (id)           => request('DELETE', `/admin/submissions/${id}`),
+      getUsers:           ()             => request('GET',    '/admin/users'),
+      deleteUser:         (id)           => request('DELETE', `/admin/users/${id}`),
+      getSaves:           ()             => request('GET',    '/admin/saves'),
+      deleteSave:         (userId)       => request('DELETE', `/admin/saves/${userId}`),
     },
   };
 })();

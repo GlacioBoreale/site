@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Glaciopia</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/x-icon" href="https://glaciopia-images.s3.eu-north-1.amazonaws.com/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style/admin.css">
+    <script src="scripts/api.js"></script>
+    <script src="scripts/auth.js"></script>
+    <script src="scripts/admin.js" defer></script>
+</head>
+<body>
+
+<div id="admin-guard">
+    <div class="guard-box">
+        <i class="fas fa-lock"></i>
+        <h2>Accesso negato</h2>
+        <p>Questa pagina è riservata agli amministratori.</p>
+        <a href="index.html">Torna alla home</a>
+    </div>
+</div>
+
+<div id="admin-app" style="display:none;">
+
+    <header class="adm-header">
+        <div class="adm-header-inner">
+            <div class="adm-logo">
+                <i class="fas fa-shield-halved"></i>
+                <span>Glaciopia Admin</span>
+            </div>
+            <div class="adm-header-right">
+                <span class="adm-user-label" id="adm-user-label"></span>
+                <button class="adm-refresh-btn" id="adm-refresh-btn" title="Ricarica tutto"><i class="fas fa-rotate-right"></i></button>
+                <a href="index.html" class="adm-home-btn"><i class="fas fa-arrow-left"></i> Sito</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="adm-layout">
+
+        <nav class="adm-nav">
+            <button class="adm-nav-btn active" data-section="overview">
+                <i class="fas fa-chart-line"></i><span>Overview</span>
+            </button>
+            <button class="adm-nav-btn" data-section="submissions">
+                <i class="fas fa-inbox"></i><span>Submissions</span>
+                <span class="adm-nav-badge" id="nav-badge-submissions"></span>
+            </button>
+            <button class="adm-nav-btn" data-section="users">
+                <i class="fas fa-users"></i><span>Utenti</span>
+            </button>
+            <button class="adm-nav-btn" data-section="saves">
+                <i class="fas fa-floppy-disk"></i><span>Salvataggi</span>
+            </button>
+        </nav>
+
+        <main class="adm-content">
+
+            <!-- OVERVIEW -->
+            <section class="adm-section active" id="section-overview">
+                <div class="adm-section-header">
+                    <h1>Overview</h1>
+                </div>
+                <div class="adm-stats-grid" id="overview-stats">
+                    <div class="adm-stat-card">
+                        <div class="adm-stat-icon"><i class="fas fa-users"></i></div>
+                        <div class="adm-stat-body">
+                            <span class="adm-stat-value" id="ov-users">—</span>
+                            <span class="adm-stat-label">Utenti registrati</span>
+                        </div>
+                    </div>
+                    <div class="adm-stat-card">
+                        <div class="adm-stat-icon adm-stat-icon-green"><i class="fas fa-gamepad"></i></div>
+                        <div class="adm-stat-body">
+                            <span class="adm-stat-value" id="ov-saves">—</span>
+                            <span class="adm-stat-label">Salvataggi attivi</span>
+                        </div>
+                    </div>
+                    <div class="adm-stat-card">
+                        <div class="adm-stat-icon adm-stat-icon-yellow"><i class="fas fa-inbox"></i></div>
+                        <div class="adm-stat-body">
+                            <span class="adm-stat-value" id="ov-subs">—</span>
+                            <span class="adm-stat-label">Submission totali</span>
+                        </div>
+                    </div>
+                    <div class="adm-stat-card">
+                        <div class="adm-stat-icon adm-stat-icon-red"><i class="fas fa-clock"></i></div>
+                        <div class="adm-stat-body">
+                            <span class="adm-stat-value" id="ov-pending">—</span>
+                            <span class="adm-stat-label">In attesa</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="adm-overview-grid">
+                    <div class="adm-overview-card">
+                        <div class="adm-overview-card-title"><i class="fas fa-tag"></i> Per tipo</div>
+                        <div class="adm-bar-list" id="ov-by-type"></div>
+                    </div>
+                    <div class="adm-overview-card">
+                        <div class="adm-overview-card-title"><i class="fas fa-circle-half-stroke"></i> Per stato</div>
+                        <div class="adm-bar-list" id="ov-by-status"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SUBMISSIONS -->
+            <section class="adm-section" id="section-submissions">
+                <div class="adm-section-header">
+                    <h1>Submissions</h1>
+                    <div class="adm-toolbar">
+                        <div class="adm-tabs" id="sub-status-tabs">
+                            <button class="adm-tab active" data-val="all">Tutte</button>
+                            <button class="adm-tab" data-val="pending">In attesa</button>
+                            <button class="adm-tab" data-val="approved">Approvate</button>
+                            <button class="adm-tab" data-val="rejected">Rifiutate</button>
+                        </div>
+                        <div class="adm-tabs" id="sub-type-tabs">
+                            <button class="adm-tab active" data-val="all">Tutti</button>
+                            <button class="adm-tab" data-val="vtuber">VTuber</button>
+                            <button class="adm-tab" data-val="fanart">Fanart</button>
+                            <button class="adm-tab" data-val="team">Team</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="adm-table-wrap" id="sub-list">
+                    <div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>
+                </div>
+            </section>
+
+            <!-- USERS -->
+            <section class="adm-section" id="section-users">
+                <div class="adm-section-header">
+                    <h1>Utenti</h1>
+                    <div class="adm-toolbar">
+                        <input class="adm-search" id="user-search" type="text" placeholder="Cerca per username o email...">
+                    </div>
+                </div>
+                <div class="adm-table-wrap" id="user-list">
+                    <div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>
+                </div>
+            </section>
+
+            <!-- SAVES -->
+            <section class="adm-section" id="section-saves">
+                <div class="adm-section-header">
+                    <h1>Salvataggi</h1>
+                    <div class="adm-toolbar">
+                        <input class="adm-search" id="save-search" type="text" placeholder="Cerca per username o email...">
+                    </div>
+                </div>
+                <div class="adm-table-wrap" id="save-list">
+                    <div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+</div>
+
+<!-- DETAIL DRAWER -->
+<div class="adm-drawer-overlay" id="adm-drawer-overlay" style="display:none;">
+    <div class="adm-drawer-backdrop" id="adm-drawer-backdrop"></div>
+    <div class="adm-drawer" id="adm-drawer">
+        <div class="adm-drawer-header">
+            <h2 class="adm-drawer-title" id="adm-drawer-title">Dettaglio</h2>
+            <button class="adm-drawer-close" id="adm-drawer-close"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="adm-drawer-body" id="adm-drawer-body"></div>
+    </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="adm-confirm-overlay" id="adm-confirm-overlay" style="display:none;">
+    <div class="adm-confirm-box">
+        <div class="adm-confirm-icon"><i class="fas fa-triangle-exclamation"></i></div>
+        <h3 class="adm-confirm-title" id="adm-confirm-title">Conferma</h3>
+        <p class="adm-confirm-msg" id="adm-confirm-msg"></p>
+        <div class="adm-confirm-actions">
+            <button class="adm-confirm-cancel" id="adm-confirm-cancel">Annulla</button>
+            <button class="adm-confirm-ok adm-confirm-danger" id="adm-confirm-ok">Conferma</button>
+        </div>
+    </div>
+</div>
+
+<div class="adm-toast" id="adm-toast"></div>
+
+</body>
+</html>

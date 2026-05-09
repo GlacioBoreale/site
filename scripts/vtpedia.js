@@ -2,6 +2,9 @@ let vtubers = [];
 let currentSlide = 0;
 let currentImages = [];
 
+const SF_MAX_BYTES = 15 * 1024 * 1024;
+let sfSelectedFile = null;
+
 async function loadVTubersData() {
     try {
         const response = await fetch('./assets/data/vtubers.json');
@@ -19,20 +22,13 @@ async function loadVTubersData() {
 function displayVTubers() {
     const grid = document.getElementById('vtuber-grid');
     grid.innerHTML = '';
-
     if (vtubers.length === 0) {
         grid.innerHTML = '<p style="color: rgba(255,255,255,0.7); text-align: center; grid-column: 1/-1;">Nessun VTuber disponibile.</p>';
         return;
     }
-
-    vtubers.forEach((vtuber, index) => {
-        const card = createVTuberCard(vtuber, index);
-        grid.appendChild(card);
-    });
-
+    vtubers.forEach((vtuber, index) => grid.appendChild(createVTuberCard(vtuber, index)));
     grid.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        const t = getNestedTranslation(key);
+        const t = getNestedTranslation(el.getAttribute('data-i18n'));
         if (t) el.textContent = t;
     });
 }
@@ -49,12 +45,8 @@ function createVTuberCard(vtuber, index) {
                 <h3 class="card-cta-title" data-i18n="vtpedia.ctaTitle">Potresti esserci tu!</h3>
                 <p class="card-cta-desc" data-i18n="vtpedia.ctaDesc">Sei un VTuber? Fai richiesta per entrare nella VTPedia!</p>
                 <div class="card-cta-btn"><i class="fas fa-plus"></i> <span data-i18n="vtpedia.submit">Invia un VTuber</span></div>
-            </div>
-        `;
-        card.addEventListener('click', () => {
-            const btn = document.getElementById('submit-vtuber-btn');
-            if (btn) btn.click();
-        });
+            </div>`;
+        card.addEventListener('click', () => document.getElementById('submit-vtuber-btn')?.click());
         setTimeout(() => card.classList.add('visible'), index * 80);
         return card;
     }
@@ -65,7 +57,7 @@ function createVTuberCard(vtuber, index) {
 
     card.innerHTML = `
         <div class="card-image">
-            <img src="${firstImage}" alt="${vtuber.name}" onerror="this.src=IMG_CDN + '/vtubers/placeholder.png'">
+            <img src="${firstImage}" alt="${vtuber.name}" onerror="this.src=IMG_CDN+'/vtubers/placeholder.png'">
             <div class="added-date">Added: ${vtuber.addedDate}</div>
         </div>
         <div class="card-content">
@@ -76,37 +68,22 @@ function createVTuberCard(vtuber, index) {
                 <span data-i18n="vtpedia.showMore">${showMoreText}</span>
                 <i class="fas fa-chevron-down"></i>
             </button>
-        </div>
-    `;
+        </div>`;
 
     card.addEventListener('click', () => openPopup(vtuber));
-
-    // Aspetta che l'immagine sia caricata, poi fa il fade-in con delay scaglionato
     const img = card.querySelector('img');
-    const reveal = () => {
-        setTimeout(() => card.classList.add('visible'), index * 80);
-    };
-
-    if (img.complete) {
-        reveal();
-    } else {
-        img.addEventListener('load', reveal, { once: true });
-        img.addEventListener('error', reveal, { once: true });
-    }
-
+    const reveal = () => setTimeout(() => card.classList.add('visible'), index * 80);
+    if (img.complete) reveal();
+    else { img.addEventListener('load', reveal, { once: true }); img.addEventListener('error', reveal, { once: true }); }
     return card;
 }
 
 function openPopup(vtuber) {
     const popup = document.getElementById('vtuber-popup');
-
     currentImages = vtuber.images?.length > 0 ? vtuber.images : [IMG_CDN + '/vtubers/placeholder.png'];
     currentSlide = 0;
-
     initGallery(currentImages);
-
     const longDesc = getNestedTranslation(vtuber.longDescKey) || vtuber.longDescKey;
-
     document.getElementById('popup-name').textContent = vtuber.name;
     document.getElementById('popup-full-name').textContent = vtuber.fullName;
     document.getElementById('popup-debut').textContent = vtuber.debut;
@@ -114,165 +91,60 @@ function openPopup(vtuber) {
     document.getElementById('popup-channel').textContent = vtuber.channel;
     document.getElementById('popup-channel').href = vtuber.channel;
     document.getElementById('popup-long-desc').innerText = longDesc;
-
     popup.classList.add('active');
+    document.body.classList.add('modal-open');
     document.body.style.overflow = 'hidden';
 }
 
 function initGallery(images) {
-    const slidesContainer = document.getElementById('gallery-slides');
-    const indicatorsContainer = document.getElementById('gallery-indicators');
-
-    slidesContainer.innerHTML = '';
-    indicatorsContainer.innerHTML = '';
-
+    const slides = document.getElementById('gallery-slides');
+    const indicators = document.getElementById('gallery-indicators');
+    slides.innerHTML = '';
+    indicators.innerHTML = '';
     images.forEach((image, index) => {
         const slide = document.createElement('div');
         slide.className = 'gallery-slide';
-        slide.innerHTML = `<img src="${image}" alt="Image ${index + 1}" onerror="this.src=IMG_CDN + '/vtubers/placeholder.png'">`;
-        slidesContainer.appendChild(slide);
-
-        const indicator = document.createElement('div');
-        indicator.className = `gallery-indicator ${index === 0 ? 'active' : ''}`;
-        indicator.addEventListener('click', () => goToSlide(index));
-        indicatorsContainer.appendChild(indicator);
+        slide.innerHTML = `<img src="${image}" alt="Image ${index + 1}" onerror="this.src=IMG_CDN+'/vtubers/placeholder.png'">`;
+        slides.appendChild(slide);
+        const dot = document.createElement('div');
+        dot.className = `gallery-indicator ${index === 0 ? 'active' : ''}`;
+        dot.addEventListener('click', () => goToSlide(index));
+        indicators.appendChild(dot);
     });
-
     updateGallery();
 }
 
-function goToSlide(index) {
-    currentSlide = index;
-    updateGallery();
-}
-
-function nextSlide() {
-    if (currentSlide < currentImages.length - 1) {
-        currentSlide++;
-        updateGallery();
-    }
-}
-
-function prevSlide() {
-    if (currentSlide > 0) {
-        currentSlide--;
-        updateGallery();
-    }
-}
+function goToSlide(index) { currentSlide = index; updateGallery(); }
+function nextSlide() { if (currentSlide < currentImages.length - 1) { currentSlide++; updateGallery(); } }
+function prevSlide() { if (currentSlide > 0) { currentSlide--; updateGallery(); } }
 
 function updateGallery() {
-    const slidesContainer = document.getElementById('gallery-slides');
-    const counter = document.getElementById('gallery-counter');
-    const prevBtn = document.getElementById('gallery-prev');
-    const nextBtn = document.getElementById('gallery-next');
-    const indicators = document.querySelectorAll('.gallery-indicator');
-
-    slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
-    counter.textContent = `${currentSlide + 1} / ${currentImages.length}`;
-
-    prevBtn.disabled = currentSlide === 0;
-    nextBtn.disabled = currentSlide === currentImages.length - 1;
-
-    indicators.forEach((indicator, index) => {
-        indicator.classList.toggle('active', index === currentSlide);
-    });
+    document.getElementById('gallery-slides').style.transform = `translateX(-${currentSlide * 100}%)`;
+    document.getElementById('gallery-counter').textContent = `${currentSlide + 1} / ${currentImages.length}`;
+    document.getElementById('gallery-prev').disabled = currentSlide === 0;
+    document.getElementById('gallery-next').disabled = currentSlide === currentImages.length - 1;
+    document.querySelectorAll('.gallery-indicator').forEach((el, i) => el.classList.toggle('active', i === currentSlide));
 }
 
 function closePopup() {
-    const popup = document.getElementById('vtuber-popup');
-    popup.classList.remove('active');
+    document.getElementById('vtuber-popup').classList.remove('active');
+    document.body.classList.remove('modal-open');
     document.body.style.overflow = 'auto';
     currentSlide = 0;
     currentImages = [];
 }
 
 function copySponsorCmd() {
-    const text = document.getElementById('sponsor-cmd-text').textContent;
-    const btn = document.getElementById('sponsor-copy-btn');
-    navigator.clipboard.writeText(text).then(() => {
-        btn.classList.add('copied');
-        btn.querySelector('i').className = 'fas fa-check';
-        setTimeout(() => {
-            btn.classList.remove('copied');
-            btn.querySelector('i').className = 'fas fa-copy';
-        }, 2000);
-    });
-}
-
-window.addEventListener('languageChanged', () => {
-    displayVTubers();
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        const t = getNestedTranslation(key);
-        if (t) el.textContent = t;
-    });
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-        const key = el.getAttribute('data-i18n-placeholder');
-        const t = getNestedTranslation(key);
-        if (t) el.placeholder = t;
-    });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadVTubersData();
-
-    const popupClose = document.getElementById('popup-close');
-    const popupOverlay = document.getElementById('popup-overlay');
-    const prevBtn = document.getElementById('gallery-prev');
-    const nextBtn = document.getElementById('gallery-next');
-
-    if (popupClose) popupClose.addEventListener('click', closePopup);
-    if (popupOverlay) popupOverlay.addEventListener('click', closePopup);
-    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
-    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
-
-    document.addEventListener('keydown', (e) => {
-        const popup = document.getElementById('vtuber-popup');
-        if (popup.classList.contains('active')) {
-            if (e.key === 'Escape') closePopup();
-            if (e.key === 'ArrowLeft') prevSlide();
-            if (e.key === 'ArrowRight') nextSlide();
-        }
-    });
-
-    const submitBtn = document.getElementById('submit-vtuber-btn');
-    const submitPopup = document.getElementById('submit-popup');
-    const submitClose = document.getElementById('submit-popup-close');
-    const submitOverlay = document.getElementById('submit-popup-overlay');
-
-    function openSubmitPopup() {
-        submitPopup.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-    function closeSubmitPopup() {
-        submitPopup.classList.remove('active');
-        document.body.style.overflow = 'auto';
-    }
-
-    if (submitBtn) submitBtn.addEventListener('click', openSubmitPopup);
-    if (submitClose) submitClose.addEventListener('click', closeSubmitPopup);
-    if (submitOverlay) submitOverlay.addEventListener('click', closeSubmitPopup);
-
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeSubmitPopup();
-    });
-});
-
-function copySponsorCmd() {
     const codeEl = document.getElementById('sponsor-cmd-text');
     const btn = document.getElementById('sponsor-copy-btn');
     if (!codeEl || !btn) return;
-
     const text = codeEl.textContent;
     navigator.clipboard.writeText(text).then(() => {
         const span = btn.querySelector('span');
-        const originalText = span.textContent;
+        const orig = span.textContent;
         span.textContent = '✓';
         btn.classList.add('copied');
-        setTimeout(() => {
-            span.textContent = originalText;
-            btn.classList.remove('copied');
-        }, 1500);
+        setTimeout(() => { span.textContent = orig; btn.classList.remove('copied'); }, 1500);
     }).catch(() => {
         const range = document.createRange();
         range.selectNodeContents(codeEl);
@@ -280,3 +152,179 @@ function copySponsorCmd() {
         window.getSelection().addRange(range);
     });
 }
+
+function _sfSetFeedback(msg, type) {
+    const el = document.getElementById('sf-feedback');
+    if (!el) return;
+    el.textContent = msg;
+    el.className = 'sf-feedback ' + type;
+}
+
+function _sfClearFeedback() {
+    const el = document.getElementById('sf-feedback');
+    if (!el) return;
+    el.textContent = '';
+    el.className = 'sf-feedback';
+}
+
+function _sfSetFile(file) {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+        _sfSetFeedback('Formato non supportato. Usa JPG, PNG, GIF o WEBP.', 'error');
+        return;
+    }
+    if (file.size > SF_MAX_BYTES) {
+        _sfSetFeedback(`Il file supera il limite di 15 MB (${(file.size / 1024 / 1024).toFixed(1)} MB).`, 'error');
+        return;
+    }
+    sfSelectedFile = file;
+    _sfClearFeedback();
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        document.getElementById('sf-preview-img').src = e.target.result;
+        document.getElementById('sf-filename').textContent = file.name;
+        document.getElementById('sf-preview').style.display = 'flex';
+        document.getElementById('sf-dropzone-inner').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+}
+
+function _sfResetFile() {
+    sfSelectedFile = null;
+    document.getElementById('sf-image-file').value = '';
+    document.getElementById('sf-preview').style.display = 'none';
+    document.getElementById('sf-dropzone-inner').style.display = 'flex';
+    document.getElementById('sf-preview-img').src = '';
+}
+
+function initSubmitDropzone() {
+    const zone      = document.getElementById('sf-dropzone');
+    const input     = document.getElementById('sf-image-file');
+    const pickBtn   = document.getElementById('sf-pick-btn');
+    const removeBtn = document.getElementById('sf-remove-btn');
+    if (!zone) return;
+
+    pickBtn.addEventListener('click', () => input.click());
+    input.addEventListener('change', () => { if (input.files[0]) _sfSetFile(input.files[0]); });
+    removeBtn.addEventListener('click', (e) => { e.stopPropagation(); _sfResetFile(); });
+    zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+    zone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        zone.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        if (file) _sfSetFile(file);
+    });
+}
+
+function initSubmitForm() {
+    initSubmitDropzone();
+
+    const descEl  = document.getElementById('sf-desc');
+    const countEl = document.getElementById('sf-desc-count');
+    if (descEl && countEl) descEl.addEventListener('input', () => { countEl.textContent = descEl.value.length; });
+
+    const submitBtn = document.getElementById('sf-submit-btn');
+    if (!submitBtn) return;
+
+    submitBtn.addEventListener('click', async () => {
+        _sfClearFeedback();
+
+        const name     = document.getElementById('sf-name')?.value.trim();
+        const fullname = document.getElementById('sf-fullname')?.value.trim();
+        const channel  = document.getElementById('sf-channel')?.value.trim();
+        const hashtag  = document.getElementById('sf-hashtag')?.value.trim();
+        const debut    = document.getElementById('sf-debut')?.value.trim();
+        const desc     = document.getElementById('sf-desc')?.value.trim();
+        const sponsor  = document.getElementById('sf-sponsor')?.value;
+        const proof    = document.getElementById('sf-proof')?.value.trim();
+
+        if (!name || !channel || !desc || !sponsor || !proof) {
+            _sfSetFeedback('Compila tutti i campi obbligatori (*).', 'error');
+            return;
+        }
+        if (!sfSelectedFile) {
+            _sfSetFeedback('Seleziona un\'immagine da caricare.', 'error');
+            return;
+        }
+        if (!Auth || !Auth.isLoggedIn()) {
+            _sfSetFeedback('Devi essere loggato per inviare una richiesta.', 'error');
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.querySelector('span').textContent = 'Caricamento immagine...';
+
+        try {
+            const imageUrl = await Api.upload.file(sfSelectedFile, 'vtubers');
+            submitBtn.querySelector('span').textContent = 'Invio in corso...';
+            const payload = { name, fullname, channel, hashtag, debut, desc, images: [imageUrl], sponsor, proof };
+            await Api.submit.post('vtuber', payload, imageUrl);
+            _sfSetFeedback('Richiesta inviata! La esamineremo il prima possibile.', 'success');
+            ['sf-name','sf-fullname','sf-channel','sf-hashtag','sf-debut','sf-desc','sf-sponsor','sf-proof'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            if (countEl) countEl.textContent = '0';
+            _sfResetFile();
+        } catch (err) {
+            _sfSetFeedback(err.message || 'Errore durante l\'invio. Riprova.', 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.querySelector('span').textContent = 'Invia richiesta';
+        }
+    });
+}
+
+window.addEventListener('languageChanged', () => {
+    displayVTubers();
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const t = getNestedTranslation(el.getAttribute('data-i18n'));
+        if (t) el.textContent = t;
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const t = getNestedTranslation(el.getAttribute('data-i18n-placeholder'));
+        if (t) el.placeholder = t;
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadVTubersData();
+    initSubmitForm();
+
+    document.getElementById('popup-close')?.addEventListener('click', closePopup);
+    document.getElementById('popup-overlay')?.addEventListener('click', closePopup);
+    document.getElementById('gallery-prev')?.addEventListener('click', prevSlide);
+    document.getElementById('gallery-next')?.addEventListener('click', nextSlide);
+
+    document.addEventListener('keydown', (e) => {
+        const popup = document.getElementById('vtuber-popup');
+        if (popup?.classList.contains('active')) {
+            if (e.key === 'Escape') closePopup();
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        }
+    });
+
+    const submitBtn     = document.getElementById('submit-vtuber-btn');
+    const submitPopup   = document.getElementById('submit-popup');
+    const submitClose   = document.getElementById('submit-popup-close');
+    const submitOverlay = document.getElementById('submit-popup-overlay');
+
+    function openSubmitPopup() {
+        submitPopup.classList.add('active');
+        document.body.classList.add('modal-open');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeSubmitPopup() {
+        submitPopup.classList.remove('active');
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = 'auto';
+        _sfClearFeedback();
+    }
+
+    submitBtn?.addEventListener('click', openSubmitPopup);
+    submitClose?.addEventListener('click', closeSubmitPopup);
+    submitOverlay?.addEventListener('click', closeSubmitPopup);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSubmitPopup(); });
+});

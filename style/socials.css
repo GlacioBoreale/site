@@ -1,15 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Fredoka:wght@300;400;500;600;700&display=swap');
-
 :root {
-  --accent: #5b9cf6;
-  --accent2: #a78bfa;
-  --glass: rgba(255,255,255,0.04);
-  --border: rgba(255,255,255,0.08);
-  --twitch: #9146FF;
-  --youtube: #FF0000;
-  --discord: #5865F2;
+  --twitch:    #9146FF;
+  --youtube:   #FF0000;
+  --discord:   #5865F2;
   --instagram: #E1306C;
-  --x: #b3b3b3;
+  --x:         #b3b3b3;
 }
 
 .socials-main {
@@ -28,38 +22,38 @@
 
 .socials-label {
   font-family: 'Fredoka One', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.7rem;
 }
 
 .socials-title {
   font-family: 'Fredoka One', sans-serif;
-  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 800;
   letter-spacing: -0.02em;
-  background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+  background: linear-gradient(135deg, var(--text) 30%, var(--accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.7rem;
 }
 
 .socials-subtitle {
   font-family: 'Fredoka', sans-serif;
-  color: rgba(255,255,255,0.4);
-  font-size: 1rem;
+  color: var(--text-muted);
+  font-size: 0.97rem;
 }
 
 .platform-section {
-  background: var(--glass);
+  background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 2rem;
-  margin-bottom: 1.5rem;
+  border-radius: var(--radius-lg);
+  padding: 1.8rem;
+  margin-bottom: 1.2rem;
   animation: fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) both;
 }
 
@@ -95,9 +89,9 @@
 
 .platform-name {
   font-family: 'Fredoka One', sans-serif;
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--text);
   text-decoration: none;
   display: block;
   margin-bottom: 0.3rem;
@@ -122,8 +116,8 @@
   align-items: center;
   gap: 0.5rem;
   font-family: 'Fredoka', sans-serif;
-  font-size: 0.9rem;
-  color: rgba(255,255,255,0.5);
+  font-size: 0.88rem;
+  color: var(--text-muted);
 }
 .platform-meta i { font-size: 0.85rem; }
 .platform-meta .fab.fa-twitch { color: var(--twitch); }
@@ -146,7 +140,7 @@
   box-shadow: 0 0 0 3px rgba(255,68,68,0.2);
   animation: pulseDot 1.5s infinite;
 }
-.status-dot.is-offline { background: rgba(255,255,255,0.2); }
+.status-dot.is-offline { background: var(--text-dim); }
 
 @keyframes pulseDot {
   0%, 100% { box-shadow: 0 0 0 3px rgba(255,68,68,0.25); }
@@ -155,18 +149,18 @@
 
 .status-label {
   font-family: 'Fredoka One', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.4);
+  color: var(--text-muted);
 }
 .status-label.is-live { color: #ff6666; }
 
 .live-uptime {
   font-family: 'Fredoka', sans-serif;
   font-size: 0.75rem;
-  color: rgba(255,255,255,0.25);
+  color: var(--text-dim);
 }
 
 .twitch-main-row {
@@ -178,7 +172,7 @@
 }
 
 .twitch-media {
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   overflow: hidden;
   position: relative;
   aspect-ratio: 16/9;
@@ -230,10 +224,10 @@
 }
 
 .stream-info-box {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px;
-  padding: 1rem 1.2rem;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.9rem 1.1rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -242,17 +236,17 @@
 
 .info-box-label {
   font-family: 'Fredoka One', sans-serif;
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.3);
+  color: var(--text-dim);
 }
 .info-box-value {
   font-family: 'Fredoka', sans-serif;
-  font-size: 0.95rem;
+  font-size: 0.93rem;
   font-weight: 500;
-  color: #fff;
+  color: var(--text);
   margin: 0;
   line-height: 1.45;
 }
@@ -272,7 +266,7 @@
 }
 .game-name {
   font-family: 'Fredoka', sans-serif;
-  font-size: 0.95rem;
+  font-size: 0.93rem;
   font-weight: 500;
   color: var(--twitch);
   display: block;
@@ -284,27 +278,27 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 8px;
-  padding: 0.4rem 0.8rem;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.7rem;
   font-family: 'Fredoka', sans-serif;
-  font-size: 0.82rem;
-  color: rgba(255,255,255,0.55);
+  font-size: 0.8rem;
+  color: var(--text-muted);
 }
-.stat-chip i { font-size: 0.75rem; color: rgba(255,255,255,0.3); }
+.stat-chip i { font-size: 0.75rem; color: var(--text-dim); }
 
 .twitch-clips-section {
-  border-top: 1px solid rgba(255,255,255,0.06);
+  border-top: 1px solid var(--border);
   padding-top: 1.2rem;
 }
 .clips-section-title {
   font-family: 'Fredoka One', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.35);
+  color: var(--text-dim);
   margin-bottom: 0.9rem;
 }
 .clips-grid {
@@ -317,9 +311,9 @@
   display: flex;
   gap: 0.8rem;
   align-items: center;
-  background: rgba(255,255,255,0.03);
+  background: var(--bg-raised);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 0.7rem;
   text-decoration: none;
   transition: background 0.2s, border-color 0.2s, transform 0.2s;
@@ -332,17 +326,17 @@
 .clip-thumb {
   width: 100px;
   height: 56px;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   object-fit: cover;
   flex-shrink: 0;
-  background: #111;
+  background: var(--bg);
 }
 .clip-info { flex: 1; overflow: hidden; }
 .clip-title {
   font-family: 'Fredoka', sans-serif;
   font-size: 0.85rem;
   font-weight: 500;
-  color: #fff;
+  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -351,7 +345,7 @@
 .clip-stats {
   font-family: 'Fredoka', sans-serif;
   font-size: 0.75rem;
-  color: rgba(255,255,255,0.4);
+  color: var(--text-muted);
   display: flex;
   gap: 0.6rem;
 }
@@ -364,7 +358,7 @@
   width: 100% !important;
   height: 150px !important;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
 }
 
 .clip-card-mini {
@@ -372,52 +366,46 @@
   align-items: center;
   gap: 0.7rem;
   padding: 0.5rem;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   text-decoration: none;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.06);
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
   transition: background 0.2s, border-color 0.2s;
   overflow: hidden;
 }
-
 .clip-card-mini:hover {
   background: rgba(145,70,255,0.1);
   border-color: rgba(145,70,255,0.25);
 }
-
 .clip-thumb-mini {
   width: 72px;
   height: 40px;
   object-fit: cover;
   border-radius: 4px;
   flex-shrink: 0;
-  background: #0e0e10;
+  background: var(--bg);
 }
-
 .clip-info-mini {
   flex: 1;
   min-width: 0;
 }
-
 .clip-title-mini {
   font-family: 'Fredoka', sans-serif;
   font-size: 0.82rem;
   font-weight: 500;
-  color: rgba(255,255,255,0.85);
+  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   margin-bottom: 0.2rem;
 }
-
 .clip-stats-mini {
   display: flex;
   gap: 0.6rem;
   font-family: 'Fredoka', sans-serif;
   font-size: 0.72rem;
-  color: rgba(255,255,255,0.3);
+  color: var(--text-muted);
 }
-
 .clip-stats-mini i { font-size: 0.65rem; }
 
 .yt-videos-grid {
@@ -427,15 +415,15 @@
 }
 .yt-video-card {
   text-decoration: none;
-  background: rgba(255,255,255,0.03);
+  background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   overflow: hidden;
   transition: background 0.2s, border-color 0.2s, transform 0.2s;
 }
 .yt-video-card:hover {
   background: rgba(255,0,0,0.07);
-  border-color: rgba(255,0,0,0.25);
+  border-color: rgba(255,0,0,0.22);
   transform: translateY(-3px);
 }
 .yt-thumb {
@@ -443,14 +431,14 @@
   aspect-ratio: 16/9;
   object-fit: cover;
   display: block;
-  background: #111;
+  background: var(--bg-raised);
 }
-.yt-video-info { padding: 0.8rem; }
+.yt-video-info { padding: 0.75rem; }
 .yt-video-title {
   font-family: 'Fredoka', sans-serif;
   font-size: 0.85rem;
   font-weight: 500;
-  color: #fff;
+  color: var(--text);
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -461,11 +449,11 @@
 }
 .yt-section-title {
   font-family: 'Fredoka One', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.35);
+  color: var(--text-dim);
   margin-bottom: 0.9rem;
 }
 .yt-video-meta {
@@ -477,16 +465,16 @@
 .yt-views {
   font-family: 'Fredoka', sans-serif;
   font-size: 0.75rem;
-  color: rgba(255,255,255,0.4);
+  color: var(--text-muted);
   display: flex;
   align-items: center;
   gap: 0.3rem;
 }
-.yt-views i { font-size: 0.65rem; color: rgba(255,255,255,0.25); }
+.yt-views i { font-size: 0.65rem; color: var(--text-dim); }
 .yt-video-date {
   font-family: 'Fredoka', sans-serif;
   font-size: 0.75rem;
-  color: rgba(255,255,255,0.35);
+  color: var(--text-muted);
 }
 
 .platform-icon-circle {
@@ -499,9 +487,9 @@
   font-size: 1.5rem;
   flex-shrink: 0;
 }
-.discord-icon  { background: rgba(88,101,242,0.15); color: var(--discord); border: 1px solid rgba(88,101,242,0.3); }
-.x-icon  { background: rgba(123, 123, 123, 0.15); color: var(--x); border: 1px solid rgba(255, 255, 255, 0.3); }
-.instagram-icon { background: rgba(225,48,108,0.15); color: var(--instagram); border: 1px solid rgba(225,48,108,0.3); cursor: default; }
+.discord-icon   { background: rgba(88,101,242,0.15);  color: var(--discord);   border: 1px solid rgba(88,101,242,0.3); }
+.x-icon         { background: rgba(123,123,123,0.15); color: var(--x);         border: 1px solid rgba(255,255,255,0.3); }
+.instagram-icon { background: rgba(225,48,108,0.15);  color: var(--instagram); border: 1px solid rgba(225,48,108,0.3); cursor: default; }
 .tiktok-icon {
   background: linear-gradient(-45deg, rgba(236,14,83,0.15), rgba(4,187,199,0.15));
   color: #fff;
@@ -528,19 +516,18 @@
   align-items: center;
   gap: 0.6rem;
   padding: 0.7rem 1.5rem;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   font-family: 'Fredoka', sans-serif;
   font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
   transition: transform 0.2s, opacity 0.2s;
 }
-
-.join-btn:hover { transform: translateY(-2px); opacity: 0.9; }
+.join-btn:hover { transform: translateY(-2px); opacity: 0.9; text-decoration: none; }
 .twitch-btn    { background: var(--twitch); color: #fff; }
 .youtube-btn   { background: var(--youtube); color: #fff; }
 .discord-btn   { background: var(--discord); color: #fff; }
-.x-btn   { background: rgba(123, 123, 123, 0.15); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.3);}
+.x-btn         { background: var(--card-bg); color: var(--text); border: 1px solid var(--border); }
 .instagram-btn { background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; }
 .tiktok-btn {
   background: linear-gradient(-45deg, rgba(236,14,83,0.3), rgba(4,187,199,0.3));
@@ -565,8 +552,8 @@
 .small-platforms {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
+  gap: 1.2rem;
+  margin-bottom: 1.2rem;
 }
 .small-platform { margin-bottom: 0 !important; }
 .small-platform .platform-header { margin-bottom: 0; }
@@ -594,87 +581,4 @@
 @media (max-width: 500px) {
   .socials-main { padding: 1rem 1rem 3rem; }
   .platform-section { padding: 1.2rem; }
-}
-
-[data-theme="light"] .socials-title {
-  background: linear-gradient(135deg, #0a0a14 30%, var(--accent) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-[data-theme="light"] .socials-subtitle { color: rgba(10,10,20,0.4); }
-[data-theme="light"] .platform-section { background: rgba(255,255,255,0.6); border-color: rgba(10,10,20,0.1); }
-[data-theme="light"] .platform-name { color: #0a0a14; }
-[data-theme="light"] .platform-meta { color: rgba(10,10,20,0.5); }
-[data-theme="light"] .stream-info-box { background: rgba(10,10,20,0.04); border-color: rgba(10,10,20,0.08); }
-[data-theme="light"] .info-box-label { color: rgba(10,10,20,0.35); }
-[data-theme="light"] .info-box-value { color: #0a0a14; }
-[data-theme="light"] .stat-chip { background: rgba(10,10,20,0.04); border-color: rgba(10,10,20,0.08); color: rgba(10,10,20,0.5); }
-[data-theme="light"] .stat-chip i { color: rgba(10,10,20,0.3); }
-[data-theme="light"] .clips-section-title { color: rgba(10,10,20,0.35); }
-[data-theme="light"] .yt-section-title { color: rgba(10,10,20,0.35); }
-[data-theme="light"] .clip-card { background: rgba(10,10,20,0.03); border-color: rgba(10,10,20,0.08); }
-[data-theme="light"] .clip-title { color: #0a0a14; }
-[data-theme="light"] .clip-stats { color: rgba(10,10,20,0.4); }
-[data-theme="light"] .clip-card-mini { background: rgba(10,10,20,0.03); border-color: rgba(10,10,20,0.07); }
-[data-theme="light"] .clip-title-mini { color: rgba(10,10,20,0.8); }
-[data-theme="light"] .clip-stats-mini { color: rgba(10,10,20,0.3); }
-[data-theme="light"] .yt-video-card { background: rgba(10,10,20,0.03); border-color: rgba(10,10,20,0.08); }
-[data-theme="light"] .yt-video-card:hover { background: rgba(255,0,0,0.05); }
-[data-theme="light"] .yt-video-title { color: #0a0a14; }
-[data-theme="light"] .yt-views { color: rgba(10,10,20,0.4); }
-[data-theme="light"] .yt-views i { color: rgba(10,10,20,0.25); }
-[data-theme="light"] .yt-video-date { color: rgba(10,10,20,0.35); }
-[data-theme="light"] .status-label { color: rgba(10,10,20,0.4); }
-[data-theme="light"] .status-dot.is-offline { background: rgba(10,10,20,0.2); }
-[data-theme="light"] .live-uptime { color: rgba(10,10,20,0.25); }
-[data-theme="light"] .offline-badge { background: rgba(240,244,255,0.85); border-color: rgba(10,10,20,0.1); color: rgba(10,10,20,0.5); }
-[data-theme="light"] .twitch-clips-section { border-top-color: rgba(10,10,20,0.07); }
-
-/* Bottoni X e TikTok */
-[data-theme="light"] .x-btn {
-  background: rgba(10,10,20,0.07);
-  border-color: rgba(10,10,20,0.2);
-  color: #0a0a14;
-}
-[data-theme="light"] .x-btn:hover {
-  background: rgba(10,10,20,0.12);
-  border-color: rgba(10,10,20,0.35);
-}
-[data-theme="light"] .tiktok-btn {
-  background: linear-gradient(-45deg, rgba(236,14,83,0.12), rgba(4,187,199,0.12));
-  color: #0a0a14;
-}
-
-/* Icona TikTok */
-[data-theme="light"] .tiktok-icon {
-  background: linear-gradient(-45deg, rgba(236,14,83,0.1), rgba(4,187,199,0.1));
-  color: #1a1a1a;
-}
-[data-theme="light"] .x-icon {
-  background: rgba(10,10,20,0.07);
-  border-color: rgba(10,10,20,0.2);
-  color: #0a0a14;
-}
-
-/* Hover nomi piattaforme */
-[data-theme="light"] .twitch-name:hover    { color: #6c2fc4; }
-[data-theme="light"] .yt-name:hover        { color: #b30000; }
-[data-theme="light"] .discord-name:hover   { color: #3a4bc4; }
-[data-theme="light"] .instagram-name:hover { color: #a01050; }
-[data-theme="light"] .x-name:hover         { color: #0a0a14; }
-
-/* Bottoni join varianti scure */
-[data-theme="light"] .twitch-btn    { background: #6c2fc4; }
-[data-theme="light"] .youtube-btn   { background: #b30000; }
-[data-theme="light"] .discord-btn   { background: #3a4bc4; }
-[data-theme="light"] .instagram-btn { background: linear-gradient(135deg, #c07000, #b84020, #a01050, #8a1060, #6e0070); }
-
-/* Icone cerchio varianti scure */
-[data-theme="light"] .discord-icon   { background: rgba(58,75,196,0.12);  border-color: rgba(58,75,196,0.3);  color: #3a4bc4; }
-[data-theme="light"] .instagram-icon { background: rgba(160,16,80,0.1);   border-color: rgba(160,16,80,0.25); color: #a01050; }
-[data-theme="light"] .tiktok-name:hover {
-  background-image: linear-gradient(-45deg, #c0003a, #008fa8);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
 }

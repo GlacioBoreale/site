@@ -40,14 +40,9 @@
             <div class="search-wrapper">
                 <div class="search-bar-container">
                     <i class="fas fa-search search-icon"></i>
-                    <input
-                        type="text"
-                        id="fanart-search"
-                        class="fanart-search-input"
+                    <input type="text" id="fanart-search" class="fanart-search-input"
                         data-i18n-placeholder="fanart.searchPlaceholder"
-                        placeholder="Cerca per titolo o artista..."
-                        autocomplete="off"
-                    >
+                        placeholder="Cerca per titolo o artista..." autocomplete="off">
                     <div class="search-suggestions" id="search-suggestions"></div>
                 </div>
                 <div class="filter-dropdown-wrapper">
@@ -57,30 +52,25 @@
                         <i class="fas fa-chevron-down filter-chevron" id="filter-chevron"></i>
                     </button>
                     <div class="filter-dropdown" id="filter-dropdown">
-                        <button class="filter-option active" data-filter="all" data-i18n="fanart.filterAll">Tutte</button>
-                        <button class="filter-option" data-filter="digital" data-i18n="fanart.filterDigital">Digitale</button>
-                        <button class="filter-option" data-filter="traditional" data-i18n="fanart.filterTraditional">Tradizionale</button>
-                        <button class="filter-option" data-filter="meme" data-i18n="fanart.filterMeme">Meme</button>
-                        <button class="filter-option" data-filter="other" data-i18n="fanart.filterOther">Altro</button>
+                        <button class="filter-option active" data-filter="all"         data-i18n="fanart.filterAll">Tutte</button>
+                        <button class="filter-option"        data-filter="digital"     data-i18n="fanart.filterDigital">Digitale</button>
+                        <button class="filter-option"        data-filter="traditional" data-i18n="fanart.filterTraditional">Tradizionale</button>
+                        <button class="filter-option"        data-filter="meme"        data-i18n="fanart.filterMeme">Meme</button>
+                        <button class="filter-option"        data-filter="other"       data-i18n="fanart.filterOther">Altro</button>
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="fanart-grid" id="fanart-grid"></section>
-
-        <p class="no-results" id="no-results" style="display:none;" data-i18n="fanart.noResults">
-            Nessuna fanart trovata per questa ricerca.
-        </p>
+        <p class="no-results" id="no-results" style="display:none;" data-i18n="fanart.noResults">Nessuna fanart trovata.</p>
     </main>
 
-    <!-- Popup lightbox -->
+    <!-- Lightbox -->
     <div class="fanart-popup" id="fanart-popup">
         <div class="fanart-popup-overlay" id="fanart-popup-overlay"></div>
         <div class="fanart-popup-content">
-            <button class="fanart-popup-close" id="fanart-popup-close">
-                <i class="fas fa-times"></i>
-            </button>
+            <button class="fanart-popup-close" id="fanart-popup-close"><i class="fas fa-times"></i></button>
             <img id="fanart-popup-img" src="" alt="">
             <div class="fanart-popup-info">
                 <h3 id="fanart-popup-title"></h3>
@@ -91,35 +81,78 @@
         </div>
     </div>
 
-    <!-- Modale invio fanart -->
+    <!-- Submit modal -->
     <div class="submit-modal" id="submit-modal">
         <div class="submit-modal-overlay" id="submit-modal-overlay"></div>
         <div class="submit-modal-content">
-            <button class="submit-modal-close" id="submit-modal-close">
-                <i class="fas fa-times"></i>
-            </button>
+            <button class="submit-modal-close" id="submit-modal-close"><i class="fas fa-times"></i></button>
+
             <h2 data-i18n="fanart.submitTitle">Invia la tua Fanart</h2>
-            <p data-i18n="fanart.submitDesc">
-                Vuoi inviare la tua fanart? Clicca il bottone qui sotto per aprire il tuo client email con un template pre-compilato. Ricordati di allegare l'immagine!
-            </p>
+            <p data-i18n="fanart.submitDesc">Compila il form — la tua fanart arriverà direttamente al database per la revisione.</p>
 
             <div class="submit-rules">
                 <h3 data-i18n="fanart.submitRules">Regole per l'invio</h3>
                 <ul>
-                    <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule1">Le immagini non devono superare i 2.5 MB.</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule1">Max 15 MB per immagine.</span></li>
                     <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule2">Invia solo artwork originali tuoi.</span></li>
                     <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule3">Nessun contenuto NSFW o offensivo.</span></li>
                     <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule4">Formati accettati: JPG, PNG, GIF, WEBP.</span></li>
                     <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule5">Includi il titolo dell'opera e il tuo nome/username.</span></li>
-                    <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule6">Includi i link ai tuoi social (Twitter/X, Instagram, ecc.).</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule6">Includi almeno un link ai tuoi social.</span></li>
                 </ul>
             </div>
 
+            <div class="sf-group">
+                <label class="sf-label" for="fa-title">Titolo dell'opera <span class="sf-req">*</span></label>
+                <input class="sf-input" id="fa-title" type="text" placeholder="Es. Glacio nel bosco" maxlength="120" required>
+            </div>
+
+            <div class="sf-group">
+                <label class="sf-label" for="fa-artist">Il tuo nome / username <span class="sf-req">*</span></label>
+                <input class="sf-input" id="fa-artist" type="text" placeholder="Es. ArtistaNome" maxlength="80" required>
+            </div>
+
+            <div class="sf-group">
+                <label class="sf-label">Immagine <span class="sf-req">*</span></label>
+                <div class="sf-dropzone" id="fa-dropzone">
+                    <input type="file" id="fa-image-file" accept="image/jpeg,image/png,image/gif,image/webp" hidden>
+                    <div class="sf-dropzone-inner" id="fa-dropzone-inner">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span class="sf-dropzone-label">Trascina qui o <button type="button" class="sf-dropzone-pick" id="fa-pick-btn">scegli file</button></span>
+                        <span class="sf-hint">JPG, PNG, GIF, WEBP — max 15 MB</span>
+                    </div>
+                    <div class="sf-dropzone-preview" id="fa-preview" style="display:none;">
+                        <img id="fa-preview-img" src="" alt="">
+                        <button type="button" class="sf-dropzone-remove" id="fa-remove-btn"><i class="fas fa-times"></i></button>
+                        <span class="sf-dropzone-filename" id="fa-filename"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sf-group">
+                <label class="sf-label" for="fa-tags">Tag</label>
+                <select class="sf-input sf-select" id="fa-tags">
+                    <option value="" disabled selected>Seleziona tipo...</option>
+                    <option value="digital">Digitale</option>
+                    <option value="traditional">Tradizionale</option>
+                    <option value="meme">Meme</option>
+                    <option value="other">Altro</option>
+                </select>
+            </div>
+
+            <div class="sf-group">
+                <label class="sf-label" for="fa-socials">Social link <span class="sf-req">*</span></label>
+                <input class="sf-input" id="fa-socials" type="url" placeholder="https://twitter.com/..." required>
+                <span class="sf-hint">Link principale al tuo profilo (Twitter/X, Instagram, ecc.)</span>
+            </div>
+
+            <div class="sf-feedback" id="fa-feedback"></div>
+
             <div class="submit-actions">
-                <a id="submit-email-link" class="submit-email-btn" href="#">
-                    <i class="fas fa-envelope"></i>
-                    <span data-i18n="fanart.submitEmailBtn">Apri Client Email</span>
-                </a>
+                <button class="sf-submit-btn" id="fa-submit-btn" type="button">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Invia fanart</span>
+                </button>
                 <button class="submit-close-btn" id="submit-close-btn" data-i18n="fanart.submitClose">Chiudi</button>
             </div>
         </div>

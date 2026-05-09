@@ -18,6 +18,7 @@
     <script src="components/footer/footer.js"></script>
     <script src="components/achievements/achievements.js"></script>
     <script src="scripts/script.js"></script>
+    <script src="scripts/submit.js"></script>
 </head>
 <body>
     <div id="navbar-placeholder"></div>
@@ -41,31 +42,17 @@
                         <span class="team-role" data-i18n="about.members.glacio.role">Fondatore & Developer</span>
                         <p class="team-desc" data-i18n="about.members.glacio.desc">VTuber italiano brainrotten e creatore di questo sito. Ha deciso di costruire tutto da zero perché si annoia troppo facilmente.</p>
                         <div class="team-links">
-                            <a href="https://twitch.tv/glacioborealevt" target="_blank" rel="noopener noreferrer" class="team-link twitch">
-                                <i class="fa-brands fa-twitch"></i>
-                            </a>
-                            <a href="https://youtube.com/@glacioborealevt" target="_blank" rel="noopener noreferrer" class="team-link youtube">
-                                <i class="fa-brands fa-youtube"></i>
-                            </a>
-                            <a href="https://discord.gg/nsdCYSxzuR" target="_blank" rel="noopener noreferrer" class="team-link discord">
-                                <i class="fa-brands fa-discord"></i>
-                            </a>            
-                            <a href="https://instagram.com/glacioboreale_vt" target="_blank" rel="noopener noreferrer" class="team-link instagram">
-                                <i class="fa-brands fa-instagram"></i>
-                            </a>
-                            <a href="https://tiktok.com/@glacioborealevt" target="_blank" rel="noopener noreferrer" class="team-link tiktok">
-                                <i class="fa-brands fa-tiktok"></i>
-                            </a>
-                            <a href="https://x.com/@glacioboreale" target="_blank" rel="noopener noreferrer" class="team-link x">
-                                <i class="fa-brands fa-x-twitter"></i>
-                            </a>
-                            <a href="https://github.com/GlacioBoreale" target="_blank" rel="noopener noreferrer" class="team-link github">
-                                <i class="fa-brands fa-github"></i>
-                            </a>
+                            <a href="https://twitch.tv/glacioborealevt" target="_blank" rel="noopener noreferrer" class="team-link twitch"><i class="fa-brands fa-twitch"></i></a>
+                            <a href="https://youtube.com/@glacioborealevt" target="_blank" rel="noopener noreferrer" class="team-link youtube"><i class="fa-brands fa-youtube"></i></a>
+                            <a href="https://discord.gg/nsdCYSxzuR" target="_blank" rel="noopener noreferrer" class="team-link discord"><i class="fa-brands fa-discord"></i></a>
+                            <a href="https://instagram.com/glacioboreale_vt" target="_blank" rel="noopener noreferrer" class="team-link instagram"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="https://tiktok.com/@glacioborealevt" target="_blank" rel="noopener noreferrer" class="team-link tiktok"><i class="fa-brands fa-tiktok"></i></a>
+                            <a href="https://x.com/@glacioboreale" target="_blank" rel="noopener noreferrer" class="team-link x"><i class="fa-brands fa-x-twitter"></i></a>
+                            <a href="https://github.com/GlacioBoreale" target="_blank" rel="noopener noreferrer" class="team-link github"><i class="fa-brands fa-github"></i></a>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="team-card">
                     <div class="team-avatar">
                         <img src="https://glaciopia-images.s3.eu-north-1.amazonaws.com/about/rid_pfp.png" alt="its_RID" onerror="this.src='https://glaciopia-images.s3.eu-north-1.amazonaws.com/placeholder.png'">
@@ -87,15 +74,9 @@
                         <span class="team-role" data-i18n="about.members.eromo.role">Traduttore & Produttore Musicale</span>
                         <p class="team-desc" data-i18n="about.members.eromo.desc">Produttore musicale e traduttore rumeno per Glaciopia. La maggior parte del lavoro è stata fatta da un IA, ma lo mettiamo lo stesso...</p>
                         <div class="team-links">
-                            <a href="https://www.youtube.com/@Erodoto1.0" target="_blank" rel="noopener noreferrer" class="team-link youtube">
-                                <i class="fa-brands fa-youtube"></i>
-                            </a>            
-                            <a href="https://ko-fi.com/herodotostudios" target="_blank" rel="noopener noreferrer" class="team-link ko-fi">
-                                <i class="fa-solid fa-heart"></i>
-                            </a>
-                            <a href="https://guns.lol/originalerodoto" target="_blank" rel="noopener noreferrer" class="team-link gunslol">
-                                <i class="fa-solid fa-gun"></i>
-                            </a>
+                            <a href="https://www.youtube.com/@Erodoto1.0" target="_blank" rel="noopener noreferrer" class="team-link youtube"><i class="fa-brands fa-youtube"></i></a>
+                            <a href="https://ko-fi.com/herodotostudios" target="_blank" rel="noopener noreferrer" class="team-link ko-fi"><i class="fa-solid fa-heart"></i></a>
+                            <a href="https://guns.lol/originalerodoto" target="_blank" rel="noopener noreferrer" class="team-link gunslol"><i class="fa-solid fa-gun"></i></a>
                         </div>
                     </div>
                 </div>
@@ -117,14 +98,62 @@
         <section class="join-section">
             <div class="join-card">
                 <h2 data-i18n="about.join.title">Unisciti al Team!</h2>
-                <p data-i18n="about.join.desc">Vuoi far parte di Glaciopia? Mandaci una email con la tua immagine, nome e descrizione.</p>
-                <a href="mailto:coldesticecube@outlook.com" class="about-join-btn">
-                    <i class="fas fa-envelope"></i>
+                <p data-i18n="about.join.desc">Pensi di poter contribuire a Glaciopia? Compila il form e inviaci la tua candidatura.</p>
+                <button class="about-join-btn" id="about-open-form-btn" type="button">
+                    <i class="fas fa-paper-plane"></i>
                     <span data-i18n="about.join.button">Invia la tua candidatura</span>
-                </a>
+                </button>
             </div>
         </section>
     </main>
+
+    <!-- Candidatura popup -->
+    <div class="submit-modal" id="about-modal">
+        <div class="submit-modal-overlay" id="about-modal-overlay"></div>
+        <div class="submit-modal-content">
+            <button class="submit-modal-close" id="about-modal-close"><i class="fas fa-times"></i></button>
+
+            <h2>Candidatura Team</h2>
+            <p>Compila tutti i campi — la candidatura arriverà direttamente al database per la revisione.</p>
+
+            <div class="sf-group">
+                <label class="sf-label" for="about-name">Nome / Username <span class="sf-req">*</span></label>
+                <input class="sf-input" id="about-name" type="text" placeholder="Es. il tuo nome o nickname" maxlength="80" required>
+            </div>
+
+            <div class="sf-group">
+                <label class="sf-label" for="about-email">Email <span class="sf-req">*</span></label>
+                <input class="sf-input" id="about-email" type="email" placeholder="la@tua.email" required>
+            </div>
+
+            <div class="sf-group">
+                <label class="sf-label" for="about-contact">Contatto preferito <span class="sf-req">*</span></label>
+                <input class="sf-input" id="about-contact" type="text" placeholder="Es. Discord: utente#0000, Twitter: @utente..." maxlength="120" required>
+                <span class="sf-hint">Come preferisci essere ricontattato (Discord, Twitter, Telegram, ecc.)</span>
+            </div>
+
+            <div class="sf-group">
+                <label class="sf-label" for="about-role">Ruolo desiderato <span class="sf-req">*</span></label>
+                <input class="sf-input" id="about-role" type="text" placeholder="Es. Moderatore, Editor, Grafico, Traduttore..." maxlength="80" required>
+            </div>
+
+            <div class="sf-group">
+                <label class="sf-label" for="about-experience">Esperienze <span class="sf-req">*</span></label>
+                <textarea class="sf-input sf-textarea" id="about-experience" placeholder="Raccontaci delle tue esperienze precedenti, skill e portfolio (se hai link, includili)..." rows="4" maxlength="800" required></textarea>
+                <span class="sf-charcount"><span id="about-exp-count">0</span>/800</span>
+            </div>
+
+            <div class="sf-feedback" id="about-submit-msg"></div>
+
+            <div class="submit-actions">
+                <button class="sf-submit-btn" id="about-submit-btn" type="button">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Invia candidatura</span>
+                </button>
+                <button class="submit-close-btn" id="about-modal-close-btn" type="button">Chiudi</button>
+            </div>
+        </div>
+    </div>
 
     <div id="footer-placeholder"></div>
 

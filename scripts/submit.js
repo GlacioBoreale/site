@@ -1,156 +1,91 @@
 'use strict';
 
-// ══════════════════════════════════════════════════════════════
-//  SUBMIT — gestione form per about, vtpedia, fanart
-// ══════════════════════════════════════════════════════════════
-
 function _submitSetState(btn, msgEl, state, text) {
-  btn.disabled  = state === 'loading';
+  btn.disabled = state === 'loading';
   btn.classList.remove('loading', 'success', 'error');
   if (state) btn.classList.add(state);
-  if (msgEl) { msgEl.textContent = text || ''; msgEl.className = 'submit-msg' + (state ? ' ' + state : ''); }
+  if (msgEl) {
+    msgEl.textContent = text || '';
+    msgEl.className = 'sf-feedback' + (state === 'success' ? ' success' : state === 'error' ? ' error' : '');
+  }
 }
 
-// ── ABOUT — candidatura team ───────────────────────────────────
+function _clearFeedback(msgEl) {
+  if (!msgEl) return;
+  msgEl.textContent = '';
+  msgEl.className = 'sf-feedback';
+}
+
 function initAboutSubmit() {
-  const btn   = document.getElementById('about-submit-btn');
-  const msg   = document.getElementById('about-submit-msg');
-  if (!btn) return;
+  const openBtn  = document.getElementById('about-open-form-btn');
+  const modal    = document.getElementById('about-modal');
+  const overlay  = document.getElementById('about-modal-overlay');
+  const closeBtn = document.getElementById('about-modal-close');
+  const closeBtn2= document.getElementById('about-modal-close-btn');
+  const submitBtn= document.getElementById('about-submit-btn');
+  const msg      = document.getElementById('about-submit-msg');
+  const expArea  = document.getElementById('about-experience');
+  const expCount = document.getElementById('about-exp-count');
 
-  btn.addEventListener('click', async () => {
-    const name  = document.getElementById('about-name')?.value.trim();
-    const role  = document.getElementById('about-role')?.value.trim();
-    const desc  = document.getElementById('about-desc')?.value.trim();
-    const email = document.getElementById('about-email')?.value.trim();
+  if (!openBtn || !modal) return;
 
-    if (!name || !role || !desc || !email) {
-      _submitSetState(btn, msg, 'error', 'Compila tutti i campi.');
-      return;
-    }
-
-    _submitSetState(btn, msg, 'loading', 'Invio in corso...');
-    try {
-      await Api.submit.post('team', { name, role, desc, email });
-      _submitSetState(btn, msg, 'success', 'Candidatura inviata! Ti risponderemo presto.');
-      ['about-name','about-role','about-desc','about-email'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
-      });
-    } catch (e) {
-      _submitSetState(btn, msg, 'error', e.message || 'Errore durante l\'invio.');
-    }
-  });
-}
-
-// ── VTPEDIA — invio richiesta VTuber ──────────────────────────
-function initVtpediaSubmit() {
-  const btn = document.getElementById('vt-submit-btn');
-  const msg = document.getElementById('vt-submit-msg');
-  if (!btn) return;
-
-  btn.addEventListener('click', async () => {
-    const name    = document.getElementById('vt-name')?.value.trim();
-    const channel = document.getElementById('vt-channel')?.value.trim();
-    const hashtag = document.getElementById('vt-hashtag')?.value.trim();
-    const debut   = document.getElementById('vt-debut')?.value.trim();
-    const desc    = document.getElementById('vt-desc')?.value.trim();
-    const sponsor = document.getElementById('vt-sponsor')?.value.trim();
-
-    if (!name || !channel || !desc || !sponsor) {
-      _submitSetState(btn, msg, 'error', 'Compila i campi obbligatori (*).');
-      return;
-    }
-
-    _submitSetState(btn, msg, 'loading', 'Invio in corso...');
-    try {
-      await Api.submit.post('vtuber', { name, channel, hashtag, debut, desc, sponsor });
-      _submitSetState(btn, msg, 'success', 'Richiesta inviata! La esamineremo presto.');
-      ['vt-name','vt-channel','vt-hashtag','vt-debut','vt-desc','vt-sponsor'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
-      });
-    } catch (e) {
-      _submitSetState(btn, msg, 'error', e.message || 'Errore durante l\'invio.');
-    }
-  });
-}
-
-// ── FANART — invio fanart con upload immagine ─────────────────
-function initFanartSubmit() {
-  const btn      = document.getElementById('fanart-submit-btn-send');
-  const msg      = document.getElementById('fanart-submit-msg');
-  const fileInput= document.getElementById('fanart-file');
-  const preview  = document.getElementById('fanart-preview');
-  if (!btn) return;
-
-  const uploadArea = document.getElementById('fanart-upload-area');
-
-  if (uploadArea && fileInput) {
-    uploadArea.addEventListener('click', () => fileInput.click());
-    uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('dragover'); });
-    uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
-    uploadArea.addEventListener('drop', e => {
-      e.preventDefault();
-      uploadArea.classList.remove('dragover');
-      const file = e.dataTransfer.files[0];
-      if (file) { const dt = new DataTransfer(); dt.items.add(file); fileInput.files = dt.files; fileInput.dispatchEvent(new Event('change')); }
-    });
+  function openModal() {
+    modal.classList.add('active');
+    document.body.classList.add('modal-open');
+    document.body.style.overflow = 'hidden';
   }
 
-  if (fileInput && preview) {
-    fileInput.addEventListener('change', () => {
-      const file = fileInput.files[0];
-      if (!file) { preview.style.display = 'none'; return; }
-      const url = URL.createObjectURL(file);
-      preview.src = url;
-      preview.style.display = 'block';
-    });
+  function closeModal() {
+    modal.classList.remove('active');
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    _clearFeedback(msg);
   }
 
-  btn.addEventListener('click', async () => {
-    const title   = document.getElementById('fanart-title')?.value.trim();
-    const artist  = document.getElementById('fanart-artist')?.value.trim();
-    const socials = document.getElementById('fanart-socials')?.value.trim();
-    const tags    = document.getElementById('fanart-tags')?.value.trim();
-    const file    = fileInput?.files[0];
+  openBtn.addEventListener('click', openModal);
+  closeBtn?.addEventListener('click', closeModal);
+  closeBtn2?.addEventListener('click', closeModal);
+  overlay?.addEventListener('click', closeModal);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-    if (!title || !artist || !file) {
-      _submitSetState(btn, msg, 'error', 'Titolo, artista e immagine sono obbligatori.');
+  expArea?.addEventListener('input', () => {
+    if (expCount) expCount.textContent = expArea.value.length;
+  });
+
+  submitBtn?.addEventListener('click', async () => {
+    _clearFeedback(msg);
+
+    const name       = document.getElementById('about-name')?.value.trim();
+    const email      = document.getElementById('about-email')?.value.trim();
+    const contact    = document.getElementById('about-contact')?.value.trim();
+    const role       = document.getElementById('about-role')?.value.trim();
+    const experience = expArea?.value.trim();
+
+    if (!name || !email || !contact || !role || !experience) {
+      _submitSetState(submitBtn, msg, 'error', 'Compila tutti i campi obbligatori (*).');
       return;
     }
 
-    const maxMb = 2.5;
-    if (file.size > maxMb * 1024 * 1024) {
-      _submitSetState(btn, msg, 'error', `L'immagine supera i ${maxMb}MB.`);
+    if (!Auth || !Auth.isLoggedIn()) {
+      _submitSetState(submitBtn, msg, 'error', 'Devi essere loggato per inviare una candidatura.');
       return;
     }
 
-    const allowed = ['image/jpeg','image/png','image/gif','image/webp'];
-    if (!allowed.includes(file.type)) {
-      _submitSetState(btn, msg, 'error', 'Formato non supportato. Usa JPG, PNG, GIF o WEBP.');
-      return;
-    }
-
-    _submitSetState(btn, msg, 'loading', 'Upload immagine...');
+    _submitSetState(submitBtn, msg, 'loading', 'Invio in corso...');
     try {
-      const imageUrl = await Api.upload.file(file, 'fanart');
-      _submitSetState(btn, msg, 'loading', 'Invio dati...');
-      await Api.submit.post('fanart', { title, artist, socials, tags }, imageUrl);
-      _submitSetState(btn, msg, 'success', 'Fanart inviata! Grazie mille ❤️');
-      ['fanart-title','fanart-artist','fanart-socials','fanart-tags'].forEach(id => {
+      await Api.submit.post('team', { name, email, contact, role, experience });
+      _submitSetState(submitBtn, msg, 'success', 'Candidatura inviata! Ti risponderemo presto.');
+      ['about-name', 'about-email', 'about-contact', 'about-role', 'about-experience'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
       });
-      if (fileInput) fileInput.value = '';
-      if (preview)   { preview.src = ''; preview.style.display = 'none'; }
+      if (expCount) expCount.textContent = '0';
     } catch (e) {
-      _submitSetState(btn, msg, 'error', e.message || 'Errore durante l\'invio.');
+      _submitSetState(submitBtn, msg, 'error', e.message || 'Errore durante l\'invio.');
     }
   });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   initAboutSubmit();
-  initVtpediaSubmit();
-  initFanartSubmit();
 });

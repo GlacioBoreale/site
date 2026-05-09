@@ -24,10 +24,10 @@ function getCorsHeaders(event) {
   const origin  = event.headers?.origin || event.headers?.Origin || '';
   const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
   return {
-    'Content-Type':                'application/json',
-    'Access-Control-Allow-Origin': allowed,
-    'Access-Control-Allow-Headers':'Content-Type,Authorization',
-    'Access-Control-Allow-Methods':'GET,POST,PUT,DELETE,PATCH,OPTIONS',
+    'Content-Type':                    'application/json',
+    'Access-Control-Allow-Origin':     allowed,
+    'Access-Control-Allow-Headers':    'Content-Type,Authorization',
+    'Access-Control-Allow-Methods':    'GET,POST,PUT,DELETE,PATCH,OPTIONS',
     'Access-Control-Allow-Credentials':'true',
   };
 }
@@ -45,9 +45,18 @@ function authMiddleware(event) {
 
 function requireAdmin(event) {
   const user = authMiddleware(event);
-  if (!user)                        return { error: 'Unauthorized', status: 401 };
-  if (user.email !== ADMIN_EMAIL)   return { error: 'Forbidden',    status: 403 };
+  if (!user)                      return { error: 'Unauthorized', status: 401 };
+  if (user.email !== ADMIN_EMAIL) return { error: 'Forbidden',    status: 403 };
   return { user };
+}
+
+function parseTags(raw) {
+  if (!raw) return ['untagged'];
+  const tags = String(raw)
+    .split(';')
+    .map(t => t.trim().toLowerCase().replace(/[^a-z0-9àèéìòùa-z\s\-]/gi, '').trim())
+    .filter(Boolean);
+  return tags.length ? tags : ['untagged'];
 }
 
 export const handler = async (event) => {
@@ -88,9 +97,28 @@ export const handler = async (event) => {
         status     VARCHAR(10) DEFAULT 'pending',
         created_at TIMESTAMP DEFAULT NOW()
       );
+      CREATE TABLE IF NOT EXISTS fanart_tags (
+        id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        name       VARCHAR(60) UNIQUE NOT NULL,
+        created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+      INSERT INTO fanart_tags (name) VALUES ('untagged') ON CONFLICT DO NOTHING;
     `);
     return res(200, { message: 'Tables created!' }, event);
   }
+
+  // ── ENSURE TAGS TABLE ─────────────────────────────────────────
+  // chiamata safe all'avvio per garantire la tabella esista
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS fanart_tags (
+      id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      name       VARCHAR(60) UNIQUE NOT NULL,
+      created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+      created_at TIMESTAMP DEFAULT NOW()
+    );
+    INSERT INTO fanart_tags (name) VALUES ('untagged') ON CONFLICT DO NOTHING;
+  `);
 
   // ── REGISTER ─────────────────────────────────────────────────
   if (path.endsWith('/auth/register') && method === 'POST') {
@@ -194,12 +222,38 @@ export const handler = async (event) => {
     }, event);
   }
 
-  // ── SUBMISSION ────────────────────────────────────────────────
+  // ── GET FANART TAGS ───────────────────────────────────────────
+  if (path.endsWith('/tags/fanart') && method === 'GET') {
+    const r = await pool.query(
+      'SELECT name FROM fanart_tags ORDER BY name = \'untagged\' DESC, name ASC'
+    );
+    return res(200, { tags: r.rows.map(r => r.name) }, event);
+  }
+
+  // ── SUBMIT ────────────────────────────────────────────────────
   if (path.endsWith('/submit') && method === 'POST') {
     const user = authMiddleware(event);
     if (!user) return res(401, { error: 'Unauthorized' }, event);
     const { type, payload, image_url } = body;
-    if (!type || !payload) return res(400, { error: 'Missing fields' }, event);
+    const ALLOWED_TYPES = ['fanart', 'vtuber', 'team', 'tag'];
+    if (!ALLOWED_TYPES.includes(type)) return res(400, { error: 'Tipo non valido' }, event);
+    if (!payload || typeof payload !== 'object') return res(400, { error: 'Payload mancante' }, event);
+
+    if (type === 'fanart') {
+      if (!payload.title || !payload.artist) return res(400, { error: 'title e artist obbligatori' }, event);
+      // normalizza tags — fallback untagged se vuoto
+      payload.tags = parseTags(payload.tags_raw || '');
+      delete payload.tags_raw;
+    }
+    if (type === 'vtuber' && (!payload.name || !payload.channel)) return res(400, { error: 'name e channel obbligatori' }, event);
+    if (type === 'team'   && (!payload.name || !payload.email))   return res(400, { error: 'name e email obbligatori' }, event);
+    if (type === 'tag') {
+      if (!payload.name) return res(400, { error: 'name obbligatorio' }, event);
+      // controlla duplicati già approvati
+      const exists = await pool.query('SELECT id FROM fanart_tags WHERE name=$1', [payload.name.toLowerCase().trim()]);
+      if (exists.rows.length) return res(409, { error: 'Tag già esistente' }, event);
+    }
+
     await pool.query(
       'INSERT INTO submissions (user_id, type, payload, image_url) VALUES ($1,$2,$3,$4)',
       [user.id, type, payload, image_url || null]
@@ -214,8 +268,8 @@ export const handler = async (event) => {
     const { folder, ext, contentType } = body;
     const ALLOWED_FOLDERS = ['fanart', 'vtubers', 'team'];
     const ALLOWED_EXTS    = ['jpg','jpeg','png','gif','webp'];
-    if (!ALLOWED_FOLDERS.includes(folder))                return res(400, { error: 'Folder non valida' },       event);
-    if (!ALLOWED_EXTS.includes((ext||'').toLowerCase()))  return res(400, { error: 'Estensione non supportata' }, event);
+    if (!ALLOWED_FOLDERS.includes(folder))               return res(400, { error: 'Folder non valida' }, event);
+    if (!ALLOWED_EXTS.includes((ext||'').toLowerCase())) return res(400, { error: 'Estensione non supportata' }, event);
     const { S3Client, PutObjectCommand } = await import('@aws-sdk/client-s3');
     const { getSignedUrl }               = await import('@aws-sdk/s3-request-presigner');
     const { randomUUID }                 = await import('crypto');
@@ -235,21 +289,19 @@ export const handler = async (event) => {
   if (path.endsWith('/admin/stats') && method === 'GET') {
     const { error, status } = requireAdmin(event);
     if (error) return res(status, { error }, event);
-
     const [users, saves, subs, subByType, subByStatus] = await Promise.all([
       pool.query('SELECT COUNT(*) FROM users'),
       pool.query('SELECT COUNT(*) FROM game_saves'),
       pool.query('SELECT COUNT(*) FROM submissions'),
-      pool.query(`SELECT type, COUNT(*) FROM submissions GROUP BY type`),
-      pool.query(`SELECT status, COUNT(*) FROM submissions GROUP BY status`),
+      pool.query('SELECT type, COUNT(*) FROM submissions GROUP BY type'),
+      pool.query('SELECT status, COUNT(*) FROM submissions GROUP BY status'),
     ]);
-
     return res(200, {
-      users:     parseInt(users.rows[0].count),
-      saves:     parseInt(saves.rows[0].count),
+      users:       parseInt(users.rows[0].count),
+      saves:       parseInt(saves.rows[0].count),
       submissions: parseInt(subs.rows[0].count),
-      by_type:   Object.fromEntries(subByType.rows.map(r => [r.type, parseInt(r.count)])),
-      by_status: Object.fromEntries(subByStatus.rows.map(r => [r.status, parseInt(r.count)])),
+      by_type:     Object.fromEntries(subByType.rows.map(r   => [r.type,   parseInt(r.count)])),
+      by_status:   Object.fromEntries(subByStatus.rows.map(r => [r.status, parseInt(r.count)])),
     }, event);
   }
 
@@ -257,7 +309,6 @@ export const handler = async (event) => {
   if (path.endsWith('/admin/submissions') && method === 'GET') {
     const { error, status } = requireAdmin(event);
     if (error) return res(status, { error }, event);
-
     const r = await pool.query(`
       SELECT s.*, u.username, u.email AS user_email
       FROM submissions s
@@ -267,20 +318,37 @@ export const handler = async (event) => {
     return res(200, { submissions: r.rows }, event);
   }
 
-  // PATCH /admin/submissions/:id
+  // PATCH /admin/submissions/:id  — se approvo un tag lo inserisco in fanart_tags
   if (path.match(/\/admin\/submissions\/[^/]+$/) && method === 'PATCH') {
     const { error, status } = requireAdmin(event);
     if (error) return res(status, { error }, event);
-
-    const id        = path.split('/').pop();
+    const id = path.split('/').pop();
     const { status: newStatus, note } = body;
     if (!['pending','approved','rejected'].includes(newStatus))
       return res(400, { error: 'Status non valido' }, event);
 
-    await pool.query(
-      `UPDATE submissions SET status=$1 ${note !== undefined ? ', payload = payload || jsonb_build_object(\'admin_note\', $3::text)' : ''} WHERE id=$2`,
-      note !== undefined ? [newStatus, id, note] : [newStatus, id]
-    );
+    if (note !== undefined) {
+      await pool.query(
+        `UPDATE submissions SET status=$1, payload = payload || jsonb_build_object('admin_note', $3::text) WHERE id=$2`,
+        [newStatus, id, note]
+      );
+    } else {
+      await pool.query('UPDATE submissions SET status=$1 WHERE id=$2', [newStatus, id]);
+    }
+
+    // Se approvazione di un tag → aggiungilo a fanart_tags
+    if (newStatus === 'approved') {
+      const sub = await pool.query('SELECT type, payload, user_id FROM submissions WHERE id=$1', [id]);
+      const s = sub.rows[0];
+      if (s?.type === 'tag' && s.payload?.name) {
+        const tagName = s.payload.name.toLowerCase().trim();
+        await pool.query(
+          'INSERT INTO fanart_tags (name, created_by) VALUES ($1,$2) ON CONFLICT (name) DO NOTHING',
+          [tagName, s.user_id || null]
+        );
+      }
+    }
+
     return res(200, { ok: true }, event);
   }
 
@@ -288,7 +356,6 @@ export const handler = async (event) => {
   if (path.match(/\/admin\/submissions\/[^/]+$/) && method === 'DELETE') {
     const { error, status } = requireAdmin(event);
     if (error) return res(status, { error }, event);
-
     const id = path.split('/').pop();
     await pool.query('DELETE FROM submissions WHERE id=$1', [id]);
     return res(200, { ok: true }, event);
@@ -298,7 +365,6 @@ export const handler = async (event) => {
   if (path.endsWith('/admin/users') && method === 'GET') {
     const { error, status } = requireAdmin(event);
     if (error) return res(status, { error }, event);
-
     const r = await pool.query(`
       SELECT u.id, u.username, u.email, u.created_at,
              gs.points, gs.prestige, gs.xp_level, gs.research,
@@ -314,7 +380,6 @@ export const handler = async (event) => {
   if (path.match(/\/admin\/users\/[^/]+$/) && method === 'DELETE') {
     const { error, status } = requireAdmin(event);
     if (error) return res(status, { error }, event);
-
     const id = path.split('/').pop();
     await pool.query('DELETE FROM users WHERE id=$1', [id]);
     return res(200, { ok: true }, event);
@@ -324,7 +389,6 @@ export const handler = async (event) => {
   if (path.endsWith('/admin/saves') && method === 'GET') {
     const { error, status } = requireAdmin(event);
     if (error) return res(status, { error }, event);
-
     const r = await pool.query(`
       SELECT gs.*, u.username, u.email
       FROM game_saves gs
@@ -338,7 +402,6 @@ export const handler = async (event) => {
   if (path.match(/\/admin\/saves\/[^/]+$/) && method === 'DELETE') {
     const { error, status } = requireAdmin(event);
     if (error) return res(status, { error }, event);
-
     const userId = path.split('/').pop();
     await pool.query('DELETE FROM game_saves WHERE user_id=$1', [userId]);
     return res(200, { ok: true }, event);

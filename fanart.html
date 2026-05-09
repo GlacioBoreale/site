@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fanart - Glaciopia</title>
-
     <link rel="icon" type="image/x-icon" href="https://glaciopia-images.s3.eu-north-1.amazonaws.com/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style/style.css">
@@ -13,7 +12,6 @@
     <link rel="stylesheet" href="components/footer/footer.css">
     <link rel="stylesheet" href="components/achievements/achievements.css">
     <link rel="stylesheet" href="style/fanart.css">
-
     <script src="scripts/api.js"></script>
     <script src="scripts/auth.js"></script>
     <script src="components/navbar/nav.js"></script>
@@ -48,15 +46,11 @@
                 <div class="filter-dropdown-wrapper">
                     <button class="filter-toggle-btn" id="filter-toggle-btn">
                         <i class="fas fa-filter"></i>
-                        <span id="filter-label" data-i18n="fanart.filterAll">Tutte</span>
-                        <i class="fas fa-chevron-down filter-chevron" id="filter-chevron"></i>
+                        <span id="filter-label">Tutte</span>
+                        <i class="fas fa-chevron-down filter-chevron"></i>
                     </button>
                     <div class="filter-dropdown" id="filter-dropdown">
-                        <button class="filter-option active" data-filter="all"         data-i18n="fanart.filterAll">Tutte</button>
-                        <button class="filter-option"        data-filter="digital"     data-i18n="fanart.filterDigital">Digitale</button>
-                        <button class="filter-option"        data-filter="traditional" data-i18n="fanart.filterTraditional">Tradizionale</button>
-                        <button class="filter-option"        data-filter="meme"        data-i18n="fanart.filterMeme">Meme</button>
-                        <button class="filter-option"        data-filter="other"       data-i18n="fanart.filterOther">Altro</button>
+                        <button class="filter-option active" data-filter="all">Tutte</button>
                     </div>
                 </div>
             </div>
@@ -98,7 +92,6 @@
                     <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule3">Nessun contenuto NSFW o offensivo.</span></li>
                     <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule4">Formati accettati: JPG, PNG, GIF, WEBP.</span></li>
                     <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule5">Includi il titolo dell'opera e il tuo nome/username.</span></li>
-                    <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule6">Includi almeno un link ai tuoi social.</span></li>
                 </ul>
             </div>
 
@@ -130,20 +123,24 @@
             </div>
 
             <div class="sf-group">
-                <label class="sf-label" for="fa-tags">Tag</label>
-                <select class="sf-input sf-select" id="fa-tags">
-                    <option value="" disabled selected>Seleziona tipo...</option>
-                    <option value="digital">Digitale</option>
-                    <option value="traditional">Tradizionale</option>
-                    <option value="meme">Meme</option>
-                    <option value="other">Altro</option>
-                </select>
+                <label class="sf-label" for="fa-tags-input">Tag</label>
+                <div class="fa-tag-chips" id="fa-tag-chips"></div>
+                <div class="fa-tag-input-row">
+                    <input class="sf-input" id="fa-tags-input" type="text"
+                        placeholder="Es. digitale; fan art; chibi"
+                        autocomplete="off" maxlength="200">
+                    <button type="button" class="fa-tag-suggest-btn" id="fa-tag-suggest-btn" title="Proponi nuovi tag">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <span class="sf-hint">Separa i tag con <code>;</code> — se vuoto verrà usato <em>untagged</em>. Tag non presenti verranno messi in revisione.</span>
+                <div class="fa-tag-preview" id="fa-tag-preview"></div>
             </div>
 
             <div class="sf-group">
-                <label class="sf-label" for="fa-socials">Social link <span class="sf-req">*</span></label>
-                <input class="sf-input" id="fa-socials" type="url" placeholder="https://twitter.com/..." required>
-                <span class="sf-hint">Link principale al tuo profilo (Twitter/X, Instagram, ecc.)</span>
+                <label class="sf-label" for="fa-socials">Social link</label>
+                <input class="sf-input" id="fa-socials" type="url" placeholder="https://twitter.com/... (opzionale)">
+                <span class="sf-hint">Link principale al tuo profilo (Twitter/X, Instagram, ecc.) — opzionale</span>
             </div>
 
             <div class="sf-feedback" id="fa-feedback"></div>

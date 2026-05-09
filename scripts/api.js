@@ -54,6 +54,10 @@ const Api = (() => {
       get: () => request('GET', '/leaderboard'),
     },
 
+    tags: {
+      fanart: () => request('GET', '/tags/fanart'),
+    },
+
     submit: {
       post: (type, payload, imageUrl) =>
         request('POST', '/submit', { type, payload, image_url: imageUrl }),
@@ -64,14 +68,14 @@ const Api = (() => {
     },
 
     admin: {
-      getStats:           ()             => request('GET',    '/admin/stats'),
-      getSubmissions:     ()             => request('GET',    '/admin/submissions'),
-      updateSubmission:   (id, status, note) => request('PATCH',  `/admin/submissions/${id}`, { status, note }),
-      deleteSubmission:   (id)           => request('DELETE', `/admin/submissions/${id}`),
-      getUsers:           ()             => request('GET',    '/admin/users'),
-      deleteUser:         (id)           => request('DELETE', `/admin/users/${id}`),
-      getSaves:           ()             => request('GET',    '/admin/saves'),
-      deleteSave:         (userId)       => request('DELETE', `/admin/saves/${userId}`),
+      getStats:         ()                   => request('GET',    '/admin/stats'),
+      getSubmissions:   ()                   => request('GET',    '/admin/submissions'),
+      updateSubmission: (id, status, note)   => request('PATCH',  `/admin/submissions/${id}`, { status, note }),
+      deleteSubmission: (id)                 => request('DELETE', `/admin/submissions/${id}`),
+      getUsers:         ()                   => request('GET',    '/admin/users'),
+      deleteUser:       (id)                 => request('DELETE', `/admin/users/${id}`),
+      getSaves:         ()                   => request('GET',    '/admin/saves'),
+      deleteSave:       (userId)             => request('DELETE', `/admin/saves/${userId}`),
     },
   };
 })();

@@ -1,7 +1,9 @@
 let fanarts = [];
+let approvedTags = [];
 let currentFilter = 'all';
 let currentSearch = '';
 let suggestionIndex = -1;
+let tagSuggestionIndex = -1;
 
 const FA_MAX_BYTES = 15 * 1024 * 1024;
 let faSelectedFile = null;
@@ -18,13 +20,172 @@ async function loadFanartData() {
     renderFanarts();
 }
 
+async function loadApprovedTags() {
+    try {
+        const data = await Api.tags.fanart();
+        approvedTags = data.tags || ['untagged'];
+    } catch {
+        approvedTags = ['untagged'];
+    }
+    _buildFilterDropdown();
+}
+
+function _buildFilterDropdown() {
+    const dropdown = document.getElementById('filter-dropdown');
+    if (!dropdown) return;
+    dropdown.innerHTML = '';
+    ['all', ...approvedTags].forEach(tag => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-option' + (tag === currentFilter ? ' active' : '');
+        btn.dataset.filter = tag;
+        btn.textContent = tag === 'all' ? 'Tutte' : tag === 'untagged' ? 'Senza tag' : tag;
+        btn.addEventListener('click', () => {
+            dropdown.querySelectorAll('.filter-option').forEach(o => o.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = tag;
+            document.getElementById('filter-label').textContent = btn.textContent;
+            dropdown.classList.remove('open');
+            document.getElementById('filter-toggle-btn').classList.remove('open');
+            renderFanarts();
+        });
+        dropdown.appendChild(btn);
+    });
+}
+
+function _parseTags(raw) {
+    if (!raw || !raw.trim()) return ['untagged'];
+    const tags = raw.split(';').map(t => t.trim().toLowerCase()).filter(Boolean);
+    return tags.length ? tags : ['untagged'];
+}
+
+function _classifyTags(tags) {
+    return tags.map(t => ({
+        name: t,
+        known: t === 'untagged' || approvedTags.includes(t),
+    }));
+}
+
+function _renderTagChips(raw) {
+    const chips = document.getElementById('fa-tag-chips');
+    if (!chips) return;
+    const tags = _parseTags(raw);
+    chips.innerHTML = _classifyTags(tags).map(({ name, known }) => {
+        const cls = name === 'untagged'
+            ? 'fa-tag-chip fa-tag-chip-untagged'
+            : known ? 'fa-tag-chip fa-tag-chip-known' : 'fa-tag-chip fa-tag-chip-new';
+        return `<span class="${cls}">${name === 'untagged' ? 'untagged' : name}</span>`;
+    }).join('');
+}
+
+// ── TAG AUTOCOMPLETE ──────────────────────────────────────────
+
+function _getTagSuggestions(inputValue) {
+    // estrai il segmento corrente (dopo l'ultimo ;)
+    const parts = inputValue.split(';');
+    const current = parts[parts.length - 1].trim().toLowerCase();
+    if (!current) return [];
+
+    const already = parts.slice(0, -1).map(t => t.trim().toLowerCase());
+
+    return approvedTags
+        .filter(t =>
+            t !== 'untagged' &&
+            t.includes(current) &&
+            !already.includes(t)
+        )
+        .slice(0, 8);
+}
+
+function _showTagDropdown(suggestions, input) {
+    let box = document.getElementById('fa-tag-dropdown');
+    if (!box) {
+        box = document.createElement('div');
+        box.id = 'fa-tag-dropdown';
+        box.className = 'fa-tag-dropdown';
+        input.parentElement.style.position = 'relative';
+        input.parentElement.appendChild(box);
+    }
+    tagSuggestionIndex = -1;
+
+    if (!suggestions.length) { box.innerHTML = ''; box.classList.remove('visible'); return; }
+
+    box.innerHTML = suggestions.map((t, i) =>
+        `<div class="fa-tag-option" data-tag="${t}" data-index="${i}">${t}</div>`
+    ).join('');
+
+    box.querySelectorAll('.fa-tag-option').forEach(el => {
+        el.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            _applyTagSuggestion(input, el.dataset.tag);
+        });
+    });
+
+    box.classList.add('visible');
+}
+
+function _hideTagDropdown() {
+    const box = document.getElementById('fa-tag-dropdown');
+    if (box) { box.innerHTML = ''; box.classList.remove('visible'); }
+    tagSuggestionIndex = -1;
+}
+
+function _applyTagSuggestion(input, tag) {
+    const parts = input.value.split(';');
+    parts[parts.length - 1] = ' ' + tag;
+    // aggiungi ; finale per facilitare il prossimo tag
+    input.value = parts.join(';') + '; ';
+    input.dispatchEvent(new Event('input'));
+    _hideTagDropdown();
+    input.focus();
+    // cursore alla fine
+    const len = input.value.length;
+    input.setSelectionRange(len, len);
+}
+
+function _initTagAutocomplete(input) {
+    input.addEventListener('input', () => {
+        _renderTagChips(input.value);
+        const suggestions = _getTagSuggestions(input.value);
+        _showTagDropdown(suggestions, input);
+    });
+
+    input.addEventListener('keydown', (e) => {
+        const box = document.getElementById('fa-tag-dropdown');
+        if (!box?.classList.contains('visible')) return;
+        const items = box.querySelectorAll('.fa-tag-option');
+        if (!items.length) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            tagSuggestionIndex = Math.min(tagSuggestionIndex + 1, items.length - 1);
+            items.forEach((el, i) => el.classList.toggle('highlighted', i === tagSuggestionIndex));
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            tagSuggestionIndex = Math.max(tagSuggestionIndex - 1, -1);
+            items.forEach((el, i) => el.classList.toggle('highlighted', i === tagSuggestionIndex));
+        } else if (e.key === 'Enter' || e.key === 'Tab') {
+            if (tagSuggestionIndex >= 0 && items[tagSuggestionIndex]) {
+                e.preventDefault();
+                _applyTagSuggestion(input, items[tagSuggestionIndex].dataset.tag);
+            }
+        } else if (e.key === 'Escape') {
+            _hideTagDropdown();
+        }
+    });
+
+    input.addEventListener('blur', () => setTimeout(_hideTagDropdown, 150));
+}
+
+// ─────────────────────────────────────────────────────────────
+
 function getFilteredFanarts() {
     return fanarts.filter(f => {
         const title = (getNestedTranslation(f.titleKey) || f.titleKey || '').toLowerCase();
         const artist = (f.artist || '').toLowerCase();
         const query = currentSearch.toLowerCase();
         const matchSearch = !query || title.includes(query) || artist.includes(query);
-        const matchFilter = currentFilter === 'all' || (f.tags && f.tags.includes(currentFilter));
+        const tags = (f.tags && f.tags.length) ? f.tags : ['untagged'];
+        const matchFilter = currentFilter === 'all' || tags.includes(currentFilter);
         return matchSearch && matchFilter;
     });
 }
@@ -44,7 +205,7 @@ function createFanartCard(f) {
     card.className = 'fanart-card';
     const title = getNestedTranslation(f.titleKey) || f.titleKey || '';
     const byText = getNestedTranslation('fanart.by') || 'di';
-    const tags = f.tags || [];
+    const tags = (f.tags && f.tags.length) ? f.tags : ['untagged'];
     card.innerHTML = `
         <div class="fanart-card-img-wrapper">
             <img src="${f.image}" alt="${title}" loading="lazy" onerror="this.src=IMG_CDN+'/vtubers/placeholder.png'">
@@ -53,7 +214,9 @@ function createFanartCard(f) {
         <div class="fanart-card-info">
             <div class="fanart-card-title">${title}</div>
             <div class="fanart-card-artist">${byText} ${f.artist}</div>
-            <div class="fanart-card-tags">${tags.map(t => `<span class="tag-badge">${t}</span>`).join('')}</div>
+            <div class="fanart-card-tags">${tags.map(t =>
+                `<span class="tag-badge${t === 'untagged' ? ' tag-untagged' : ''}">${t}</span>`
+            ).join('')}</div>
         </div>`;
     card.addEventListener('click', () => openLightbox(f));
     return card;
@@ -73,7 +236,7 @@ const SOCIAL_META = {
 function openLightbox(f) {
     const title = getNestedTranslation(f.titleKey) || f.titleKey || '';
     const byText = getNestedTranslation('fanart.by') || 'di';
-    const tags = f.tags || [];
+    const tags = (f.tags && f.tags.length) ? f.tags : ['untagged'];
     const socials = f.socials || {};
     const popupImg = document.getElementById('fanart-popup-img');
     popupImg.onerror = function() { this.src = IMG_CDN + '/vtubers/placeholder.png'; this.onerror = null; };
@@ -81,7 +244,9 @@ function openLightbox(f) {
     popupImg.alt = title;
     document.getElementById('fanart-popup-title').textContent = title;
     document.getElementById('fanart-popup-artist').textContent = `${byText} ${f.artist}`;
-    document.getElementById('fanart-popup-tags').innerHTML = tags.map(t => `<span class="tag-badge">${t}</span>`).join('');
+    document.getElementById('fanart-popup-tags').innerHTML = tags.map(t =>
+        `<span class="tag-badge${t === 'untagged' ? ' tag-untagged' : ''}">${t}</span>`
+    ).join('');
     const socialsEl = document.getElementById('fanart-popup-socials');
     const entries = Object.entries(socials);
     if (entries.length > 0) {
@@ -116,6 +281,8 @@ function closeSubmitModal() {
     document.body.classList.remove('modal-open');
     document.body.style.overflow = '';
     _faFeedbackClear();
+    _hideTagDropdown();
+    document.getElementById('fa-tag-chips').innerHTML = '';
 }
 
 function _faFeedbackSet(msg, type) {
@@ -134,14 +301,8 @@ function _faFeedbackClear() {
 
 function _faSetFile(file) {
     if (!file) return;
-    if (!file.type.startsWith('image/')) {
-        _faFeedbackSet('Formato non supportato. Usa JPG, PNG, GIF o WEBP.', 'error');
-        return;
-    }
-    if (file.size > FA_MAX_BYTES) {
-        _faFeedbackSet(`Il file supera il limite di 15 MB (${(file.size / 1024 / 1024).toFixed(1)} MB).`, 'error');
-        return;
-    }
+    if (!file.type.startsWith('image/')) { _faFeedbackSet('Formato non supportato. Usa JPG, PNG, GIF o WEBP.', 'error'); return; }
+    if (file.size > FA_MAX_BYTES) { _faFeedbackSet(`Il file supera il limite di 15 MB (${(file.size/1024/1024).toFixed(1)} MB).`, 'error'); return; }
     faSelectedFile = file;
     _faFeedbackClear();
     const reader = new FileReader();
@@ -163,20 +324,18 @@ function _faResetFile() {
 }
 
 function initFanartDropzone() {
-    const zone     = document.getElementById('fa-dropzone');
-    const input    = document.getElementById('fa-image-file');
-    const pickBtn  = document.getElementById('fa-pick-btn');
-    const removeBtn= document.getElementById('fa-remove-btn');
+    const zone = document.getElementById('fa-dropzone');
+    const input = document.getElementById('fa-image-file');
+    const pickBtn = document.getElementById('fa-pick-btn');
+    const removeBtn = document.getElementById('fa-remove-btn');
     if (!zone) return;
-
     pickBtn.addEventListener('click', () => input.click());
     input.addEventListener('change', () => { if (input.files[0]) _faSetFile(input.files[0]); });
     removeBtn.addEventListener('click', (e) => { e.stopPropagation(); _faResetFile(); });
     zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
     zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
     zone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        zone.classList.remove('drag-over');
+        e.preventDefault(); zone.classList.remove('drag-over');
         const file = e.dataTransfer.files[0];
         if (file) _faSetFile(file);
     });
@@ -184,42 +343,51 @@ function initFanartDropzone() {
 
 function initFanartForm() {
     initFanartDropzone();
+
+    const tagsInput = document.getElementById('fa-tags-input');
+    if (tagsInput) _initTagAutocomplete(tagsInput);
+
+    document.getElementById('fa-tag-suggest-btn')?.addEventListener('click', async () => {
+        const raw = tagsInput?.value || '';
+        const tags = _parseTags(raw);
+        const newTags = tags.filter(t => t !== 'untagged' && !approvedTags.includes(t));
+        if (!newTags.length) { _faFeedbackSet('Nessun tag nuovo da proporre — tutti quelli inseriti sono già approvati.', 'error'); return; }
+        if (!Auth || !Auth.isLoggedIn()) { _faFeedbackSet('Devi essere loggato per proporre nuovi tag.', 'error'); return; }
+        const btn = document.getElementById('fa-tag-suggest-btn');
+        btn.disabled = true;
+        try {
+            await Promise.all(newTags.map(name => Api.submit.post('tag', { name }, null).catch(() => {})));
+            _faFeedbackSet(`${newTags.length} tag proposto/i in revisione: ${newTags.join(', ')}`, 'success');
+        } catch(e) {
+            _faFeedbackSet(e.message || 'Errore durante la proposta.', 'error');
+        } finally {
+            btn.disabled = false;
+        }
+    });
+
     const btn = document.getElementById('fa-submit-btn');
     if (!btn) return;
 
     btn.addEventListener('click', async () => {
         _faFeedbackClear();
-        const title  = document.getElementById('fa-title')?.value.trim();
-        const artist = document.getElementById('fa-artist')?.value.trim();
-        const tag    = document.getElementById('fa-tags')?.value;
-        const social = document.getElementById('fa-socials')?.value.trim();
+        const title   = document.getElementById('fa-title')?.value.trim();
+        const artist  = document.getElementById('fa-artist')?.value.trim();
+        const tagsRaw = document.getElementById('fa-tags-input')?.value.trim();
+        const social  = document.getElementById('fa-socials')?.value.trim();
 
-        if (!title || !artist || !social) {
-            _faFeedbackSet('Compila tutti i campi obbligatori (*).', 'error');
-            return;
-        }
-        if (!faSelectedFile) {
-            _faFeedbackSet('Seleziona un\'immagine da caricare.', 'error');
-            return;
-        }
-        if (!Auth || !Auth.isLoggedIn()) {
-            _faFeedbackSet('Devi essere loggato per inviare una fanart.', 'error');
-            return;
-        }
+        if (!title || !artist) { _faFeedbackSet('Titolo e nome artista sono obbligatori (*).', 'error'); return; }
+        if (!faSelectedFile)   { _faFeedbackSet('Seleziona un\'immagine da caricare.', 'error'); return; }
+        if (!Auth || !Auth.isLoggedIn()) { _faFeedbackSet('Devi essere loggato per inviare una fanart.', 'error'); return; }
 
         btn.disabled = true;
         btn.querySelector('span').textContent = 'Caricamento immagine...';
-
         try {
             const imageUrl = await Api.upload.file(faSelectedFile, 'fanart');
             btn.querySelector('span').textContent = 'Invio in corso...';
-            const payload = { title, artist, image: imageUrl, tags: tag ? [tag] : [], socials: { website: social } };
-            await Api.submit.post('fanart', payload, imageUrl);
+            await Api.submit.post('fanart', { title, artist, image: imageUrl, tags_raw: tagsRaw || '', socials: social ? { website: social } : {} }, imageUrl);
             _faFeedbackSet('Fanart inviata! La esamineremo il prima possibile.', 'success');
-            document.getElementById('fa-title').value   = '';
-            document.getElementById('fa-artist').value  = '';
-            document.getElementById('fa-tags').value    = '';
-            document.getElementById('fa-socials').value = '';
+            ['fa-title','fa-artist','fa-tags-input','fa-socials'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+            document.getElementById('fa-tag-chips').innerHTML = '';
             _faResetFile();
         } catch (err) {
             _faFeedbackSet(err.message || 'Errore durante l\'invio. Riprova.', 'error');
@@ -281,21 +449,9 @@ function hideSuggestions() {
 function initFilterDropdown() {
     const btn = document.getElementById('filter-toggle-btn');
     const dropdown = document.getElementById('filter-dropdown');
-    const label = document.getElementById('filter-label');
     btn.addEventListener('click', (e) => { e.stopPropagation(); dropdown.classList.toggle('open'); btn.classList.toggle('open'); });
     document.addEventListener('click', () => { dropdown.classList.remove('open'); btn.classList.remove('open'); });
     dropdown.addEventListener('click', (e) => e.stopPropagation());
-    dropdown.querySelectorAll('.filter-option').forEach(opt => {
-        opt.addEventListener('click', () => {
-            dropdown.querySelectorAll('.filter-option').forEach(o => o.classList.remove('active'));
-            opt.classList.add('active');
-            currentFilter = opt.dataset.filter;
-            label.textContent = opt.textContent;
-            dropdown.classList.remove('open');
-            btn.classList.remove('open');
-            renderFanarts();
-        });
-    });
 }
 
 function initSearchKeyboard() {
@@ -313,15 +469,13 @@ function initSearchKeyboard() {
 
 window.addEventListener('languageChanged', () => {
     renderFanarts();
-    const activeOpt = document.querySelector('.filter-option.active');
-    const label = document.getElementById('filter-label');
-    if (activeOpt && label) label.textContent = activeOpt.textContent;
     const input = document.getElementById('fanart-search');
     if (input) input.placeholder = getNestedTranslation('fanart.searchPlaceholder') || '';
 });
 
 document.addEventListener('DOMContentLoaded', () => {
     loadFanartData();
+    loadApprovedTags();
     initFilterDropdown();
     initSearchKeyboard();
     initFanartForm();

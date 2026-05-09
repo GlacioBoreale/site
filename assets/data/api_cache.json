@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-08T23:55:39Z",
+  "updatedAt": "2026-05-09T02:53:49Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,14 +43,6 @@
     ],
     "randomClips": [
       {
-        "title": "Mi serve moderazione non Pix",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/PoliteSolidHawkEleGiggle-6wdUnkC3uEyFMwle",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d0008be4-9538-4f37-893f-a83dda83347b/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 28,
-        "duration": 5,
-        "creator": "BrainSedge"
-      },
-      {
         "title": "è un disegno quello lo sai?",
         "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableRenownedAuberginePMSTwin",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/9ad6f3f6-e229-4706-9d83-12185bbce8b9/landscape/thumb/thumb-0000000000-480x272.jpg",
@@ -59,11 +51,19 @@
         "creator": "andreaproob"
       },
       {
-        "title": "Il saving, ez",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/ResourcefulDependableHamBatChest-8RO63Cu2CHD0E6H4",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/543f3f8b-4431-4e1a-b483-c7eba163fbf0/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 53,
-        "duration": 14,
+        "title": "face reaveal",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/NastyTardyRuffBuddhaBar-e6YHVBz2APguBcQX",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d21ebf4b-0fb8-4254-850a-a9d87f52b6c7/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 39,
+        "duration": 5,
+        "creator": "auremdunknown"
+      },
+      {
+        "title": "Nuh-uh ✨✨",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/ImportantSmellyQueleaGrammarKing-g7bfcOfJhMxoUW_w",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d69f1625-028d-4a74-80cc-93624b14cbbf/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 33,
+        "duration": 11,
         "creator": "dabidet87"
       }
     ]
@@ -80,7 +80,7 @@
         "thumbnail": "https://i.ytimg.com/vi/D6MsiuipRpo/mqdefault.jpg",
         "publishedAt": "2026-05-02T12:30:14Z",
         "url": "https://www.youtube.com/watch?v=D6MsiuipRpo",
-        "viewCount": 120
+        "viewCount": 121
       },
       {
         "title": "Non Pensavo che 2 Baroni Fossero Così FORTI [Reupload]",

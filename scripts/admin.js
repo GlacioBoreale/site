@@ -10,7 +10,6 @@ let _subTypeFilter   = 'all';
 let _userSearch = '';
 let _saveSearch = '';
 
-// ── GUARD ─────────────────────────────────────────────────────
 function _isAdmin() {
   const user = Auth.getUser();
   return Auth.isLoggedIn() && user?.email === ADMIN_EMAIL;
@@ -28,7 +27,6 @@ function _guard() {
   }
 }
 
-// ── LOAD ALL ──────────────────────────────────────────────────
 async function _loadAll() {
   _spinRefresh(true);
   await Promise.allSettled([
@@ -47,23 +45,17 @@ async function _loadStats() {
     document.getElementById('ov-saves').textContent   = d.saves ?? '—';
     document.getElementById('ov-subs').textContent    = d.submissions ?? '—';
     document.getElementById('ov-pending').textContent = d.by_status?.pending ?? '—';
-
     const total = d.submissions || 1;
     _renderBarList('ov-by-type', d.by_type || {}, total, {
-      vtuber: '#a78bfa', fanart: '#5b9cf6', team: '#f5c542',
+      vtuber: '#a78bfa', fanart: '#5b9cf6', team: '#f5c542', tag: '#34c48a',
     });
     _renderBarList('ov-by-status', d.by_status || {}, total, {
       pending: '#f5c542', approved: 'rgba(34,197,94,.9)', rejected: 'rgba(239,68,68,.88)',
     });
-
     const pending = d.by_status?.pending || 0;
     const badge = document.getElementById('nav-badge-submissions');
-    if (pending > 0) {
-      badge.textContent = pending;
-      badge.classList.add('visible');
-    } else {
-      badge.classList.remove('visible');
-    }
+    if (pending > 0) { badge.textContent = pending; badge.classList.add('visible'); }
+    else badge.classList.remove('visible');
   } catch(e) { console.error('stats', e); }
 }
 
@@ -83,7 +75,6 @@ function _renderBarList(elId, obj, total, colors) {
   });
 }
 
-// ── SUBMISSIONS ───────────────────────────────────────────────
 async function _loadSubmissions() {
   document.getElementById('sub-list').innerHTML = '<div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
   try {
@@ -131,39 +122,75 @@ function _renderSubs() {
     const p     = s.payload || {};
     const title = p.name || p.title || s.type;
     const tr    = document.createElement('tr');
+    tr.dataset.id = s.id;
+
+    const imgHtml = s.image_url
+      ? `<img class="adm-row-thumb" src="${s.image_url}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'">`
+        + `<div class="adm-row-thumb" style="display:none;align-items:center;justify-content:center;color:rgba(255,255,255,.15)"><i class="fas fa-image"></i></div>`
+      : `<div class="adm-row-thumb" style="display:inline-flex;align-items:center;justify-content:center;color:rgba(255,255,255,.15)"><i class="fas fa-image"></i></div>`;
+
     tr.innerHTML = `
-      <td>${s.image_url ? `<img class="adm-row-thumb" src="${s.image_url}" alt="">` : `<div class="adm-row-thumb" style="display:inline-flex;align-items:center;justify-content:center;color:rgba(255,255,255,.15)"><i class="fas fa-image"></i></div>`}</td>
+      <td>${imgHtml}</td>
       <td class="adm-td-main">${_esc(title)}</td>
       <td><span class="adm-badge adm-badge-type">${_esc(s.type)}</span></td>
-      <td><span class="adm-badge adm-badge-${s.status}">${_statusLabel(s.status)}</span></td>
+      <td><span class="adm-badge adm-badge-${s.status}" id="status-badge-${s.id}">${_statusLabel(s.status)}</span></td>
       <td>${_esc(s.username || '—')}</td>
       <td>${_fmtDate(s.created_at)}</td>
-      <td class="adm-td-actions">
-        <button class="adm-btn adm-btn-detail" data-id="${s.id}"><i class="fas fa-eye"></i></button>
-        ${s.status !== 'approved' ? `<button class="adm-btn adm-btn-approve" data-id="${s.id}" title="Approva"><i class="fas fa-check"></i></button>` : ''}
-        ${s.status !== 'rejected' ? `<button class="adm-btn adm-btn-reject"  data-id="${s.id}" title="Rifiuta"><i class="fas fa-times"></i></button>` : ''}
-        ${s.status !== 'pending'  ? `<button class="adm-btn adm-btn-pending" data-id="${s.id}" title="Pending"><i class="fas fa-clock"></i></button>` : ''}
-        <button class="adm-btn adm-btn-danger" data-id="${s.id}" data-action="delete-sub" title="Elimina"><i class="fas fa-trash"></i></button>
+      <td class="adm-td-actions" id="actions-${s.id}">
+        <button class="adm-btn adm-btn-detail"><i class="fas fa-eye"></i></button>
+        ${s.status !== 'approved' ? `<button class="adm-btn adm-btn-approve" title="Approva"><i class="fas fa-check"></i></button>` : ''}
+        ${s.status !== 'rejected' ? `<button class="adm-btn adm-btn-reject"  title="Rifiuta"><i class="fas fa-times"></i></button>` : ''}
+        ${s.status !== 'pending'  ? `<button class="adm-btn adm-btn-pending" title="Pending"><i class="fas fa-clock"></i></button>` : ''}
+        <button class="adm-btn adm-btn-danger" title="Elimina"><i class="fas fa-trash"></i></button>
       </td>
     `;
     tr.querySelector('.adm-btn-detail')?.addEventListener('click', () => _openSubDetail(s));
-    tr.querySelector('.adm-btn-approve')?.addEventListener('click', () => _updateSub(s.id, 'approved'));
-    tr.querySelector('.adm-btn-reject')?.addEventListener('click',  () => _updateSub(s.id, 'rejected'));
-    tr.querySelector('.adm-btn-pending')?.addEventListener('click', () => _updateSub(s.id, 'pending'));
-    tr.querySelector('[data-action="delete-sub"]')?.addEventListener('click', () => _deleteSub(s.id));
+    tr.querySelector('.adm-btn-approve')?.addEventListener('click', () => _updateSub(s, 'approved', tr));
+    tr.querySelector('.adm-btn-reject')?.addEventListener('click',  () => _updateSub(s, 'rejected', tr));
+    tr.querySelector('.adm-btn-pending')?.addEventListener('click', () => _updateSub(s, 'pending',  tr));
+    tr.querySelector('.adm-btn-danger')?.addEventListener('click',  () => _deleteSub(s.id));
     tbody.appendChild(tr);
   });
 }
 
-async function _updateSub(id, status, note) {
+async function _updateSub(s, status, tr) {
+  const id = s.id;
   try {
-    await Api.admin.updateSubmission(id, status, note);
-    const s = _subs.find(x => x.id === id);
-    if (s) s.status = status;
-    _renderSubs();
+    // feedback immediato sulla riga
+    if (tr) {
+      const badge = tr.querySelector(`#status-badge-${id}`);
+      if (badge) { badge.className = `adm-badge adm-badge-${status}`; badge.textContent = _statusLabel(status); }
+      tr.querySelectorAll('.adm-btn').forEach(b => b.disabled = true);
+    }
+
+    await Api.admin.updateSubmission(id, status);
+    s.status = status;
+
+    // ricarica la riga aggiornando i bottoni
+    if (tr) {
+      const actionsCell = tr.querySelector(`#actions-${id}`);
+      if (actionsCell) {
+        actionsCell.innerHTML = `
+          <button class="adm-btn adm-btn-detail"><i class="fas fa-eye"></i></button>
+          ${status !== 'approved' ? `<button class="adm-btn adm-btn-approve" title="Approva"><i class="fas fa-check"></i></button>` : ''}
+          ${status !== 'rejected' ? `<button class="adm-btn adm-btn-reject"  title="Rifiuta"><i class="fas fa-times"></i></button>` : ''}
+          ${status !== 'pending'  ? `<button class="adm-btn adm-btn-pending" title="Pending"><i class="fas fa-clock"></i></button>` : ''}
+          <button class="adm-btn adm-btn-danger" title="Elimina"><i class="fas fa-trash"></i></button>
+        `;
+        actionsCell.querySelector('.adm-btn-detail')?.addEventListener('click', () => _openSubDetail(s));
+        actionsCell.querySelector('.adm-btn-approve')?.addEventListener('click', () => _updateSub(s, 'approved', tr));
+        actionsCell.querySelector('.adm-btn-reject')?.addEventListener('click',  () => _updateSub(s, 'rejected', tr));
+        actionsCell.querySelector('.adm-btn-pending')?.addEventListener('click', () => _updateSub(s, 'pending',  tr));
+        actionsCell.querySelector('.adm-btn-danger')?.addEventListener('click',  () => _deleteSub(s.id));
+      }
+    }
+
     _loadStats();
-    _toast(`Stato: ${_statusLabel(status)}`, 'ok');
-  } catch(e) { _toast(e.message, 'err'); }
+    _toast(`Stato aggiornato: ${_statusLabel(status)}`, 'ok');
+  } catch(e) {
+    _toast(e.message, 'err');
+    if (tr) tr.querySelectorAll('.adm-btn').forEach(b => b.disabled = false);
+  }
 }
 
 function _deleteSub(id) {
@@ -183,33 +210,37 @@ function _openSubDetail(s) {
   document.getElementById('adm-drawer-title').textContent = p.name || p.title || s.type;
 
   const rows = [];
-  if (p.name)      rows.push(['fa-user',        'Nome',        p.name]);
-  if (p.fullname)  rows.push(['fa-id-card',      'Completo',    p.fullname]);
-  if (p.title)     rows.push(['fa-image',        'Titolo',      p.title]);
-  if (p.artist)    rows.push(['fa-palette',      'Artista',     p.artist]);
-  if (p.channel)   rows.push(['fa-link',         'Canale',      p.channel,   true]);
-  if (p.debut)     rows.push(['fa-calendar',     'Debut',       p.debut]);
-  if (p.hashtag)   rows.push(['fa-hashtag',      'Hashtag',     p.hashtag]);
-  if (p.sponsor)   rows.push(['fa-bullhorn',     'Sponsor',     p.sponsor]);
-  if (p.proof)     rows.push(['fa-link',         'Prova',       p.proof,     true]);
-  if (s.username)  rows.push(['fa-user-circle',  'Utente',      s.username]);
-  if (s.user_email)rows.push(['fa-envelope',     'Email',       s.user_email]);
+  if (p.name)       rows.push(['fa-user',       'Nome',     p.name]);
+  if (p.fullname)   rows.push(['fa-id-card',    'Completo', p.fullname]);
+  if (p.title)      rows.push(['fa-image',      'Titolo',   p.title]);
+  if (p.artist)     rows.push(['fa-palette',    'Artista',  p.artist]);
+  if (p.tags?.length) rows.push(['fa-tag',      'Tag',      p.tags.join(', ')]);
+  if (p.channel)    rows.push(['fa-link',       'Canale',   p.channel,  true]);
+  if (p.debut)      rows.push(['fa-calendar',   'Debut',    p.debut]);
+  if (p.hashtag)    rows.push(['fa-hashtag',    'Hashtag',  p.hashtag]);
+  if (p.sponsor)    rows.push(['fa-bullhorn',   'Sponsor',  p.sponsor]);
+  if (p.proof)      rows.push(['fa-link',       'Prova',    p.proof,    true]);
+  if (p.contact)    rows.push(['fa-comment',    'Contatto', p.contact]);
+  if (p.role)       rows.push(['fa-briefcase',  'Ruolo',    p.role]);
+  if (s.username)   rows.push(['fa-user-circle','Utente',   s.username]);
+  if (s.user_email) rows.push(['fa-envelope',   'Email',    s.user_email]);
   rows.push(['fa-clock', 'Inviato', _fmtDate(s.created_at)]);
-  if (p.admin_note) rows.push(['fa-note-sticky', 'Nota admin', p.admin_note]);
+  if (p.admin_note) rows.push(['fa-note-sticky','Nota admin', p.admin_note]);
 
-  const socialRows = p.socials ? Object.entries(p.socials).map(([k,v]) => [`fa-share-nodes`, k, v, true]) : [];
-  const descHtml = p.desc ? `
+  const socialRows = p.socials ? Object.entries(p.socials).map(([k,v]) => ['fa-share-nodes', k, v, true]) : [];
+
+  const descHtml = (p.desc || p.experience) ? `
     <div class="adm-dfield-block">
-      <div class="adm-dfield-block-title">Descrizione</div>
-      <p style="font-size:.84rem;color:rgba(255,255,255,.6);white-space:pre-wrap;line-height:1.6">${_esc(p.desc)}</p>
+      <div class="adm-dfield-block-title">${p.experience ? 'Esperienze' : 'Descrizione'}</div>
+      <p style="font-size:.84rem;color:rgba(255,255,255,.6);white-space:pre-wrap;line-height:1.6">${_esc(p.desc || p.experience)}</p>
     </div>` : '';
 
   document.getElementById('adm-drawer-body').innerHTML = `
-    ${s.image_url ? `<img class="adm-drawer-img" src="${s.image_url}" alt="">` : ''}
+    ${s.image_url ? `<img class="adm-drawer-img" src="${s.image_url}" alt="" onerror="this.style.display='none'">` : ''}
     <div class="adm-drawer-name">${_esc(p.name || p.title || s.type)}</div>
     <div class="adm-drawer-meta">
       <span class="adm-badge adm-badge-type">${_esc(s.type)}</span>
-      <span class="adm-badge adm-badge-${s.status}">${_statusLabel(s.status)}</span>
+      <span class="adm-badge adm-badge-${s.status}" id="drawer-status-badge">${_statusLabel(s.status)}</span>
     </div>
     <div class="adm-dfield-block">
       <div class="adm-dfield-block-title">Informazioni</div>
@@ -224,7 +255,7 @@ function _openSubDetail(s) {
     ${socialRows.length ? `
     <div class="adm-dfield-block">
       <div class="adm-dfield-block-title">Social</div>
-      ${socialRows.map(([icon, lbl, val, link]) => `
+      ${socialRows.map(([icon, lbl, val]) => `
         <div class="adm-dfield">
           <i class="fas ${icon}"></i>
           <span class="adm-dfield-lbl">${lbl}</span>
@@ -244,15 +275,40 @@ function _openSubDetail(s) {
   `;
 
   const getNote = () => document.getElementById('drawer-note')?.value || undefined;
-  document.getElementById('da-approve')?.addEventListener('click', () => { _updateSub(s.id, 'approved', getNote()); _closeDrawer(); });
-  document.getElementById('da-reject')?.addEventListener('click',  () => { _updateSub(s.id, 'rejected', getNote()); _closeDrawer(); });
-  document.getElementById('da-pending')?.addEventListener('click', () => { _updateSub(s.id, 'pending',  getNote()); _closeDrawer(); });
+
+  const doUpdate = async (newStatus) => {
+    const note = getNote();
+    try {
+      document.querySelectorAll('#da-approve,#da-reject,#da-pending').forEach(b => b && (b.disabled = true));
+      await Api.admin.updateSubmission(s.id, newStatus, note);
+      s.status = newStatus;
+      // aggiorna badge nel drawer
+      const badge = document.getElementById('drawer-status-badge');
+      if (badge) { badge.className = `adm-badge adm-badge-${newStatus}`; badge.textContent = _statusLabel(newStatus); }
+      // aggiorna riga nella tabella
+      const tr = document.querySelector(`tr[data-id="${s.id}"]`);
+      if (tr) {
+        const rowBadge = tr.querySelector(`#status-badge-${s.id}`);
+        if (rowBadge) { rowBadge.className = `adm-badge adm-badge-${newStatus}`; rowBadge.textContent = _statusLabel(newStatus); }
+        _updateSub(s, newStatus, tr);
+      }
+      _loadStats();
+      _toast(`Stato: ${_statusLabel(newStatus)}`, 'ok');
+      _closeDrawer();
+    } catch(e) {
+      _toast(e.message, 'err');
+      document.querySelectorAll('#da-approve,#da-reject,#da-pending').forEach(b => b && (b.disabled = false));
+    }
+  };
+
+  document.getElementById('da-approve')?.addEventListener('click', () => doUpdate('approved'));
+  document.getElementById('da-reject')?.addEventListener('click',  () => doUpdate('rejected'));
+  document.getElementById('da-pending')?.addEventListener('click', () => doUpdate('pending'));
   document.getElementById('da-delete')?.addEventListener('click',  () => { _closeDrawer(); _deleteSub(s.id); });
 
   _openDrawer();
 }
 
-// ── USERS ─────────────────────────────────────────────────────
 async function _loadUsers() {
   document.getElementById('user-list').innerHTML = '<div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
   try {
@@ -266,32 +322,16 @@ async function _loadUsers() {
 
 function _renderUsers() {
   const q = _userSearch.toLowerCase();
-  const filtered = q
-    ? _users.filter(u => u.username?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q))
-    : _users;
-
-  if (!filtered.length) {
-    document.getElementById('user-list').innerHTML = '<div class="adm-empty">Nessun utente trovato.</div>';
-    return;
-  }
+  const filtered = q ? _users.filter(u => u.username?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q)) : _users;
+  if (!filtered.length) { document.getElementById('user-list').innerHTML = '<div class="adm-empty">Nessun utente trovato.</div>'; return; }
 
   const table = document.createElement('table');
   table.className = 'adm-table';
   table.innerHTML = `
-    <thead>
-      <tr>
-        <th>Username</th>
-        <th>Email</th>
-        <th>Registrato</th>
-        <th>Punti</th>
-        <th>Prestige</th>
-        <th>XP</th>
-        <th>Ricerca</th>
-        <th>Tempo</th>
-        <th>LB</th>
-        <th>Azioni</th>
-      </tr>
-    </thead>
+    <thead><tr>
+      <th>Username</th><th>Email</th><th>Registrato</th>
+      <th>Punti</th><th>Prestige</th><th>XP</th><th>Ricerca</th><th>Tempo</th><th>LB</th><th>Azioni</th>
+    </tr></thead>
     <tbody id="user-tbody"></tbody>
   `;
   document.getElementById('user-list').innerHTML = '';
@@ -312,8 +352,8 @@ function _renderUsers() {
       <td>${_fmtTime(u.total_time_sec)}</td>
       <td><span class="adm-badge ${u.opt_in ? 'adm-badge-optin' : 'adm-badge-optout'}">${u.opt_in ? 'Sì' : 'No'}</span></td>
       <td class="adm-td-actions">
-        <button class="adm-btn adm-btn-detail" data-id="${u.id}"><i class="fas fa-eye"></i></button>
-        ${!isAdmin ? `<button class="adm-btn adm-btn-danger" data-id="${u.id}" data-action="del-user"><i class="fas fa-trash"></i></button>` : ''}
+        <button class="adm-btn adm-btn-detail"><i class="fas fa-eye"></i></button>
+        ${!isAdmin ? `<button class="adm-btn adm-btn-danger" data-action="del-user"><i class="fas fa-trash"></i></button>` : ''}
       </td>
     `;
     tr.querySelector('.adm-btn-detail')?.addEventListener('click', () => _openUserDetail(u));
@@ -366,7 +406,6 @@ function _deleteUser(id, username) {
   });
 }
 
-// ── SAVES ─────────────────────────────────────────────────────
 async function _loadSaves() {
   document.getElementById('save-list').innerHTML = '<div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
   try {
@@ -380,31 +419,15 @@ async function _loadSaves() {
 
 function _renderSaves() {
   const q = _saveSearch.toLowerCase();
-  const filtered = q
-    ? _saves.filter(s => s.username?.toLowerCase().includes(q) || s.email?.toLowerCase().includes(q))
-    : _saves;
-
-  if (!filtered.length) {
-    document.getElementById('save-list').innerHTML = '<div class="adm-empty">Nessun salvataggio trovato.</div>';
-    return;
-  }
+  const filtered = q ? _saves.filter(s => s.username?.toLowerCase().includes(q) || s.email?.toLowerCase().includes(q)) : _saves;
+  if (!filtered.length) { document.getElementById('save-list').innerHTML = '<div class="adm-empty">Nessun salvataggio trovato.</div>'; return; }
 
   const table = document.createElement('table');
   table.className = 'adm-table';
   table.innerHTML = `
-    <thead>
-      <tr>
-        <th>Utente</th>
-        <th>Punti</th>
-        <th>Prestige</th>
-        <th>XP</th>
-        <th>Ricerca</th>
-        <th>Tempo</th>
-        <th>LB</th>
-        <th>Ultimo save</th>
-        <th>Azioni</th>
-      </tr>
-    </thead>
+    <thead><tr>
+      <th>Utente</th><th>Punti</th><th>Prestige</th><th>XP</th><th>Ricerca</th><th>Tempo</th><th>LB</th><th>Ultimo save</th><th>Azioni</th>
+    </tr></thead>
     <tbody id="save-tbody"></tbody>
   `;
   document.getElementById('save-list').innerHTML = '';
@@ -423,8 +446,8 @@ function _renderSaves() {
       <td><span class="adm-badge ${s.opt_in ? 'adm-badge-optin' : 'adm-badge-optout'}">${s.opt_in ? 'Sì' : 'No'}</span></td>
       <td>${_fmtDate(s.updated_at)}</td>
       <td class="adm-td-actions">
-        <button class="adm-btn adm-btn-detail" data-uid="${s.user_id}"><i class="fas fa-eye"></i></button>
-        ${s.email !== ADMIN_EMAIL ? `<button class="adm-btn adm-btn-danger" data-uid="${s.user_id}" data-action="del-save"><i class="fas fa-trash"></i></button>` : ''}
+        <button class="adm-btn adm-btn-detail"><i class="fas fa-eye"></i></button>
+        ${s.email !== ADMIN_EMAIL ? `<button class="adm-btn adm-btn-danger" data-action="del-save"><i class="fas fa-trash"></i></button>` : ''}
       </td>
     `;
     tr.querySelector('.adm-btn-detail')?.addEventListener('click', () => _openSaveDetail(s));
@@ -438,9 +461,7 @@ function _openSaveDetail(s) {
   const sd = s.save_data || {};
   document.getElementById('adm-drawer-body').innerHTML = `
     <div class="adm-drawer-name">${_esc(s.username)}</div>
-    <div class="adm-drawer-meta">
-      <span class="adm-badge ${s.opt_in ? 'adm-badge-optin' : 'adm-badge-optout'}">${s.opt_in ? 'LB: Sì' : 'LB: No'}</span>
-    </div>
+    <div class="adm-drawer-meta"><span class="adm-badge ${s.opt_in ? 'adm-badge-optin' : 'adm-badge-optout'}">${s.opt_in ? 'LB: Sì' : 'LB: No'}</span></div>
     <div class="adm-dfield-block">
       <div class="adm-dfield-block-title">Statistiche</div>
       <div class="adm-dfield"><i class="fas fa-star"></i><span class="adm-dfield-lbl">Punti</span><span class="adm-dfield-val">${_fmt(s.points)}</span></div>
@@ -475,7 +496,6 @@ function _deleteSave(userId, username) {
   });
 }
 
-// ── DRAWER ────────────────────────────────────────────────────
 function _openDrawer() {
   document.getElementById('adm-drawer-overlay').style.display = 'block';
   document.body.style.overflow = 'hidden';
@@ -485,7 +505,6 @@ function _closeDrawer() {
   document.body.style.overflow = '';
 }
 
-// ── CONFIRM ───────────────────────────────────────────────────
 let _confirmCb = null;
 function _confirm(title, msg, cb) {
   document.getElementById('adm-confirm-title').textContent = title;
@@ -498,7 +517,6 @@ function _closeConfirm() {
   _confirmCb = null;
 }
 
-// ── TOAST ─────────────────────────────────────────────────────
 let _toastTimer = null;
 function _toast(msg, type = '') {
   const el = document.getElementById('adm-toast');
@@ -508,7 +526,6 @@ function _toast(msg, type = '') {
   _toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
 }
 
-// ── UTILS ─────────────────────────────────────────────────────
 function _esc(s) {
   return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
@@ -523,9 +540,9 @@ function _fmt(n) {
   if (n == null) return '—';
   const num = parseFloat(n);
   if (isNaN(num)) return '—';
-  if (num >= 1e9)  return (num/1e9).toFixed(1)  + 'B';
-  if (num >= 1e6)  return (num/1e6).toFixed(1)  + 'M';
-  if (num >= 1e3)  return (num/1e3).toFixed(1)  + 'K';
+  if (num >= 1e9) return (num/1e9).toFixed(1) + 'B';
+  if (num >= 1e6) return (num/1e6).toFixed(1) + 'M';
+  if (num >= 1e3) return (num/1e3).toFixed(1) + 'K';
   return Math.floor(num).toString();
 }
 function _fmtTime(sec) {
@@ -539,13 +556,11 @@ function _spinRefresh(on) {
   document.getElementById('adm-refresh-btn')?.classList.toggle('spinning', on);
 }
 
-// ── INIT ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const tryInit = () => {
     if (typeof Auth === 'undefined' || typeof Api === 'undefined') { setTimeout(tryInit, 50); return; }
     _guard();
     document.addEventListener('authChange', _guard);
-
     document.getElementById('adm-refresh-btn')?.addEventListener('click', _loadAll);
 
     document.querySelectorAll('.adm-nav-btn').forEach(btn => {

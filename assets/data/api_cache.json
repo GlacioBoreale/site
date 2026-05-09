@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-09T09:22:06Z",
+  "updatedAt": "2026-05-09T10:57:26Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,20 +43,12 @@
     ],
     "randomClips": [
       {
-        "title": "Pronto!!!!!!!",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/MagnificentWittyInternThisIsSparta-ujpniueNUbiV-77b",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/58411f9e-18f1-4a70-aba4-33db15ba0c2d/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 50,
-        "duration": 10.5,
-        "creator": "lucaop69"
-      },
-      {
-        "title": "Mi serve moderazione non Pix",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/PoliteSolidHawkEleGiggle-6wdUnkC3uEyFMwle",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d0008be4-9538-4f37-893f-a83dda83347b/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 28,
+        "title": "face reaveal",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/NastyTardyRuffBuddhaBar-e6YHVBz2APguBcQX",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d21ebf4b-0fb8-4254-850a-a9d87f52b6c7/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 39,
         "duration": 5,
-        "creator": "BrainSedge"
+        "creator": "auremdunknown"
       },
       {
         "title": "lo ho scammato (ezezezezez111!)",
@@ -65,6 +57,14 @@
         "views": 27,
         "duration": 34.9,
         "creator": "dabidet87"
+      },
+      {
+        "title": "non ridete",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/EndearingConsiderateGazelle4Head-uRdAcYrWkqUWIEsi",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/6bd098a0-58a9-4716-adb1-9881ce4ed341/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 26,
+        "duration": 28,
+        "creator": "schilla0"
       }
     ]
   },

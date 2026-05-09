@@ -1,6 +1,6 @@
 'use strict';
 
-const API_BASE  = 'https://550ens3u67.execute-api.eu-north-1.amazonaws.com';
+const API_BASE  = 'https://550ens3u67.execute-api.eu-north-1.amazonaws.com/prod';
 const TOKEN_KEY = 'glaciopia_token';
 
 const Api = (() => {

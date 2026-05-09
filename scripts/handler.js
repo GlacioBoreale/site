@@ -43,8 +43,6 @@ function res(statusCode, body, event) {
 }
 
 function getPathAndMethod(event) {
-  // HTTP API v2 usa rawPath e requestContext.http.method
-  // REST API usa path e httpMethod
   const path   = event.rawPath   || event.path   || '';
   const method = event.requestContext?.http?.method || event.httpMethod || '';
   return { path, method };
@@ -76,13 +74,14 @@ function parseTags(raw) {
 export const handler = async (event) => {
   const { path, method } = getPathAndMethod(event);
 
+  console.log('DEBUG', JSON.stringify({ path, method, rawPath: event.rawPath, httpMethod: event.httpMethod, ctxMethod: event.requestContext?.http?.method }));
+
   if (method === 'OPTIONS') return res(200, {}, event);
 
   const body = event.body
     ? (typeof event.body === 'string' ? JSON.parse(event.body) : event.body)
     : {};
 
-  // ── INIT DB ──────────────────────────────────────────────────
   if (body.action === 'init_db') {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
@@ -124,7 +123,6 @@ export const handler = async (event) => {
     return res(200, { message: 'Tables created!' }, event);
   }
 
-  // ── ENSURE TAGS TABLE ─────────────────────────────────────────
   await pool.query(`
     CREATE TABLE IF NOT EXISTS fanart_tags (
       id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -135,7 +133,6 @@ export const handler = async (event) => {
     INSERT INTO fanart_tags (name) VALUES ('untagged') ON CONFLICT DO NOTHING;
   `);
 
-  // ── REGISTER ─────────────────────────────────────────────────
   if (path.endsWith('/auth/register') && method === 'POST') {
     const { username, email, password } = body;
     if (!username || !email || !password)
@@ -155,7 +152,6 @@ export const handler = async (event) => {
     }
   }
 
-  // ── LOGIN ─────────────────────────────────────────────────────
   if (path.endsWith('/auth/login') && method === 'POST') {
     const { email, password } = body;
     if (!email || !password) return res(400, { error: 'Missing fields' }, event);
@@ -167,7 +163,6 @@ export const handler = async (event) => {
     return res(200, { token, user: { id: user.id, username: user.username, email: user.email, avatar_url: user.avatar_url, created_at: user.created_at } }, event);
   }
 
-  // ── GET SAVE ──────────────────────────────────────────────────
   if (path.endsWith('/save') && method === 'GET') {
     const user = authMiddleware(event);
     if (!user) return res(401, { error: 'Unauthorized' }, event);
@@ -175,7 +170,6 @@ export const handler = async (event) => {
     return res(200, r.rows[0] || {}, event);
   }
 
-  // ── PUT SAVE ──────────────────────────────────────────────────
   if (path.endsWith('/save') && method === 'PUT') {
     const user = authMiddleware(event);
     if (!user) return res(401, { error: 'Unauthorized' }, event);
@@ -198,7 +192,6 @@ export const handler = async (event) => {
     }
   }
 
-  // ── DELETE SAVE ───────────────────────────────────────────────
   if (path.endsWith('/save') && method === 'DELETE') {
     const user = authMiddleware(event);
     if (!user) return res(401, { error: 'Unauthorized' }, event);
@@ -206,7 +199,6 @@ export const handler = async (event) => {
     return res(200, { message: 'Save deleted' }, event);
   }
 
-  // ── LEADERBOARD ───────────────────────────────────────────────
   if (path.endsWith('/leaderboard') && method === 'GET') {
     await pool.query(`
       ALTER TABLE game_saves
@@ -237,7 +229,6 @@ export const handler = async (event) => {
     }, event);
   }
 
-  // ── GET FANART TAGS ───────────────────────────────────────────
   if (path.endsWith('/tags/fanart') && method === 'GET') {
     const r = await pool.query(
       "SELECT name FROM fanart_tags ORDER BY name = 'untagged' DESC, name ASC"
@@ -245,7 +236,6 @@ export const handler = async (event) => {
     return res(200, { tags: r.rows.map(r => r.name) }, event);
   }
 
-  // ── SUBMIT ────────────────────────────────────────────────────
   if (path.endsWith('/submit') && method === 'POST') {
     const user = authMiddleware(event);
     if (!user) return res(401, { error: 'Unauthorized' }, event);
@@ -253,7 +243,6 @@ export const handler = async (event) => {
     const ALLOWED_TYPES = ['fanart', 'vtuber', 'team', 'tag'];
     if (!ALLOWED_TYPES.includes(type)) return res(400, { error: 'Tipo non valido' }, event);
     if (!payload || typeof payload !== 'object') return res(400, { error: 'Payload mancante' }, event);
-
     if (type === 'fanart') {
       if (!payload.title || !payload.artist) return res(400, { error: 'title e artist obbligatori' }, event);
       payload.tags = parseTags(payload.tags_raw || '');
@@ -266,7 +255,6 @@ export const handler = async (event) => {
       const exists = await pool.query('SELECT id FROM fanart_tags WHERE name=$1', [payload.name.toLowerCase().trim()]);
       if (exists.rows.length) return res(409, { error: 'Tag già esistente' }, event);
     }
-
     await pool.query(
       'INSERT INTO submissions (user_id, type, payload, image_url) VALUES ($1,$2,$3,$4)',
       [user.id, type, payload, image_url || null]
@@ -274,7 +262,6 @@ export const handler = async (event) => {
     return res(201, { message: 'Submission received' }, event);
   }
 
-  // ── UPLOAD PRESIGN ────────────────────────────────────────────
   if (path.endsWith('/upload/presign') && method === 'POST') {
     const user = authMiddleware(event);
     if (!user) return res(401, { error: 'Unauthorized' }, event);
@@ -294,10 +281,6 @@ export const handler = async (event) => {
     const publicUrl = `https://${bucket}.s3.eu-north-1.amazonaws.com/${key}`;
     return res(200, { url, publicUrl }, event);
   }
-
-  // ════════════════════════════════════════════════════════════
-  // ── ADMIN ROUTES ─────────────────────────────────────────────
-  // ════════════════════════════════════════════════════════════
 
   if (path.endsWith('/admin/stats') && method === 'GET') {
     const { error, status } = requireAdmin(event);
@@ -405,5 +388,5 @@ export const handler = async (event) => {
     return res(200, { ok: true }, event);
   }
 
-  return res(404, { error: 'Not found' }, event);
+  return res(404, { error: 'Not found', debug: { path, method } }, event);
 };

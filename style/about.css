@@ -1,3 +1,284 @@
+.about-hero {
+  text-align: center;
+  padding: 3.5rem 2rem 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  animation: fadeDown 0.8s cubic-bezier(0.16,1,0.3,1) both;
+  position: relative;
+  z-index: 1;
+}
+
+.about-label {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.7rem;
+}
+
+.about-hero h1 {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 400;
+  background: linear-gradient(135deg, var(--text) 30%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.7rem;
+}
+
+.about-subtitle {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.97rem;
+  color: var(--text-muted);
+}
+
+.team-section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 2rem 3rem;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(460px, 100%), 1fr));
+  gap: 1.2rem;
+  justify-content: center;
+}
+
+.team-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.6rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1.4rem;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.team-card:hover {
+  border-color: var(--border-mid);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+
+.team-card--placeholder {
+  border-style: dashed;
+  opacity: 0.6;
+}
+
+.team-card--placeholder:hover {
+  opacity: 0.85;
+}
+
+.team-avatar {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid var(--border-mid);
+}
+
+.team-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.team-avatar--empty {
+  background: var(--card-hover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: var(--text-dim);
+}
+
+.team-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.team-name {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--text);
+}
+
+.team-role {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  background: rgba(91,156,246,0.1);
+  border: 1px solid rgba(91,156,246,0.2);
+  padding: 0.18rem 0.55rem;
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  width: fit-content;
+}
+
+.team-desc {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-top: 0.25rem;
+}
+
+.team-links {
+  display: flex;
+  gap: 0.45rem;
+  margin-top: 0.5rem;
+}
+
+.team-link {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: var(--card-hover);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+}
+
+.team-link:hover { transform: translateY(-2px); text-decoration: none; }
+.team-link.twitch:hover    { background: rgba(145,70,255,0.15);  border-color: #9146FF; color: #9146FF; }
+.team-link.youtube:hover   { background: rgba(255,0,0,0.15);      border-color: #FF0000; color: #FF0000; }
+.team-link.discord:hover   { background: rgba(88,101,242,0.15);   border-color: #5865F2; color: #5865F2; }
+.team-link.instagram:hover { background: rgba(225,48,108,0.15);   border-color: #E1306C; color: #E1306C; }
+.team-link.x:hover         { background: var(--card-hover); border-color: var(--border-mid); color: var(--text); }
+.team-link.github:hover    { background: var(--card-hover); border-color: var(--border-mid); color: var(--text); }
+.team-link.ko-fi:hover     { background: rgba(255,90,22,0.15);    border-color: #FF5A16; color: #FF5A16; }
+.team-link.gunslol:hover   { background: var(--card-hover); border-color: var(--border-mid); color: var(--text); }
+
+.team-link.tiktok { position: relative; overflow: visible; }
+.team-link.tiktok::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(-45deg, #ec0e53, #04bbc7);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.team-link.tiktok:hover {
+  background: linear-gradient(-45deg, rgba(236,14,83,0.15), rgba(4,187,199,0.15));
+  border-color: transparent;
+  color: var(--text);
+}
+.team-link.tiktok:hover::before { opacity: 1; }
+
+/* ── JOIN ── */
+.join-section {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+}
+
+.join-card {
+  background: rgba(91,156,246,0.05);
+  border: 1px solid rgba(91,156,246,0.15);
+  border-radius: var(--radius-lg);
+  padding: 2.4rem 2.2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.join-card h2 {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 1.7rem;
+  font-weight: 400;
+  color: var(--text);
+}
+
+.join-card p {
+  font-family: 'Fredoka', sans-serif;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  max-width: 400px;
+}
+
+.about-join-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 2rem;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.97rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(91,156,246,0.28);
+}
+.about-join-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(91,156,246,0.42);
+}
+
+/* ── MODAL ── */
+#about-modal .submit-modal-content h2 {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* shared sf-textarea */
+.sf-textarea {
+  resize: vertical;
+  min-height: 96px;
+}
+
+.stagger-item {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.stagger-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .about-hero h1 { font-size: 2rem; }
+  .team-card { flex-direction: column; align-items: center; text-align: center; }
+  .team-role { margin: 0 auto; }
+  .team-links { justify-content: center; }
   .join-card { padding: 1.8rem 1.2rem; }
 }
 

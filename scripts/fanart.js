@@ -207,15 +207,17 @@ function createFanartCard(f) {
     return card;
 }
 
+// Fix: usare le classi fa-brands corrette per ogni piattaforma
 const SOCIAL_META = {
-    twitter:   { icon: 'fa-x-twitter',  label: 'X / Twitter' },
-    instagram: { icon: 'fa-instagram',   label: 'Instagram' },
-    twitch:    { icon: 'fa-twitch',      label: 'Twitch' },
-    youtube:   { icon: 'fa-youtube',     label: 'YouTube' },
-    tiktok:    { icon: 'fa-tiktok',      label: 'TikTok' },
-    bluesky:   { icon: 'fa-cloud',       label: 'Bluesky' },
-    discord:   { icon: 'fa-discord',     label: 'Discord' },
-    website:   { icon: 'fa-globe',       label: 'Website' },
+    twitter:   { icon: 'fa-brands fa-x-twitter',  label: 'X / Twitter' },
+    x:         { icon: 'fa-brands fa-x-twitter',  label: 'X / Twitter' },
+    instagram: { icon: 'fa-brands fa-instagram',   label: 'Instagram' },
+    twitch:    { icon: 'fa-brands fa-twitch',      label: 'Twitch' },
+    youtube:   { icon: 'fa-brands fa-youtube',     label: 'YouTube' },
+    tiktok:    { icon: 'fa-brands fa-tiktok',      label: 'TikTok' },
+    bluesky:   { icon: 'fa-brands fa-bluesky',     label: 'Bluesky' },
+    discord:   { icon: 'fa-brands fa-discord',     label: 'Discord' },
+    website:   { icon: 'fa-solid fa-globe',        label: 'Website' },
 };
 
 function openLightbox(f) {
@@ -236,8 +238,8 @@ function openLightbox(f) {
     const entries = Object.entries(socials);
     if (entries.length > 0) {
         socialsEl.innerHTML = entries.map(([p, url]) => {
-            const meta = SOCIAL_META[p] || { icon: 'fa-link', label: p };
-            return `<a href="${url}" target="_blank" rel="noopener" class="fanart-social-link ${p}" title="${meta.label}"><i class="fab ${meta.icon}"></i></a>`;
+            const meta = SOCIAL_META[p] || { icon: 'fa-solid fa-link', label: p };
+            return `<a href="${url}" target="_blank" rel="noopener" class="fanart-social-link ${p}" title="${meta.label}"><i class="${meta.icon}"></i></a>`;
         }).join('');
         socialsEl.style.display = 'flex';
     } else {
@@ -267,7 +269,8 @@ function closeSubmitModal() {
     document.body.style.overflow = '';
     _faFeedbackClear();
     _hideTagDropdown();
-    document.getElementById('fa-tag-chips').innerHTML = '';
+    const chips = document.getElementById('fa-tag-chips');
+    if (chips) chips.innerHTML = '';
 }
 
 function _faFeedbackSet(msg, type) {
@@ -368,7 +371,8 @@ function initFanartForm() {
             await Api.submit.post('fanart', { title, artist, image: imageUrl, tags_raw: tagsRaw || '', socials: social ? { website: social } : {} }, imageUrl);
             _faFeedbackSet('Fanart inviata! La esamineremo il prima possibile.', 'success');
             ['fa-title','fa-artist','fa-tags-input','fa-socials'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-            document.getElementById('fa-tag-chips').innerHTML = '';
+            const chips = document.getElementById('fa-tag-chips');
+            if (chips) chips.innerHTML = '';
             _faResetFile();
         } catch (err) {
             _faFeedbackSet(err.message || 'Errore durante l\'invio. Riprova.', 'error');
@@ -467,6 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.addEventListener('blur', () => setTimeout(hideSuggestions, 150));
 
     document.getElementById('submit-fanart-btn').addEventListener('click', openSubmitModal);
+    // overlay chiude il form
     document.getElementById('submit-modal-overlay').addEventListener('click', closeSubmitModal);
     document.getElementById('submit-modal-close').addEventListener('click', closeSubmitModal);
     document.getElementById('submit-close-btn').addEventListener('click', closeSubmitModal);

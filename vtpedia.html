@@ -3,23 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Il sito ufficiale di Glacio Boreale - VTuber italiano, streamer e Content Creator.">
-    <meta name="keywords" content="Nixel Nova, Glacio Boreale, GlacioBorealeVT, GlacioBoreale, Glaciopia, VTuber italiano, VtuberIta, ITVtuber, streamer, content creator, Twitch, YouTube, Discord, Instagram, TikTok">
     <title>VTPedia - Glaciopia</title>
-
-    <meta property="og:type"        content="website">
-    <meta property="og:url"         content="https://www.glaciopia.com/vtpedia.html">
-    <meta property="og:title"       content="VTPedia — Glaciopia">
-    <meta property="og:description" content="L'enciclopedia dei VTuber italiani. Scopri i VTuber che fanno parte della community di Glaciopia!">
-    <meta property="og:image"       content="https://glaciopia-images.s3.eu-north-1.amazonaws.com/vtubers/glacio/glacio1.png">
-    <meta property="og:image:width"  content="1200">
-    <meta property="og:image:height" content="267">
-    <meta name="theme-color"        content="#667eea">
-    <meta name="twitter:card"        content="summary_large_image">
-    <meta name="twitter:title"       content="VTPedia — Glaciopia">
-    <meta name="twitter:description" content="L'enciclopedia dei VTuber italiani. Scopri i VTuber che fanno parte della community di Glaciopia!">
-    <meta name="twitter:image"       content="https://glaciopia-images.s3.eu-north-1.amazonaws.com/vtubers/glacio/glacio1.png">
-
     <link rel="icon" type="image/x-icon" href="https://glaciopia-images.s3.eu-north-1.amazonaws.com/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style/style.css">
@@ -28,7 +12,6 @@
     <link rel="stylesheet" href="components/footer/footer.css">
     <link rel="stylesheet" href="components/achievements/achievements.css">
     <link rel="stylesheet" href="style/vtpedia.css">
-
     <script src="scripts/api.js"></script>
     <script src="scripts/auth.js"></script>
     <script src="components/navbar/nav.js"></script>
@@ -72,12 +55,12 @@
 
                 <div class="submit-rules">
                     <h3 data-i18n="vtpedia.rulesTitle"><i class="fas fa-list-check"></i> Requisiti</h3>
-                    <ul id="submit-rules-list">
+                    <ul>
                         <li data-i18n="vtpedia.rule1">Devi essere un VTuber attivo da almeno 3 mesi</li>
                         <li data-i18n="vtpedia.rule2">Devi avere almeno un canale attivo (Twitch, YouTube o simili)</li>
                         <li data-i18n="vtpedia.rule3">Devi fornire almeno un'immagine del tuo avatar/modello (max 15 MB)</li>
-                        <li data-i18n="vtpedia.rule4">I contenuti devono essere adatti a un pubblico generale o chiaramente indicare i limiti d'età</li>
-                        <li data-i18n="vtpedia.rule5">La richiesta deve essere inviata dal diretto interessato o con sua autorizzazione esplicita</li>
+                        <li data-i18n="vtpedia.rule4">I contenuti devono essere adatti a un pubblico generale</li>
+                        <li data-i18n="vtpedia.rule5">La richiesta deve essere inviata dal diretto interessato</li>
                         <li data-i18n="vtpedia.rule6">Ci riserviamo il diritto di rifiutare richieste senza obbligo di motivazione</li>
                     </ul>
                 </div>
@@ -100,8 +83,8 @@
                                 <i class="fas fa-terminal"></i>
                                 <div>
                                     <strong data-i18n="vtpedia.sponsorTwitchCmd">Comando chat</strong>
-                                    <span data-i18n="vtpedia.sponsorTwitchCmdDesc">Crea un comando con questo testo (sostituisci @nomestreamer col tuo):</span>
-                                    <code class="sponsor-code" id="sponsor-cmd-text" data-i18n="vtpedia.sponsorTwitchCmdText">Visita glaciopia.com! Casa della famigerata VTPedia (di cui @nomestreamer fa parte)!</code>
+                                    <span data-i18n="vtpedia.sponsorTwitchCmdDesc">Crea un comando con questo testo:</span>
+                                    <code class="sponsor-code" id="sponsor-cmd-text">Visita glaciopia.com! Casa della famigerata VTPedia (di cui @nomestreamer fa parte)!</code>
                                     <button class="sponsor-copy-btn" id="sponsor-copy-btn" onclick="copySponsorCmd()">
                                         <i class="fas fa-copy"></i>
                                         <span data-i18n="vtpedia.sponsorCopy">Copia</span>
@@ -118,7 +101,7 @@
                                 <i class="fas fa-link"></i>
                                 <div>
                                     <strong data-i18n="vtpedia.sponsorYtLink">Link nella descrizione</strong>
-                                    <span data-i18n="vtpedia.sponsorYtLinkDesc">Aggiungi glaciopia.com nella descrizione del canale o dei tuoi video</span>
+                                    <span data-i18n="vtpedia.sponsorYtLinkDesc">Aggiungi glaciopia.com nella descrizione del canale</span>
                                 </div>
                             </div>
                         </div>
@@ -131,13 +114,13 @@
                                 <i class="fas fa-link"></i>
                                 <div>
                                     <strong data-i18n="vtpedia.sponsorOtherLink">Link in bio / descrizione</strong>
-                                    <span data-i18n="vtpedia.sponsorOtherLinkDesc">Aggiungi glaciopia.com nella bio o nella descrizione della tua piattaforma principale</span>
+                                    <span data-i18n="vtpedia.sponsorOtherLinkDesc">Aggiungi glaciopia.com nella bio della tua piattaforma principale</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <p class="sponsor-note" data-i18n="vtpedia.sponsorNote">⚠️ Indica nel form quale metodo hai scelto e su quale piattaforma, così possiamo verificarlo.</p>
+                    <p class="sponsor-note">⚠️ Indica nel form quale metodo hai scelto, così possiamo verificarlo.</p>
                 </div>
 
                 <!-- FORM -->
@@ -175,19 +158,57 @@
                         <span class="sf-charcount"><span id="sf-desc-count">0</span>/300</span>
                     </div>
 
+                    <!-- 3 slot immagine -->
                     <div class="sf-group">
-                        <label class="sf-label">Immagine avatar <span class="sf-req">*</span></label>
-                        <div class="sf-dropzone" id="sf-dropzone">
-                            <input type="file" id="sf-image-file" accept="image/jpeg,image/png,image/gif,image/webp" hidden>
-                            <div class="sf-dropzone-inner" id="sf-dropzone-inner">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                                <span class="sf-dropzone-label">Trascina qui o <button type="button" class="sf-dropzone-pick" id="sf-pick-btn">scegli file</button></span>
-                                <span class="sf-hint">JPG, PNG, GIF, WEBP — max 15 MB</span>
+                        <label class="sf-label">Immagini avatar <span class="sf-req">*</span> <span class="sf-hint" style="font-weight:400">(fino a 3, max 15 MB ciascuna)</span></label>
+                        <div class="sf-image-slots">
+                            <!-- slot 0 obbligatorio -->
+                            <div class="sf-image-slot">
+                                <span class="sf-slot-label">Principale <span class="sf-req">*</span></span>
+                                <div class="sf-dropzone" id="sf-dropzone-0">
+                                    <input type="file" id="sf-image-file-0" accept="image/jpeg,image/png,image/gif,image/webp" hidden>
+                                    <div class="sf-dropzone-inner" id="sf-dropzone-inner-0">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span class="sf-dropzone-label">Trascina o <button type="button" class="sf-dropzone-pick" id="sf-pick-btn-0">scegli</button></span>
+                                    </div>
+                                    <div class="sf-dropzone-preview" id="sf-preview-0" style="display:none;">
+                                        <img id="sf-preview-img-0" src="" alt="">
+                                        <button type="button" class="sf-dropzone-remove" id="sf-remove-btn-0"><i class="fas fa-times"></i></button>
+                                        <span class="sf-dropzone-filename" id="sf-filename-0"></span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="sf-dropzone-preview" id="sf-preview" style="display:none;">
-                                <img id="sf-preview-img" src="" alt="">
-                                <button type="button" class="sf-dropzone-remove" id="sf-remove-btn"><i class="fas fa-times"></i></button>
-                                <span class="sf-dropzone-filename" id="sf-filename"></span>
+                            <!-- slot 1 -->
+                            <div class="sf-image-slot">
+                                <span class="sf-slot-label">Opzionale 2</span>
+                                <div class="sf-dropzone" id="sf-dropzone-1">
+                                    <input type="file" id="sf-image-file-1" accept="image/jpeg,image/png,image/gif,image/webp" hidden>
+                                    <div class="sf-dropzone-inner" id="sf-dropzone-inner-1">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span class="sf-dropzone-label">Trascina o <button type="button" class="sf-dropzone-pick" id="sf-pick-btn-1">scegli</button></span>
+                                    </div>
+                                    <div class="sf-dropzone-preview" id="sf-preview-1" style="display:none;">
+                                        <img id="sf-preview-img-1" src="" alt="">
+                                        <button type="button" class="sf-dropzone-remove" id="sf-remove-btn-1"><i class="fas fa-times"></i></button>
+                                        <span class="sf-dropzone-filename" id="sf-filename-1"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- slot 2 -->
+                            <div class="sf-image-slot">
+                                <span class="sf-slot-label">Opzionale 3</span>
+                                <div class="sf-dropzone" id="sf-dropzone-2">
+                                    <input type="file" id="sf-image-file-2" accept="image/jpeg,image/png,image/gif,image/webp" hidden>
+                                    <div class="sf-dropzone-inner" id="sf-dropzone-inner-2">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span class="sf-dropzone-label">Trascina o <button type="button" class="sf-dropzone-pick" id="sf-pick-btn-2">scegli</button></span>
+                                    </div>
+                                    <div class="sf-dropzone-preview" id="sf-preview-2" style="display:none;">
+                                        <img id="sf-preview-img-2" src="" alt="">
+                                        <button type="button" class="sf-dropzone-remove" id="sf-remove-btn-2"><i class="fas fa-times"></i></button>
+                                        <span class="sf-dropzone-filename" id="sf-filename-2"></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

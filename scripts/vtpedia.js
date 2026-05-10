@@ -3,18 +3,20 @@ let currentSlide = 0;
 let currentImages = [];
 
 const SF_MAX_BYTES = 15 * 1024 * 1024;
-let sfSelectedFile = null;
+let sfSelectedFiles = [null, null, null];
+let sfActiveSlot = 0;
 
 async function loadVTubersData() {
     try {
         const data = await Api.vtubers.get();
         vtubers = data.vtubers || [];
+        if (!vtubers.length) throw new Error('empty');
     } catch {
         try {
             const response = await fetch('./assets/data/vtubers.json');
             if (!response.ok) throw new Error();
             const data = await response.json();
-            vtubers = data.vtubers || [];
+            vtubers = (data.vtubers || []).filter(v => !v.isCTA);
         } catch {
             vtubers = [];
         }
@@ -29,10 +31,8 @@ function displayVTubers() {
         grid.innerHTML = '<p style="color:rgba(255,255,255,0.7);text-align:center;grid-column:1/-1">Nessun VTuber disponibile al momento.</p>';
         return;
     }
-    vtubers.forEach((vtuber, index) => grid.appendChild(createVTuberCard(vtuber, index)));
-    // aggiungi CTA placeholder
-    const cta = createCTACard(vtubers.length);
-    grid.appendChild(cta);
+    vtubers.forEach((v, i) => grid.appendChild(createVTuberCard(v, i)));
+    grid.appendChild(createCTACard(vtubers.length));
 }
 
 function createCTACard(index) {
@@ -53,11 +53,8 @@ function createCTACard(index) {
 function createVTuberCard(vtuber, index) {
     const card = document.createElement('div');
     card.className = 'vtuber-card stagger-item';
-
     const firstImage = vtuber.images?.[0] || IMG_CDN + '/vtubers/placeholder.png';
-    const shortDesc  = vtuber.shortDesc || vtuber.desc || '';
-    const showMoreText = getNestedTranslation('vtpedia.showMore') || 'Mostra di più';
-
+    const shortDesc  = vtuber.shortDesc || vtuber.desc || (typeof vtuber.shortDescKey === 'string' && !vtuber.shortDescKey.includes('.') ? vtuber.shortDescKey : getNestedTranslation(vtuber.shortDescKey) || '');
     card.innerHTML = `
         <div class="card-image">
             <img src="${firstImage}" alt="${vtuber.name}" onerror="this.src=IMG_CDN+'/vtubers/placeholder.png'">
@@ -68,11 +65,10 @@ function createVTuberCard(vtuber, index) {
             <p class="vtuber-desc">${shortDesc}</p>
             <button class="show-more-btn">
                 <i class="fas fa-chevron-down"></i>
-                <span data-i18n="vtpedia.showMore">${showMoreText}</span>
+                <span>${getNestedTranslation('vtpedia.showMore') || 'Mostra di più'}</span>
                 <i class="fas fa-chevron-down"></i>
             </button>
         </div>`;
-
     card.addEventListener('click', () => openPopup(vtuber));
     const img = card.querySelector('img');
     const reveal = () => setTimeout(() => card.classList.add('visible'), index * 80);
@@ -82,11 +78,10 @@ function createVTuberCard(vtuber, index) {
 }
 
 function openPopup(vtuber) {
-    const popup = document.getElementById('vtuber-popup');
     currentImages = vtuber.images?.length > 0 ? vtuber.images : [IMG_CDN + '/vtubers/placeholder.png'];
     currentSlide = 0;
     initGallery(currentImages);
-    const longDesc = vtuber.longDesc || vtuber.shortDesc || vtuber.desc || '';
+    const longDesc = vtuber.longDesc || vtuber.shortDesc || vtuber.desc || (vtuber.longDescKey ? getNestedTranslation(vtuber.longDescKey) : '') || '';
     document.getElementById('popup-name').textContent = vtuber.name;
     document.getElementById('popup-full-name').textContent = vtuber.fullName || vtuber.name;
     document.getElementById('popup-debut').textContent = vtuber.debut || '—';
@@ -94,7 +89,7 @@ function openPopup(vtuber) {
     document.getElementById('popup-channel').textContent = vtuber.channel || '';
     document.getElementById('popup-channel').href = vtuber.channel || '#';
     document.getElementById('popup-long-desc').innerText = longDesc;
-    popup.classList.add('active');
+    document.getElementById('vtuber-popup').classList.add('active');
     document.body.classList.add('modal-open');
     document.body.style.overflow = 'hidden';
 }
@@ -141,18 +136,66 @@ function copySponsorCmd() {
     const codeEl = document.getElementById('sponsor-cmd-text');
     const btn = document.getElementById('sponsor-copy-btn');
     if (!codeEl || !btn) return;
-    const text = codeEl.textContent;
-    navigator.clipboard.writeText(text).then(() => {
+    navigator.clipboard.writeText(codeEl.textContent).then(() => {
         const span = btn.querySelector('span');
         const orig = span.textContent;
         span.textContent = '✓';
         btn.classList.add('copied');
         setTimeout(() => { span.textContent = orig; btn.classList.remove('copied'); }, 1500);
-    }).catch(() => {
-        const range = document.createRange();
-        range.selectNodeContents(codeEl);
-        window.getSelection().removeAllRanges();
-        window.getSelection().addRange(range);
+    });
+}
+
+// ── 3 SLOT IMMAGINE ───────────────────────────────────────────
+
+function _sfSetFile(file, slot) {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { _sfSetFeedback('Formato non supportato. Usa JPG, PNG, GIF o WEBP.', 'error'); return; }
+    if (file.size > SF_MAX_BYTES) { _sfSetFeedback(`Il file supera il limite di 15 MB.`, 'error'); return; }
+    sfSelectedFiles[slot] = file;
+    _sfClearFeedback();
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const preview = document.getElementById(`sf-preview-${slot}`);
+        const img     = document.getElementById(`sf-preview-img-${slot}`);
+        const inner   = document.getElementById(`sf-dropzone-inner-${slot}`);
+        const fname   = document.getElementById(`sf-filename-${slot}`);
+        if (img) img.src = e.target.result;
+        if (fname) fname.textContent = file.name;
+        if (preview) preview.style.display = 'flex';
+        if (inner)   inner.style.display   = 'none';
+    };
+    reader.readAsDataURL(file);
+}
+
+function _sfResetFile(slot) {
+    sfSelectedFiles[slot] = null;
+    const input   = document.getElementById(`sf-image-file-${slot}`);
+    const preview = document.getElementById(`sf-preview-${slot}`);
+    const inner   = document.getElementById(`sf-dropzone-inner-${slot}`);
+    const img     = document.getElementById(`sf-preview-img-${slot}`);
+    if (input)   input.value = '';
+    if (img)     img.src = '';
+    if (preview) preview.style.display = 'none';
+    if (inner)   inner.style.display   = 'flex';
+}
+
+function initSubmitDropzones() {
+    [0, 1, 2].forEach(slot => {
+        const zone      = document.getElementById(`sf-dropzone-${slot}`);
+        const input     = document.getElementById(`sf-image-file-${slot}`);
+        const pickBtn   = document.getElementById(`sf-pick-btn-${slot}`);
+        const removeBtn = document.getElementById(`sf-remove-btn-${slot}`);
+        if (!zone) return;
+        pickBtn?.addEventListener('click', () => input.click());
+        input?.addEventListener('change', () => { if (input.files[0]) _sfSetFile(input.files[0], slot); });
+        removeBtn?.addEventListener('click', (e) => { e.stopPropagation(); _sfResetFile(slot); });
+        zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
+        zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+        zone.addEventListener('drop', (e) => {
+            e.preventDefault(); zone.classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (file) _sfSetFile(file, slot);
+        });
     });
 }
 
@@ -170,51 +213,8 @@ function _sfClearFeedback() {
     el.className = 'sf-feedback';
 }
 
-function _sfSetFile(file) {
-    if (!file) return;
-    if (!file.type.startsWith('image/')) { _sfSetFeedback('Formato non supportato. Usa JPG, PNG, GIF o WEBP.', 'error'); return; }
-    if (file.size > SF_MAX_BYTES) { _sfSetFeedback(`Il file supera il limite di 15 MB (${(file.size/1024/1024).toFixed(1)} MB).`, 'error'); return; }
-    sfSelectedFile = file;
-    _sfClearFeedback();
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        document.getElementById('sf-preview-img').src = e.target.result;
-        document.getElementById('sf-filename').textContent = file.name;
-        document.getElementById('sf-preview').style.display = 'flex';
-        document.getElementById('sf-dropzone-inner').style.display = 'none';
-    };
-    reader.readAsDataURL(file);
-}
-
-function _sfResetFile() {
-    sfSelectedFile = null;
-    document.getElementById('sf-image-file').value = '';
-    document.getElementById('sf-preview').style.display = 'none';
-    document.getElementById('sf-dropzone-inner').style.display = 'flex';
-    document.getElementById('sf-preview-img').src = '';
-}
-
-function initSubmitDropzone() {
-    const zone      = document.getElementById('sf-dropzone');
-    const input     = document.getElementById('sf-image-file');
-    const pickBtn   = document.getElementById('sf-pick-btn');
-    const removeBtn = document.getElementById('sf-remove-btn');
-    if (!zone) return;
-    pickBtn.addEventListener('click', () => input.click());
-    input.addEventListener('change', () => { if (input.files[0]) _sfSetFile(input.files[0]); });
-    removeBtn.addEventListener('click', (e) => { e.stopPropagation(); _sfResetFile(); });
-    zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
-    zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-    zone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        zone.classList.remove('drag-over');
-        const file = e.dataTransfer.files[0];
-        if (file) _sfSetFile(file);
-    });
-}
-
 function initSubmitForm() {
-    initSubmitDropzone();
+    initSubmitDropzones();
     const descEl  = document.getElementById('sf-desc');
     const countEl = document.getElementById('sf-desc-count');
     if (descEl && countEl) descEl.addEventListener('input', () => { countEl.textContent = descEl.value.length; });
@@ -232,23 +232,34 @@ function initSubmitForm() {
         const desc     = document.getElementById('sf-desc')?.value.trim();
         const sponsor  = document.getElementById('sf-sponsor')?.value;
         const proof    = document.getElementById('sf-proof')?.value.trim();
+
         if (!name || !channel || !desc || !sponsor || !proof) { _sfSetFeedback('Compila tutti i campi obbligatori (*).', 'error'); return; }
-        if (!sfSelectedFile) { _sfSetFeedback('Seleziona un\'immagine da caricare.', 'error'); return; }
+        if (!sfSelectedFiles[0]) { _sfSetFeedback('L\'immagine principale (slot 1) è obbligatoria.', 'error'); return; }
         if (!Auth || !Auth.isLoggedIn()) { _sfSetFeedback('Devi essere loggato per inviare una richiesta.', 'error'); return; }
+
         submitBtn.disabled = true;
-        submitBtn.querySelector('span').textContent = 'Caricamento immagine...';
+        submitBtn.querySelector('span').textContent = 'Caricamento immagini...';
+
         try {
-            const imageUrl = await Api.upload.file(sfSelectedFile, 'vtubers');
+            const imageUrls = [];
+            for (let i = 0; i < 3; i++) {
+                if (sfSelectedFiles[i]) {
+                    const url = await Api.upload.file(sfSelectedFiles[i], 'vtubers');
+                    imageUrls.push(url);
+                }
+            }
+
             submitBtn.querySelector('span').textContent = 'Invio in corso...';
-            const payload = { name, fullname, channel, hashtag, debut, desc, images: [imageUrl], sponsor, proof };
-            await Api.submit.post('vtuber', payload, imageUrl);
+            const payload = { name, fullname, channel, hashtag, debut, desc, images: imageUrls, sponsor, proof };
+            await Api.submit.post('vtuber', payload, imageUrls[0]);
+
             _sfSetFeedback('Richiesta inviata! La esamineremo il prima possibile.', 'success');
             ['sf-name','sf-fullname','sf-channel','sf-hashtag','sf-debut','sf-desc','sf-sponsor','sf-proof'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = '';
             });
             if (countEl) countEl.textContent = '0';
-            _sfResetFile();
+            [0, 1, 2].forEach(i => _sfResetFile(i));
         } catch (err) {
             _sfSetFeedback(err.message || 'Errore durante l\'invio. Riprova.', 'error');
         } finally {

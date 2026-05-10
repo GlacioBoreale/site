@@ -7,7 +7,6 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/x-icon" href="https://glaciopia-images.s3.eu-north-1.amazonaws.com/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="style/style.css">
     <link rel="stylesheet" href="style/admin.css">
     <script src="scripts/api.js"></script>
     <script src="scripts/auth.js"></script>
@@ -60,39 +59,24 @@
 
         <main class="adm-content">
 
-            <!-- OVERVIEW -->
             <section class="adm-section active" id="section-overview">
-                <div class="adm-section-header">
-                    <h1>Overview</h1>
-                </div>
-                <div class="adm-stats-grid" id="overview-stats">
+                <div class="adm-section-header"><h1>Overview</h1></div>
+                <div class="adm-stats-grid">
                     <div class="adm-stat-card">
                         <div class="adm-stat-icon"><i class="fas fa-users"></i></div>
-                        <div class="adm-stat-body">
-                            <span class="adm-stat-value" id="ov-users">—</span>
-                            <span class="adm-stat-label">Utenti registrati</span>
-                        </div>
+                        <div class="adm-stat-body"><span class="adm-stat-value" id="ov-users">—</span><span class="adm-stat-label">Utenti registrati</span></div>
                     </div>
                     <div class="adm-stat-card">
                         <div class="adm-stat-icon adm-stat-icon-green"><i class="fas fa-gamepad"></i></div>
-                        <div class="adm-stat-body">
-                            <span class="adm-stat-value" id="ov-saves">—</span>
-                            <span class="adm-stat-label">Salvataggi attivi</span>
-                        </div>
+                        <div class="adm-stat-body"><span class="adm-stat-value" id="ov-saves">—</span><span class="adm-stat-label">Salvataggi attivi</span></div>
                     </div>
                     <div class="adm-stat-card">
                         <div class="adm-stat-icon adm-stat-icon-yellow"><i class="fas fa-inbox"></i></div>
-                        <div class="adm-stat-body">
-                            <span class="adm-stat-value" id="ov-subs">—</span>
-                            <span class="adm-stat-label">Submission totali</span>
-                        </div>
+                        <div class="adm-stat-body"><span class="adm-stat-value" id="ov-subs">—</span><span class="adm-stat-label">Submission totali</span></div>
                     </div>
                     <div class="adm-stat-card">
                         <div class="adm-stat-icon adm-stat-icon-red"><i class="fas fa-clock"></i></div>
-                        <div class="adm-stat-body">
-                            <span class="adm-stat-value" id="ov-pending">—</span>
-                            <span class="adm-stat-label">In attesa</span>
-                        </div>
+                        <div class="adm-stat-body"><span class="adm-stat-value" id="ov-pending">—</span><span class="adm-stat-label">In attesa</span></div>
                     </div>
                 </div>
                 <div class="adm-overview-grid">
@@ -107,7 +91,6 @@
                 </div>
             </section>
 
-            <!-- SUBMISSIONS -->
             <section class="adm-section" id="section-submissions">
                 <div class="adm-section-header">
                     <h1>Submissions</h1>
@@ -132,7 +115,6 @@
                 </div>
             </section>
 
-            <!-- USERS -->
             <section class="adm-section" id="section-users">
                 <div class="adm-section-header">
                     <h1>Utenti</h1>
@@ -145,7 +127,6 @@
                 </div>
             </section>
 
-            <!-- SAVES -->
             <section class="adm-section" id="section-saves">
                 <div class="adm-section-header">
                     <h1>Salvataggi</h1>
@@ -163,7 +144,6 @@
 
 </div>
 
-<!-- DETAIL DRAWER -->
 <div class="adm-drawer-overlay" id="adm-drawer-overlay" style="display:none;">
     <div class="adm-drawer-backdrop" id="adm-drawer-backdrop"></div>
     <div class="adm-drawer" id="adm-drawer">
@@ -175,7 +155,6 @@
     </div>
 </div>
 
-<!-- CONFIRM MODAL -->
 <div class="adm-confirm-overlay" id="adm-confirm-overlay" style="display:none;">
     <div class="adm-confirm-box">
         <div class="adm-confirm-icon"><i class="fas fa-triangle-exclamation"></i></div>

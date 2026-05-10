@@ -7,58 +7,61 @@ let sfSelectedFile = null;
 
 async function loadVTubersData() {
     try {
-        const response = await fetch('./assets/data/vtubers.json');
-        if (!response.ok) throw new Error('Errore caricamento dati');
-        const data = await response.json();
-        vtubers = data.vtubers;
-        displayVTubers();
-    } catch (error) {
-        console.error('Errore nel caricamento dei VTuber:', error);
-        const grid = document.getElementById('vtuber-grid');
-        grid.innerHTML = '<p style="color: rgba(255,255,255,0.7); text-align: center; grid-column: 1/-1;">Nessun VTuber disponibile al momento.</p>';
+        const data = await Api.vtubers.get();
+        vtubers = data.vtubers || [];
+    } catch {
+        try {
+            const response = await fetch('./assets/data/vtubers.json');
+            if (!response.ok) throw new Error();
+            const data = await response.json();
+            vtubers = data.vtubers || [];
+        } catch {
+            vtubers = [];
+        }
     }
+    displayVTubers();
 }
 
 function displayVTubers() {
     const grid = document.getElementById('vtuber-grid');
     grid.innerHTML = '';
-    if (vtubers.length === 0) {
-        grid.innerHTML = '<p style="color: rgba(255,255,255,0.7); text-align: center; grid-column: 1/-1;">Nessun VTuber disponibile.</p>';
+    if (!vtubers.length) {
+        grid.innerHTML = '<p style="color:rgba(255,255,255,0.7);text-align:center;grid-column:1/-1">Nessun VTuber disponibile al momento.</p>';
         return;
     }
     vtubers.forEach((vtuber, index) => grid.appendChild(createVTuberCard(vtuber, index)));
-    grid.querySelectorAll('[data-i18n]').forEach(el => {
-        const t = getNestedTranslation(el.getAttribute('data-i18n'));
-        if (t) el.textContent = t;
-    });
+    // aggiungi CTA placeholder
+    const cta = createCTACard(vtubers.length);
+    grid.appendChild(cta);
+}
+
+function createCTACard(index) {
+    const card = document.createElement('div');
+    card.className = 'vtuber-card stagger-item vtuber-card-cta';
+    card.innerHTML = `
+        <div class="card-cta-body">
+            <div class="card-cta-icon"><i class="fas fa-question"></i></div>
+            <h3 class="card-cta-title" data-i18n="vtpedia.ctaTitle">Potresti esserci tu!</h3>
+            <p class="card-cta-desc" data-i18n="vtpedia.ctaDesc">Sei un VTuber? Fai richiesta per entrare nella VTPedia!</p>
+            <div class="card-cta-btn"><i class="fas fa-plus"></i> <span data-i18n="vtpedia.submit">Invia un VTuber</span></div>
+        </div>`;
+    card.addEventListener('click', () => document.getElementById('submit-vtuber-btn')?.click());
+    setTimeout(() => card.classList.add('visible'), index * 80);
+    return card;
 }
 
 function createVTuberCard(vtuber, index) {
     const card = document.createElement('div');
     card.className = 'vtuber-card stagger-item';
 
-    if (vtuber.isCTA) {
-        card.classList.add('vtuber-card-cta');
-        card.innerHTML = `
-            <div class="card-cta-body">
-                <div class="card-cta-icon"><i class="fas fa-question"></i></div>
-                <h3 class="card-cta-title" data-i18n="vtpedia.ctaTitle">Potresti esserci tu!</h3>
-                <p class="card-cta-desc" data-i18n="vtpedia.ctaDesc">Sei un VTuber? Fai richiesta per entrare nella VTPedia!</p>
-                <div class="card-cta-btn"><i class="fas fa-plus"></i> <span data-i18n="vtpedia.submit">Invia un VTuber</span></div>
-            </div>`;
-        card.addEventListener('click', () => document.getElementById('submit-vtuber-btn')?.click());
-        setTimeout(() => card.classList.add('visible'), index * 80);
-        return card;
-    }
-
     const firstImage = vtuber.images?.[0] || IMG_CDN + '/vtubers/placeholder.png';
-    const shortDesc = getNestedTranslation(vtuber.shortDescKey) || vtuber.shortDescKey;
+    const shortDesc  = vtuber.shortDesc || vtuber.desc || '';
     const showMoreText = getNestedTranslation('vtpedia.showMore') || 'Mostra di più';
 
     card.innerHTML = `
         <div class="card-image">
             <img src="${firstImage}" alt="${vtuber.name}" onerror="this.src=IMG_CDN+'/vtubers/placeholder.png'">
-            <div class="added-date">Added: ${vtuber.addedDate}</div>
+            <div class="added-date">Added: ${vtuber.addedDate || ''}</div>
         </div>
         <div class="card-content">
             <h3 class="vtuber-name">${vtuber.name}</h3>
@@ -83,13 +86,13 @@ function openPopup(vtuber) {
     currentImages = vtuber.images?.length > 0 ? vtuber.images : [IMG_CDN + '/vtubers/placeholder.png'];
     currentSlide = 0;
     initGallery(currentImages);
-    const longDesc = getNestedTranslation(vtuber.longDescKey) || vtuber.longDescKey;
+    const longDesc = vtuber.longDesc || vtuber.shortDesc || vtuber.desc || '';
     document.getElementById('popup-name').textContent = vtuber.name;
-    document.getElementById('popup-full-name').textContent = vtuber.fullName;
-    document.getElementById('popup-debut').textContent = vtuber.debut;
-    document.getElementById('popup-hashtag').textContent = vtuber.hashtag;
-    document.getElementById('popup-channel').textContent = vtuber.channel;
-    document.getElementById('popup-channel').href = vtuber.channel;
+    document.getElementById('popup-full-name').textContent = vtuber.fullName || vtuber.name;
+    document.getElementById('popup-debut').textContent = vtuber.debut || '—';
+    document.getElementById('popup-hashtag').textContent = vtuber.hashtag || '—';
+    document.getElementById('popup-channel').textContent = vtuber.channel || '';
+    document.getElementById('popup-channel').href = vtuber.channel || '#';
     document.getElementById('popup-long-desc').innerText = longDesc;
     popup.classList.add('active');
     document.body.classList.add('modal-open');
@@ -169,14 +172,8 @@ function _sfClearFeedback() {
 
 function _sfSetFile(file) {
     if (!file) return;
-    if (!file.type.startsWith('image/')) {
-        _sfSetFeedback('Formato non supportato. Usa JPG, PNG, GIF o WEBP.', 'error');
-        return;
-    }
-    if (file.size > SF_MAX_BYTES) {
-        _sfSetFeedback(`Il file supera il limite di 15 MB (${(file.size / 1024 / 1024).toFixed(1)} MB).`, 'error');
-        return;
-    }
+    if (!file.type.startsWith('image/')) { _sfSetFeedback('Formato non supportato. Usa JPG, PNG, GIF o WEBP.', 'error'); return; }
+    if (file.size > SF_MAX_BYTES) { _sfSetFeedback(`Il file supera il limite di 15 MB (${(file.size/1024/1024).toFixed(1)} MB).`, 'error'); return; }
     sfSelectedFile = file;
     _sfClearFeedback();
     const reader = new FileReader();
@@ -203,7 +200,6 @@ function initSubmitDropzone() {
     const pickBtn   = document.getElementById('sf-pick-btn');
     const removeBtn = document.getElementById('sf-remove-btn');
     if (!zone) return;
-
     pickBtn.addEventListener('click', () => input.click());
     input.addEventListener('change', () => { if (input.files[0]) _sfSetFile(input.files[0]); });
     removeBtn.addEventListener('click', (e) => { e.stopPropagation(); _sfResetFile(); });
@@ -219,7 +215,6 @@ function initSubmitDropzone() {
 
 function initSubmitForm() {
     initSubmitDropzone();
-
     const descEl  = document.getElementById('sf-desc');
     const countEl = document.getElementById('sf-desc-count');
     if (descEl && countEl) descEl.addEventListener('input', () => { countEl.textContent = descEl.value.length; });
@@ -229,7 +224,6 @@ function initSubmitForm() {
 
     submitBtn.addEventListener('click', async () => {
         _sfClearFeedback();
-
         const name     = document.getElementById('sf-name')?.value.trim();
         const fullname = document.getElementById('sf-fullname')?.value.trim();
         const channel  = document.getElementById('sf-channel')?.value.trim();
@@ -238,23 +232,11 @@ function initSubmitForm() {
         const desc     = document.getElementById('sf-desc')?.value.trim();
         const sponsor  = document.getElementById('sf-sponsor')?.value;
         const proof    = document.getElementById('sf-proof')?.value.trim();
-
-        if (!name || !channel || !desc || !sponsor || !proof) {
-            _sfSetFeedback('Compila tutti i campi obbligatori (*).', 'error');
-            return;
-        }
-        if (!sfSelectedFile) {
-            _sfSetFeedback('Seleziona un\'immagine da caricare.', 'error');
-            return;
-        }
-        if (!Auth || !Auth.isLoggedIn()) {
-            _sfSetFeedback('Devi essere loggato per inviare una richiesta.', 'error');
-            return;
-        }
-
+        if (!name || !channel || !desc || !sponsor || !proof) { _sfSetFeedback('Compila tutti i campi obbligatori (*).', 'error'); return; }
+        if (!sfSelectedFile) { _sfSetFeedback('Seleziona un\'immagine da caricare.', 'error'); return; }
+        if (!Auth || !Auth.isLoggedIn()) { _sfSetFeedback('Devi essere loggato per inviare una richiesta.', 'error'); return; }
         submitBtn.disabled = true;
         submitBtn.querySelector('span').textContent = 'Caricamento immagine...';
-
         try {
             const imageUrl = await Api.upload.file(sfSelectedFile, 'vtubers');
             submitBtn.querySelector('span').textContent = 'Invio in corso...';
@@ -281,10 +263,6 @@ window.addEventListener('languageChanged', () => {
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const t = getNestedTranslation(el.getAttribute('data-i18n'));
         if (t) el.textContent = t;
-    });
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-        const t = getNestedTranslation(el.getAttribute('data-i18n-placeholder'));
-        if (t) el.placeholder = t;
     });
 });
 

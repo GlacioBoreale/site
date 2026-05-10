@@ -10,12 +10,17 @@ let faSelectedFile = null;
 
 async function loadFanartData() {
     try {
-        const response = await fetch('./assets/data/fanarts.json');
-        if (!response.ok) throw new Error('No fanart data');
-        const data = await response.json();
+        const data = await Api.fanarts.get();
         fanarts = data.fanarts || [];
     } catch {
-        fanarts = [];
+        try {
+            const response = await fetch('./assets/data/fanarts.json');
+            if (!response.ok) throw new Error();
+            const data = await response.json();
+            fanarts = data.fanarts || [];
+        } catch {
+            fanarts = [];
+        }
     }
     renderFanarts();
 }
@@ -77,22 +82,13 @@ function _renderTagChips(raw) {
     }).join('');
 }
 
-// ── TAG AUTOCOMPLETE ──────────────────────────────────────────
-
 function _getTagSuggestions(inputValue) {
-    // estrai il segmento corrente (dopo l'ultimo ;)
     const parts = inputValue.split(';');
     const current = parts[parts.length - 1].trim().toLowerCase();
     if (!current) return [];
-
     const already = parts.slice(0, -1).map(t => t.trim().toLowerCase());
-
     return approvedTags
-        .filter(t =>
-            t !== 'untagged' &&
-            t.includes(current) &&
-            !already.includes(t)
-        )
+        .filter(t => t !== 'untagged' && t.includes(current) && !already.includes(t))
         .slice(0, 8);
 }
 
@@ -106,20 +102,16 @@ function _showTagDropdown(suggestions, input) {
         input.parentElement.appendChild(box);
     }
     tagSuggestionIndex = -1;
-
     if (!suggestions.length) { box.innerHTML = ''; box.classList.remove('visible'); return; }
-
     box.innerHTML = suggestions.map((t, i) =>
         `<div class="fa-tag-option" data-tag="${t}" data-index="${i}">${t}</div>`
     ).join('');
-
     box.querySelectorAll('.fa-tag-option').forEach(el => {
         el.addEventListener('mousedown', (e) => {
             e.preventDefault();
             _applyTagSuggestion(input, el.dataset.tag);
         });
     });
-
     box.classList.add('visible');
 }
 
@@ -132,12 +124,10 @@ function _hideTagDropdown() {
 function _applyTagSuggestion(input, tag) {
     const parts = input.value.split(';');
     parts[parts.length - 1] = ' ' + tag;
-    // aggiungi ; finale per facilitare il prossimo tag
     input.value = parts.join(';') + '; ';
     input.dispatchEvent(new Event('input'));
     _hideTagDropdown();
     input.focus();
-    // cursore alla fine
     const len = input.value.length;
     input.setSelectionRange(len, len);
 }
@@ -148,13 +138,11 @@ function _initTagAutocomplete(input) {
         const suggestions = _getTagSuggestions(input.value);
         _showTagDropdown(suggestions, input);
     });
-
     input.addEventListener('keydown', (e) => {
         const box = document.getElementById('fa-tag-dropdown');
         if (!box?.classList.contains('visible')) return;
         const items = box.querySelectorAll('.fa-tag-option');
         if (!items.length) return;
-
         if (e.key === 'ArrowDown') {
             e.preventDefault();
             tagSuggestionIndex = Math.min(tagSuggestionIndex + 1, items.length - 1);
@@ -172,17 +160,14 @@ function _initTagAutocomplete(input) {
             _hideTagDropdown();
         }
     });
-
     input.addEventListener('blur', () => setTimeout(_hideTagDropdown, 150));
 }
 
-// ─────────────────────────────────────────────────────────────
-
 function getFilteredFanarts() {
     return fanarts.filter(f => {
-        const title = (getNestedTranslation(f.titleKey) || f.titleKey || '').toLowerCase();
+        const title  = (f.title || '').toLowerCase();
         const artist = (f.artist || '').toLowerCase();
-        const query = currentSearch.toLowerCase();
+        const query  = currentSearch.toLowerCase();
         const matchSearch = !query || title.includes(query) || artist.includes(query);
         const tags = (f.tags && f.tags.length) ? f.tags : ['untagged'];
         const matchFilter = currentFilter === 'all' || tags.includes(currentFilter);
@@ -203,9 +188,9 @@ function renderFanarts() {
 function createFanartCard(f) {
     const card = document.createElement('div');
     card.className = 'fanart-card';
-    const title = getNestedTranslation(f.titleKey) || f.titleKey || '';
+    const title  = f.title || '';
     const byText = getNestedTranslation('fanart.by') || 'di';
-    const tags = (f.tags && f.tags.length) ? f.tags : ['untagged'];
+    const tags   = (f.tags && f.tags.length) ? f.tags : ['untagged'];
     card.innerHTML = `
         <div class="fanart-card-img-wrapper">
             <img src="${f.image}" alt="${title}" loading="lazy" onerror="this.src=IMG_CDN+'/vtubers/placeholder.png'">
@@ -234,9 +219,9 @@ const SOCIAL_META = {
 };
 
 function openLightbox(f) {
-    const title = getNestedTranslation(f.titleKey) || f.titleKey || '';
+    const title  = f.title || '';
     const byText = getNestedTranslation('fanart.by') || 'di';
-    const tags = (f.tags && f.tags.length) ? f.tags : ['untagged'];
+    const tags   = (f.tags && f.tags.length) ? f.tags : ['untagged'];
     const socials = f.socials || {};
     const popupImg = document.getElementById('fanart-popup-img');
     popupImg.onerror = function() { this.src = IMG_CDN + '/vtubers/placeholder.png'; this.onerror = null; };
@@ -343,7 +328,6 @@ function initFanartDropzone() {
 
 function initFanartForm() {
     initFanartDropzone();
-
     const tagsInput = document.getElementById('fa-tags-input');
     if (tagsInput) _initTagAutocomplete(tagsInput);
 
@@ -367,18 +351,15 @@ function initFanartForm() {
 
     const btn = document.getElementById('fa-submit-btn');
     if (!btn) return;
-
     btn.addEventListener('click', async () => {
         _faFeedbackClear();
         const title   = document.getElementById('fa-title')?.value.trim();
         const artist  = document.getElementById('fa-artist')?.value.trim();
         const tagsRaw = document.getElementById('fa-tags-input')?.value.trim();
         const social  = document.getElementById('fa-socials')?.value.trim();
-
         if (!title || !artist) { _faFeedbackSet('Titolo e nome artista sono obbligatori (*).', 'error'); return; }
         if (!faSelectedFile)   { _faFeedbackSet('Seleziona un\'immagine da caricare.', 'error'); return; }
         if (!Auth || !Auth.isLoggedIn()) { _faFeedbackSet('Devi essere loggato per inviare una fanart.', 'error'); return; }
-
         btn.disabled = true;
         btn.querySelector('span').textContent = 'Caricamento immagine...';
         try {
@@ -404,7 +385,7 @@ function buildSuggestions(query) {
     const results = [];
     const seen = new Set();
     fanarts.forEach(f => {
-        const title = getNestedTranslation(f.titleKey) || f.titleKey || '';
+        const title = f.title || '';
         const artist = f.artist || '';
         if (title.toLowerCase().includes(q) && !seen.has('t:' + title)) { seen.add('t:' + title); results.push({ text: title, icon: 'fa-image' }); }
         if (artist.toLowerCase().includes(q) && !seen.has('a:' + artist)) { seen.add('a:' + artist); results.push({ text: artist, icon: 'fa-user' }); }

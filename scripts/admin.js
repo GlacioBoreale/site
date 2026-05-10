@@ -29,12 +29,7 @@ function _guard() {
 
 async function _loadAll() {
   _spinRefresh(true);
-  await Promise.allSettled([
-    _loadStats(),
-    _loadSubmissions(),
-    _loadUsers(),
-    _loadSaves(),
-  ]);
+  await Promise.allSettled([_loadStats(), _loadSubmissions(), _loadUsers(), _loadSaves()]);
   _spinRefresh(false);
 }
 
@@ -75,6 +70,25 @@ function _renderBarList(elId, obj, total, colors) {
   });
 }
 
+// ── IMAGE LIGHTBOX ────────────────────────────────────────────
+function _openImgLightbox(url) {
+  if (!url) return;
+  const overlay = document.createElement('div');
+  overlay.className = 'adm-img-lightbox';
+  overlay.innerHTML = `
+    <div class="adm-img-lightbox-backdrop"></div>
+    <button class="adm-img-lightbox-close"><i class="fas fa-times"></i></button>
+    <img src="${_esc(url)}" alt="">
+  `;
+  const close = () => { overlay.remove(); document.body.style.overflow = ''; };
+  overlay.querySelector('.adm-img-lightbox-backdrop').addEventListener('click', close);
+  overlay.querySelector('.adm-img-lightbox-close').addEventListener('click', close);
+  overlay.querySelector('img').addEventListener('click', close);
+  document.addEventListener('keydown', function esc(e) { if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); } });
+  document.body.appendChild(overlay);
+}
+
+// ── SUBMISSIONS ───────────────────────────────────────────────
 async function _loadSubmissions() {
   document.getElementById('sub-list').innerHTML = '<div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
   try {
@@ -92,26 +106,14 @@ function _renderSubs() {
     const typeOk   = _subTypeFilter   === 'all' || s.type   === _subTypeFilter;
     return statusOk && typeOk;
   });
-
-  if (!filtered.length) {
-    document.getElementById('sub-list').innerHTML = '<div class="adm-empty">Nessuna entry trovata.</div>';
-    return;
-  }
+  if (!filtered.length) { document.getElementById('sub-list').innerHTML = '<div class="adm-empty">Nessuna entry trovata.</div>'; return; }
 
   const table = document.createElement('table');
   table.className = 'adm-table';
   table.innerHTML = `
-    <thead>
-      <tr>
-        <th></th>
-        <th>Titolo / Nome</th>
-        <th>Tipo</th>
-        <th>Stato</th>
-        <th>Utente</th>
-        <th>Data</th>
-        <th>Azioni</th>
-      </tr>
-    </thead>
+    <thead><tr>
+      <th></th><th>Titolo / Nome</th><th>Tipo</th><th>Stato</th><th>Utente</th><th>Data</th><th>Azioni</th>
+    </tr></thead>
     <tbody id="sub-tbody"></tbody>
   `;
   document.getElementById('sub-list').innerHTML = '';
@@ -124,13 +126,12 @@ function _renderSubs() {
     const tr    = document.createElement('tr');
     tr.dataset.id = s.id;
 
-    const imgHtml = s.image_url
-      ? `<img class="adm-row-thumb" src="${s.image_url}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'">`
-        + `<div class="adm-row-thumb" style="display:none;align-items:center;justify-content:center;color:rgba(255,255,255,.15)"><i class="fas fa-image"></i></div>`
+    const thumbHtml = s.image_url
+      ? `<img class="adm-row-thumb" src="${s.image_url}" alt="" onerror="this.style.display='none'">`
       : `<div class="adm-row-thumb" style="display:inline-flex;align-items:center;justify-content:center;color:rgba(255,255,255,.15)"><i class="fas fa-image"></i></div>`;
 
     tr.innerHTML = `
-      <td>${imgHtml}</td>
+      <td>${thumbHtml}</td>
       <td class="adm-td-main">${_esc(title)}</td>
       <td><span class="adm-badge adm-badge-type">${_esc(s.type)}</span></td>
       <td><span class="adm-badge adm-badge-${s.status}" id="status-badge-${s.id}">${_statusLabel(s.status)}</span></td>
@@ -144,6 +145,10 @@ function _renderSubs() {
         <button class="adm-btn adm-btn-danger" title="Elimina"><i class="fas fa-trash"></i></button>
       </td>
     `;
+
+    if (s.image_url) {
+      tr.querySelector('.adm-row-thumb')?.addEventListener('click', (e) => { e.stopPropagation(); _openImgLightbox(s.image_url); });
+    }
     tr.querySelector('.adm-btn-detail')?.addEventListener('click', () => _openSubDetail(s));
     tr.querySelector('.adm-btn-approve')?.addEventListener('click', () => _updateSub(s, 'approved', tr));
     tr.querySelector('.adm-btn-reject')?.addEventListener('click',  () => _updateSub(s, 'rejected', tr));
@@ -156,17 +161,13 @@ function _renderSubs() {
 async function _updateSub(s, status, tr) {
   const id = s.id;
   try {
-    // feedback immediato sulla riga
     if (tr) {
       const badge = tr.querySelector(`#status-badge-${id}`);
       if (badge) { badge.className = `adm-badge adm-badge-${status}`; badge.textContent = _statusLabel(status); }
       tr.querySelectorAll('.adm-btn').forEach(b => b.disabled = true);
     }
-
     await Api.admin.updateSubmission(id, status);
     s.status = status;
-
-    // ricarica la riga aggiornando i bottoni
     if (tr) {
       const actionsCell = tr.querySelector(`#actions-${id}`);
       if (actionsCell) {
@@ -184,7 +185,6 @@ async function _updateSub(s, status, tr) {
         actionsCell.querySelector('.adm-btn-danger')?.addEventListener('click',  () => _deleteSub(s.id));
       }
     }
-
     _loadStats();
     _toast(`Stato aggiornato: ${_statusLabel(status)}`, 'ok');
   } catch(e) {
@@ -228,15 +228,18 @@ function _openSubDetail(s) {
   if (p.admin_note) rows.push(['fa-note-sticky','Nota admin', p.admin_note]);
 
   const socialRows = p.socials ? Object.entries(p.socials).map(([k,v]) => ['fa-share-nodes', k, v, true]) : [];
-
   const descHtml = (p.desc || p.experience) ? `
     <div class="adm-dfield-block">
       <div class="adm-dfield-block-title">${p.experience ? 'Esperienze' : 'Descrizione'}</div>
       <p style="font-size:.84rem;color:rgba(255,255,255,.6);white-space:pre-wrap;line-height:1.6">${_esc(p.desc || p.experience)}</p>
     </div>` : '';
 
+  const imgHtml = s.image_url
+    ? `<img class="adm-drawer-img" src="${s.image_url}" alt="" onerror="this.style.display='none'">`
+    : '';
+
   document.getElementById('adm-drawer-body').innerHTML = `
-    ${s.image_url ? `<img class="adm-drawer-img" src="${s.image_url}" alt="" onerror="this.style.display='none'">` : ''}
+    ${imgHtml}
     <div class="adm-drawer-name">${_esc(p.name || p.title || s.type)}</div>
     <div class="adm-drawer-meta">
       <span class="adm-badge adm-badge-type">${_esc(s.type)}</span>
@@ -274,18 +277,20 @@ function _openSubDetail(s) {
     </div>
   `;
 
-  const getNote = () => document.getElementById('drawer-note')?.value || undefined;
+  // zoom sull'immagine nel drawer
+  if (s.image_url) {
+    document.querySelector('.adm-drawer-img')?.addEventListener('click', () => _openImgLightbox(s.image_url));
+  }
 
+  const getNote = () => document.getElementById('drawer-note')?.value || undefined;
   const doUpdate = async (newStatus) => {
     const note = getNote();
     try {
       document.querySelectorAll('#da-approve,#da-reject,#da-pending').forEach(b => b && (b.disabled = true));
       await Api.admin.updateSubmission(s.id, newStatus, note);
       s.status = newStatus;
-      // aggiorna badge nel drawer
       const badge = document.getElementById('drawer-status-badge');
       if (badge) { badge.className = `adm-badge adm-badge-${newStatus}`; badge.textContent = _statusLabel(newStatus); }
-      // aggiorna riga nella tabella
       const tr = document.querySelector(`tr[data-id="${s.id}"]`);
       if (tr) {
         const rowBadge = tr.querySelector(`#status-badge-${s.id}`);
@@ -309,6 +314,7 @@ function _openSubDetail(s) {
   _openDrawer();
 }
 
+// ── USERS ─────────────────────────────────────────────────────
 async function _loadUsers() {
   document.getElementById('user-list').innerHTML = '<div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
   try {
@@ -336,7 +342,6 @@ function _renderUsers() {
   `;
   document.getElementById('user-list').innerHTML = '';
   document.getElementById('user-list').appendChild(table);
-
   const tbody = document.getElementById('user-tbody');
   filtered.forEach(u => {
     const tr = document.createElement('tr');
@@ -406,6 +411,7 @@ function _deleteUser(id, username) {
   });
 }
 
+// ── SAVES ─────────────────────────────────────────────────────
 async function _loadSaves() {
   document.getElementById('save-list').innerHTML = '<div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
   try {
@@ -432,7 +438,6 @@ function _renderSaves() {
   `;
   document.getElementById('save-list').innerHTML = '';
   document.getElementById('save-list').appendChild(table);
-
   const tbody = document.getElementById('save-tbody');
   filtered.forEach(s => {
     const tr = document.createElement('tr');
@@ -496,6 +501,7 @@ function _deleteSave(userId, username) {
   });
 }
 
+// ── DRAWER ────────────────────────────────────────────────────
 function _openDrawer() {
   document.getElementById('adm-drawer-overlay').style.display = 'block';
   document.body.style.overflow = 'hidden';
@@ -505,6 +511,7 @@ function _closeDrawer() {
   document.body.style.overflow = '';
 }
 
+// ── CONFIRM ───────────────────────────────────────────────────
 let _confirmCb = null;
 function _confirm(title, msg, cb) {
   document.getElementById('adm-confirm-title').textContent = title;
@@ -517,6 +524,7 @@ function _closeConfirm() {
   _confirmCb = null;
 }
 
+// ── TOAST ─────────────────────────────────────────────────────
 let _toastTimer = null;
 function _toast(msg, type = '') {
   const el = document.getElementById('adm-toast');
@@ -526,6 +534,7 @@ function _toast(msg, type = '') {
   _toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
 }
 
+// ── UTILS ─────────────────────────────────────────────────────
 function _esc(s) {
   return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
@@ -556,6 +565,7 @@ function _spinRefresh(on) {
   document.getElementById('adm-refresh-btn')?.classList.toggle('spinning', on);
 }
 
+// ── INIT ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const tryInit = () => {
     if (typeof Auth === 'undefined' || typeof Api === 'undefined') { setTimeout(tryInit, 50); return; }

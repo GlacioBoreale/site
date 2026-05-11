@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-11T14:51:22Z",
+  "updatedAt": "2026-05-11T17:24:30Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,6 +43,14 @@
     ],
     "randomClips": [
       {
+        "title": "Mi serve moderazione non Pix",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/PoliteSolidHawkEleGiggle-6wdUnkC3uEyFMwle",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d0008be4-9538-4f37-893f-a83dda83347b/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 28,
+        "duration": 5,
+        "creator": "BrainSedge"
+      },
+      {
         "title": "AHAHAAH",
         "url": "https://www.twitch.tv/glacioborealevt/clip/CoySilkyJuiceKappaRoss-wI0uSDy-6120KAAv",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/0d21e85a-1313-4df5-bcac-d0e93fc5768d/landscape/thumb/thumb-0000000000-480x272.jpg",
@@ -51,19 +59,11 @@
         "creator": "OriginalEromo"
       },
       {
-        "title": "Nixel Fuori Contesto",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/GrossAttractiveHeronANELE-YNXE5gsWGEIkit6p",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/168d92a3-fea4-481c-92c9-4dea74a052bf/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 36,
-        "duration": 7.7,
-        "creator": "Gennarix_"
-      },
-      {
-        "title": "L'anklebraking, il faking, la finta. ",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/BoredKawaiiTermiteBatChest-7EJbluOQBVS99ske",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/eca71458-7ab4-4ad1-9313-8f853515d8cf/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 49,
-        "duration": 19.1,
+        "title": "\"Perché non finisce?\"💀",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/InspiringCuriousWolfFrankerZ-x0jLKt-ggFr_O2mw",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/88a68584-2d26-4d35-8d5b-30c80fdc2d4d/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 43,
+        "duration": 18.4,
         "creator": "dabidet87"
       }
     ]

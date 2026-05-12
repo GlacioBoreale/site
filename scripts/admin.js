@@ -59,7 +59,7 @@ function _renderBarList(elId, obj, total, colors) {
   el.innerHTML = '';
   if (!Object.keys(obj).length) { el.innerHTML = '<div class="adm-empty" style="padding:.5rem">—</div>'; return; }
   Object.entries(obj).forEach(([k, v]) => {
-    const pct = total ? Math.round((v / total) * 100) : 0;
+    const pct   = total ? Math.round((v / total) * 100) : 0;
     const color = colors[k] || '#5b9cf6';
     el.innerHTML += `
       <div class="adm-bar-item">
@@ -84,7 +84,9 @@ function _openImgLightbox(url) {
   overlay.querySelector('.adm-img-lightbox-backdrop').addEventListener('click', close);
   overlay.querySelector('.adm-img-lightbox-close').addEventListener('click', close);
   overlay.querySelector('img').addEventListener('click', close);
-  document.addEventListener('keydown', function esc(e) { if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); } });
+  document.addEventListener('keydown', function esc(e) {
+    if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); }
+  });
   document.body.appendChild(overlay);
 }
 
@@ -210,22 +212,22 @@ function _openSubDetail(s) {
   document.getElementById('adm-drawer-title').textContent = p.name || p.title || s.type;
 
   const rows = [];
-  if (p.name)       rows.push(['fa-user',       'Nome',     p.name]);
-  if (p.fullname)   rows.push(['fa-id-card',    'Completo', p.fullname]);
-  if (p.title)      rows.push(['fa-image',      'Titolo',   p.title]);
-  if (p.artist)     rows.push(['fa-palette',    'Artista',  p.artist]);
-  if (p.tags?.length) rows.push(['fa-tag',      'Tag',      p.tags.join(', ')]);
-  if (p.channel)    rows.push(['fa-link',       'Canale',   p.channel,  true]);
-  if (p.debut)      rows.push(['fa-calendar',   'Debut',    p.debut]);
-  if (p.hashtag)    rows.push(['fa-hashtag',    'Hashtag',  p.hashtag]);
-  if (p.sponsor)    rows.push(['fa-bullhorn',   'Sponsor',  p.sponsor]);
-  if (p.proof)      rows.push(['fa-link',       'Prova',    p.proof,    true]);
-  if (p.contact)    rows.push(['fa-comment',    'Contatto', p.contact]);
-  if (p.role)       rows.push(['fa-briefcase',  'Ruolo',    p.role]);
-  if (s.username)   rows.push(['fa-user-circle','Utente',   s.username]);
-  if (s.user_email) rows.push(['fa-envelope',   'Email',    s.user_email]);
+  if (p.name)         rows.push(['fa-user',        'Nome',     p.name]);
+  if (p.fullname)     rows.push(['fa-id-card',     'Completo', p.fullname]);
+  if (p.title)        rows.push(['fa-image',       'Titolo',   p.title]);
+  if (p.artist)       rows.push(['fa-palette',     'Artista',  p.artist]);
+  if (p.tags?.length) rows.push(['fa-tag',         'Tag',      p.tags.join(', ')]);
+  if (p.channel)      rows.push(['fa-link',        'Canale',   p.channel,  true]);
+  if (p.debut)        rows.push(['fa-calendar',    'Debut',    p.debut]);
+  if (p.hashtag)      rows.push(['fa-hashtag',     'Hashtag',  p.hashtag]);
+  if (p.sponsor)      rows.push(['fa-bullhorn',    'Sponsor',  p.sponsor]);
+  if (p.proof)        rows.push(['fa-link',        'Prova',    p.proof,    true]);
+  if (p.contact)      rows.push(['fa-comment',     'Contatto', p.contact]);
+  if (p.role)         rows.push(['fa-briefcase',   'Ruolo',    p.role]);
+  if (s.username)     rows.push(['fa-user-circle', 'Utente',   s.username]);
+  if (s.user_email)   rows.push(['fa-envelope',    'Email',    s.user_email]);
   rows.push(['fa-clock', 'Inviato', _fmtDate(s.created_at)]);
-  if (p.admin_note) rows.push(['fa-note-sticky','Nota admin', p.admin_note]);
+  if (p.admin_note)   rows.push(['fa-note-sticky', 'Nota admin', p.admin_note]);
 
   const socialRows = p.socials ? Object.entries(p.socials).map(([k,v]) => ['fa-share-nodes', k, v, true]) : [];
   const descHtml = (p.desc || p.experience) ? `
@@ -234,9 +236,14 @@ function _openSubDetail(s) {
       <p style="font-size:.84rem;color:rgba(255,255,255,.6);white-space:pre-wrap;line-height:1.6">${_esc(p.desc || p.experience)}</p>
     </div>` : '';
 
-  const imgHtml = s.image_url
-    ? `<img class="adm-drawer-img" src="${s.image_url}" alt="" onerror="this.style.display='none'">`
-    : '';
+  // immagine con bottone rimuovi
+  const imgHtml = s.image_url ? `
+    <div style="position:relative;margin-bottom:1.1rem;">
+      <img class="adm-drawer-img" src="${_esc(s.image_url)}" alt="" onerror="this.closest('div').style.display='none'" style="margin-bottom:0;">
+      <button id="da-remove-img" class="adm-btn adm-btn-danger" style="position:absolute;top:.5rem;right:.5rem;padding:.25rem .55rem;font-size:.72rem;">
+        <i class="fas fa-trash"></i> Rimuovi immagine
+      </button>
+    </div>` : '';
 
   document.getElementById('adm-drawer-body').innerHTML = `
     ${imgHtml}
@@ -277,10 +284,31 @@ function _openSubDetail(s) {
     </div>
   `;
 
-  // zoom sull'immagine nel drawer
+  // zoom sull'immagine
   if (s.image_url) {
-    document.querySelector('.adm-drawer-img')?.addEventListener('click', () => _openImgLightbox(s.image_url));
+    document.querySelector('.adm-drawer-img')?.addEventListener('click', (e) => {
+      if (e.target.closest('#da-remove-img')) return;
+      _openImgLightbox(s.image_url);
+    });
   }
+
+  // rimuovi immagine
+  document.getElementById('da-remove-img')?.addEventListener('click', () => {
+    _confirm('Rimuovi immagine', 'L\'immagine verrà rimossa dalla submission. Irreversibile.', async () => {
+      try {
+        await Api.admin.removeImage(s.id);
+        s.image_url = null;
+        // aggiorna thumbnail nella riga della tabella
+        const tr = document.querySelector(`tr[data-id="${s.id}"]`);
+        if (tr) {
+          const thumb = tr.querySelector('td:first-child');
+          if (thumb) thumb.innerHTML = `<div class="adm-row-thumb" style="display:inline-flex;align-items:center;justify-content:center;color:rgba(255,255,255,.15)"><i class="fas fa-image"></i></div>`;
+        }
+        _toast('Immagine rimossa', 'ok');
+        _closeDrawer();
+      } catch(e) { _toast(e.message, 'err'); }
+    });
+  });
 
   const getNote = () => document.getElementById('drawer-note')?.value || undefined;
   const doUpdate = async (newStatus) => {
@@ -400,7 +428,7 @@ function _openUserDetail(u) {
 }
 
 function _deleteUser(id, username) {
-  _confirm(`Elimina utente "${username}"`, 'Questo eliminerà l\'account e tutti i dati associati. Irreversibile.', async () => {
+  _confirm(`Elimina utente "${username}"`, "Questo eliminerà l'account e tutti i dati associati. Irreversibile.", async () => {
     try {
       await Api.admin.deleteUser(id);
       _users = _users.filter(u => u.id !== id);
@@ -490,7 +518,7 @@ function _openSaveDetail(s) {
 }
 
 function _deleteSave(userId, username) {
-  _confirm(`Elimina save di "${username}"`, 'Il salvataggio verrà eliminato. L\'utente potrà ricominciare da zero.', async () => {
+  _confirm(`Elimina save di "${username}"`, "Il salvataggio verrà eliminato. L'utente potrà ricominciare da zero.", async () => {
     try {
       await Api.admin.deleteSave(userId);
       _saves = _saves.filter(s => s.user_id !== userId);

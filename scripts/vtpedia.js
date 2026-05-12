@@ -4,7 +4,6 @@ let currentImages = [];
 
 const SF_MAX_BYTES = 15 * 1024 * 1024;
 let sfSelectedFiles = [null, null, null];
-let sfActiveSlot = 0;
 
 async function loadVTubersData() {
     try {
@@ -54,7 +53,8 @@ function createVTuberCard(vtuber, index) {
     const card = document.createElement('div');
     card.className = 'vtuber-card stagger-item';
     const firstImage = vtuber.images?.[0] || IMG_CDN + '/vtubers/placeholder.png';
-    const shortDesc  = vtuber.shortDesc || vtuber.desc || (typeof vtuber.shortDescKey === 'string' && !vtuber.shortDescKey.includes('.') ? vtuber.shortDescKey : getNestedTranslation(vtuber.shortDescKey) || '');
+    const shortDesc  = vtuber.shortDesc || vtuber.desc
+        || (vtuber.shortDescKey && !vtuber.shortDescKey.includes('.') ? vtuber.shortDescKey : getNestedTranslation(vtuber.shortDescKey) || '');
     card.innerHTML = `
         <div class="card-image">
             <img src="${firstImage}" alt="${vtuber.name}" onerror="this.src=IMG_CDN+'/vtubers/placeholder.png'">
@@ -81,7 +81,8 @@ function openPopup(vtuber) {
     currentImages = vtuber.images?.length > 0 ? vtuber.images : [IMG_CDN + '/vtubers/placeholder.png'];
     currentSlide = 0;
     initGallery(currentImages);
-    const longDesc = vtuber.longDesc || vtuber.shortDesc || vtuber.desc || (vtuber.longDescKey ? getNestedTranslation(vtuber.longDescKey) : '') || '';
+    const longDesc = vtuber.longDesc || vtuber.shortDesc || vtuber.desc
+        || (vtuber.longDescKey ? getNestedTranslation(vtuber.longDescKey) : '') || '';
     document.getElementById('popup-name').textContent = vtuber.name;
     document.getElementById('popup-full-name').textContent = vtuber.fullName || vtuber.name;
     document.getElementById('popup-debut').textContent = vtuber.debut || '—';
@@ -95,9 +96,9 @@ function openPopup(vtuber) {
 }
 
 function initGallery(images) {
-    const slides = document.getElementById('gallery-slides');
+    const slides     = document.getElementById('gallery-slides');
     const indicators = document.getElementById('gallery-indicators');
-    slides.innerHTML = '';
+    slides.innerHTML     = '';
     indicators.innerHTML = '';
     images.forEach((image, index) => {
         const slide = document.createElement('div');
@@ -128,13 +129,13 @@ function closePopup() {
     document.getElementById('vtuber-popup').classList.remove('active');
     document.body.classList.remove('modal-open');
     document.body.style.overflow = 'auto';
-    currentSlide = 0;
+    currentSlide  = 0;
     currentImages = [];
 }
 
 function copySponsorCmd() {
     const codeEl = document.getElementById('sponsor-cmd-text');
-    const btn = document.getElementById('sponsor-copy-btn');
+    const btn    = document.getElementById('sponsor-copy-btn');
     if (!codeEl || !btn) return;
     navigator.clipboard.writeText(codeEl.textContent).then(() => {
         const span = btn.querySelector('span');
@@ -150,7 +151,7 @@ function copySponsorCmd() {
 function _sfSetFile(file, slot) {
     if (!file) return;
     if (!file.type.startsWith('image/')) { _sfSetFeedback('Formato non supportato. Usa JPG, PNG, GIF o WEBP.', 'error'); return; }
-    if (file.size > SF_MAX_BYTES) { _sfSetFeedback(`Il file supera il limite di 15 MB.`, 'error'); return; }
+    if (file.size > SF_MAX_BYTES) { _sfSetFeedback('Il file supera il limite di 15 MB.', 'error'); return; }
     sfSelectedFiles[slot] = file;
     _sfClearFeedback();
     const reader = new FileReader();
@@ -159,8 +160,8 @@ function _sfSetFile(file, slot) {
         const img     = document.getElementById(`sf-preview-img-${slot}`);
         const inner   = document.getElementById(`sf-dropzone-inner-${slot}`);
         const fname   = document.getElementById(`sf-filename-${slot}`);
-        if (img) img.src = e.target.result;
-        if (fname) fname.textContent = file.name;
+        if (img)     img.src = e.target.result;
+        if (fname)   fname.textContent = file.name;
         if (preview) preview.style.display = 'flex';
         if (inner)   inner.style.display   = 'none';
     };
@@ -186,13 +187,20 @@ function initSubmitDropzones() {
         const pickBtn   = document.getElementById(`sf-pick-btn-${slot}`);
         const removeBtn = document.getElementById(`sf-remove-btn-${slot}`);
         if (!zone) return;
-        pickBtn?.addEventListener('click', () => input.click());
+
+        // rimuove pointer-events inline che potrebbero bloccare il drag
+        zone.style.pointerEvents = 'all';
+
+        pickBtn?.addEventListener('click', (e) => { e.stopPropagation(); input.click(); });
         input?.addEventListener('change', () => { if (input.files[0]) _sfSetFile(input.files[0], slot); });
         removeBtn?.addEventListener('click', (e) => { e.stopPropagation(); _sfResetFile(slot); });
-        zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
-        zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-        zone.addEventListener('drop', (e) => {
-            e.preventDefault(); zone.classList.remove('drag-over');
+
+        zone.addEventListener('dragenter', (e) => { e.preventDefault(); e.stopPropagation(); zone.classList.add('drag-over'); });
+        zone.addEventListener('dragover',  (e) => { e.preventDefault(); e.stopPropagation(); zone.classList.add('drag-over'); });
+        zone.addEventListener('dragleave', (e) => { e.stopPropagation(); zone.classList.remove('drag-over'); });
+        zone.addEventListener('drop',      (e) => {
+            e.preventDefault(); e.stopPropagation();
+            zone.classList.remove('drag-over');
             const file = e.dataTransfer.files[0];
             if (file) _sfSetFile(file, slot);
         });
@@ -234,12 +242,11 @@ function initSubmitForm() {
         const proof    = document.getElementById('sf-proof')?.value.trim();
 
         if (!name || !channel || !desc || !sponsor || !proof) { _sfSetFeedback('Compila tutti i campi obbligatori (*).', 'error'); return; }
-        if (!sfSelectedFiles[0]) { _sfSetFeedback('L\'immagine principale (slot 1) è obbligatoria.', 'error'); return; }
+        if (!sfSelectedFiles[0]) { _sfSetFeedback("L'immagine principale (slot 1) è obbligatoria.", 'error'); return; }
         if (!Auth || !Auth.isLoggedIn()) { _sfSetFeedback('Devi essere loggato per inviare una richiesta.', 'error'); return; }
 
         submitBtn.disabled = true;
         submitBtn.querySelector('span').textContent = 'Caricamento immagini...';
-
         try {
             const imageUrls = [];
             for (let i = 0; i < 3; i++) {
@@ -248,20 +255,17 @@ function initSubmitForm() {
                     imageUrls.push(url);
                 }
             }
-
             submitBtn.querySelector('span').textContent = 'Invio in corso...';
             const payload = { name, fullname, channel, hashtag, debut, desc, images: imageUrls, sponsor, proof };
             await Api.submit.post('vtuber', payload, imageUrls[0]);
-
             _sfSetFeedback('Richiesta inviata! La esamineremo il prima possibile.', 'success');
             ['sf-name','sf-fullname','sf-channel','sf-hashtag','sf-debut','sf-desc','sf-sponsor','sf-proof'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.value = '';
+                const el = document.getElementById(id); if (el) el.value = '';
             });
             if (countEl) countEl.textContent = '0';
             [0, 1, 2].forEach(i => _sfResetFile(i));
         } catch (err) {
-            _sfSetFeedback(err.message || 'Errore durante l\'invio. Riprova.', 'error');
+            _sfSetFeedback(err.message || "Errore durante l'invio. Riprova.", 'error');
         } finally {
             submitBtn.disabled = false;
             submitBtn.querySelector('span').textContent = 'Invia richiesta';
@@ -289,9 +293,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (e) => {
         const popup = document.getElementById('vtuber-popup');
         if (popup?.classList.contains('active')) {
-            if (e.key === 'Escape') closePopup();
-            if (e.key === 'ArrowLeft') prevSlide();
-            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'Escape')      closePopup();
+            if (e.key === 'ArrowLeft')   prevSlide();
+            if (e.key === 'ArrowRight')  nextSlide();
         }
     });
 
@@ -299,6 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitPopup   = document.getElementById('submit-popup');
     const submitClose   = document.getElementById('submit-popup-close');
     const submitOverlay = document.getElementById('submit-popup-overlay');
+    const submitContent = submitPopup?.querySelector('.submit-popup-content');
 
     function openSubmitPopup() {
         submitPopup.classList.add('active');
@@ -315,5 +320,6 @@ document.addEventListener('DOMContentLoaded', () => {
     submitBtn?.addEventListener('click', openSubmitPopup);
     submitClose?.addEventListener('click', closeSubmitPopup);
     submitOverlay?.addEventListener('click', closeSubmitPopup);
+    submitContent?.addEventListener('click', (e) => e.stopPropagation());
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSubmitPopup(); });
 });

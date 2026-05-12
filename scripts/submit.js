@@ -5,8 +5,10 @@ let aboutSelectedFile = null;
 
 function _submitSetState(btn, msgEl, state, text) {
   btn.disabled = state === 'loading';
+  const span = btn.querySelector('span');
+  if (span && state === 'loading') span.textContent = text || 'Caricamento...';
   if (msgEl) {
-    msgEl.textContent = text || '';
+    msgEl.textContent = state !== 'loading' ? (text || '') : '';
     msgEl.className = 'sf-feedback' + (state === 'success' ? ' success' : state === 'error' ? ' error' : '');
   }
 }
@@ -21,6 +23,7 @@ function initAboutSubmit() {
   const openBtn   = document.getElementById('about-open-form-btn');
   const modal     = document.getElementById('about-modal');
   const overlay   = document.getElementById('about-modal-overlay');
+  const content   = modal?.querySelector('.submit-modal-content');
   const closeBtn  = document.getElementById('about-modal-close');
   const closeBtn2 = document.getElementById('about-modal-close-btn');
   const submitBtn = document.getElementById('about-submit-btn');
@@ -28,7 +31,6 @@ function initAboutSubmit() {
 
   if (!openBtn || !modal) return;
 
-  // contatori textarea
   const descEl  = document.getElementById('about-desc');
   const descCnt = document.getElementById('about-desc-count');
   const expEl   = document.getElementById('about-experience');
@@ -36,7 +38,6 @@ function initAboutSubmit() {
   if (descEl && descCnt) descEl.addEventListener('input', () => { descCnt.textContent = descEl.value.length; });
   if (expEl  && expCnt)  expEl.addEventListener('input',  () => { expCnt.textContent  = expEl.value.length; });
 
-  // dropzone immagine profilo
   const zone      = document.getElementById('about-dropzone');
   const input     = document.getElementById('about-image-file');
   const pickBtn   = document.getElementById('about-pick-btn');
@@ -70,25 +71,27 @@ function initAboutSubmit() {
   openBtn.addEventListener('click', openModal);
   closeBtn?.addEventListener('click', closeModal);
   closeBtn2?.addEventListener('click', closeModal);
+  // overlay chiude il modal, ma il click sul contenuto non deve propagare
   overlay?.addEventListener('click', closeModal);
+  content?.addEventListener('click', (e) => e.stopPropagation());
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
   submitBtn?.addEventListener('click', async () => {
     _clearFeedback(msg);
 
-    const displayName  = document.getElementById('about-display-name')?.value.trim();
-    const role         = document.getElementById('about-role')?.value.trim();
-    const desc         = document.getElementById('about-desc')?.value.trim();
-    const socials      = document.getElementById('about-socials')?.value.trim();
-    const experience   = document.getElementById('about-experience')?.value.trim();
-    const contact      = document.getElementById('about-contact')?.value.trim();
+    const displayName = document.getElementById('about-display-name')?.value.trim();
+    const role        = document.getElementById('about-role')?.value.trim();
+    const desc        = document.getElementById('about-desc')?.value.trim();
+    const socials     = document.getElementById('about-socials')?.value.trim();
+    const experience  = document.getElementById('about-experience')?.value.trim();
+    const contact     = document.getElementById('about-contact')?.value.trim();
 
     if (!displayName || !role || !desc || !experience || !contact) {
       _submitSetState(submitBtn, msg, 'error', 'Compila tutti i campi obbligatori (*).');
       return;
     }
     if (!aboutSelectedFile) {
-      _submitSetState(submitBtn, msg, 'error', 'L\'immagine profilo è obbligatoria.');
+      _submitSetState(submitBtn, msg, 'error', "L'immagine profilo è obbligatoria.");
       return;
     }
     if (!Auth || !Auth.isLoggedIn()) {
@@ -100,19 +103,23 @@ function initAboutSubmit() {
     try {
       const avatarUrl = await Api.upload.file(aboutSelectedFile, 'team');
 
-      submitBtn.querySelector('span').textContent = 'Invio in corso...';
+      const span = submitBtn.querySelector('span');
+      if (span) span.textContent = 'Invio in corso...';
 
       await Api.submit.post('team', {
-        name:        displayName,
+        name:       displayName,
         role,
         desc,
         socials,
         experience,
         contact,
-        avatar_url:  avatarUrl,
+        avatar_url: avatarUrl,
       });
 
       _submitSetState(submitBtn, msg, 'success', 'Candidatura inviata! Ti risponderemo presto.');
+      const span2 = submitBtn.querySelector('span');
+      if (span2) span2.textContent = 'Invia candidatura';
+
       ['about-display-name','about-role','about-desc','about-socials','about-experience','about-contact'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
@@ -122,6 +129,8 @@ function initAboutSubmit() {
       _aboutResetFile();
     } catch (e) {
       _submitSetState(submitBtn, msg, 'error', e.message || 'Errore durante l\'invio.');
+      const span = submitBtn.querySelector('span');
+      if (span) span.textContent = 'Invia candidatura';
     }
   });
 }

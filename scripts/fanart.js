@@ -207,7 +207,6 @@ function createFanartCard(f) {
     return card;
 }
 
-// Fix: usare le classi fa-brands corrette per ogni piattaforma
 const SOCIAL_META = {
     twitter:   { icon: 'fa-brands fa-x-twitter',  label: 'X / Twitter' },
     x:         { icon: 'fa-brands fa-x-twitter',  label: 'X / Twitter' },
@@ -221,9 +220,9 @@ const SOCIAL_META = {
 };
 
 function openLightbox(f) {
-    const title  = f.title || '';
-    const byText = getNestedTranslation('fanart.by') || 'di';
-    const tags   = (f.tags && f.tags.length) ? f.tags : ['untagged'];
+    const title   = f.title || '';
+    const byText  = getNestedTranslation('fanart.by') || 'di';
+    const tags    = (f.tags && f.tags.length) ? f.tags : ['untagged'];
     const socials = f.socials || {};
     const popupImg = document.getElementById('fanart-popup-img');
     popupImg.onerror = function() { this.src = IMG_CDN + '/vtubers/placeholder.png'; this.onerror = null; };
@@ -312,9 +311,9 @@ function _faResetFile() {
 }
 
 function initFanartDropzone() {
-    const zone = document.getElementById('fa-dropzone');
-    const input = document.getElementById('fa-image-file');
-    const pickBtn = document.getElementById('fa-pick-btn');
+    const zone      = document.getElementById('fa-dropzone');
+    const input     = document.getElementById('fa-image-file');
+    const pickBtn   = document.getElementById('fa-pick-btn');
     const removeBtn = document.getElementById('fa-remove-btn');
     if (!zone) return;
     pickBtn.addEventListener('click', () => input.click());
@@ -361,7 +360,7 @@ function initFanartForm() {
         const tagsRaw = document.getElementById('fa-tags-input')?.value.trim();
         const social  = document.getElementById('fa-socials')?.value.trim();
         if (!title || !artist) { _faFeedbackSet('Titolo e nome artista sono obbligatori (*).', 'error'); return; }
-        if (!faSelectedFile)   { _faFeedbackSet('Seleziona un\'immagine da caricare.', 'error'); return; }
+        if (!faSelectedFile)   { _faFeedbackSet("Seleziona un'immagine da caricare.", 'error'); return; }
         if (!Auth || !Auth.isLoggedIn()) { _faFeedbackSet('Devi essere loggato per inviare una fanart.', 'error'); return; }
         btn.disabled = true;
         btn.querySelector('span').textContent = 'Caricamento immagine...';
@@ -375,7 +374,7 @@ function initFanartForm() {
             if (chips) chips.innerHTML = '';
             _faResetFile();
         } catch (err) {
-            _faFeedbackSet(err.message || 'Errore durante l\'invio. Riprova.', 'error');
+            _faFeedbackSet(err.message || "Errore durante l'invio. Riprova.", 'error');
         } finally {
             btn.disabled = false;
             btn.querySelector('span').textContent = 'Invia fanart';
@@ -389,9 +388,9 @@ function buildSuggestions(query) {
     const results = [];
     const seen = new Set();
     fanarts.forEach(f => {
-        const title = f.title || '';
+        const title  = f.title  || '';
         const artist = f.artist || '';
-        if (title.toLowerCase().includes(q) && !seen.has('t:' + title)) { seen.add('t:' + title); results.push({ text: title, icon: 'fa-image' }); }
+        if (title.toLowerCase().includes(q)  && !seen.has('t:' + title))  { seen.add('t:' + title);  results.push({ text: title,  icon: 'fa-image' }); }
         if (artist.toLowerCase().includes(q) && !seen.has('a:' + artist)) { seen.add('a:' + artist); results.push({ text: artist, icon: 'fa-user' }); }
     });
     return results.slice(0, 6);
@@ -432,7 +431,7 @@ function hideSuggestions() {
 }
 
 function initFilterDropdown() {
-    const btn = document.getElementById('filter-toggle-btn');
+    const btn      = document.getElementById('filter-toggle-btn');
     const dropdown = document.getElementById('filter-dropdown');
     btn.addEventListener('click', (e) => { e.stopPropagation(); dropdown.classList.toggle('open'); btn.classList.toggle('open'); });
     document.addEventListener('click', () => { dropdown.classList.remove('open'); btn.classList.remove('open'); });
@@ -441,7 +440,7 @@ function initFilterDropdown() {
 
 function initSearchKeyboard() {
     const input = document.getElementById('fanart-search');
-    const box = document.getElementById('search-suggestions');
+    const box   = document.getElementById('search-suggestions');
     input.addEventListener('keydown', (e) => {
         const items = box.querySelectorAll('.suggestion-item');
         if (!items.length) return;
@@ -471,8 +470,14 @@ document.addEventListener('DOMContentLoaded', () => {
     searchInput.addEventListener('blur', () => setTimeout(hideSuggestions, 150));
 
     document.getElementById('submit-fanart-btn').addEventListener('click', openSubmitModal);
-    // overlay chiude il form
-    document.getElementById('submit-modal-overlay').addEventListener('click', closeSubmitModal);
+
+    // overlay chiude il modal, il click sul content non deve propagare
+    const submitModal   = document.getElementById('submit-modal');
+    const submitOverlay = document.getElementById('submit-modal-overlay');
+    const submitContent = submitModal?.querySelector('.submit-modal-content');
+    submitOverlay?.addEventListener('click', closeSubmitModal);
+    submitContent?.addEventListener('click', (e) => e.stopPropagation());
+
     document.getElementById('submit-modal-close').addEventListener('click', closeSubmitModal);
     document.getElementById('submit-close-btn').addEventListener('click', closeSubmitModal);
     document.getElementById('fanart-popup-close').addEventListener('click', closeLightbox);

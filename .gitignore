@@ -1,8 +1,6 @@
 # Backend Lambda — logica server, non va in chiaro
 scripts/handler.js
-
-# Cartella scrits (typo)
-scrits/
+scripts/index.mjs
 
 # OS
 .DS_Store

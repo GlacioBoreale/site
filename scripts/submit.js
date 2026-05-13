@@ -22,7 +22,6 @@ function _clearFeedback(msgEl) {
 function initAboutSubmit() {
   const openBtn   = document.getElementById('about-open-form-btn');
   const modal     = document.getElementById('about-modal');
-  const overlay   = document.getElementById('about-modal-overlay');
   const content   = modal?.querySelector('.submit-modal-content');
   const closeBtn  = document.getElementById('about-modal-close');
   const closeBtn2 = document.getElementById('about-modal-close-btn');
@@ -71,9 +70,11 @@ function initAboutSubmit() {
   openBtn.addEventListener('click', openModal);
   closeBtn?.addEventListener('click', closeModal);
   closeBtn2?.addEventListener('click', closeModal);
-  // overlay chiude il modal, ma il click sul contenuto non deve propagare
-  overlay?.addEventListener('click', closeModal);
+
+  // click sul modal (area fuori dal content) chiude — stesso pattern vtpedia
+  modal.addEventListener('click', closeModal);
   content?.addEventListener('click', (e) => e.stopPropagation());
+
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
   submitBtn?.addEventListener('click', async () => {
@@ -128,7 +129,7 @@ function initAboutSubmit() {
       if (expCnt)  expCnt.textContent  = '0';
       _aboutResetFile();
     } catch (e) {
-      _submitSetState(submitBtn, msg, 'error', e.message || 'Errore durante l\'invio.');
+      _submitSetState(submitBtn, msg, 'error', e.message || "Errore durante l'invio.");
       const span = submitBtn.querySelector('span');
       if (span) span.textContent = 'Invia candidatura';
     }

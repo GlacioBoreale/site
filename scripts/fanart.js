@@ -471,11 +471,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('submit-fanart-btn').addEventListener('click', openSubmitModal);
 
-    // overlay chiude il modal, il click sul content non deve propagare
+    // click sul modal (area fuori dal content) chiude — stesso pattern vtpedia
     const submitModal   = document.getElementById('submit-modal');
-    const submitOverlay = document.getElementById('submit-modal-overlay');
     const submitContent = submitModal?.querySelector('.submit-modal-content');
-    submitOverlay?.addEventListener('click', closeSubmitModal);
+    submitModal?.addEventListener('click', closeSubmitModal);
     submitContent?.addEventListener('click', (e) => e.stopPropagation());
 
     document.getElementById('submit-modal-close').addEventListener('click', closeSubmitModal);

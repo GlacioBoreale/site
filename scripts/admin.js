@@ -70,7 +70,6 @@ function _renderBarList(elId, obj, total, colors) {
   });
 }
 
-// ── IMAGE LIGHTBOX ────────────────────────────────────────────
 function _openImgLightbox(url) {
   if (!url) return;
   const overlay = document.createElement('div');
@@ -90,7 +89,6 @@ function _openImgLightbox(url) {
   document.body.appendChild(overlay);
 }
 
-// ── SUBMISSIONS ───────────────────────────────────────────────
 async function _loadSubmissions() {
   document.getElementById('sub-list').innerHTML = '<div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
   try {
@@ -236,7 +234,6 @@ function _openSubDetail(s) {
       <p style="font-size:.84rem;color:rgba(255,255,255,.6);white-space:pre-wrap;line-height:1.6">${_esc(p.desc || p.experience)}</p>
     </div>` : '';
 
-  // immagine con bottone rimuovi
   const imgHtml = s.image_url ? `
     <div style="position:relative;margin-bottom:1.1rem;">
       <img class="adm-drawer-img" src="${_esc(s.image_url)}" alt="" onerror="this.closest('div').style.display='none'" style="margin-bottom:0;">
@@ -284,7 +281,6 @@ function _openSubDetail(s) {
     </div>
   `;
 
-  // zoom sull'immagine
   if (s.image_url) {
     document.querySelector('.adm-drawer-img')?.addEventListener('click', (e) => {
       if (e.target.closest('#da-remove-img')) return;
@@ -292,13 +288,11 @@ function _openSubDetail(s) {
     });
   }
 
-  // rimuovi immagine
   document.getElementById('da-remove-img')?.addEventListener('click', () => {
-    _confirm('Rimuovi immagine', 'L\'immagine verrà rimossa dalla submission. Irreversibile.', async () => {
+    _confirm('Rimuovi immagine', "L'immagine verrà rimossa dalla submission. Irreversibile.", async () => {
       try {
         await Api.admin.removeImage(s.id);
         s.image_url = null;
-        // aggiorna thumbnail nella riga della tabella
         const tr = document.querySelector(`tr[data-id="${s.id}"]`);
         if (tr) {
           const thumb = tr.querySelector('td:first-child');
@@ -342,7 +336,6 @@ function _openSubDetail(s) {
   _openDrawer();
 }
 
-// ── USERS ─────────────────────────────────────────────────────
 async function _loadUsers() {
   document.getElementById('user-list').innerHTML = '<div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
   try {
@@ -439,7 +432,6 @@ function _deleteUser(id, username) {
   });
 }
 
-// ── SAVES ─────────────────────────────────────────────────────
 async function _loadSaves() {
   document.getElementById('save-list').innerHTML = '<div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
   try {
@@ -529,7 +521,6 @@ function _deleteSave(userId, username) {
   });
 }
 
-// ── DRAWER ────────────────────────────────────────────────────
 function _openDrawer() {
   document.getElementById('adm-drawer-overlay').style.display = 'block';
   document.body.style.overflow = 'hidden';
@@ -539,7 +530,6 @@ function _closeDrawer() {
   document.body.style.overflow = '';
 }
 
-// ── CONFIRM ───────────────────────────────────────────────────
 let _confirmCb = null;
 function _confirm(title, msg, cb) {
   document.getElementById('adm-confirm-title').textContent = title;
@@ -552,7 +542,6 @@ function _closeConfirm() {
   _confirmCb = null;
 }
 
-// ── TOAST ─────────────────────────────────────────────────────
 let _toastTimer = null;
 function _toast(msg, type = '') {
   const el = document.getElementById('adm-toast');
@@ -562,7 +551,6 @@ function _toast(msg, type = '') {
   _toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
 }
 
-// ── UTILS ─────────────────────────────────────────────────────
 function _esc(s) {
   return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
@@ -593,7 +581,6 @@ function _spinRefresh(on) {
   document.getElementById('adm-refresh-btn')?.classList.toggle('spinning', on);
 }
 
-// ── INIT ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const tryInit = () => {
     if (typeof Auth === 'undefined' || typeof Api === 'undefined') { setTimeout(tryInit, 50); return; }
@@ -641,7 +628,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('adm-drawer-backdrop')?.addEventListener('click', _closeDrawer);
     document.getElementById('adm-drawer-close')?.addEventListener('click', _closeDrawer);
     document.getElementById('adm-confirm-cancel')?.addEventListener('click', _closeConfirm);
-    document.getElementById('adm-confirm-ok')?.addEventListener('click', () => { _closeConfirm(); _confirmCb?.(); });
+    // FIX: salva il callback prima di chiamare _closeConfirm, altrimenti viene azzerato
+    document.getElementById('adm-confirm-ok')?.addEventListener('click', () => {
+      const cb = _confirmCb;
+      _closeConfirm();
+      cb?.();
+    });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') { _closeDrawer(); _closeConfirm(); } });
   };
   tryInit();

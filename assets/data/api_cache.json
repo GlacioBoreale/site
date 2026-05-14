@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-14T15:18:07Z",
+  "updatedAt": "2026-05-14T21:09:19Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -20,7 +20,7 @@
         "title": "he fell off (AAAAAAAAAAHHHH)",
         "url": "https://www.twitch.tv/glacioborealevt/clip/GleamingGiantLardCoolStoryBob-z_Je0V6Hh3Bdm_VD",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/e55f89ee-d039-419e-96a2-cb1a5fff6499/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 110,
+        "views": 111,
         "duration": 14,
         "creator": "dabidet87"
       },
@@ -28,7 +28,7 @@
         "title": "momento cacaggio",
         "url": "https://www.twitch.tv/glacioborealevt/clip/IgnorantAggressiveKeyboardSuperVinlin-pWI6hwJWET9Oa06g",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/9c177986-3c5b-44f5-ba22-1fdd2b606f80/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 77,
+        "views": 79,
         "duration": 18,
         "creator": "rhaastbabygirl"
       },
@@ -36,12 +36,20 @@
         "title": "Nixel Jumpscare",
         "url": "https://www.twitch.tv/glacioborealevt/clip/PricklySplendidArmadilloFUNgineer-79j1yQy_L145OB57",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/5e014bbd-e969-468e-97d1-ed46b8eeb7aa/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 69,
+        "views": 70,
         "duration": 6.7,
         "creator": "ItsMeNickoRin"
       }
     ],
     "randomClips": [
+      {
+        "title": "AHAHAAH",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/CoySilkyJuiceKappaRoss-wI0uSDy-6120KAAv",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/0d21e85a-1313-4df5-bcac-d0e93fc5768d/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 31,
+        "duration": 11.4,
+        "creator": "OriginalEromo"
+      },
       {
         "title": "è un disegno quello lo sai?",
         "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableRenownedAuberginePMSTwin",
@@ -51,27 +59,19 @@
         "creator": "andreaproob"
       },
       {
-        "title": "face reaveal",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/NastyTardyRuffBuddhaBar-e6YHVBz2APguBcQX",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d21ebf4b-0fb8-4254-850a-a9d87f52b6c7/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 39,
-        "duration": 5,
-        "creator": "auremdunknown"
-      },
-      {
-        "title": "non ridete",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/EndearingConsiderateGazelle4Head-uRdAcYrWkqUWIEsi",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/6bd098a0-58a9-4716-adb1-9881ce4ed341/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 26,
-        "duration": 28,
-        "creator": "schilla0"
+        "title": "*fence di tronco di legno nero*",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/RealFairDinosaurPipeHype-PSVPhKBODLDg4H8G",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/8cf14860-1e27-4760-a801-1bcfa169e7e9/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 35,
+        "duration": 8.6,
+        "creator": "Chompy_Sellino"
       }
     ]
   },
   "youtube": {
     "displayName": "Glacio Boreale",
     "thumbnail": "https://yt3.ggpht.com/ouF6Phe2YjqSFMP7YdxYFTm5l9tyT0-MfdrfDJCcUt2mecJe8JV8h96luOECIiI9vtCjj9pX=s88-c-k-c0x00ffffff-no-rj",
-    "subscribers": 164,
+    "subscribers": 170,
     "url": "https://www.youtube.com/@glacioborealevt",
     "recentVideos": [
       {
@@ -80,7 +80,7 @@
         "thumbnail": "https://i.ytimg.com/vi/D6MsiuipRpo/mqdefault.jpg",
         "publishedAt": "2026-05-02T12:30:14Z",
         "url": "https://www.youtube.com/watch?v=D6MsiuipRpo",
-        "viewCount": 156
+        "viewCount": 164
       },
       {
         "title": "Non Pensavo che 2 Baroni Fossero Così FORTI [Reupload]",

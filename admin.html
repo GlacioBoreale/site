@@ -33,7 +33,7 @@
             </div>
             <div class="adm-header-right">
                 <span class="adm-user-label" id="adm-user-label"></span>
-                <button class="adm-refresh-btn" id="adm-refresh-btn" title="Ricarica tutto" aria-label="Ricarica tutto"><i class="fas fa-rotate-right"></i></button>
+                <button class="adm-refresh-btn" id="adm-refresh-btn" title="Ricarica tutto"><i class="fas fa-rotate-right"></i></button>
                 <a href="index.html" class="adm-home-btn"><i class="fas fa-arrow-left"></i> Sito</a>
             </div>
         </div>
@@ -60,27 +60,21 @@
         <main class="adm-content">
 
             <section class="adm-section active" id="section-overview">
-                <div class="adm-section-header">
-                    <div class="adm-section-title">
-                        <h1>Overview</h1>
-                        <span class="adm-last-load" id="ov-last-load"></span>
-                        <button class="adm-section-refresh" id="ov-refresh" title="Ricarica overview"><i class="fas fa-rotate-right"></i></button>
-                    </div>
-                </div>
+                <div class="adm-section-header"><h1>Overview</h1></div>
                 <div class="adm-stats-grid">
-                    <div class="adm-stat-card" data-goto="users" role="button" tabindex="0" aria-label="Vai a Utenti">
+                    <div class="adm-stat-card">
                         <div class="adm-stat-icon"><i class="fas fa-users"></i></div>
                         <div class="adm-stat-body"><span class="adm-stat-value" id="ov-users">—</span><span class="adm-stat-label">Utenti registrati</span></div>
                     </div>
-                    <div class="adm-stat-card" data-goto="saves" role="button" tabindex="0" aria-label="Vai a Salvataggi">
+                    <div class="adm-stat-card">
                         <div class="adm-stat-icon adm-stat-icon-green"><i class="fas fa-gamepad"></i></div>
                         <div class="adm-stat-body"><span class="adm-stat-value" id="ov-saves">—</span><span class="adm-stat-label">Salvataggi attivi</span></div>
                     </div>
-                    <div class="adm-stat-card" data-goto="submissions" data-goto-status="all" role="button" tabindex="0" aria-label="Vai a tutte le Submission">
+                    <div class="adm-stat-card">
                         <div class="adm-stat-icon adm-stat-icon-yellow"><i class="fas fa-inbox"></i></div>
                         <div class="adm-stat-body"><span class="adm-stat-value" id="ov-subs">—</span><span class="adm-stat-label">Submission totali</span></div>
                     </div>
-                    <div class="adm-stat-card" data-goto="submissions" data-goto-status="pending" role="button" tabindex="0" aria-label="Vai alle Submission in attesa">
+                    <div class="adm-stat-card">
                         <div class="adm-stat-icon adm-stat-icon-red"><i class="fas fa-clock"></i></div>
                         <div class="adm-stat-body"><span class="adm-stat-value" id="ov-pending">—</span><span class="adm-stat-label">In attesa</span></div>
                     </div>
@@ -95,29 +89,11 @@
                         <div class="adm-bar-list" id="ov-by-status"></div>
                     </div>
                 </div>
-                <div class="adm-trends-grid">
-                    <div class="adm-overview-card">
-                        <div class="adm-overview-card-title"><i class="fas fa-user-plus"></i> Nuovi utenti</div>
-                        <div class="adm-trend" id="ov-trend-users">
-                            <div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>
-                        </div>
-                    </div>
-                    <div class="adm-overview-card">
-                        <div class="adm-overview-card-title"><i class="fas fa-inbox"></i> Nuove submission</div>
-                        <div class="adm-trend" id="ov-trend-subs">
-                            <div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>
-                        </div>
-                    </div>
-                </div>
             </section>
 
             <section class="adm-section" id="section-submissions">
                 <div class="adm-section-header">
-                    <div class="adm-section-title">
-                        <h1>Submissions</h1>
-                        <span class="adm-last-load" id="sub-last-load"></span>
-                        <button class="adm-section-refresh" id="sub-refresh" title="Ricarica submissions"><i class="fas fa-rotate-right"></i></button>
-                    </div>
+                    <h1>Submissions</h1>
                     <div class="adm-toolbar">
                         <div class="adm-tabs" id="sub-status-tabs">
                             <button class="adm-tab active" data-val="all">Tutte</button>
@@ -132,22 +108,6 @@
                             <button class="adm-tab" data-val="team">Team</button>
                             <button class="adm-tab" data-val="tag">Tag</button>
                         </div>
-                        <input class="adm-search" id="sub-search" type="text" placeholder="Cerca titolo, artista, utente...">
-                    </div>
-                </div>
-                <div class="adm-kbd-hint">
-                    <kbd>j</kbd><kbd>k</kbd> naviga
-                    <kbd>a</kbd><kbd>r</kbd><kbd>p</kbd> approva / rifiuta / pending
-                    <kbd>x</kbd> seleziona
-                    <kbd>↵</kbd> dettaglio
-                </div>
-                <div class="adm-bulk-bar" id="sub-bulk-bar">
-                    <span class="adm-bulk-count"><strong id="sub-bulk-n">0</strong> selezionate</span>
-                    <div class="adm-bulk-actions">
-                        <button class="adm-btn adm-btn-approve" id="sub-bulk-approve"><i class="fas fa-check"></i> Approva</button>
-                        <button class="adm-btn adm-btn-reject" id="sub-bulk-reject"><i class="fas fa-times"></i> Rifiuta</button>
-                        <button class="adm-btn adm-btn-danger" id="sub-bulk-delete"><i class="fas fa-trash"></i> Elimina</button>
-                        <button class="adm-btn adm-btn-detail" id="sub-bulk-clear">Deseleziona</button>
                     </div>
                 </div>
                 <div class="adm-table-wrap" id="sub-list">
@@ -157,11 +117,7 @@
 
             <section class="adm-section" id="section-users">
                 <div class="adm-section-header">
-                    <div class="adm-section-title">
-                        <h1>Utenti</h1>
-                        <span class="adm-last-load" id="user-last-load"></span>
-                        <button class="adm-section-refresh" id="user-refresh" title="Ricarica utenti"><i class="fas fa-rotate-right"></i></button>
-                    </div>
+                    <h1>Utenti</h1>
                     <div class="adm-toolbar">
                         <input class="adm-search" id="user-search" type="text" placeholder="Cerca per username o email...">
                     </div>
@@ -173,11 +129,7 @@
 
             <section class="adm-section" id="section-saves">
                 <div class="adm-section-header">
-                    <div class="adm-section-title">
-                        <h1>Salvataggi</h1>
-                        <span class="adm-last-load" id="save-last-load"></span>
-                        <button class="adm-section-refresh" id="save-refresh" title="Ricarica salvataggi"><i class="fas fa-rotate-right"></i></button>
-                    </div>
+                    <h1>Salvataggi</h1>
                     <div class="adm-toolbar">
                         <input class="adm-search" id="save-search" type="text" placeholder="Cerca per username o email...">
                     </div>
@@ -194,17 +146,17 @@
 
 <div class="adm-drawer-overlay" id="adm-drawer-overlay" style="display:none;">
     <div class="adm-drawer-backdrop" id="adm-drawer-backdrop"></div>
-    <div class="adm-drawer" id="adm-drawer" role="dialog" aria-modal="true" aria-labelledby="adm-drawer-title">
+    <div class="adm-drawer" id="adm-drawer">
         <div class="adm-drawer-header">
             <h2 class="adm-drawer-title" id="adm-drawer-title">Dettaglio</h2>
-            <button class="adm-drawer-close" id="adm-drawer-close" title="Chiudi" aria-label="Chiudi"><i class="fas fa-times"></i></button>
+            <button class="adm-drawer-close" id="adm-drawer-close"><i class="fas fa-times"></i></button>
         </div>
         <div class="adm-drawer-body" id="adm-drawer-body"></div>
     </div>
 </div>
 
 <div class="adm-confirm-overlay" id="adm-confirm-overlay" style="display:none;">
-    <div class="adm-confirm-box" role="dialog" aria-modal="true" aria-labelledby="adm-confirm-title" aria-describedby="adm-confirm-msg">
+    <div class="adm-confirm-box">
         <div class="adm-confirm-icon"><i class="fas fa-triangle-exclamation"></i></div>
         <h3 class="adm-confirm-title" id="adm-confirm-title">Conferma</h3>
         <p class="adm-confirm-msg" id="adm-confirm-msg"></p>
@@ -215,7 +167,7 @@
     </div>
 </div>
 
-<div class="adm-toast" id="adm-toast" role="status" aria-live="polite"></div>
+<div class="adm-toast" id="adm-toast"></div>
 
 </body>
 </html>

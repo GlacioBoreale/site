@@ -420,33 +420,6 @@
 .popup-description p::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
 
 /* ── Submit popup ── */
-.submit-popup-content { max-width: 580px; padding: 0; overflow: hidden; }
-
-.submit-popup-body {
-  padding: 2rem;
-  overflow-y: auto;
-  max-height: 85vh;
-  display: flex;
-  flex-direction: column;
-  gap: 1.8rem;
-}
-
-.submit-popup-header { text-align: center; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
-
-.submit-icon {
-  font-size: 2.5rem;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: 0.8rem;
-  display: block;
-}
-
-.submit-popup-header h2 { font-size: 1.6rem; color: var(--text); margin-bottom: 0.5rem; }
-.submit-popup-header p  { color: var(--text-muted); font-size: 0.9rem; }
-
-.submit-rules h3,
 .submit-form-section h3 {
   display: flex;
   align-items: center;
@@ -460,21 +433,6 @@
   margin-bottom: 1rem;
 }
 
-.submit-rules ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.55rem; }
-
-.submit-rules li {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.7rem;
-  font-size: 0.875rem;
-  color: var(--text-muted);
-  line-height: 1.5;
-  padding: 0.55rem 0.8rem;
-  background: var(--bg-raised);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-}
-.submit-rules li::before { content: '✔'; color: #667eea; font-size: 0.75rem; margin-top: 0.15rem; flex-shrink: 0; }
 
 .submit-sponsor { display: flex; flex-direction: column; gap: 0.8rem; }
 .submit-sponsor > h3 {

@@ -77,6 +77,7 @@ const Api = (() => {
 
     admin: {
       getStats:           ()                   => request('GET',    '/admin/stats'),
+      getTrends:          (days)               => request('GET',    `/admin/stats/trends?days=${days || 30}`),
       getSubmissions:     ()                   => request('GET',    '/admin/submissions'),
       updateSubmission:   (id, status, note)   => request('PATCH',  `/admin/submissions/${id}`, { status, note }),
       removeImage:        (id)                 => request('PATCH',  `/admin/submissions/${id}`, { remove_image: true }),

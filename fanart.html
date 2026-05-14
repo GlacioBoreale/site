@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="components/footer/footer.css">
     <link rel="stylesheet" href="components/achievements/achievements.css">
     <link rel="stylesheet" href="style/fanart.css">
+    <link rel="stylesheet" href="style/popup-form.css">
     <script src="scripts/api.js"></script>
     <script src="scripts/auth.js"></script>
     <script src="components/navbar/nav.js"></script>
@@ -64,7 +65,7 @@
     <div class="fanart-popup" id="fanart-popup">
         <div class="fanart-popup-overlay" id="fanart-popup-overlay"></div>
         <div class="fanart-popup-content">
-            <button class="fanart-popup-close" id="fanart-popup-close"><i class="fas fa-times"></i></button>
+            <button class="popup-close" id="fanart-popup-close"><i class="fas fa-times"></i></button>
             <img id="fanart-popup-img" src="" alt="">
             <div class="fanart-popup-info">
                 <h3 id="fanart-popup-title"></h3>
@@ -76,81 +77,85 @@
     </div>
 
     <!-- Submit modal -->
-    <div class="submit-modal" id="submit-modal">
-        <div class="submit-modal-overlay" id="submit-modal-overlay"></div>
-        <div class="submit-modal-content">
-            <button class="submit-modal-close" id="submit-modal-close"><i class="fas fa-times"></i></button>
+    <div class="popup" id="submit-modal">
+        <div class="popup-overlay" id="submit-modal-overlay"></div>
+        <div class="popup-content popup-content--form">
+            <button class="popup-close" id="submit-modal-close"><i class="fas fa-times"></i></button>
+            <div class="popup-form-body">
 
-            <h2 data-i18n="fanart.submitTitle">Invia la tua Fanart</h2>
-            <p data-i18n="fanart.submitDesc">Compila il form — la tua fanart arriverà direttamente al database per la revisione.</p>
+                <div class="popup-form-header">
+                    <i class="fas fa-paper-plane popup-form-icon"></i>
+                    <h2 data-i18n="fanart.submitTitle">Invia la tua Fanart</h2>
+                    <p data-i18n="fanart.submitDesc">Compila il form — la tua fanart arriverà direttamente al database per la revisione.</p>
+                </div>
 
-            <div class="submit-rules">
-                <h3 data-i18n="fanart.submitRules">Regole per l'invio</h3>
-                <ul>
-                    <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule1">Max 15 MB per immagine.</span></li>
-                    <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule2">Invia solo artwork originali tuoi.</span></li>
-                    <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule3">Nessun contenuto NSFW o offensivo.</span></li>
-                    <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule4">Formati accettati: JPG, PNG, GIF, WEBP.</span></li>
-                    <li><i class="fas fa-check-circle"></i> <span data-i18n="fanart.rule5">Includi il titolo dell'opera e il tuo nome/username.</span></li>
-                </ul>
-            </div>
+                <div class="submit-rules">
+                    <h3 data-i18n="fanart.submitRules"><i class="fas fa-list-check"></i> Regole per l'invio</h3>
+                    <ul>
+                        <li data-i18n="fanart.rule1">Invia solo artwork originali tuoi.</li>
+                        <li data-i18n="fanart.rule2">Nessun contenuto NSFW o offensivo.</li>
+                        <li data-i18n="fanart.rule3">Formati accettati: JPG, PNG, GIF, WEBP — max 15 MB.</li>
+                        <li data-i18n="fanart.rule4">Includi il titolo dell'opera e il tuo nome/username.</li>
+                    </ul>
+                </div>
 
-            <div class="sf-group">
-                <label class="sf-label" for="fa-title">Titolo dell'opera <span class="sf-req">*</span></label>
-                <input class="sf-input" id="fa-title" type="text" placeholder="Es. Glacio nel bosco" maxlength="120" required>
-            </div>
+                <div class="sf-group">
+                    <label class="sf-label" for="fa-title">Titolo dell'opera <span class="sf-req">*</span></label>
+                    <input class="sf-input" id="fa-title" type="text" placeholder="Es. Glacio nel bosco" maxlength="120" required>
+                </div>
 
-            <div class="sf-group">
-                <label class="sf-label" for="fa-artist">Il tuo nome / username <span class="sf-req">*</span></label>
-                <input class="sf-input" id="fa-artist" type="text" placeholder="Es. ArtistaNome" maxlength="80" required>
-            </div>
+                <div class="sf-group">
+                    <label class="sf-label" for="fa-artist">Il tuo nome / username <span class="sf-req">*</span></label>
+                    <input class="sf-input" id="fa-artist" type="text" placeholder="Es. ArtistaNome" maxlength="80" required>
+                </div>
 
-            <div class="sf-group">
-                <label class="sf-label">Immagine <span class="sf-req">*</span></label>
-                <div class="sf-dropzone" id="fa-dropzone">
-                    <input type="file" id="fa-image-file" accept="image/jpeg,image/png,image/gif,image/webp" hidden>
-                    <div class="sf-dropzone-inner" id="fa-dropzone-inner">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <span class="sf-dropzone-label">Trascina qui o <button type="button" class="sf-dropzone-pick" id="fa-pick-btn">scegli file</button></span>
-                        <span class="sf-hint">JPG, PNG, GIF, WEBP — max 15 MB</span>
-                    </div>
-                    <div class="sf-dropzone-preview" id="fa-preview" style="display:none;">
-                        <img id="fa-preview-img" src="" alt="">
-                        <button type="button" class="sf-dropzone-remove" id="fa-remove-btn"><i class="fas fa-times"></i></button>
-                        <span class="sf-dropzone-filename" id="fa-filename"></span>
+                <div class="sf-group">
+                    <label class="sf-label">Immagine <span class="sf-req">*</span></label>
+                    <div class="sf-dropzone" id="fa-dropzone">
+                        <input type="file" id="fa-image-file" accept="image/jpeg,image/png,image/gif,image/webp" hidden>
+                        <div class="sf-dropzone-inner" id="fa-dropzone-inner">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span class="sf-dropzone-label">Trascina qui o <button type="button" class="sf-dropzone-pick" id="fa-pick-btn">scegli file</button></span>
+                            <span class="sf-hint">JPG, PNG, GIF, WEBP — max 15 MB</span>
+                        </div>
+                        <div class="sf-dropzone-preview" id="fa-preview" style="display:none;">
+                            <img id="fa-preview-img" src="" alt="">
+                            <button type="button" class="sf-dropzone-remove" id="fa-remove-btn"><i class="fas fa-times"></i></button>
+                            <span class="sf-dropzone-filename" id="fa-filename"></span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="sf-group">
-                <label class="sf-label" for="fa-tags-input">Tag</label>
-                <div class="fa-tag-chips" id="fa-tag-chips"></div>
-                <div class="fa-tag-input-row">
-                    <input class="sf-input" id="fa-tags-input" type="text"
-                        placeholder="Es. digitale; fan art; chibi"
-                        autocomplete="off" maxlength="200">
-                    <button type="button" class="fa-tag-suggest-btn" id="fa-tag-suggest-btn" title="Proponi nuovi tag">
-                        <i class="fas fa-plus"></i>
+                <div class="sf-group">
+                    <label class="sf-label" for="fa-tags-input">Tag</label>
+                    <div class="fa-tag-chips" id="fa-tag-chips"></div>
+                    <div class="fa-tag-input-row">
+                        <input class="sf-input" id="fa-tags-input" type="text"
+                            placeholder="Es. digitale; fan art; chibi"
+                            autocomplete="off" maxlength="200">
+                        <button type="button" class="fa-tag-suggest-btn" id="fa-tag-suggest-btn" title="Proponi nuovi tag">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <span class="sf-hint">Separa i tag con <code>;</code> — se vuoto verrà usato <em>untagged</em>.</span>
+                </div>
+
+                <div class="sf-group">
+                    <label class="sf-label" for="fa-socials">Social link</label>
+                    <input class="sf-input" id="fa-socials" type="url" placeholder="https://twitter.com/... (opzionale)">
+                    <span class="sf-hint">Link principale al tuo profilo — opzionale</span>
+                </div>
+
+                <div class="sf-feedback" id="fa-feedback"></div>
+
+                <div class="popup-form-actions">
+                    <button class="sf-submit-btn" id="fa-submit-btn" type="button">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Invia fanart</span>
                     </button>
+                    <button class="popup-form-close-btn" id="submit-close-btn" type="button">Chiudi</button>
                 </div>
-                <span class="sf-hint">Separa i tag con <code>;</code> — se vuoto verrà usato <em>untagged</em>. Tag non presenti verranno messi in revisione.</span>
-                <div class="fa-tag-preview" id="fa-tag-preview"></div>
-            </div>
 
-            <div class="sf-group">
-                <label class="sf-label" for="fa-socials">Social link</label>
-                <input class="sf-input" id="fa-socials" type="url" placeholder="https://twitter.com/... (opzionale)">
-                <span class="sf-hint">Link principale al tuo profilo (Twitter/X, Instagram, ecc.) — opzionale</span>
-            </div>
-
-            <div class="sf-feedback" id="fa-feedback"></div>
-
-            <div class="submit-actions">
-                <button class="sf-submit-btn" id="fa-submit-btn" type="button">
-                    <i class="fas fa-paper-plane"></i>
-                    <span>Invia fanart</span>
-                </button>
-                <button class="submit-close-btn" id="submit-close-btn" data-i18n="fanart.submitClose">Chiudi</button>
             </div>
         </div>
     </div>

@@ -266,27 +266,12 @@
 .fanart-social-link.bluesky:hover  { background: rgba(0,133,255,0.15); border-color: #0085FF; color: #0085FF; }
 .fanart-social-link.website:hover  { background: rgba(91,156,246,0.15); border-color: var(--accent); color: var(--accent); }
 
-.submit-rules {
-  background: var(--bg-raised); border: 1px solid var(--border);
-  border-radius: var(--radius-md); padding: 1.1rem 1.3rem;
-}
-.submit-rules h3 {
-  font-family: 'Fredoka', sans-serif; font-size: 0.82rem; font-weight: 700;
-  letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.75rem;
-}
-.submit-rules ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
-.submit-rules ul li { display: flex; align-items: flex-start; gap: 0.65rem; font-family: 'Fredoka', sans-serif; font-size: 0.875rem; color: var(--text-muted); line-height: 1.5; }
-.submit-rules ul li i { color: #667eea; margin-top: 0.15rem; flex-shrink: 0; }
-.submit-rules ul li span { flex: 1; }
 
 @keyframes heroFadeDown {
   from { opacity: 0; transform: translateY(-20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 768px) {
-  .submit-modal-content { padding: 1.6rem 1.2rem; }
-}
 
 @media (max-width: 480px) {
   .fanart-main { padding: 1rem; }

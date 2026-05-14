@@ -473,7 +473,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // click sul modal (area fuori dal content) chiude — stesso pattern vtpedia
     const submitModal   = document.getElementById('submit-modal');
-    const submitContent = submitModal?.querySelector('.submit-modal-content');
+    const submitContent = submitModal?.querySelector('.popup-content--form');
     submitModal?.addEventListener('click', closeSubmitModal);
     submitContent?.addEventListener('click', (e) => e.stopPropagation());
 

@@ -22,7 +22,7 @@ function _clearFeedback(msgEl) {
 function initAboutSubmit() {
   const openBtn   = document.getElementById('about-open-form-btn');
   const modal     = document.getElementById('about-modal');
-  const content   = modal?.querySelector('.submit-modal-content');
+  const content   = modal?.querySelector('.popup-content--form');
   const closeBtn  = document.getElementById('about-modal-close');
   const closeBtn2 = document.getElementById('about-modal-close-btn');
   const submitBtn = document.getElementById('about-submit-btn');

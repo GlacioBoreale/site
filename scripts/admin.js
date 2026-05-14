@@ -2,13 +2,24 @@
 
 const ADMIN_EMAIL = 'coldesticecube@outlook.com';
 
+const PAGE_SIZE = 25;
+
 let _subs  = [];
 let _users = [];
 let _saves = [];
 let _subStatusFilter = 'all';
 let _subTypeFilter   = 'all';
+let _subSearch  = '';
 let _userSearch = '';
 let _saveSearch = '';
+let _subPage  = 1;
+let _userPage = 1;
+let _savePage = 1;
+let _subSort  = { key: null, dir: 1 };
+let _userSort = { key: null, dir: 1 };
+let _saveSort = { key: null, dir: 1 };
+let _subSelected = new Set();
+let _subFocusIdx = -1;
 
 function _isAdmin() {
   const user = Auth.getUser();
@@ -29,7 +40,7 @@ function _guard() {
 
 async function _loadAll() {
   _spinRefresh(true);
-  await Promise.allSettled([_loadStats(), _loadSubmissions(), _loadUsers(), _loadSaves()]);
+  await Promise.allSettled([_loadStats(), _loadTrends(), _loadSubmissions(), _loadUsers(), _loadSaves()]);
   _spinRefresh(false);
 }
 
@@ -51,6 +62,7 @@ async function _loadStats() {
     const badge = document.getElementById('nav-badge-submissions');
     if (pending > 0) { badge.textContent = pending; badge.classList.add('visible'); }
     else badge.classList.remove('visible');
+    _markLoaded('overview');
   } catch(e) { console.error('stats', e); }
 }
 
@@ -68,6 +80,157 @@ function _renderBarList(elId, obj, total, colors) {
         <span class="adm-bar-count">${v}</span>
       </div>`;
   });
+}
+
+/* ── TRENDS — sparkline Overview ────────────────────── */
+async function _loadTrends() {
+  try {
+    const d = await Api.admin.getTrends(30);
+    _renderTrends(d);
+  } catch(e) { console.error('trends', e); }
+}
+
+function _fillDays(rows, days) {
+  const map = {};
+  (rows || []).forEach(r => {
+    const key = new Date(r.day).toISOString().slice(0, 10);
+    map[key] = r.count;
+  });
+  const out = [];
+  const today = new Date();
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const key = d.toISOString().slice(0, 10);
+    out.push({ day: key, count: map[key] || 0 });
+  }
+  return out;
+}
+
+function _sparklineSvg(series, color) {
+  const max = Math.max(1, ...series.map(p => p.count));
+  const n   = series.length;
+  const pts = series.map((p, i) => {
+    const x = n > 1 ? (i / (n - 1)) * 100 : 50;
+    const y = 28 - (p.count / max) * 26;
+    return `${x.toFixed(2)},${y.toFixed(2)}`;
+  }).join(' ');
+  return `
+    <svg class="adm-sparkline" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true">
+      <polygon points="0,30 ${pts} 100,30" fill="${color}" fill-opacity="0.12"></polygon>
+      <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"></polyline>
+    </svg>`;
+}
+
+function _renderTrends(data) {
+  const days    = data.days || 30;
+  const uSeries = _fillDays(data.users, days);
+  const sSeries = _fillDays(data.submissions, days);
+  const uTotal  = uSeries.reduce((a, p) => a + p.count, 0);
+  const sTotal  = sSeries.reduce((a, p) => a + p.count, 0);
+  const uEl = document.getElementById('ov-trend-users');
+  const sEl = document.getElementById('ov-trend-subs');
+  if (uEl) uEl.innerHTML = `
+    <div class="adm-trend-head">
+      <span class="adm-trend-total">${uTotal}</span>
+      <span class="adm-trend-cap">ultimi ${days} giorni</span>
+    </div>
+    ${_sparklineSvg(uSeries, '#5b9cf6')}`;
+  if (sEl) sEl.innerHTML = `
+    <div class="adm-trend-head">
+      <span class="adm-trend-total">${sTotal}</span>
+      <span class="adm-trend-cap">ultimi ${days} giorni</span>
+    </div>
+    ${_sparklineSvg(sSeries, '#a78bfa')}`;
+}
+
+/* ── TABLE HELPERS — sort + pagination ─────────────── */
+function _applySort(arr, sort, accessors) {
+  if (!sort.key || !accessors[sort.key]) return arr;
+  const acc = accessors[sort.key];
+  return [...arr].sort((a, b) => {
+    let va = acc(a), vb = acc(b);
+    if (va == null && vb == null) return 0;
+    if (va == null) return 1;
+    if (vb == null) return -1;
+    if (typeof va === 'string' || typeof vb === 'string') {
+      va = String(va).toLowerCase(); vb = String(vb).toLowerCase();
+    }
+    if (va < vb) return -sort.dir;
+    if (va > vb) return  sort.dir;
+    return 0;
+  });
+}
+
+function _sortableHead(label, key, sort) {
+  const active = sort.key === key;
+  const arrow  = active ? (sort.dir === 1 ? '▲' : '▼') : '';
+  return `<th class="adm-th-sort${active ? ' active' : ''}" data-sort-key="${key}">`
+       + `${label}<span class="adm-th-arrow">${arrow}</span></th>`;
+}
+
+function _bindSortHeaders(table, sort, rerender) {
+  table.querySelectorAll('th[data-sort-key]').forEach(th => {
+    th.addEventListener('click', () => {
+      const key = th.dataset.sortKey;
+      if (sort.key === key) sort.dir *= -1;
+      else { sort.key = key; sort.dir = 1; }
+      rerender();
+    });
+  });
+}
+
+function _paginate(arr, page, size) {
+  const totalPages = Math.max(1, Math.ceil(arr.length / size));
+  const p = Math.min(Math.max(1, page), totalPages);
+  const start = (p - 1) * size;
+  return { slice: arr.slice(start, start + size), page: p, totalPages, total: arr.length };
+}
+
+function _renderPagination(container, info, onPage) {
+  if (info.totalPages <= 1) return;
+  const from = (info.page - 1) * PAGE_SIZE + 1;
+  const to   = Math.min(info.page * PAGE_SIZE, info.total);
+  const bar  = document.createElement('div');
+  bar.className = 'adm-pagination';
+  bar.innerHTML = `
+    <span class="adm-pg-info">${from}–${to} di ${info.total}</span>
+    <div class="adm-pg-btns">
+      <button class="adm-pg-btn" data-pg="first" ${info.page === 1 ? 'disabled' : ''} title="Prima"><i class="fas fa-angles-left"></i></button>
+      <button class="adm-pg-btn" data-pg="prev"  ${info.page === 1 ? 'disabled' : ''} title="Precedente"><i class="fas fa-angle-left"></i></button>
+      <span class="adm-pg-current">${info.page} / ${info.totalPages}</span>
+      <button class="adm-pg-btn" data-pg="next" ${info.page === info.totalPages ? 'disabled' : ''} title="Successiva"><i class="fas fa-angle-right"></i></button>
+      <button class="adm-pg-btn" data-pg="last" ${info.page === info.totalPages ? 'disabled' : ''} title="Ultima"><i class="fas fa-angles-right"></i></button>
+    </div>`;
+  bar.querySelectorAll('.adm-pg-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const a = btn.dataset.pg;
+      const next = a === 'first' ? 1
+                 : a === 'prev'  ? info.page - 1
+                 : a === 'next'  ? info.page + 1
+                 : info.totalPages;
+      onPage(next);
+    });
+  });
+  container.appendChild(bar);
+}
+
+function _errorBox(message, retryFn) {
+  const box = document.createElement('div');
+  box.className = 'adm-empty adm-error';
+  box.innerHTML = `<i class="fas fa-triangle-exclamation"></i> ${_esc(message)} `
+    + `<button class="adm-btn adm-btn-detail adm-retry-btn"><i class="fas fa-rotate-right"></i> Riprova</button>`;
+  box.querySelector('.adm-retry-btn').addEventListener('click', retryFn);
+  return box;
+}
+
+const _LAST_LOAD_IDS = {
+  overview: 'ov-last-load', submissions: 'sub-last-load',
+  users: 'user-last-load', saves: 'save-last-load',
+};
+function _markLoaded(section) {
+  const el = document.getElementById(_LAST_LOAD_IDS[section]);
+  if (el) el.textContent = 'aggiornato ' + new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
 }
 
 function _openImgLightbox(url) {
@@ -94,33 +257,76 @@ async function _loadSubmissions() {
   try {
     const d = await Api.admin.getSubmissions();
     _subs = d.submissions || [];
+    _subSelected.clear();
     _renderSubs();
+    _markLoaded('submissions');
   } catch(e) {
-    document.getElementById('sub-list').innerHTML = `<div class="adm-empty"><i class="fas fa-triangle-exclamation"></i> ${_esc(e.message)}</div>`;
+    const c = document.getElementById('sub-list');
+    c.innerHTML = '';
+    c.appendChild(_errorBox(e.message, _loadSubmissions));
   }
 }
 
+const _subAccessors = {
+  title:  s => s.payload?.name || s.payload?.title || s.type,
+  type:   s => s.type,
+  status: s => s.status,
+  user:   s => s.username || '',
+  date:   s => s.created_at ? new Date(s.created_at).getTime() : 0,
+};
+
 function _renderSubs() {
-  const filtered = _subs.filter(s => {
-    const statusOk = _subStatusFilter === 'all' || s.status === _subStatusFilter;
-    const typeOk   = _subTypeFilter   === 'all' || s.type   === _subTypeFilter;
-    return statusOk && typeOk;
+  let filtered = _subs.filter(s => {
+    if (_subStatusFilter !== 'all' && s.status !== _subStatusFilter) return false;
+    if (_subTypeFilter   !== 'all' && s.type   !== _subTypeFilter)   return false;
+    if (_subSearch) {
+      const p = s.payload || {};
+      const hay = `${p.name || ''} ${p.title || ''} ${p.artist || ''} ${s.username || ''} ${s.type}`.toLowerCase();
+      if (!hay.includes(_subSearch.toLowerCase())) return false;
+    }
+    return true;
   });
-  if (!filtered.length) { document.getElementById('sub-list').innerHTML = '<div class="adm-empty">Nessuna entry trovata.</div>'; return; }
+  filtered = _applySort(filtered, _subSort, _subAccessors);
+
+  const container = document.getElementById('sub-list');
+  _subFocusIdx = -1;
+  if (!filtered.length) { container.innerHTML = '<div class="adm-empty">Nessuna entry trovata.</div>'; _updateBulkBar(); return; }
+
+  const info = _paginate(filtered, _subPage, PAGE_SIZE);
+  _subPage = info.page;
 
   const table = document.createElement('table');
   table.className = 'adm-table';
   table.innerHTML = `
     <thead><tr>
-      <th></th><th>Titolo / Nome</th><th>Tipo</th><th>Stato</th><th>Utente</th><th>Data</th><th>Azioni</th>
+      <th class="adm-check-col"><input type="checkbox" class="adm-check" id="sub-check-all" title="Seleziona pagina" aria-label="Seleziona tutta la pagina"></th>
+      <th></th>
+      ${_sortableHead('Titolo / Nome', 'title',  _subSort)}
+      ${_sortableHead('Tipo',          'type',   _subSort)}
+      ${_sortableHead('Stato',         'status', _subSort)}
+      ${_sortableHead('Utente',        'user',   _subSort)}
+      ${_sortableHead('Data',          'date',   _subSort)}
+      <th>Azioni</th>
     </tr></thead>
     <tbody id="sub-tbody"></tbody>
   `;
-  document.getElementById('sub-list').innerHTML = '';
-  document.getElementById('sub-list').appendChild(table);
+  container.innerHTML = '';
+  container.appendChild(table);
+  _bindSortHeaders(table, _subSort, () => { _subPage = 1; _renderSubs(); });
 
-  const tbody = document.getElementById('sub-tbody');
-  filtered.forEach(s => {
+  const checkAll = table.querySelector('#sub-check-all');
+  checkAll.addEventListener('change', () => {
+    table.querySelectorAll('#sub-tbody tr').forEach(r => {
+      const id = r.dataset.id;
+      if (checkAll.checked) _subSelected.add(id); else _subSelected.delete(id);
+      const cb = r.querySelector('.adm-row-check');
+      if (cb) cb.checked = checkAll.checked;
+    });
+    _updateBulkBar();
+  });
+
+  const tbody = table.querySelector('#sub-tbody');
+  info.slice.forEach(s => {
     const p     = s.payload || {};
     const title = p.name || p.title || s.type;
     const tr    = document.createElement('tr');
@@ -131,18 +337,19 @@ function _renderSubs() {
       : `<div class="adm-row-thumb" style="display:inline-flex;align-items:center;justify-content:center;color:rgba(255,255,255,.15)"><i class="fas fa-image"></i></div>`;
 
     tr.innerHTML = `
-      <td>${thumbHtml}</td>
-      <td class="adm-td-main">${_esc(title)}</td>
-      <td><span class="adm-badge adm-badge-type">${_esc(s.type)}</span></td>
-      <td><span class="adm-badge adm-badge-${s.status}" id="status-badge-${s.id}">${_statusLabel(s.status)}</span></td>
-      <td>${_esc(s.username || '—')}</td>
-      <td>${_fmtDate(s.created_at)}</td>
-      <td class="adm-td-actions" id="actions-${s.id}">
-        <button class="adm-btn adm-btn-detail"><i class="fas fa-eye"></i></button>
-        ${s.status !== 'approved' ? `<button class="adm-btn adm-btn-approve" title="Approva"><i class="fas fa-check"></i></button>` : ''}
-        ${s.status !== 'rejected' ? `<button class="adm-btn adm-btn-reject"  title="Rifiuta"><i class="fas fa-times"></i></button>` : ''}
-        ${s.status !== 'pending'  ? `<button class="adm-btn adm-btn-pending" title="Pending"><i class="fas fa-clock"></i></button>` : ''}
-        <button class="adm-btn adm-btn-danger" title="Elimina"><i class="fas fa-trash"></i></button>
+      <td class="adm-check-col" data-label=""><input type="checkbox" class="adm-check adm-row-check" aria-label="Seleziona riga"></td>
+      <td data-label="">${thumbHtml}</td>
+      <td class="adm-td-main" data-label="Titolo / Nome">${_esc(title)}</td>
+      <td data-label="Tipo"><span class="adm-badge adm-badge-type">${_esc(s.type)}</span></td>
+      <td data-label="Stato"><span class="adm-badge adm-badge-${s.status}" id="status-badge-${s.id}">${_statusLabel(s.status)}</span></td>
+      <td data-label="Utente">${_esc(s.username || '—')}</td>
+      <td data-label="Data">${_fmtDate(s.created_at)}</td>
+      <td class="adm-td-actions" data-label="Azioni" id="actions-${s.id}">
+        <button class="adm-btn adm-btn-detail" title="Dettaglio" aria-label="Dettaglio"><i class="fas fa-eye"></i></button>
+        ${s.status !== 'approved' ? `<button class="adm-btn adm-btn-approve" title="Approva" aria-label="Approva"><i class="fas fa-check"></i></button>` : ''}
+        ${s.status !== 'rejected' ? `<button class="adm-btn adm-btn-reject"  title="Rifiuta" aria-label="Rifiuta"><i class="fas fa-times"></i></button>` : ''}
+        ${s.status !== 'pending'  ? `<button class="adm-btn adm-btn-pending" title="Pending" aria-label="Rimetti in attesa"><i class="fas fa-clock"></i></button>` : ''}
+        <button class="adm-btn adm-btn-danger" title="Elimina" aria-label="Elimina"><i class="fas fa-trash"></i></button>
       </td>
     `;
 
@@ -154,7 +361,81 @@ function _renderSubs() {
     tr.querySelector('.adm-btn-reject')?.addEventListener('click',  () => _updateSub(s, 'rejected', tr));
     tr.querySelector('.adm-btn-pending')?.addEventListener('click', () => _updateSub(s, 'pending',  tr));
     tr.querySelector('.adm-btn-danger')?.addEventListener('click',  () => _deleteSub(s.id));
+
+    const rowCheck = tr.querySelector('.adm-row-check');
+    rowCheck.checked = _subSelected.has(String(s.id));
+    rowCheck.addEventListener('change', () => _toggleSubSelect(String(s.id)));
+
     tbody.appendChild(tr);
+  });
+
+  _syncCheckAll();
+  _updateBulkBar();
+  _renderPagination(container, info, p => { _subPage = p; _renderSubs(); });
+}
+
+/* ── BULK SELECTION ─────────────────────────────────── */
+function _toggleSubSelect(id) {
+  if (_subSelected.has(id)) _subSelected.delete(id);
+  else _subSelected.add(id);
+  const cb = document.querySelector(`#sub-tbody tr[data-id="${id}"] .adm-row-check`);
+  if (cb) cb.checked = _subSelected.has(id);
+  _syncCheckAll();
+  _updateBulkBar();
+}
+
+function _syncCheckAll() {
+  const checkAll = document.getElementById('sub-check-all');
+  if (!checkAll) return;
+  const rows = document.querySelectorAll('#sub-tbody tr');
+  checkAll.checked = rows.length > 0 && [...rows].every(r => _subSelected.has(r.dataset.id));
+}
+
+function _updateBulkBar() {
+  const bar = document.getElementById('sub-bulk-bar');
+  if (!bar) return;
+  const n = _subSelected.size;
+  const nEl = document.getElementById('sub-bulk-n');
+  if (nEl) nEl.textContent = n;
+  bar.classList.toggle('visible', n > 0);
+}
+
+function _bulkUpdate(status) {
+  const ids = [..._subSelected].filter(id => _subs.some(s => String(s.id) === id));
+  if (!ids.length) return;
+  const verb = status === 'approved' ? 'Approva' : status === 'rejected' ? 'Rifiuta' : 'Rimetti in attesa';
+  _confirm(`${verb} ${ids.length} submission`, `Verranno aggiornate ${ids.length} submission. Continuare?`, async () => {
+    const results = await Promise.allSettled(ids.map(id => Api.admin.updateSubmission(id, status)));
+    let ok = 0;
+    results.forEach((r, i) => {
+      if (r.status === 'fulfilled') {
+        ok++;
+        const s = _subs.find(x => String(x.id) === ids[i]);
+        if (s) s.status = status;
+      }
+    });
+    _subSelected.clear();
+    _renderSubs();
+    _loadStats();
+    const fail = ids.length - ok;
+    _toast(`${ok} aggiornate${fail ? `, ${fail} fallite` : ''}`, fail ? 'err' : 'ok');
+  });
+}
+
+function _bulkDelete() {
+  const ids = [..._subSelected].filter(id => _subs.some(s => String(s.id) === id));
+  if (!ids.length) return;
+  _confirm(`Elimina ${ids.length} submission`, `Azione irreversibile su ${ids.length} submission. Continuare?`, async () => {
+    const results = await Promise.allSettled(ids.map(id => Api.admin.deleteSubmission(id)));
+    let ok = 0;
+    results.forEach((r, i) => {
+      if (r.status === 'fulfilled') { ok++; _subs = _subs.filter(s => String(s.id) !== ids[i]); }
+    });
+    _subSelected.clear();
+    _renderSubs();
+    _loadStats();
+    const fail = ids.length - ok;
+    _toast(`${ok} eliminate${fail ? `, ${fail} fallite` : ''}`, fail ? 'err' : 'ok');
   });
 }
 
@@ -172,11 +453,11 @@ async function _updateSub(s, status, tr) {
       const actionsCell = tr.querySelector(`#actions-${id}`);
       if (actionsCell) {
         actionsCell.innerHTML = `
-          <button class="adm-btn adm-btn-detail"><i class="fas fa-eye"></i></button>
-          ${status !== 'approved' ? `<button class="adm-btn adm-btn-approve" title="Approva"><i class="fas fa-check"></i></button>` : ''}
-          ${status !== 'rejected' ? `<button class="adm-btn adm-btn-reject"  title="Rifiuta"><i class="fas fa-times"></i></button>` : ''}
-          ${status !== 'pending'  ? `<button class="adm-btn adm-btn-pending" title="Pending"><i class="fas fa-clock"></i></button>` : ''}
-          <button class="adm-btn adm-btn-danger" title="Elimina"><i class="fas fa-trash"></i></button>
+          <button class="adm-btn adm-btn-detail" title="Dettaglio" aria-label="Dettaglio"><i class="fas fa-eye"></i></button>
+          ${status !== 'approved' ? `<button class="adm-btn adm-btn-approve" title="Approva" aria-label="Approva"><i class="fas fa-check"></i></button>` : ''}
+          ${status !== 'rejected' ? `<button class="adm-btn adm-btn-reject"  title="Rifiuta" aria-label="Rifiuta"><i class="fas fa-times"></i></button>` : ''}
+          ${status !== 'pending'  ? `<button class="adm-btn adm-btn-pending" title="Pending" aria-label="Rimetti in attesa"><i class="fas fa-clock"></i></button>` : ''}
+          <button class="adm-btn adm-btn-danger" title="Elimina" aria-label="Elimina"><i class="fas fa-trash"></i></button>
         `;
         actionsCell.querySelector('.adm-btn-detail')?.addEventListener('click', () => _openSubDetail(s));
         actionsCell.querySelector('.adm-btn-approve')?.addEventListener('click', () => _updateSub(s, 'approved', tr));
@@ -274,10 +555,10 @@ function _openSubDetail(s) {
       <textarea class="adm-drawer-note" id="drawer-note" placeholder="Aggiungi una nota...">${_esc(p.admin_note || '')}</textarea>
     </div>
     <div class="adm-drawer-actions">
-      ${s.status !== 'approved' ? `<button class="adm-btn adm-btn-approve" id="da-approve">✓ Approva</button>` : ''}
-      ${s.status !== 'rejected' ? `<button class="adm-btn adm-btn-reject"  id="da-reject">✕ Rifiuta</button>` : ''}
-      ${s.status !== 'pending'  ? `<button class="adm-btn adm-btn-pending" id="da-pending">⏱ Pending</button>` : ''}
-      <button class="adm-btn adm-btn-danger" id="da-delete">🗑 Elimina</button>
+      ${s.status !== 'approved' ? `<button class="adm-btn adm-btn-approve" id="da-approve"><i class="fas fa-check"></i> Approva</button>` : ''}
+      ${s.status !== 'rejected' ? `<button class="adm-btn adm-btn-reject"  id="da-reject"><i class="fas fa-times"></i> Rifiuta</button>` : ''}
+      ${s.status !== 'pending'  ? `<button class="adm-btn adm-btn-pending" id="da-pending"><i class="fas fa-clock"></i> Pending</button>` : ''}
+      <button class="adm-btn adm-btn-danger" id="da-delete"><i class="fas fa-trash"></i> Elimina</button>
     </div>
   `;
 
@@ -342,50 +623,83 @@ async function _loadUsers() {
     const d = await Api.admin.getUsers();
     _users = d.users || [];
     _renderUsers();
+    _markLoaded('users');
   } catch(e) {
-    document.getElementById('user-list').innerHTML = `<div class="adm-empty"><i class="fas fa-triangle-exclamation"></i> ${_esc(e.message)}</div>`;
+    const c = document.getElementById('user-list');
+    c.innerHTML = '';
+    c.appendChild(_errorBox(e.message, _loadUsers));
   }
 }
 
+const _userAccessors = {
+  username: u => u.username || '',
+  email:    u => u.email || '',
+  created:  u => u.created_at ? new Date(u.created_at).getTime() : 0,
+  points:   u => parseFloat(u.points)   || 0,
+  prestige: u => parseFloat(u.prestige) || 0,
+  xp:       u => parseFloat(u.xp_level) || 0,
+  research: u => parseFloat(u.research) || 0,
+  time:     u => parseFloat(u.total_time_sec) || 0,
+  optin:    u => u.opt_in ? 1 : 0,
+};
+
 function _renderUsers() {
   const q = _userSearch.toLowerCase();
-  const filtered = q ? _users.filter(u => u.username?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q)) : _users;
-  if (!filtered.length) { document.getElementById('user-list').innerHTML = '<div class="adm-empty">Nessun utente trovato.</div>'; return; }
+  let filtered = q ? _users.filter(u => u.username?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q)) : _users;
+  filtered = _applySort(filtered, _userSort, _userAccessors);
+
+  const container = document.getElementById('user-list');
+  if (!filtered.length) { container.innerHTML = '<div class="adm-empty">Nessun utente trovato.</div>'; return; }
+
+  const info = _paginate(filtered, _userPage, PAGE_SIZE);
+  _userPage = info.page;
 
   const table = document.createElement('table');
   table.className = 'adm-table';
   table.innerHTML = `
     <thead><tr>
-      <th>Username</th><th>Email</th><th>Registrato</th>
-      <th>Punti</th><th>Prestige</th><th>XP</th><th>Ricerca</th><th>Tempo</th><th>LB</th><th>Azioni</th>
+      ${_sortableHead('Username',   'username', _userSort)}
+      ${_sortableHead('Email',      'email',    _userSort)}
+      ${_sortableHead('Registrato', 'created',  _userSort)}
+      ${_sortableHead('Punti',      'points',   _userSort)}
+      ${_sortableHead('Prestige',   'prestige', _userSort)}
+      ${_sortableHead('XP',         'xp',       _userSort)}
+      ${_sortableHead('Ricerca',    'research', _userSort)}
+      ${_sortableHead('Tempo',      'time',     _userSort)}
+      ${_sortableHead('LB',         'optin',    _userSort)}
+      <th>Azioni</th>
     </tr></thead>
     <tbody id="user-tbody"></tbody>
   `;
-  document.getElementById('user-list').innerHTML = '';
-  document.getElementById('user-list').appendChild(table);
-  const tbody = document.getElementById('user-tbody');
-  filtered.forEach(u => {
+  container.innerHTML = '';
+  container.appendChild(table);
+  _bindSortHeaders(table, _userSort, () => { _userPage = 1; _renderUsers(); });
+
+  const tbody = table.querySelector('#user-tbody');
+  info.slice.forEach(u => {
     const tr = document.createElement('tr');
     const isAdmin = u.email === ADMIN_EMAIL;
     tr.innerHTML = `
-      <td class="adm-td-main">${_esc(u.username)}${isAdmin ? ' <span style="color:#a78bfa;font-size:.72rem">(admin)</span>' : ''}</td>
-      <td>${_esc(u.email)}</td>
-      <td>${_fmtDate(u.created_at)}</td>
-      <td class="adm-td-num">${_fmt(u.points)}</td>
-      <td class="adm-td-num">${_fmt(u.prestige)}</td>
-      <td class="adm-td-num">${u.xp_level ?? '—'}</td>
-      <td class="adm-td-num">${_fmt(u.research)}</td>
-      <td>${_fmtTime(u.total_time_sec)}</td>
-      <td><span class="adm-badge ${u.opt_in ? 'adm-badge-optin' : 'adm-badge-optout'}">${u.opt_in ? 'Sì' : 'No'}</span></td>
-      <td class="adm-td-actions">
-        <button class="adm-btn adm-btn-detail"><i class="fas fa-eye"></i></button>
-        ${!isAdmin ? `<button class="adm-btn adm-btn-danger" data-action="del-user"><i class="fas fa-trash"></i></button>` : ''}
+      <td class="adm-td-main" data-label="Username">${_esc(u.username)}${isAdmin ? ' <span style="color:#a78bfa;font-size:.72rem">(admin)</span>' : ''}</td>
+      <td data-label="Email">${_esc(u.email)}</td>
+      <td data-label="Registrato">${_fmtDate(u.created_at)}</td>
+      <td class="adm-td-num" data-label="Punti">${_fmt(u.points)}</td>
+      <td class="adm-td-num" data-label="Prestige">${_fmt(u.prestige)}</td>
+      <td class="adm-td-num" data-label="XP">${u.xp_level ?? '—'}</td>
+      <td class="adm-td-num" data-label="Ricerca">${_fmt(u.research)}</td>
+      <td data-label="Tempo">${_fmtTime(u.total_time_sec)}</td>
+      <td data-label="Leaderboard"><span class="adm-badge ${u.opt_in ? 'adm-badge-optin' : 'adm-badge-optout'}">${u.opt_in ? 'Sì' : 'No'}</span></td>
+      <td class="adm-td-actions" data-label="Azioni">
+        <button class="adm-btn adm-btn-detail" title="Dettaglio" aria-label="Dettaglio utente"><i class="fas fa-eye"></i></button>
+        ${!isAdmin ? `<button class="adm-btn adm-btn-danger" data-action="del-user" title="Elimina" aria-label="Elimina utente"><i class="fas fa-trash"></i></button>` : ''}
       </td>
     `;
     tr.querySelector('.adm-btn-detail')?.addEventListener('click', () => _openUserDetail(u));
     tr.querySelector('[data-action="del-user"]')?.addEventListener('click', () => _deleteUser(u.id, u.username));
     tbody.appendChild(tr);
   });
+
+  _renderPagination(container, info, p => { _userPage = p; _renderUsers(); });
 }
 
 function _openUserDetail(u) {
@@ -438,47 +752,79 @@ async function _loadSaves() {
     const d = await Api.admin.getSaves();
     _saves = d.saves || [];
     _renderSaves();
+    _markLoaded('saves');
   } catch(e) {
-    document.getElementById('save-list').innerHTML = `<div class="adm-empty"><i class="fas fa-triangle-exclamation"></i> ${_esc(e.message)}</div>`;
+    const c = document.getElementById('save-list');
+    c.innerHTML = '';
+    c.appendChild(_errorBox(e.message, _loadSaves));
   }
 }
 
+const _saveAccessors = {
+  user:     s => s.username || '',
+  points:   s => parseFloat(s.points)   || 0,
+  prestige: s => parseFloat(s.prestige) || 0,
+  xp:       s => parseFloat(s.xp_level) || 0,
+  research: s => parseFloat(s.research) || 0,
+  time:     s => parseFloat(s.total_time_sec) || 0,
+  optin:    s => s.opt_in ? 1 : 0,
+  updated:  s => s.updated_at ? new Date(s.updated_at).getTime() : 0,
+};
+
 function _renderSaves() {
   const q = _saveSearch.toLowerCase();
-  const filtered = q ? _saves.filter(s => s.username?.toLowerCase().includes(q) || s.email?.toLowerCase().includes(q)) : _saves;
-  if (!filtered.length) { document.getElementById('save-list').innerHTML = '<div class="adm-empty">Nessun salvataggio trovato.</div>'; return; }
+  let filtered = q ? _saves.filter(s => s.username?.toLowerCase().includes(q) || s.email?.toLowerCase().includes(q)) : _saves;
+  filtered = _applySort(filtered, _saveSort, _saveAccessors);
+
+  const container = document.getElementById('save-list');
+  if (!filtered.length) { container.innerHTML = '<div class="adm-empty">Nessun salvataggio trovato.</div>'; return; }
+
+  const info = _paginate(filtered, _savePage, PAGE_SIZE);
+  _savePage = info.page;
 
   const table = document.createElement('table');
   table.className = 'adm-table';
   table.innerHTML = `
     <thead><tr>
-      <th>Utente</th><th>Punti</th><th>Prestige</th><th>XP</th><th>Ricerca</th><th>Tempo</th><th>LB</th><th>Ultimo save</th><th>Azioni</th>
+      ${_sortableHead('Utente',      'user',     _saveSort)}
+      ${_sortableHead('Punti',       'points',   _saveSort)}
+      ${_sortableHead('Prestige',    'prestige', _saveSort)}
+      ${_sortableHead('XP',          'xp',       _saveSort)}
+      ${_sortableHead('Ricerca',     'research', _saveSort)}
+      ${_sortableHead('Tempo',       'time',     _saveSort)}
+      ${_sortableHead('LB',          'optin',    _saveSort)}
+      ${_sortableHead('Ultimo save', 'updated',  _saveSort)}
+      <th>Azioni</th>
     </tr></thead>
     <tbody id="save-tbody"></tbody>
   `;
-  document.getElementById('save-list').innerHTML = '';
-  document.getElementById('save-list').appendChild(table);
-  const tbody = document.getElementById('save-tbody');
-  filtered.forEach(s => {
+  container.innerHTML = '';
+  container.appendChild(table);
+  _bindSortHeaders(table, _saveSort, () => { _savePage = 1; _renderSaves(); });
+
+  const tbody = table.querySelector('#save-tbody');
+  info.slice.forEach(s => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td class="adm-td-main">${_esc(s.username)}<br><span style="font-size:.72rem;color:rgba(255,255,255,.3)">${_esc(s.email)}</span></td>
-      <td class="adm-td-num">${_fmt(s.points)}</td>
-      <td class="adm-td-num">${_fmt(s.prestige)}</td>
-      <td class="adm-td-num">${s.xp_level ?? '—'}</td>
-      <td class="adm-td-num">${_fmt(s.research)}</td>
-      <td>${_fmtTime(s.total_time_sec)}</td>
-      <td><span class="adm-badge ${s.opt_in ? 'adm-badge-optin' : 'adm-badge-optout'}">${s.opt_in ? 'Sì' : 'No'}</span></td>
-      <td>${_fmtDate(s.updated_at)}</td>
-      <td class="adm-td-actions">
-        <button class="adm-btn adm-btn-detail"><i class="fas fa-eye"></i></button>
-        ${s.email !== ADMIN_EMAIL ? `<button class="adm-btn adm-btn-danger" data-action="del-save"><i class="fas fa-trash"></i></button>` : ''}
+      <td class="adm-td-main" data-label="Utente">${_esc(s.username)}<br><span style="font-size:.72rem;color:rgba(255,255,255,.3)">${_esc(s.email)}</span></td>
+      <td class="adm-td-num" data-label="Punti">${_fmt(s.points)}</td>
+      <td class="adm-td-num" data-label="Prestige">${_fmt(s.prestige)}</td>
+      <td class="adm-td-num" data-label="XP">${s.xp_level ?? '—'}</td>
+      <td class="adm-td-num" data-label="Ricerca">${_fmt(s.research)}</td>
+      <td data-label="Tempo">${_fmtTime(s.total_time_sec)}</td>
+      <td data-label="Leaderboard"><span class="adm-badge ${s.opt_in ? 'adm-badge-optin' : 'adm-badge-optout'}">${s.opt_in ? 'Sì' : 'No'}</span></td>
+      <td data-label="Ultimo save">${_fmtDate(s.updated_at)}</td>
+      <td class="adm-td-actions" data-label="Azioni">
+        <button class="adm-btn adm-btn-detail" title="Dettaglio" aria-label="Dettaglio salvataggio"><i class="fas fa-eye"></i></button>
+        ${s.email !== ADMIN_EMAIL ? `<button class="adm-btn adm-btn-danger" data-action="del-save" title="Elimina" aria-label="Elimina salvataggio"><i class="fas fa-trash"></i></button>` : ''}
       </td>
     `;
     tr.querySelector('.adm-btn-detail')?.addEventListener('click', () => _openSaveDetail(s));
     tr.querySelector('[data-action="del-save"]')?.addEventListener('click', () => _deleteSave(s.user_id, s.username));
     tbody.appendChild(tr);
   });
+
+  _renderPagination(container, info, p => { _savePage = p; _renderSaves(); });
 }
 
 function _openSaveDetail(s) {
@@ -521,13 +867,48 @@ function _deleteSave(userId, username) {
   });
 }
 
+/* ── FOCUS TRAP (stackable) ─────────────────────────── */
+const _FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+let _trapStack = [];
+
+function _trapFocus(container) {
+  const prev = _trapStack[_trapStack.length - 1];
+  if (prev) document.removeEventListener('keydown', prev.handler);
+  const focusables = () => [...container.querySelectorAll(_FOCUSABLE)]
+    .filter(el => !el.disabled && el.offsetParent !== null);
+  const handler = (e) => {
+    if (e.key !== 'Tab') return;
+    const els = focusables();
+    if (!els.length) return;
+    const first = els[0], last = els[els.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  };
+  _trapStack.push({ handler, prevFocus: document.activeElement });
+  document.addEventListener('keydown', handler);
+  const f = focusables()[0];
+  if (f) f.focus();
+}
+
+function _releaseFocus() {
+  const top = _trapStack.pop();
+  if (!top) return;
+  document.removeEventListener('keydown', top.handler);
+  const restored = _trapStack[_trapStack.length - 1];
+  if (restored) document.addEventListener('keydown', restored.handler);
+  if (top.prevFocus?.focus) top.prevFocus.focus();
+}
+
 function _openDrawer() {
   document.getElementById('adm-drawer-overlay').style.display = 'block';
   document.body.style.overflow = 'hidden';
+  _trapFocus(document.getElementById('adm-drawer'));
 }
 function _closeDrawer() {
+  if (document.getElementById('adm-drawer-overlay').style.display === 'none') return;
   document.getElementById('adm-drawer-overlay').style.display = 'none';
   document.body.style.overflow = '';
+  _releaseFocus();
 }
 
 let _confirmCb = null;
@@ -536,10 +917,13 @@ function _confirm(title, msg, cb) {
   document.getElementById('adm-confirm-msg').textContent   = msg;
   _confirmCb = cb;
   document.getElementById('adm-confirm-overlay').style.display = 'flex';
+  _trapFocus(document.querySelector('.adm-confirm-box'));
 }
 function _closeConfirm() {
+  if (document.getElementById('adm-confirm-overlay').style.display === 'none') return;
   document.getElementById('adm-confirm-overlay').style.display = 'none';
   _confirmCb = null;
+  _releaseFocus();
 }
 
 let _toastTimer = null;
@@ -581,6 +965,82 @@ function _spinRefresh(on) {
   document.getElementById('adm-refresh-btn')?.classList.toggle('spinning', on);
 }
 
+/* ── NAVIGATION + URL HASH ─────────────────────────── */
+const _SECTIONS = ['overview', 'submissions', 'users', 'saves'];
+
+function _goToSection(section, opts = {}) {
+  if (!_SECTIONS.includes(section)) section = 'overview';
+  document.querySelectorAll('.adm-nav-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.section === section));
+  document.querySelectorAll('.adm-section').forEach(s =>
+    s.classList.toggle('active', s.id === 'section-' + section));
+  if (section === 'submissions' && opts.status) {
+    _subStatusFilter = opts.status;
+    _subPage = 1;
+    document.querySelectorAll('#sub-status-tabs .adm-tab').forEach(x =>
+      x.classList.toggle('active', x.dataset.val === opts.status));
+    _renderSubs();
+  }
+  _syncHash();
+}
+
+function _syncHash() {
+  const active = document.querySelector('.adm-nav-btn.active')?.dataset.section || 'overview';
+  let hash = active;
+  if (active === 'submissions' && _subStatusFilter !== 'all') hash += '/' + _subStatusFilter;
+  history.replaceState(null, '', '#' + hash);
+}
+
+function _applyHash() {
+  const raw = (location.hash || '').replace(/^#/, '');
+  if (!raw) return;
+  const [section, sub] = raw.split('/');
+  const validStatus = ['pending', 'approved', 'rejected', 'all'];
+  _goToSection(section, sub && validStatus.includes(sub) ? { status: sub } : {});
+}
+
+/* ── KEYBOARD NAV (submissions) ─────────────────────── */
+function _setSubFocus(idx) {
+  const rows = document.querySelectorAll('#sub-tbody tr');
+  rows.forEach((r, i) => r.classList.toggle('adm-row-focus', i === idx));
+  _subFocusIdx = idx;
+  if (rows[idx]) rows[idx].scrollIntoView({ block: 'nearest' });
+}
+
+function _moveSubFocus(delta) {
+  const rows = document.querySelectorAll('#sub-tbody tr');
+  if (!rows.length) return;
+  const idx = Math.max(0, Math.min(rows.length - 1, _subFocusIdx + delta));
+  _setSubFocus(idx);
+}
+
+function _subRowAction(action) {
+  const tr = document.querySelectorAll('#sub-tbody tr')[_subFocusIdx];
+  if (!tr) return;
+  const s = _subs.find(x => String(x.id) === String(tr.dataset.id));
+  if (!s) return;
+  if (action === 'detail') _openSubDetail(s);
+  else if (action === 'select') _toggleSubSelect(String(s.id));
+  else _updateSub(s, action, tr);
+}
+
+function _handleSubKeys(e) {
+  if (!document.getElementById('section-submissions')?.classList.contains('active')) return;
+  const tag = document.activeElement?.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+  if (document.getElementById('adm-drawer-overlay')?.style.display === 'block') return;
+  if (document.getElementById('adm-confirm-overlay')?.style.display === 'flex') return;
+  switch (e.key) {
+    case 'j': e.preventDefault(); _moveSubFocus(1);  break;
+    case 'k': e.preventDefault(); _moveSubFocus(-1); break;
+    case 'a': _subRowAction('approved'); break;
+    case 'r': _subRowAction('rejected'); break;
+    case 'p': _subRowAction('pending');  break;
+    case 'x': e.preventDefault(); _subRowAction('select'); break;
+    case 'Enter': _subRowAction('detail'); break;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const tryInit = () => {
     if (typeof Auth === 'undefined' || typeof Api === 'undefined') { setTimeout(tryInit, 50); return; }
@@ -589,11 +1049,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('adm-refresh-btn')?.addEventListener('click', _loadAll);
 
     document.querySelectorAll('.adm-nav-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.adm-nav-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.adm-section').forEach(s => s.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById('section-' + btn.dataset.section)?.classList.add('active');
+      btn.addEventListener('click', () => _goToSection(btn.dataset.section));
+    });
+
+    document.querySelectorAll('.adm-stat-card[data-goto]').forEach(card => {
+      const go = () => _goToSection(card.dataset.goto, card.dataset.gotoStatus ? { status: card.dataset.gotoStatus } : {});
+      card.addEventListener('click', go);
+      card.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
       });
     });
 
@@ -602,7 +1065,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('#sub-status-tabs .adm-tab').forEach(x => x.classList.remove('active'));
         t.classList.add('active');
         _subStatusFilter = t.dataset.val;
+        _subPage = 1;
+        _subSelected.clear();
         _renderSubs();
+        _syncHash();
       });
     });
 
@@ -611,18 +1077,40 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('#sub-type-tabs .adm-tab').forEach(x => x.classList.remove('active'));
         t.classList.add('active');
         _subTypeFilter = t.dataset.val;
+        _subPage = 1;
+        _subSelected.clear();
         _renderSubs();
       });
     });
 
-    let _uSearchTimer, _sSearchTimer;
+    document.getElementById('sub-bulk-approve')?.addEventListener('click', () => _bulkUpdate('approved'));
+    document.getElementById('sub-bulk-reject')?.addEventListener('click',  () => _bulkUpdate('rejected'));
+    document.getElementById('sub-bulk-delete')?.addEventListener('click',  _bulkDelete);
+    document.getElementById('sub-bulk-clear')?.addEventListener('click',   () => { _subSelected.clear(); _renderSubs(); });
+
+    const _sectionLoaders = {
+      'ov-refresh': () => { _loadStats(); _loadTrends(); },
+      'sub-refresh': _loadSubmissions,
+      'user-refresh': _loadUsers, 'save-refresh': _loadSaves,
+    };
+    Object.entries(_sectionLoaders).forEach(([btnId, loader]) => {
+      document.getElementById(btnId)?.addEventListener('click', loader);
+    });
+
+    document.addEventListener('keydown', _handleSubKeys);
+
+    let _subSearchTimer, _uSearchTimer, _sSearchTimer;
+    document.getElementById('sub-search')?.addEventListener('input', e => {
+      clearTimeout(_subSearchTimer);
+      _subSearchTimer = setTimeout(() => { _subSearch = e.target.value; _subPage = 1; _subSelected.clear(); _renderSubs(); }, 200);
+    });
     document.getElementById('user-search')?.addEventListener('input', e => {
       clearTimeout(_uSearchTimer);
-      _uSearchTimer = setTimeout(() => { _userSearch = e.target.value; _renderUsers(); }, 200);
+      _uSearchTimer = setTimeout(() => { _userSearch = e.target.value; _userPage = 1; _renderUsers(); }, 200);
     });
     document.getElementById('save-search')?.addEventListener('input', e => {
       clearTimeout(_sSearchTimer);
-      _sSearchTimer = setTimeout(() => { _saveSearch = e.target.value; _renderSaves(); }, 200);
+      _sSearchTimer = setTimeout(() => { _saveSearch = e.target.value; _savePage = 1; _renderSaves(); }, 200);
     });
 
     document.getElementById('adm-drawer-backdrop')?.addEventListener('click', _closeDrawer);
@@ -634,7 +1122,14 @@ document.addEventListener('DOMContentLoaded', () => {
       _closeConfirm();
       cb?.();
     });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') { _closeDrawer(); _closeConfirm(); } });
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape') return;
+      if (document.getElementById('adm-confirm-overlay').style.display !== 'none') _closeConfirm();
+      else _closeDrawer();
+    });
+
+    _applyHash();
+    window.addEventListener('hashchange', _applyHash);
   };
   tryInit();
 });

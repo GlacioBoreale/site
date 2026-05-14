@@ -303,7 +303,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitPopup   = document.getElementById('submit-popup');
     const submitClose   = document.getElementById('submit-popup-close');
     const submitOverlay = document.getElementById('submit-popup-overlay');
-    const submitContent = submitPopup?.querySelector('.submit-popup-content');
+    const submitContent = submitPopup?.querySelector('.popup-content--form');
+    const sfCloseBtn    = document.getElementById('sf-close-btn');
 
     function openSubmitPopup() {
         submitPopup.classList.add('active');
@@ -319,6 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     submitBtn?.addEventListener('click', openSubmitPopup);
     submitClose?.addEventListener('click', closeSubmitPopup);
+    sfCloseBtn?.addEventListener('click', closeSubmitPopup);
     submitOverlay?.addEventListener('click', closeSubmitPopup);
     submitContent?.addEventListener('click', (e) => e.stopPropagation());
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSubmitPopup(); });

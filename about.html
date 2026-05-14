@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="components/footer/footer.css">
     <link rel="stylesheet" href="components/achievements/achievements.css">
     <link rel="stylesheet" href="style/about.css">
+    <link rel="stylesheet" href="style/popup-form.css">
     <script src="scripts/api.js"></script>
     <script src="scripts/auth.js"></script>
     <script src="components/navbar/nav.js"></script>
@@ -108,81 +109,85 @@
     </main>
 
     <!-- Candidatura popup -->
-    <div class="submit-modal" id="about-modal">
-        <div class="submit-modal-overlay" id="about-modal-overlay"></div>
-        <div class="submit-modal-content">
-            <button class="submit-modal-close" id="about-modal-close"><i class="fas fa-times"></i></button>
+    <div class="popup" id="about-modal">
+        <div class="popup-overlay" id="about-modal-overlay"></div>
+        <div class="popup-content popup-content--form">
+            <button class="popup-close" id="about-modal-close"><i class="fas fa-times"></i></button>
+            <div class="popup-form-body">
 
-            <h2>Candidatura Team</h2>
-            <p>Compila tutti i campi — la candidatura arriverà direttamente al database per la revisione.</p>
+                <div class="popup-form-header">
+                    <i class="fas fa-paper-plane popup-form-icon"></i>
+                    <h2>Candidatura Team</h2>
+                    <p>Compila tutti i campi — la candidatura arriverà direttamente al database per la revisione.</p>
+                </div>
 
-            <!-- CAMPI PUBBLICI (mostrati nella card) -->
-            <div class="about-form-section-title"><i class="fas fa-id-card"></i> Informazioni pubbliche</div>
-            <p class="about-form-section-hint">Questi dati verranno mostrati nella tua card in Chi siamo se accettato.</p>
+                <div class="about-form-section-title"><i class="fas fa-id-card"></i> Informazioni pubbliche</div>
+                <p class="about-form-section-hint">Questi dati verranno mostrati nella tua card in Chi siamo se accettato.</p>
 
-            <div class="sf-group">
-                <label class="sf-label" for="about-display-name">Display Name <span class="sf-req">*</span></label>
-                <input class="sf-input" id="about-display-name" type="text" placeholder="Es. GlacioBoreale" maxlength="50" required>
-            </div>
+                <div class="sf-group">
+                    <label class="sf-label" for="about-display-name">Display Name <span class="sf-req">*</span></label>
+                    <input class="sf-input" id="about-display-name" type="text" placeholder="Es. GlacioBoreale" maxlength="50" required>
+                </div>
 
-            <div class="sf-group">
-                <label class="sf-label" for="about-role">Ruolo <span class="sf-req">*</span></label>
-                <input class="sf-input" id="about-role" type="text" placeholder="Es. Moderatore, Editor, Grafico..." maxlength="60" required>
-            </div>
+                <div class="sf-group">
+                    <label class="sf-label" for="about-role">Ruolo <span class="sf-req">*</span></label>
+                    <input class="sf-input" id="about-role" type="text" placeholder="Es. Moderatore, Editor, Grafico..." maxlength="60" required>
+                </div>
 
-            <div class="sf-group">
-                <label class="sf-label" for="about-desc">Descrizione <span class="sf-req">*</span></label>
-                <textarea class="sf-input sf-textarea" id="about-desc" placeholder="Una breve descrizione di te che comparirà nella card..." rows="3" maxlength="200" required></textarea>
-                <span class="sf-charcount"><span id="about-desc-count">0</span>/200</span>
-            </div>
+                <div class="sf-group">
+                    <label class="sf-label" for="about-desc">Descrizione <span class="sf-req">*</span></label>
+                    <textarea class="sf-input sf-textarea" id="about-desc" placeholder="Una breve descrizione di te che comparirà nella card..." rows="3" maxlength="200" required></textarea>
+                    <span class="sf-charcount"><span id="about-desc-count">0</span>/200</span>
+                </div>
 
-            <div class="sf-group">
-                <label class="sf-label" for="about-socials">Link social pubblici</label>
-                <input class="sf-input" id="about-socials" type="text" placeholder="Es. https://twitter.com/utente, https://twitch.tv/utente" maxlength="300">
-                <span class="sf-hint">Separati da virgola — verranno mostrati nella card</span>
-            </div>
+                <div class="sf-group">
+                    <label class="sf-label" for="about-socials">Link social pubblici</label>
+                    <input class="sf-input" id="about-socials" type="text" placeholder="Es. https://twitter.com/utente, https://twitch.tv/utente" maxlength="300">
+                    <span class="sf-hint">Separati da virgola — verranno mostrati nella card</span>
+                </div>
 
-            <div class="sf-group">
-                <label class="sf-label">Immagine profilo <span class="sf-req">*</span></label>
-                <div class="sf-dropzone" id="about-dropzone">
-                    <input type="file" id="about-image-file" accept="image/jpeg,image/png,image/webp" hidden>
-                    <div class="sf-dropzone-inner" id="about-dropzone-inner">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <span class="sf-dropzone-label">Trascina qui o <button type="button" class="sf-dropzone-pick" id="about-pick-btn">scegli file</button></span>
-                        <span class="sf-hint">JPG, PNG, WEBP — quadrata, max 2 MB</span>
-                    </div>
-                    <div class="sf-dropzone-preview" id="about-preview" style="display:none;">
-                        <img id="about-preview-img" src="" alt="">
-                        <button type="button" class="sf-dropzone-remove" id="about-remove-btn"><i class="fas fa-times"></i></button>
-                        <span class="sf-dropzone-filename" id="about-filename"></span>
+                <div class="sf-group">
+                    <label class="sf-label">Immagine profilo <span class="sf-req">*</span></label>
+                    <div class="sf-dropzone" id="about-dropzone">
+                        <input type="file" id="about-image-file" accept="image/jpeg,image/png,image/webp" hidden>
+                        <div class="sf-dropzone-inner" id="about-dropzone-inner">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span class="sf-dropzone-label">Trascina qui o <button type="button" class="sf-dropzone-pick" id="about-pick-btn">scegli file</button></span>
+                            <span class="sf-hint">JPG, PNG, WEBP — quadrata, max 2 MB</span>
+                        </div>
+                        <div class="sf-dropzone-preview" id="about-preview" style="display:none;">
+                            <img id="about-preview-img" src="" alt="">
+                            <button type="button" class="sf-dropzone-remove" id="about-remove-btn"><i class="fas fa-times"></i></button>
+                            <span class="sf-dropzone-filename" id="about-filename"></span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- CAMPI PRIVATI (solo per revisione) -->
-            <div class="about-form-section-title" style="margin-top:0.5rem"><i class="fas fa-lock"></i> Informazioni private</div>
-            <p class="about-form-section-hint">Non verranno mostrate pubblicamente — solo per la revisione della candidatura.</p>
+                <div class="about-form-section-title"><i class="fas fa-lock"></i> Informazioni private</div>
+                <p class="about-form-section-hint">Non verranno mostrate pubblicamente — solo per la revisione della candidatura.</p>
 
-            <div class="sf-group">
-                <label class="sf-label" for="about-experience">Esperienze <span class="sf-req">*</span></label>
-                <textarea class="sf-input sf-textarea" id="about-experience" placeholder="Raccontaci delle tue esperienze, skill e portfolio (link inclusi)..." rows="4" maxlength="800" required></textarea>
-                <span class="sf-charcount"><span id="about-exp-count">0</span>/800</span>
-            </div>
+                <div class="sf-group">
+                    <label class="sf-label" for="about-experience">Esperienze <span class="sf-req">*</span></label>
+                    <textarea class="sf-input sf-textarea" id="about-experience" placeholder="Raccontaci delle tue esperienze, skill e portfolio (link inclusi)..." rows="4" maxlength="800" required></textarea>
+                    <span class="sf-charcount"><span id="about-exp-count">0</span>/800</span>
+                </div>
 
-            <div class="sf-group">
-                <label class="sf-label" for="about-contact">Contatto preferito <span class="sf-req">*</span></label>
-                <input class="sf-input" id="about-contact" type="text" placeholder="Es. Discord: utente#0000, Email: la@tua.email..." maxlength="120" required>
-                <span class="sf-hint">Come preferisci essere ricontattato</span>
-            </div>
+                <div class="sf-group">
+                    <label class="sf-label" for="about-contact">Contatto preferito <span class="sf-req">*</span></label>
+                    <input class="sf-input" id="about-contact" type="text" placeholder="Es. Discord: utente#0000, Email: la@tua.email..." maxlength="120" required>
+                    <span class="sf-hint">Come preferisci essere ricontattato</span>
+                </div>
 
-            <div class="sf-feedback" id="about-submit-msg"></div>
+                <div class="sf-feedback" id="about-submit-msg"></div>
 
-            <div class="submit-actions">
-                <button class="sf-submit-btn" id="about-submit-btn" type="button">
-                    <i class="fas fa-paper-plane"></i>
-                    <span>Invia candidatura</span>
-                </button>
-                <button class="submit-close-btn" id="about-modal-close-btn" type="button">Chiudi</button>
+                <div class="popup-form-actions">
+                    <button class="sf-submit-btn" id="about-submit-btn" type="button">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Invia candidatura</span>
+                    </button>
+                    <button class="popup-form-close-btn" id="about-modal-close-btn" type="button">Chiudi</button>
+                </div>
+
             </div>
         </div>
     </div>

@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="components/footer/footer.css">
     <link rel="stylesheet" href="components/achievements/achievements.css">
     <link rel="stylesheet" href="style/vtpedia.css">
+    <link rel="stylesheet" href="style/popup-form.css">
     <script src="scripts/api.js"></script>
     <script src="scripts/auth.js"></script>
     <script src="components/navbar/nav.js"></script>
@@ -41,14 +42,14 @@
     </main>
 
     <!-- Submit popup -->
-    <div class="popup submit-popup" id="submit-popup">
+    <div class="popup" id="submit-popup">
         <div class="popup-overlay" id="submit-popup-overlay"></div>
-        <div class="popup-content submit-popup-content">
+        <div class="popup-content--form">
             <button class="popup-close" id="submit-popup-close"><i class="fas fa-times"></i></button>
-            <div class="submit-popup-body">
+            <div class="popup-form-body">
 
-                <div class="submit-popup-header">
-                    <i class="fas fa-paper-plane submit-icon"></i>
+                <div class="popup-form-header">
+                    <i class="fas fa-paper-plane popup-form-icon"></i>
                     <h2 data-i18n="vtpedia.submitTitle">Invia il tuo VTuber</h2>
                     <p data-i18n="vtpedia.submitSubtitle">Compila il form — la richiesta arriverà direttamente al database.</p>
                 </div>
@@ -230,11 +231,14 @@
                     </div>
 
                     <div class="sf-feedback" id="sf-feedback"></div>
+                </div>
 
+                <div class="popup-form-actions">
                     <button class="sf-submit-btn" id="sf-submit-btn" type="button">
                         <i class="fas fa-paper-plane"></i>
                         <span>Invia richiesta</span>
                     </button>
+                    <button class="popup-form-close-btn" id="sf-close-btn" type="button">Chiudi</button>
                 </div>
 
             </div>

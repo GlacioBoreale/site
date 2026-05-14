@@ -1,0 +1,185 @@
+/* ══════════════════════════════════════════
+   POPUP FORM — struttura base condivisa
+   Usato da: fanart.html, about.html, vtpedia.html
+   ══════════════════════════════════════════ */
+
+/* Base popup — display/overlay/chiusura */
+.popup {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+}
+.popup.active { display: flex; align-items: center; justify-content: center; }
+
+.popup-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+}
+
+.popup-close {
+  position: absolute;
+  top: 1.2rem; right: 1.2rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.3s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  z-index: 10002;
+}
+.popup-close:hover { background: var(--card-hover); color: var(--text); transform: rotate(90deg); }
+
+/* ── Form popup content ── */
+.popup-content--form {
+  position: relative;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  max-width: 580px;
+  width: 95%;
+  max-height: 90vh;
+  z-index: 10000;
+  animation: pf-slideUp 0.35s cubic-bezier(0.16,1,0.3,1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.popup-form-body {
+  padding: 2rem;
+  overflow-y: auto;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+.popup-form-body::-webkit-scrollbar { width: 4px; }
+.popup-form-body::-webkit-scrollbar-track { background: transparent; }
+.popup-form-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+/* Header con icona */
+.popup-form-header {
+  text-align: center;
+  padding-bottom: 1.4rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.popup-form-icon {
+  font-size: 2.5rem;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.8rem;
+  display: block;
+}
+
+.popup-form-header h2 {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+}
+
+.popup-form-header p {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+/* ── Regole condivise ── */
+.submit-rules {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.2rem;
+}
+
+.submit-rules h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.submit-rules ul {
+  list-style: none;
+  padding: 0; margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.submit-rules li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.submit-rules li::before {
+  content: '\2714';
+  color: #667eea;
+  font-size: 0.75rem;
+  margin-top: 0.18rem;
+  flex-shrink: 0;
+}
+
+/* ── Azioni (submit + chiudi) ── */
+.popup-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.popup-form-actions .sf-submit-btn { flex: 1; }
+
+.popup-form-close-btn {
+  padding: 0.7rem 1.4rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+.popup-form-close-btn:hover {
+  background: var(--card-hover);
+  border-color: var(--border-mid);
+  color: var(--text);
+}
+
+@keyframes pf-slideUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .popup-form-body { padding: 1.4rem 1.1rem; }
+  .popup-form-actions { flex-direction: column-reverse; }
+  .popup-form-close-btn { width: 100%; text-align: center; }
+}

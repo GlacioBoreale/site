@@ -246,7 +246,7 @@
 }
 
 /* ── MODAL ── */
-#about-modal .submit-modal-content h2 {
+#about-modal .popup-form-header h2 {
   background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

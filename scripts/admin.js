@@ -2,24 +2,39 @@
 
 const ADMIN_EMAIL = 'coldesticecube@outlook.com';
 
-const PAGE_SIZE = 25;
-
 let _subs  = [];
 let _users = [];
 let _saves = [];
-let _subStatusFilter = 'all';
-let _subTypeFilter   = 'all';
-let _subSearch  = '';
 let _userSearch = '';
 let _saveSearch = '';
-let _subPage  = 1;
-let _userPage = 1;
-let _savePage = 1;
-let _subSort  = { key: null, dir: 1 };
-let _userSort = { key: null, dir: 1 };
-let _saveSort = { key: null, dir: 1 };
-let _subSelected = new Set();
-let _subFocusIdx = -1;
+
+const SECTION_TYPES = ['fanart', 'vtuber', 'team', 'tag'];
+const SECTION_META = {
+  fanart: { label: 'Fanart',   icon: 'fa-image',       color: '#6c8fff', bg: 'rgba(108,143,255,.12)' },
+  vtuber: { label: 'VTuber',   icon: 'fa-star',        color: '#c084fc', bg: 'rgba(192,132,252,.12)' },
+  team:   { label: 'Team',     icon: 'fa-users',       color: '#4ade80', bg: 'rgba(74,222,128,.12)'  },
+  tag:    { label: 'Tag',      icon: 'fa-tag',         color: '#fbbf24', bg: 'rgba(251,191,36,.12)'  },
+};
+
+const PAGE_SIZE = 6;
+
+let _sectionState = {};
+SECTION_TYPES.forEach(t => {
+  const saved = _lsGet(`adm_section_${t}`) || {};
+  _sectionState[t] = {
+    collapsed:  saved.collapsed  ?? false,
+    view:       saved.view       ?? 'grid',
+    filter:     saved.filter     ?? 'all',
+    showCount:  PAGE_SIZE,
+  };
+});
+
+function _lsGet(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } }
+function _lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+function _saveSectionState(type) {
+  const s = _sectionState[type];
+  _lsSet(`adm_section_${type}`, { collapsed: s.collapsed, view: s.view, filter: s.filter });
+}
 
 function _isAdmin() {
   const user = Auth.getUser();
@@ -40,29 +55,41 @@ function _guard() {
 
 async function _loadAll() {
   _spinRefresh(true);
-  await Promise.allSettled([_loadStats(), _loadTrends(), _loadSubmissions(), _loadUsers(), _loadSaves()]);
+  _checkApiStatus();
+  await Promise.allSettled([_loadStats(), _loadSubmissions(), _loadUsers(), _loadSaves()]);
   _spinRefresh(false);
+}
+
+async function _checkApiStatus() {
+  const dot = document.getElementById('adm-status-dot');
+  try {
+    await Api.admin.getStats();
+    dot.className = 'adm-status-dot ok';
+    dot.title = 'API online';
+  } catch {
+    dot.className = 'adm-status-dot err';
+    dot.title = 'API offline o errore';
+  }
 }
 
 async function _loadStats() {
   try {
     const d = await Api.admin.getStats();
-    document.getElementById('ov-users').textContent   = d.users ?? '—';
-    document.getElementById('ov-saves').textContent   = d.saves ?? '—';
+    document.getElementById('ov-users').textContent   = d.users   ?? '—';
+    document.getElementById('ov-saves').textContent   = d.saves   ?? '—';
     document.getElementById('ov-subs').textContent    = d.submissions ?? '—';
     document.getElementById('ov-pending').textContent = d.by_status?.pending ?? '—';
     const total = d.submissions || 1;
     _renderBarList('ov-by-type', d.by_type || {}, total, {
-      vtuber: '#a78bfa', fanart: '#5b9cf6', team: '#f5c542', tag: '#34c48a',
+      vtuber: '#c084fc', fanart: '#6c8fff', team: '#4ade80', tag: '#fbbf24',
     });
     _renderBarList('ov-by-status', d.by_status || {}, total, {
-      pending: '#f5c542', approved: 'rgba(34,197,94,.9)', rejected: 'rgba(239,68,68,.88)',
+      pending: '#fbbf24', approved: '#4ade80', rejected: '#f87171',
     });
     const pending = d.by_status?.pending || 0;
     const badge = document.getElementById('nav-badge-submissions');
     if (pending > 0) { badge.textContent = pending; badge.classList.add('visible'); }
     else badge.classList.remove('visible');
-    _markLoaded('overview');
   } catch(e) { console.error('stats', e); }
 }
 
@@ -72,7 +99,7 @@ function _renderBarList(elId, obj, total, colors) {
   if (!Object.keys(obj).length) { el.innerHTML = '<div class="adm-empty" style="padding:.5rem">—</div>'; return; }
   Object.entries(obj).forEach(([k, v]) => {
     const pct   = total ? Math.round((v / total) * 100) : 0;
-    const color = colors[k] || '#5b9cf6';
+    const color = colors[k] || '#6c8fff';
     el.innerHTML += `
       <div class="adm-bar-item">
         <span class="adm-bar-label">${_esc(k)}</span>
@@ -82,396 +109,304 @@ function _renderBarList(elId, obj, total, colors) {
   });
 }
 
-/* ── TRENDS — sparkline Overview ────────────────────── */
-async function _loadTrends() {
-  try {
-    const d = await Api.admin.getTrends(30);
-    _renderTrends(d);
-  } catch(e) { console.error('trends', e); }
+function _renderActivityFeed(subs) {
+  const feed = document.getElementById('ov-feed');
+  if (!feed) return;
+  const recent = [...subs].sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 10);
+  if (!recent.length) { feed.innerHTML = '<div class="adm-feed-empty">Nessuna attività recente.</div>'; return; }
+  const colorMap = { fanart:'#6c8fff', vtuber:'#c084fc', team:'#4ade80', tag:'#fbbf24' };
+  feed.innerHTML = recent.map(s => {
+    const p     = s.payload || {};
+    const name  = p.title || p.name || s.type;
+    const color = colorMap[s.type] || '#6c8fff';
+    return `
+      <div class="adm-feed-item">
+        <div class="adm-feed-dot" style="background:${color}"></div>
+        <div class="adm-feed-body">
+          <div class="adm-feed-text">
+            <strong>${_esc(s.username || 'Anonimo')}</strong>
+            ha inviato una <strong>${_esc(s.type)}</strong>:
+            "${_esc(name)}"
+            <span class="adm-badge adm-badge-${s.status}" style="margin-left:.3rem">${_statusLabel(s.status)}</span>
+          </div>
+          <div class="adm-feed-time">${_fmtDate(s.created_at)}</div>
+        </div>
+      </div>`;
+  }).join('');
 }
 
-function _fillDays(rows, days) {
-  const map = {};
-  (rows || []).forEach(r => {
-    const key = new Date(r.day).toISOString().slice(0, 10);
-    map[key] = r.count;
-  });
-  const out = [];
-  const today = new Date();
-  for (let i = days - 1; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
-    const key = d.toISOString().slice(0, 10);
-    out.push({ day: key, count: map[key] || 0 });
-  }
-  return out;
-}
-
-function _sparklineSvg(series, color) {
-  const max = Math.max(1, ...series.map(p => p.count));
-  const n   = series.length;
-  const pts = series.map((p, i) => {
-    const x = n > 1 ? (i / (n - 1)) * 100 : 50;
-    const y = 28 - (p.count / max) * 26;
-    return `${x.toFixed(2)},${y.toFixed(2)}`;
-  }).join(' ');
-  return `
-    <svg class="adm-sparkline" viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden="true">
-      <polygon points="0,30 ${pts} 100,30" fill="${color}" fill-opacity="0.12"></polygon>
-      <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"></polyline>
-    </svg>`;
-}
-
-function _renderTrends(data) {
-  const days    = data.days || 30;
-  const uSeries = _fillDays(data.users, days);
-  const sSeries = _fillDays(data.submissions, days);
-  const uTotal  = uSeries.reduce((a, p) => a + p.count, 0);
-  const sTotal  = sSeries.reduce((a, p) => a + p.count, 0);
-  const uEl = document.getElementById('ov-trend-users');
-  const sEl = document.getElementById('ov-trend-subs');
-  if (uEl) uEl.innerHTML = `
-    <div class="adm-trend-head">
-      <span class="adm-trend-total">${uTotal}</span>
-      <span class="adm-trend-cap">ultimi ${days} giorni</span>
-    </div>
-    ${_sparklineSvg(uSeries, '#5b9cf6')}`;
-  if (sEl) sEl.innerHTML = `
-    <div class="adm-trend-head">
-      <span class="adm-trend-total">${sTotal}</span>
-      <span class="adm-trend-cap">ultimi ${days} giorni</span>
-    </div>
-    ${_sparklineSvg(sSeries, '#a78bfa')}`;
-}
-
-/* ── TABLE HELPERS — sort + pagination ─────────────── */
-function _applySort(arr, sort, accessors) {
-  if (!sort.key || !accessors[sort.key]) return arr;
-  const acc = accessors[sort.key];
-  return [...arr].sort((a, b) => {
-    let va = acc(a), vb = acc(b);
-    if (va == null && vb == null) return 0;
-    if (va == null) return 1;
-    if (vb == null) return -1;
-    if (typeof va === 'string' || typeof vb === 'string') {
-      va = String(va).toLowerCase(); vb = String(vb).toLowerCase();
-    }
-    if (va < vb) return -sort.dir;
-    if (va > vb) return  sort.dir;
-    return 0;
-  });
-}
-
-function _sortableHead(label, key, sort) {
-  const active = sort.key === key;
-  const arrow  = active ? (sort.dir === 1 ? '▲' : '▼') : '';
-  return `<th class="adm-th-sort${active ? ' active' : ''}" data-sort-key="${key}">`
-       + `${label}<span class="adm-th-arrow">${arrow}</span></th>`;
-}
-
-function _bindSortHeaders(table, sort, rerender) {
-  table.querySelectorAll('th[data-sort-key]').forEach(th => {
-    th.addEventListener('click', () => {
-      const key = th.dataset.sortKey;
-      if (sort.key === key) sort.dir *= -1;
-      else { sort.key = key; sort.dir = 1; }
-      rerender();
-    });
-  });
-}
-
-function _paginate(arr, page, size) {
-  const totalPages = Math.max(1, Math.ceil(arr.length / size));
-  const p = Math.min(Math.max(1, page), totalPages);
-  const start = (p - 1) * size;
-  return { slice: arr.slice(start, start + size), page: p, totalPages, total: arr.length };
-}
-
-function _renderPagination(container, info, onPage) {
-  if (info.totalPages <= 1) return;
-  const from = (info.page - 1) * PAGE_SIZE + 1;
-  const to   = Math.min(info.page * PAGE_SIZE, info.total);
-  const bar  = document.createElement('div');
-  bar.className = 'adm-pagination';
-  bar.innerHTML = `
-    <span class="adm-pg-info">${from}–${to} di ${info.total}</span>
-    <div class="adm-pg-btns">
-      <button class="adm-pg-btn" data-pg="first" ${info.page === 1 ? 'disabled' : ''} title="Prima"><i class="fas fa-angles-left"></i></button>
-      <button class="adm-pg-btn" data-pg="prev"  ${info.page === 1 ? 'disabled' : ''} title="Precedente"><i class="fas fa-angle-left"></i></button>
-      <span class="adm-pg-current">${info.page} / ${info.totalPages}</span>
-      <button class="adm-pg-btn" data-pg="next" ${info.page === info.totalPages ? 'disabled' : ''} title="Successiva"><i class="fas fa-angle-right"></i></button>
-      <button class="adm-pg-btn" data-pg="last" ${info.page === info.totalPages ? 'disabled' : ''} title="Ultima"><i class="fas fa-angles-right"></i></button>
-    </div>`;
-  bar.querySelectorAll('.adm-pg-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const a = btn.dataset.pg;
-      const next = a === 'first' ? 1
-                 : a === 'prev'  ? info.page - 1
-                 : a === 'next'  ? info.page + 1
-                 : info.totalPages;
-      onPage(next);
-    });
-  });
-  container.appendChild(bar);
-}
-
-function _errorBox(message, retryFn) {
-  const box = document.createElement('div');
-  box.className = 'adm-empty adm-error';
-  box.innerHTML = `<i class="fas fa-triangle-exclamation"></i> ${_esc(message)} `
-    + `<button class="adm-btn adm-btn-detail adm-retry-btn"><i class="fas fa-rotate-right"></i> Riprova</button>`;
-  box.querySelector('.adm-retry-btn').addEventListener('click', retryFn);
-  return box;
-}
-
-const _LAST_LOAD_IDS = {
-  overview: 'ov-last-load', submissions: 'sub-last-load',
-  users: 'user-last-load', saves: 'save-last-load',
-};
-function _markLoaded(section) {
-  const el = document.getElementById(_LAST_LOAD_IDS[section]);
-  if (el) el.textContent = 'aggiornato ' + new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-}
-
-function _openImgLightbox(url) {
-  if (!url) return;
-  const overlay = document.createElement('div');
-  overlay.className = 'adm-img-lightbox';
-  overlay.innerHTML = `
-    <div class="adm-img-lightbox-backdrop"></div>
-    <button class="adm-img-lightbox-close"><i class="fas fa-times"></i></button>
-    <img src="${_esc(url)}" alt="">
-  `;
-  const close = () => { overlay.remove(); document.body.style.overflow = ''; };
-  overlay.querySelector('.adm-img-lightbox-backdrop').addEventListener('click', close);
-  overlay.querySelector('.adm-img-lightbox-close').addEventListener('click', close);
-  overlay.querySelector('img').addEventListener('click', close);
-  document.addEventListener('keydown', function esc(e) {
-    if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); }
-  });
-  document.body.appendChild(overlay);
-}
-
+// ── SUBMISSIONS ──────────────────────────────────────────────
 async function _loadSubmissions() {
-  document.getElementById('sub-list').innerHTML = '<div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
+  document.getElementById('sub-sections').innerHTML = '<div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
   try {
     const d = await Api.admin.getSubmissions();
     _subs = d.submissions || [];
-    _subSelected.clear();
-    _renderSubs();
-    _markLoaded('submissions');
+    _renderSubSections();
+    _renderActivityFeed(_subs);
   } catch(e) {
-    const c = document.getElementById('sub-list');
-    c.innerHTML = '';
-    c.appendChild(_errorBox(e.message, _loadSubmissions));
+    document.getElementById('sub-sections').innerHTML = `<div class="adm-empty"><i class="fas fa-triangle-exclamation"></i> ${_esc(e.message)}</div>`;
   }
 }
 
-const _subAccessors = {
-  title:  s => s.payload?.name || s.payload?.title || s.type,
-  type:   s => s.type,
-  status: s => s.status,
-  user:   s => s.username || '',
-  date:   s => s.created_at ? new Date(s.created_at).getTime() : 0,
-};
-
-function _renderSubs() {
-  let filtered = _subs.filter(s => {
-    if (_subStatusFilter !== 'all' && s.status !== _subStatusFilter) return false;
-    if (_subTypeFilter   !== 'all' && s.type   !== _subTypeFilter)   return false;
-    if (_subSearch) {
-      const p = s.payload || {};
-      const hay = `${p.name || ''} ${p.title || ''} ${p.artist || ''} ${s.username || ''} ${s.type}`.toLowerCase();
-      if (!hay.includes(_subSearch.toLowerCase())) return false;
-    }
-    return true;
-  });
-  filtered = _applySort(filtered, _subSort, _subAccessors);
-
-  const container = document.getElementById('sub-list');
-  _subFocusIdx = -1;
-  if (!filtered.length) { container.innerHTML = '<div class="adm-empty">Nessuna entry trovata.</div>'; _updateBulkBar(); return; }
-
-  const info = _paginate(filtered, _subPage, PAGE_SIZE);
-  _subPage = info.page;
-
-  const table = document.createElement('table');
-  table.className = 'adm-table';
-  table.innerHTML = `
-    <thead><tr>
-      <th class="adm-check-col"><input type="checkbox" class="adm-check" id="sub-check-all" title="Seleziona pagina" aria-label="Seleziona tutta la pagina"></th>
-      <th></th>
-      ${_sortableHead('Titolo / Nome', 'title',  _subSort)}
-      ${_sortableHead('Tipo',          'type',   _subSort)}
-      ${_sortableHead('Stato',         'status', _subSort)}
-      ${_sortableHead('Utente',        'user',   _subSort)}
-      ${_sortableHead('Data',          'date',   _subSort)}
-      <th>Azioni</th>
-    </tr></thead>
-    <tbody id="sub-tbody"></tbody>
-  `;
+function _renderSubSections() {
+  const container = document.getElementById('sub-sections');
   container.innerHTML = '';
-  container.appendChild(table);
-  _bindSortHeaders(table, _subSort, () => { _subPage = 1; _renderSubs(); });
+  SECTION_TYPES.forEach(type => {
+    const el = _buildSubSection(type);
+    container.appendChild(el);
+  });
+}
 
-  const checkAll = table.querySelector('#sub-check-all');
-  checkAll.addEventListener('change', () => {
-    table.querySelectorAll('#sub-tbody tr').forEach(r => {
-      const id = r.dataset.id;
-      if (checkAll.checked) _subSelected.add(id); else _subSelected.delete(id);
-      const cb = r.querySelector('.adm-row-check');
-      if (cb) cb.checked = checkAll.checked;
+function _buildSubSection(type) {
+  const meta  = SECTION_META[type];
+  const state = _sectionState[type];
+  const allOfType = _subs.filter(s => s.type === type);
+  const pending   = allOfType.filter(s => s.status === 'pending').length;
+
+  const section = document.createElement('div');
+  section.className = 'adm-sub-section' + (state.collapsed ? ' collapsed' : '');
+  section.dataset.type = type;
+
+  const pendingBadge = pending > 0
+    ? `<span class="adm-sub-section-badge adm-badge-pending" style="background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.28);color:#fbbf24">${pending}</span>`
+    : '';
+  const totalBadge = `<span class="adm-sub-section-badge" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.4);font-size:.64rem;padding:.15rem .45rem;border-radius:10px;font-family:'Fredoka',sans-serif;font-weight:700">${allOfType.length}</span>`;
+
+  section.innerHTML = `
+    <div class="adm-sub-section-header">
+      <div class="adm-sub-section-left">
+        <div class="adm-sub-section-icon" style="background:${meta.bg};color:${meta.color}">
+          <i class="fas ${meta.icon}"></i>
+        </div>
+        <span class="adm-sub-section-title">${meta.label}</span>
+        <div class="adm-sub-section-counts">${pendingBadge}${totalBadge}</div>
+      </div>
+      <div class="adm-sub-section-right" id="sub-right-${type}">
+        <div class="adm-sub-filter-tabs" id="sub-filter-${type}">
+          <button class="adm-sub-filter-tab ${state.filter==='all'?'active':''}" data-val="all">Tutti</button>
+          <button class="adm-sub-filter-tab ${state.filter==='pending'?'active':''}" data-val="pending">In attesa</button>
+          <button class="adm-sub-filter-tab ${state.filter==='approved'?'active':''}" data-val="approved">Approvati</button>
+          <button class="adm-sub-filter-tab ${state.filter==='rejected'?'active':''}" data-val="rejected">Rifiutati</button>
+        </div>
+        <div class="adm-sub-view-toggle">
+          <button class="adm-sub-view-btn ${state.view==='grid'?'active':''}" data-view="grid" title="Griglia"><i class="fas fa-grip"></i></button>
+          <button class="adm-sub-view-btn ${state.view==='list'?'active':''}" data-view="list" title="Lista"><i class="fas fa-list"></i></button>
+        </div>
+        <button class="adm-sub-collapse-btn" title="Comprimi/Espandi"><i class="fas fa-chevron-down"></i></button>
+      </div>
+    </div>
+    <div class="adm-sub-section-body" id="sub-body-${type}"></div>
+  `;
+
+  _renderSubBody(section, type);
+
+  const header     = section.querySelector('.adm-sub-section-header');
+  const collapseBtn = section.querySelector('.adm-sub-collapse-btn');
+  const filterTabs = section.querySelectorAll('.adm-sub-filter-tab');
+  const viewBtns   = section.querySelectorAll('.adm-sub-view-btn');
+
+  collapseBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    state.collapsed = !state.collapsed;
+    section.classList.toggle('collapsed', state.collapsed);
+    _saveSectionState(type);
+  });
+
+  header.addEventListener('click', (e) => {
+    if (e.target.closest('.adm-sub-section-right')) return;
+    state.collapsed = !state.collapsed;
+    section.classList.toggle('collapsed', state.collapsed);
+    _saveSectionState(type);
+  });
+
+  filterTabs.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      filterTabs.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.filter = btn.dataset.val;
+      state.showCount = PAGE_SIZE;
+      _saveSectionState(type);
+      _renderSubBody(section, type);
     });
-    _updateBulkBar();
   });
 
-  const tbody = table.querySelector('#sub-tbody');
-  info.slice.forEach(s => {
-    const p     = s.payload || {};
-    const title = p.name || p.title || s.type;
-    const tr    = document.createElement('tr');
-    tr.dataset.id = s.id;
-
-    const thumbHtml = s.image_url
-      ? `<img class="adm-row-thumb" src="${s.image_url}" alt="" onerror="this.style.display='none'">`
-      : `<div class="adm-row-thumb" style="display:inline-flex;align-items:center;justify-content:center;color:rgba(255,255,255,.15)"><i class="fas fa-image"></i></div>`;
-
-    tr.innerHTML = `
-      <td class="adm-check-col" data-label=""><input type="checkbox" class="adm-check adm-row-check" aria-label="Seleziona riga"></td>
-      <td data-label="">${thumbHtml}</td>
-      <td class="adm-td-main" data-label="Titolo / Nome">${_esc(title)}</td>
-      <td data-label="Tipo"><span class="adm-badge adm-badge-type">${_esc(s.type)}</span></td>
-      <td data-label="Stato"><span class="adm-badge adm-badge-${s.status}" id="status-badge-${s.id}">${_statusLabel(s.status)}</span></td>
-      <td data-label="Utente">${_esc(s.username || '—')}</td>
-      <td data-label="Data">${_fmtDate(s.created_at)}</td>
-      <td class="adm-td-actions" data-label="Azioni" id="actions-${s.id}">
-        <button class="adm-btn adm-btn-detail" title="Dettaglio" aria-label="Dettaglio"><i class="fas fa-eye"></i></button>
-        ${s.status !== 'approved' ? `<button class="adm-btn adm-btn-approve" title="Approva" aria-label="Approva"><i class="fas fa-check"></i></button>` : ''}
-        ${s.status !== 'rejected' ? `<button class="adm-btn adm-btn-reject"  title="Rifiuta" aria-label="Rifiuta"><i class="fas fa-times"></i></button>` : ''}
-        ${s.status !== 'pending'  ? `<button class="adm-btn adm-btn-pending" title="Pending" aria-label="Rimetti in attesa"><i class="fas fa-clock"></i></button>` : ''}
-        <button class="adm-btn adm-btn-danger" title="Elimina" aria-label="Elimina"><i class="fas fa-trash"></i></button>
-      </td>
-    `;
-
-    if (s.image_url) {
-      tr.querySelector('.adm-row-thumb')?.addEventListener('click', (e) => { e.stopPropagation(); _openImgLightbox(s.image_url); });
-    }
-    tr.querySelector('.adm-btn-detail')?.addEventListener('click', () => _openSubDetail(s));
-    tr.querySelector('.adm-btn-approve')?.addEventListener('click', () => _updateSub(s, 'approved', tr));
-    tr.querySelector('.adm-btn-reject')?.addEventListener('click',  () => _updateSub(s, 'rejected', tr));
-    tr.querySelector('.adm-btn-pending')?.addEventListener('click', () => _updateSub(s, 'pending',  tr));
-    tr.querySelector('.adm-btn-danger')?.addEventListener('click',  () => _deleteSub(s.id));
-
-    const rowCheck = tr.querySelector('.adm-row-check');
-    rowCheck.checked = _subSelected.has(String(s.id));
-    rowCheck.addEventListener('change', () => _toggleSubSelect(String(s.id)));
-
-    tbody.appendChild(tr);
-  });
-
-  _syncCheckAll();
-  _updateBulkBar();
-  _renderPagination(container, info, p => { _subPage = p; _renderSubs(); });
-}
-
-/* ── BULK SELECTION ─────────────────────────────────── */
-function _toggleSubSelect(id) {
-  if (_subSelected.has(id)) _subSelected.delete(id);
-  else _subSelected.add(id);
-  const cb = document.querySelector(`#sub-tbody tr[data-id="${id}"] .adm-row-check`);
-  if (cb) cb.checked = _subSelected.has(id);
-  _syncCheckAll();
-  _updateBulkBar();
-}
-
-function _syncCheckAll() {
-  const checkAll = document.getElementById('sub-check-all');
-  if (!checkAll) return;
-  const rows = document.querySelectorAll('#sub-tbody tr');
-  checkAll.checked = rows.length > 0 && [...rows].every(r => _subSelected.has(r.dataset.id));
-}
-
-function _updateBulkBar() {
-  const bar = document.getElementById('sub-bulk-bar');
-  if (!bar) return;
-  const n = _subSelected.size;
-  const nEl = document.getElementById('sub-bulk-n');
-  if (nEl) nEl.textContent = n;
-  bar.classList.toggle('visible', n > 0);
-}
-
-function _bulkUpdate(status) {
-  const ids = [..._subSelected].filter(id => _subs.some(s => String(s.id) === id));
-  if (!ids.length) return;
-  const verb = status === 'approved' ? 'Approva' : status === 'rejected' ? 'Rifiuta' : 'Rimetti in attesa';
-  _confirm(`${verb} ${ids.length} submission`, `Verranno aggiornate ${ids.length} submission. Continuare?`, async () => {
-    const results = await Promise.allSettled(ids.map(id => Api.admin.updateSubmission(id, status)));
-    let ok = 0;
-    results.forEach((r, i) => {
-      if (r.status === 'fulfilled') {
-        ok++;
-        const s = _subs.find(x => String(x.id) === ids[i]);
-        if (s) s.status = status;
-      }
+  viewBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      viewBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.view = btn.dataset.view;
+      _saveSectionState(type);
+      _renderSubBody(section, type);
     });
-    _subSelected.clear();
-    _renderSubs();
-    _loadStats();
-    const fail = ids.length - ok;
-    _toast(`${ok} aggiornate${fail ? `, ${fail} fallite` : ''}`, fail ? 'err' : 'ok');
   });
-}
 
-function _bulkDelete() {
-  const ids = [..._subSelected].filter(id => _subs.some(s => String(s.id) === id));
-  if (!ids.length) return;
-  _confirm(`Elimina ${ids.length} submission`, `Azione irreversibile su ${ids.length} submission. Continuare?`, async () => {
-    const results = await Promise.allSettled(ids.map(id => Api.admin.deleteSubmission(id)));
-    let ok = 0;
-    results.forEach((r, i) => {
-      if (r.status === 'fulfilled') { ok++; _subs = _subs.filter(s => String(s.id) !== ids[i]); }
-    });
-    _subSelected.clear();
-    _renderSubs();
-    _loadStats();
-    const fail = ids.length - ok;
-    _toast(`${ok} eliminate${fail ? `, ${fail} fallite` : ''}`, fail ? 'err' : 'ok');
-  });
-}
-
-async function _updateSub(s, status, tr) {
-  const id = s.id;
-  try {
-    if (tr) {
-      const badge = tr.querySelector(`#status-badge-${id}`);
-      if (badge) { badge.className = `adm-badge adm-badge-${status}`; badge.textContent = _statusLabel(status); }
-      tr.querySelectorAll('.adm-btn').forEach(b => b.disabled = true);
-    }
-    await Api.admin.updateSubmission(id, status);
-    s.status = status;
-    if (tr) {
-      const actionsCell = tr.querySelector(`#actions-${id}`);
-      if (actionsCell) {
-        actionsCell.innerHTML = `
-          <button class="adm-btn adm-btn-detail" title="Dettaglio" aria-label="Dettaglio"><i class="fas fa-eye"></i></button>
-          ${status !== 'approved' ? `<button class="adm-btn adm-btn-approve" title="Approva" aria-label="Approva"><i class="fas fa-check"></i></button>` : ''}
-          ${status !== 'rejected' ? `<button class="adm-btn adm-btn-reject"  title="Rifiuta" aria-label="Rifiuta"><i class="fas fa-times"></i></button>` : ''}
-          ${status !== 'pending'  ? `<button class="adm-btn adm-btn-pending" title="Pending" aria-label="Rimetti in attesa"><i class="fas fa-clock"></i></button>` : ''}
-          <button class="adm-btn adm-btn-danger" title="Elimina" aria-label="Elimina"><i class="fas fa-trash"></i></button>
-        `;
-        actionsCell.querySelector('.adm-btn-detail')?.addEventListener('click', () => _openSubDetail(s));
-        actionsCell.querySelector('.adm-btn-approve')?.addEventListener('click', () => _updateSub(s, 'approved', tr));
-        actionsCell.querySelector('.adm-btn-reject')?.addEventListener('click',  () => _updateSub(s, 'rejected', tr));
-        actionsCell.querySelector('.adm-btn-pending')?.addEventListener('click', () => _updateSub(s, 'pending',  tr));
-        actionsCell.querySelector('.adm-btn-danger')?.addEventListener('click',  () => _deleteSub(s.id));
-      }
-    }
-    _loadStats();
-    _toast(`Stato aggiornato: ${_statusLabel(status)}`, 'ok');
-  } catch(e) {
-    _toast(e.message, 'err');
-    if (tr) tr.querySelectorAll('.adm-btn').forEach(b => b.disabled = false);
+  const body = section.querySelector('.adm-sub-section-body');
+  if (!state.collapsed) {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    const observer = new MutationObserver(() => { body.style.maxHeight = 'none'; observer.disconnect(); });
+    observer.observe(body, { childList:true, subtree:true });
   }
+
+  return section;
+}
+
+function _renderSubBody(section, type) {
+  const state     = _sectionState[type];
+  const body      = section.querySelector(`#sub-body-${type}`);
+  const filtered  = _subs.filter(s => s.type === type && (state.filter === 'all' || s.status === state.filter));
+  const visible   = filtered.slice(0, state.showCount);
+  const hasMore   = filtered.length > state.showCount;
+  const canLess   = state.showCount > PAGE_SIZE;
+
+  body.innerHTML = '';
+
+  if (!filtered.length) {
+    body.innerHTML = '<div class="adm-empty">Nessuna entry trovata.</div>';
+  } else if (state.view === 'grid') {
+    const grid = document.createElement('div');
+    grid.className = 'adm-sub-grid';
+    visible.forEach(s => grid.appendChild(_buildSubCard(s, type)));
+    body.appendChild(grid);
+  } else {
+    const list = document.createElement('div');
+    list.className = 'adm-sub-list-view';
+    visible.forEach(s => list.appendChild(_buildSubRow(s, type)));
+    body.appendChild(list);
+  }
+
+  if (hasMore || canLess) {
+    const footer = document.createElement('div');
+    footer.className = 'adm-sub-section-footer';
+    if (hasMore) {
+      const btn = document.createElement('button');
+      btn.className = 'adm-show-more-btn';
+      btn.innerHTML = `<i class="fas fa-chevron-down"></i> Mostra altri (${filtered.length - state.showCount} rimanenti)`;
+      btn.addEventListener('click', () => { state.showCount += PAGE_SIZE; _renderSubBody(section, type); });
+      footer.appendChild(btn);
+    }
+    if (canLess) {
+      const btn = document.createElement('button');
+      btn.className = 'adm-show-more-btn';
+      btn.style.marginLeft = hasMore ? '.5rem' : '0';
+      btn.innerHTML = `<i class="fas fa-chevron-up"></i> Mostra meno`;
+      btn.addEventListener('click', () => { state.showCount = PAGE_SIZE; _renderSubBody(section, type); });
+      footer.appendChild(btn);
+    }
+    body.appendChild(footer);
+  }
+
+  body.style.maxHeight = 'none';
+}
+
+function _buildSubCard(s, type) {
+  const p     = s.payload || {};
+  const title = p.title || p.name || type;
+  const card  = document.createElement('div');
+  card.className = 'adm-sub-card';
+
+  if (s.image_url) {
+    card.innerHTML = `<img class="adm-sub-card-img" src="${_esc(s.image_url)}" alt="" loading="lazy" onerror="this.parentElement.querySelector('.adm-sub-card-img-placeholder').style.display='flex';this.remove()">
+    <div class="adm-sub-card-img-placeholder" style="display:none"><i class="fas fa-image"></i></div>`;
+  } else {
+    card.innerHTML = `<div class="adm-sub-card-img-placeholder"><i class="fas fa-image"></i></div>`;
+  }
+
+  card.innerHTML += `
+    <div class="adm-sub-card-body">
+      <div class="adm-sub-card-title">${_esc(title)}</div>
+      <div class="adm-sub-card-meta">
+        <span class="adm-sub-card-user"><i class="fas fa-user" style="font-size:.65rem;margin-right:.25rem"></i>${_esc(s.username||'—')}</span>
+        <span class="adm-badge adm-badge-${s.status}">${_statusLabel(s.status)}</span>
+      </div>
+      <div class="adm-sub-card-actions" id="card-actions-${s.id}"></div>
+    </div>`;
+
+  _fillCardActions(card.querySelector(`#card-actions-${s.id}`), s, type, card);
+
+  if (s.image_url) {
+    card.querySelector('.adm-sub-card-img')?.addEventListener('click', (e) => {
+      if (e.target.closest('.adm-sub-card-actions')) return;
+      _openImgLightbox(s.image_url);
+    });
+  }
+  card.addEventListener('click', (e) => {
+    if (e.target.closest('.adm-sub-card-actions') || e.target.closest('.adm-sub-card-img')) return;
+    _openSubDetail(s);
+  });
+
+  return card;
+}
+
+function _fillCardActions(el, s, type, parentCard) {
+  el.innerHTML = '';
+  if (s.status !== 'approved') {
+    const b = document.createElement('button');
+    b.className = 'adm-btn adm-btn-approve'; b.innerHTML = '<i class="fas fa-check"></i>';
+    b.title = 'Approva';
+    b.addEventListener('click', (e) => { e.stopPropagation(); _updateSubInline(s, 'approved', type, parentCard); });
+    el.appendChild(b);
+  }
+  if (s.status !== 'rejected') {
+    const b = document.createElement('button');
+    b.className = 'adm-btn adm-btn-reject'; b.innerHTML = '<i class="fas fa-times"></i>';
+    b.title = 'Rifiuta';
+    b.addEventListener('click', (e) => { e.stopPropagation(); _updateSubInline(s, 'rejected', type, parentCard); });
+    el.appendChild(b);
+  }
+  const del = document.createElement('button');
+  del.className = 'adm-btn adm-btn-danger'; del.innerHTML = '<i class="fas fa-trash"></i>';
+  del.title = 'Elimina';
+  del.addEventListener('click', (e) => { e.stopPropagation(); _deleteSub(s.id); });
+  el.appendChild(del);
+}
+
+function _buildSubRow(s, type) {
+  const p     = s.payload || {};
+  const title = p.title || p.name || type;
+  const row   = document.createElement('div');
+  row.className = 'adm-sub-row';
+
+  const thumb = document.createElement('div');
+  thumb.className = 'adm-sub-row-thumb';
+  if (s.image_url) {
+    thumb.innerHTML = `<img src="${_esc(s.image_url)}" alt="" loading="lazy" onerror="this.remove()">`;
+    thumb.style.cursor = 'zoom-in';
+    thumb.addEventListener('click', (e) => { e.stopPropagation(); _openImgLightbox(s.image_url); });
+  } else {
+    thumb.innerHTML = `<i class="fas fa-image"></i>`;
+  }
+
+  row.innerHTML = `
+    <div class="adm-sub-row-main">
+      <div class="adm-sub-row-title">${_esc(title)}</div>
+      <div class="adm-sub-row-sub">${_esc(s.username||'—')} · ${_fmtDate(s.created_at)}</div>
+    </div>
+    <div class="adm-sub-row-right">
+      <span class="adm-badge adm-badge-${s.status}">${_statusLabel(s.status)}</span>
+      <div class="adm-sub-row-actions" id="row-actions-${s.id}"></div>
+    </div>`;
+
+  row.insertBefore(thumb, row.firstChild);
+  _fillCardActions(row.querySelector(`#row-actions-${s.id}`), s, type, row);
+  row.addEventListener('click', (e) => {
+    if (e.target.closest('.adm-sub-row-actions') || e.target.closest('.adm-sub-row-thumb')) return;
+    _openSubDetail(s);
+  });
+
+  return row;
+}
+
+async function _updateSubInline(s, status, type, card) {
+  try {
+    await Api.admin.updateSubmission(s.id, status);
+    s.status = status;
+    const section = document.querySelector(`.adm-sub-section[data-type="${type}"]`);
+    if (section) _renderSubBody(section, type);
+    _loadStats();
+    _toast(`${_statusLabel(status)}`, 'ok');
+  } catch(e) { _toast(e.message, 'err'); }
 }
 
 function _deleteSub(id) {
@@ -479,13 +414,15 @@ function _deleteSub(id) {
     try {
       await Api.admin.deleteSubmission(id);
       _subs = _subs.filter(s => s.id !== id);
-      _renderSubs();
+      _renderSubSections();
+      _renderActivityFeed(_subs);
       _loadStats();
       _toast('Submission eliminata', 'ok');
     } catch(e) { _toast(e.message, 'err'); }
   });
 }
 
+// ── DRAWER ──────────────────────────────────────────────────
 function _openSubDetail(s) {
   const p = s.payload || {};
   document.getElementById('adm-drawer-title').textContent = p.name || p.title || s.type;
@@ -508,20 +445,23 @@ function _openSubDetail(s) {
   rows.push(['fa-clock', 'Inviato', _fmtDate(s.created_at)]);
   if (p.admin_note)   rows.push(['fa-note-sticky', 'Nota admin', p.admin_note]);
 
-  const socialRows = p.socials ? Object.entries(p.socials).map(([k,v]) => ['fa-share-nodes', k, v, true]) : [];
   const descHtml = (p.desc || p.experience) ? `
     <div class="adm-dfield-block">
       <div class="adm-dfield-block-title">${p.experience ? 'Esperienze' : 'Descrizione'}</div>
-      <p style="font-size:.84rem;color:rgba(255,255,255,.6);white-space:pre-wrap;line-height:1.6">${_esc(p.desc || p.experience)}</p>
+      <p style="font-size:.83rem;color:rgba(255,255,255,.55);white-space:pre-wrap;line-height:1.6">${_esc(p.desc || p.experience)}</p>
     </div>` : '';
 
   const imgHtml = s.image_url ? `
-    <div style="position:relative;margin-bottom:1.1rem;">
+    <div style="position:relative;margin-bottom:1rem;">
       <img class="adm-drawer-img" src="${_esc(s.image_url)}" alt="" onerror="this.closest('div').style.display='none'" style="margin-bottom:0;">
-      <button id="da-remove-img" class="adm-btn adm-btn-danger" style="position:absolute;top:.5rem;right:.5rem;padding:.25rem .55rem;font-size:.72rem;">
-        <i class="fas fa-trash"></i> Rimuovi immagine
+      <button id="da-remove-img" class="adm-btn adm-btn-danger" style="position:absolute;top:.5rem;right:.5rem;font-size:.7rem;">
+        <i class="fas fa-trash"></i> Rimuovi
       </button>
     </div>` : '';
+
+  const socialRows = p.socials ? Object.entries(p.socials).map(([k,v]) => `
+    <div class="adm-dfield"><i class="fas fa-share-nodes"></i><span class="adm-dfield-lbl">${k}</span>
+    <span class="adm-dfield-val"><a href="${_esc(v)}" target="_blank" rel="noopener">${_esc(v)}</a></span></div>`) : [];
 
   document.getElementById('adm-drawer-body').innerHTML = `
     ${imgHtml}
@@ -533,80 +473,54 @@ function _openSubDetail(s) {
     <div class="adm-dfield-block">
       <div class="adm-dfield-block-title">Informazioni</div>
       ${rows.map(([icon, lbl, val, link]) => `
-        <div class="adm-dfield">
-          <i class="fas ${icon}"></i>
-          <span class="adm-dfield-lbl">${lbl}</span>
-          <span class="adm-dfield-val">${link ? `<a href="${_esc(val)}" target="_blank" rel="noopener">${_esc(val)}</a>` : _esc(val)}</span>
-        </div>`).join('')}
+        <div class="adm-dfield"><i class="fas ${icon}"></i>
+        <span class="adm-dfield-lbl">${lbl}</span>
+        <span class="adm-dfield-val">${link ? `<a href="${_esc(val)}" target="_blank" rel="noopener">${_esc(val)}</a>` : _esc(val)}</span></div>`).join('')}
     </div>
     ${descHtml}
-    ${socialRows.length ? `
-    <div class="adm-dfield-block">
-      <div class="adm-dfield-block-title">Social</div>
-      ${socialRows.map(([icon, lbl, val]) => `
-        <div class="adm-dfield">
-          <i class="fas ${icon}"></i>
-          <span class="adm-dfield-lbl">${lbl}</span>
-          <span class="adm-dfield-val"><a href="${_esc(val)}" target="_blank" rel="noopener">${_esc(val)}</a></span>
-        </div>`).join('')}
-    </div>` : ''}
+    ${socialRows.length ? `<div class="adm-dfield-block"><div class="adm-dfield-block-title">Social</div>${socialRows.join('')}</div>` : ''}
     <div class="adm-dfield-block">
       <div class="adm-dfield-block-title">Nota admin (opzionale)</div>
       <textarea class="adm-drawer-note" id="drawer-note" placeholder="Aggiungi una nota...">${_esc(p.admin_note || '')}</textarea>
     </div>
     <div class="adm-drawer-actions">
-      ${s.status !== 'approved' ? `<button class="adm-btn adm-btn-approve" id="da-approve"><i class="fas fa-check"></i> Approva</button>` : ''}
-      ${s.status !== 'rejected' ? `<button class="adm-btn adm-btn-reject"  id="da-reject"><i class="fas fa-times"></i> Rifiuta</button>` : ''}
-      ${s.status !== 'pending'  ? `<button class="adm-btn adm-btn-pending" id="da-pending"><i class="fas fa-clock"></i> Pending</button>` : ''}
-      <button class="adm-btn adm-btn-danger" id="da-delete"><i class="fas fa-trash"></i> Elimina</button>
-    </div>
-  `;
+      ${s.status !== 'approved' ? `<button class="adm-btn adm-btn-approve" id="da-approve">✓ Approva</button>` : ''}
+      ${s.status !== 'rejected' ? `<button class="adm-btn adm-btn-reject"  id="da-reject">✕ Rifiuta</button>` : ''}
+      ${s.status !== 'pending'  ? `<button class="adm-btn adm-btn-pending" id="da-pending">⏱ Pending</button>` : ''}
+      <button class="adm-btn adm-btn-danger" id="da-delete">🗑 Elimina</button>
+    </div>`;
 
   if (s.image_url) {
     document.querySelector('.adm-drawer-img')?.addEventListener('click', (e) => {
       if (e.target.closest('#da-remove-img')) return;
       _openImgLightbox(s.image_url);
     });
-  }
-
-  document.getElementById('da-remove-img')?.addEventListener('click', () => {
-    _confirm('Rimuovi immagine', "L'immagine verrà rimossa dalla submission. Irreversibile.", async () => {
-      try {
-        await Api.admin.removeImage(s.id);
-        s.image_url = null;
-        const tr = document.querySelector(`tr[data-id="${s.id}"]`);
-        if (tr) {
-          const thumb = tr.querySelector('td:first-child');
-          if (thumb) thumb.innerHTML = `<div class="adm-row-thumb" style="display:inline-flex;align-items:center;justify-content:center;color:rgba(255,255,255,.15)"><i class="fas fa-image"></i></div>`;
-        }
-        _toast('Immagine rimossa', 'ok');
-        _closeDrawer();
-      } catch(e) { _toast(e.message, 'err'); }
+    document.getElementById('da-remove-img')?.addEventListener('click', () => {
+      _confirm('Rimuovi immagine', "L'immagine verrà rimossa dalla submission.", async () => {
+        try {
+          await Api.admin.removeImage(s.id);
+          s.image_url = null;
+          _renderSubSections();
+          _toast('Immagine rimossa', 'ok');
+          _closeDrawer();
+        } catch(e) { _toast(e.message, 'err'); }
+      });
     });
-  });
+  }
 
   const getNote = () => document.getElementById('drawer-note')?.value || undefined;
   const doUpdate = async (newStatus) => {
-    const note = getNote();
     try {
-      document.querySelectorAll('#da-approve,#da-reject,#da-pending').forEach(b => b && (b.disabled = true));
-      await Api.admin.updateSubmission(s.id, newStatus, note);
+      await Api.admin.updateSubmission(s.id, newStatus, getNote());
       s.status = newStatus;
       const badge = document.getElementById('drawer-status-badge');
       if (badge) { badge.className = `adm-badge adm-badge-${newStatus}`; badge.textContent = _statusLabel(newStatus); }
-      const tr = document.querySelector(`tr[data-id="${s.id}"]`);
-      if (tr) {
-        const rowBadge = tr.querySelector(`#status-badge-${s.id}`);
-        if (rowBadge) { rowBadge.className = `adm-badge adm-badge-${newStatus}`; rowBadge.textContent = _statusLabel(newStatus); }
-        _updateSub(s, newStatus, tr);
-      }
+      const secEl = document.querySelector(`.adm-sub-section[data-type="${s.type}"]`);
+      if (secEl) _renderSubBody(secEl, s.type);
       _loadStats();
       _toast(`Stato: ${_statusLabel(newStatus)}`, 'ok');
       _closeDrawer();
-    } catch(e) {
-      _toast(e.message, 'err');
-      document.querySelectorAll('#da-approve,#da-reject,#da-pending').forEach(b => b && (b.disabled = false));
-    }
+    } catch(e) { _toast(e.message, 'err'); }
   };
 
   document.getElementById('da-approve')?.addEventListener('click', () => doUpdate('approved'));
@@ -617,89 +531,73 @@ function _openSubDetail(s) {
   _openDrawer();
 }
 
+// ── LIGHTBOX ────────────────────────────────────────────────
+function _openImgLightbox(url) {
+  if (!url) return;
+  const overlay = document.createElement('div');
+  overlay.className = 'adm-img-lightbox';
+  overlay.innerHTML = `
+    <div class="adm-img-lightbox-backdrop"></div>
+    <button class="adm-img-lightbox-close"><i class="fas fa-times"></i></button>
+    <img src="${_esc(url)}" alt="">`;
+  const close = () => { overlay.remove(); document.body.style.overflow = ''; };
+  overlay.querySelector('.adm-img-lightbox-backdrop').addEventListener('click', close);
+  overlay.querySelector('.adm-img-lightbox-close').addEventListener('click', close);
+  overlay.querySelector('img').addEventListener('click', close);
+  document.addEventListener('keydown', function esc(e) {
+    if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); }
+  });
+  document.body.appendChild(overlay);
+}
+
+// ── USERS ────────────────────────────────────────────────────
 async function _loadUsers() {
   document.getElementById('user-list').innerHTML = '<div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
   try {
     const d = await Api.admin.getUsers();
     _users = d.users || [];
     _renderUsers();
-    _markLoaded('users');
   } catch(e) {
-    const c = document.getElementById('user-list');
-    c.innerHTML = '';
-    c.appendChild(_errorBox(e.message, _loadUsers));
+    document.getElementById('user-list').innerHTML = `<div class="adm-empty"><i class="fas fa-triangle-exclamation"></i> ${_esc(e.message)}</div>`;
   }
 }
 
-const _userAccessors = {
-  username: u => u.username || '',
-  email:    u => u.email || '',
-  created:  u => u.created_at ? new Date(u.created_at).getTime() : 0,
-  points:   u => parseFloat(u.points)   || 0,
-  prestige: u => parseFloat(u.prestige) || 0,
-  xp:       u => parseFloat(u.xp_level) || 0,
-  research: u => parseFloat(u.research) || 0,
-  time:     u => parseFloat(u.total_time_sec) || 0,
-  optin:    u => u.opt_in ? 1 : 0,
-};
-
 function _renderUsers() {
   const q = _userSearch.toLowerCase();
-  let filtered = q ? _users.filter(u => u.username?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q)) : _users;
-  filtered = _applySort(filtered, _userSort, _userAccessors);
+  const filtered = q ? _users.filter(u => u.username?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q)) : _users;
+  if (!filtered.length) { document.getElementById('user-list').innerHTML = '<div class="adm-empty">Nessun utente trovato.</div>'; return; }
 
-  const container = document.getElementById('user-list');
-  if (!filtered.length) { container.innerHTML = '<div class="adm-empty">Nessun utente trovato.</div>'; return; }
-
-  const info = _paginate(filtered, _userPage, PAGE_SIZE);
-  _userPage = info.page;
-
+  const wrap = document.createElement('div');
   const table = document.createElement('table');
   table.className = 'adm-table';
-  table.innerHTML = `
-    <thead><tr>
-      ${_sortableHead('Username',   'username', _userSort)}
-      ${_sortableHead('Email',      'email',    _userSort)}
-      ${_sortableHead('Registrato', 'created',  _userSort)}
-      ${_sortableHead('Punti',      'points',   _userSort)}
-      ${_sortableHead('Prestige',   'prestige', _userSort)}
-      ${_sortableHead('XP',         'xp',       _userSort)}
-      ${_sortableHead('Ricerca',    'research', _userSort)}
-      ${_sortableHead('Tempo',      'time',     _userSort)}
-      ${_sortableHead('LB',         'optin',    _userSort)}
-      <th>Azioni</th>
-    </tr></thead>
-    <tbody id="user-tbody"></tbody>
-  `;
-  container.innerHTML = '';
-  container.appendChild(table);
-  _bindSortHeaders(table, _userSort, () => { _userPage = 1; _renderUsers(); });
+  table.innerHTML = `<thead><tr>
+    <th>Username</th><th>Email</th><th>Registrato</th>
+    <th>Punti</th><th>Prestige</th><th>XP</th><th>LB</th><th>Azioni</th>
+  </tr></thead><tbody id="user-tbody"></tbody>`;
+  wrap.appendChild(table);
+  document.getElementById('user-list').innerHTML = '';
+  document.getElementById('user-list').appendChild(wrap);
 
-  const tbody = table.querySelector('#user-tbody');
-  info.slice.forEach(u => {
+  const tbody = document.getElementById('user-tbody');
+  filtered.forEach(u => {
     const tr = document.createElement('tr');
     const isAdmin = u.email === ADMIN_EMAIL;
     tr.innerHTML = `
-      <td class="adm-td-main" data-label="Username">${_esc(u.username)}${isAdmin ? ' <span style="color:#a78bfa;font-size:.72rem">(admin)</span>' : ''}</td>
-      <td data-label="Email">${_esc(u.email)}</td>
-      <td data-label="Registrato">${_fmtDate(u.created_at)}</td>
-      <td class="adm-td-num" data-label="Punti">${_fmt(u.points)}</td>
-      <td class="adm-td-num" data-label="Prestige">${_fmt(u.prestige)}</td>
-      <td class="adm-td-num" data-label="XP">${u.xp_level ?? '—'}</td>
-      <td class="adm-td-num" data-label="Ricerca">${_fmt(u.research)}</td>
-      <td data-label="Tempo">${_fmtTime(u.total_time_sec)}</td>
-      <td data-label="Leaderboard"><span class="adm-badge ${u.opt_in ? 'adm-badge-optin' : 'adm-badge-optout'}">${u.opt_in ? 'Sì' : 'No'}</span></td>
-      <td class="adm-td-actions" data-label="Azioni">
-        <button class="adm-btn adm-btn-detail" title="Dettaglio" aria-label="Dettaglio utente"><i class="fas fa-eye"></i></button>
-        ${!isAdmin ? `<button class="adm-btn adm-btn-danger" data-action="del-user" title="Elimina" aria-label="Elimina utente"><i class="fas fa-trash"></i></button>` : ''}
-      </td>
-    `;
+      <td class="adm-td-main">${_esc(u.username)}${isAdmin?'&nbsp;<span style="color:#c084fc;font-size:.7rem">(admin)</span>':''}</td>
+      <td>${_esc(u.email)}</td>
+      <td>${_fmtDate(u.created_at)}</td>
+      <td class="adm-td-num">${_fmt(u.points)}</td>
+      <td class="adm-td-num">${_fmt(u.prestige)}</td>
+      <td class="adm-td-num">${u.xp_level??'—'}</td>
+      <td><span class="adm-badge ${u.opt_in?'adm-badge-optin':'adm-badge-optout'}">${u.opt_in?'Sì':'No'}</span></td>
+      <td class="adm-td-actions">
+        <button class="adm-btn adm-btn-detail"><i class="fas fa-eye"></i></button>
+        ${!isAdmin?`<button class="adm-btn adm-btn-danger" data-action="del"><i class="fas fa-trash"></i></button>`:''}
+      </td>`;
     tr.querySelector('.adm-btn-detail')?.addEventListener('click', () => _openUserDetail(u));
-    tr.querySelector('[data-action="del-user"]')?.addEventListener('click', () => _deleteUser(u.id, u.username));
+    tr.querySelector('[data-action="del"]')?.addEventListener('click', () => _deleteUser(u.id, u.username));
     tbody.appendChild(tr);
   });
-
-  _renderPagination(container, info, p => { _userPage = p; _renderUsers(); });
 }
 
 function _openUserDetail(u) {
@@ -707,8 +605,8 @@ function _openUserDetail(u) {
   document.getElementById('adm-drawer-body').innerHTML = `
     <div class="adm-drawer-name">${_esc(u.username)}</div>
     <div class="adm-drawer-meta">
-      ${u.email === ADMIN_EMAIL ? `<span class="adm-badge adm-badge-type">admin</span>` : ''}
-      <span class="adm-badge ${u.opt_in ? 'adm-badge-optin' : 'adm-badge-optout'}">${u.opt_in ? 'LB: Sì' : 'LB: No'}</span>
+      ${u.email===ADMIN_EMAIL?`<span class="adm-badge adm-badge-type">admin</span>`:''}
+      <span class="adm-badge ${u.opt_in?'adm-badge-optin':'adm-badge-optout'}">${u.opt_in?'LB: Sì':'LB: No'}</span>
     </div>
     <div class="adm-dfield-block">
       <div class="adm-dfield-block-title">Account</div>
@@ -720,22 +618,20 @@ function _openUserDetail(u) {
       <div class="adm-dfield-block-title">Gioco</div>
       <div class="adm-dfield"><i class="fas fa-star"></i><span class="adm-dfield-lbl">Punti</span><span class="adm-dfield-val">${_fmt(u.points)}</span></div>
       <div class="adm-dfield"><i class="fas fa-yen-sign"></i><span class="adm-dfield-lbl">Prestige</span><span class="adm-dfield-val">${_fmt(u.prestige)}</span></div>
-      <div class="adm-dfield"><i class="fas fa-level-up-alt"></i><span class="adm-dfield-lbl">XP Level</span><span class="adm-dfield-val">${u.xp_level ?? '—'}</span></div>
+      <div class="adm-dfield"><i class="fas fa-level-up-alt"></i><span class="adm-dfield-lbl">XP</span><span class="adm-dfield-val">${u.xp_level??'—'}</span></div>
       <div class="adm-dfield"><i class="fas fa-flask"></i><span class="adm-dfield-lbl">Ricerca</span><span class="adm-dfield-val">${_fmt(u.research)}</span></div>
       <div class="adm-dfield"><i class="fas fa-clock"></i><span class="adm-dfield-lbl">Tempo</span><span class="adm-dfield-val">${_fmtTime(u.total_time_sec)}</span></div>
       <div class="adm-dfield"><i class="fas fa-save"></i><span class="adm-dfield-lbl">Ultimo save</span><span class="adm-dfield-val">${_fmtDate(u.last_save)}</span></div>
     </div>
-    ${u.email !== ADMIN_EMAIL ? `
-    <div class="adm-drawer-actions">
+    ${u.email!==ADMIN_EMAIL?`<div class="adm-drawer-actions">
       <button class="adm-btn adm-btn-danger" id="da-del-user" style="width:100%;justify-content:center"><i class="fas fa-trash"></i> Elimina utente</button>
-    </div>` : ''}
-  `;
+    </div>`:''}`;
   document.getElementById('da-del-user')?.addEventListener('click', () => { _closeDrawer(); _deleteUser(u.id, u.username); });
   _openDrawer();
 }
 
 function _deleteUser(id, username) {
-  _confirm(`Elimina utente "${username}"`, "Questo eliminerà l'account e tutti i dati associati. Irreversibile.", async () => {
+  _confirm(`Elimina "${username}"`, "Eliminerà l'account e tutti i dati associati. Irreversibile.", async () => {
     try {
       await Api.admin.deleteUser(id);
       _users = _users.filter(u => u.id !== id);
@@ -746,85 +642,52 @@ function _deleteUser(id, username) {
   });
 }
 
+// ── SAVES ────────────────────────────────────────────────────
 async function _loadSaves() {
   document.getElementById('save-list').innerHTML = '<div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
   try {
     const d = await Api.admin.getSaves();
     _saves = d.saves || [];
     _renderSaves();
-    _markLoaded('saves');
   } catch(e) {
-    const c = document.getElementById('save-list');
-    c.innerHTML = '';
-    c.appendChild(_errorBox(e.message, _loadSaves));
+    document.getElementById('save-list').innerHTML = `<div class="adm-empty"><i class="fas fa-triangle-exclamation"></i> ${_esc(e.message)}</div>`;
   }
 }
 
-const _saveAccessors = {
-  user:     s => s.username || '',
-  points:   s => parseFloat(s.points)   || 0,
-  prestige: s => parseFloat(s.prestige) || 0,
-  xp:       s => parseFloat(s.xp_level) || 0,
-  research: s => parseFloat(s.research) || 0,
-  time:     s => parseFloat(s.total_time_sec) || 0,
-  optin:    s => s.opt_in ? 1 : 0,
-  updated:  s => s.updated_at ? new Date(s.updated_at).getTime() : 0,
-};
-
 function _renderSaves() {
   const q = _saveSearch.toLowerCase();
-  let filtered = q ? _saves.filter(s => s.username?.toLowerCase().includes(q) || s.email?.toLowerCase().includes(q)) : _saves;
-  filtered = _applySort(filtered, _saveSort, _saveAccessors);
+  const filtered = q ? _saves.filter(s => s.username?.toLowerCase().includes(q) || s.email?.toLowerCase().includes(q)) : _saves;
+  if (!filtered.length) { document.getElementById('save-list').innerHTML = '<div class="adm-empty">Nessun salvataggio trovato.</div>'; return; }
 
-  const container = document.getElementById('save-list');
-  if (!filtered.length) { container.innerHTML = '<div class="adm-empty">Nessun salvataggio trovato.</div>'; return; }
-
-  const info = _paginate(filtered, _savePage, PAGE_SIZE);
-  _savePage = info.page;
-
+  const wrap = document.createElement('div');
   const table = document.createElement('table');
   table.className = 'adm-table';
-  table.innerHTML = `
-    <thead><tr>
-      ${_sortableHead('Utente',      'user',     _saveSort)}
-      ${_sortableHead('Punti',       'points',   _saveSort)}
-      ${_sortableHead('Prestige',    'prestige', _saveSort)}
-      ${_sortableHead('XP',          'xp',       _saveSort)}
-      ${_sortableHead('Ricerca',     'research', _saveSort)}
-      ${_sortableHead('Tempo',       'time',     _saveSort)}
-      ${_sortableHead('LB',          'optin',    _saveSort)}
-      ${_sortableHead('Ultimo save', 'updated',  _saveSort)}
-      <th>Azioni</th>
-    </tr></thead>
-    <tbody id="save-tbody"></tbody>
-  `;
-  container.innerHTML = '';
-  container.appendChild(table);
-  _bindSortHeaders(table, _saveSort, () => { _savePage = 1; _renderSaves(); });
+  table.innerHTML = `<thead><tr>
+    <th>Utente</th><th>Punti</th><th>Prestige</th><th>XP</th><th>Tempo</th><th>LB</th><th>Salvato</th><th>Azioni</th>
+  </tr></thead><tbody id="save-tbody"></tbody>`;
+  wrap.appendChild(table);
+  document.getElementById('save-list').innerHTML = '';
+  document.getElementById('save-list').appendChild(wrap);
 
-  const tbody = table.querySelector('#save-tbody');
-  info.slice.forEach(s => {
+  const tbody = document.getElementById('save-tbody');
+  filtered.forEach(s => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td class="adm-td-main" data-label="Utente">${_esc(s.username)}<br><span style="font-size:.72rem;color:rgba(255,255,255,.3)">${_esc(s.email)}</span></td>
-      <td class="adm-td-num" data-label="Punti">${_fmt(s.points)}</td>
-      <td class="adm-td-num" data-label="Prestige">${_fmt(s.prestige)}</td>
-      <td class="adm-td-num" data-label="XP">${s.xp_level ?? '—'}</td>
-      <td class="adm-td-num" data-label="Ricerca">${_fmt(s.research)}</td>
-      <td data-label="Tempo">${_fmtTime(s.total_time_sec)}</td>
-      <td data-label="Leaderboard"><span class="adm-badge ${s.opt_in ? 'adm-badge-optin' : 'adm-badge-optout'}">${s.opt_in ? 'Sì' : 'No'}</span></td>
-      <td data-label="Ultimo save">${_fmtDate(s.updated_at)}</td>
-      <td class="adm-td-actions" data-label="Azioni">
-        <button class="adm-btn adm-btn-detail" title="Dettaglio" aria-label="Dettaglio salvataggio"><i class="fas fa-eye"></i></button>
-        ${s.email !== ADMIN_EMAIL ? `<button class="adm-btn adm-btn-danger" data-action="del-save" title="Elimina" aria-label="Elimina salvataggio"><i class="fas fa-trash"></i></button>` : ''}
-      </td>
-    `;
+      <td class="adm-td-main">${_esc(s.username)}<br><span style="font-size:.7rem;color:var(--dim)">${_esc(s.email)}</span></td>
+      <td class="adm-td-num">${_fmt(s.points)}</td>
+      <td class="adm-td-num">${_fmt(s.prestige)}</td>
+      <td class="adm-td-num">${s.xp_level??'—'}</td>
+      <td>${_fmtTime(s.total_time_sec)}</td>
+      <td><span class="adm-badge ${s.opt_in?'adm-badge-optin':'adm-badge-optout'}">${s.opt_in?'Sì':'No'}</span></td>
+      <td>${_fmtDate(s.updated_at)}</td>
+      <td class="adm-td-actions">
+        <button class="adm-btn adm-btn-detail"><i class="fas fa-eye"></i></button>
+        ${s.email!==ADMIN_EMAIL?`<button class="adm-btn adm-btn-danger" data-action="del"><i class="fas fa-trash"></i></button>`:''}
+      </td>`;
     tr.querySelector('.adm-btn-detail')?.addEventListener('click', () => _openSaveDetail(s));
-    tr.querySelector('[data-action="del-save"]')?.addEventListener('click', () => _deleteSave(s.user_id, s.username));
+    tr.querySelector('[data-action="del"]')?.addEventListener('click', () => _deleteSave(s.user_id, s.username));
     tbody.appendChild(tr);
   });
-
-  _renderPagination(container, info, p => { _savePage = p; _renderSaves(); });
 }
 
 function _openSaveDetail(s) {
@@ -832,31 +695,29 @@ function _openSaveDetail(s) {
   const sd = s.save_data || {};
   document.getElementById('adm-drawer-body').innerHTML = `
     <div class="adm-drawer-name">${_esc(s.username)}</div>
-    <div class="adm-drawer-meta"><span class="adm-badge ${s.opt_in ? 'adm-badge-optin' : 'adm-badge-optout'}">${s.opt_in ? 'LB: Sì' : 'LB: No'}</span></div>
+    <div class="adm-drawer-meta"><span class="adm-badge ${s.opt_in?'adm-badge-optin':'adm-badge-optout'}">${s.opt_in?'LB: Sì':'LB: No'}</span></div>
     <div class="adm-dfield-block">
       <div class="adm-dfield-block-title">Statistiche</div>
       <div class="adm-dfield"><i class="fas fa-star"></i><span class="adm-dfield-lbl">Punti</span><span class="adm-dfield-val">${_fmt(s.points)}</span></div>
       <div class="adm-dfield"><i class="fas fa-yen-sign"></i><span class="adm-dfield-lbl">Prestige</span><span class="adm-dfield-val">${_fmt(s.prestige)}</span></div>
-      <div class="adm-dfield"><i class="fas fa-level-up-alt"></i><span class="adm-dfield-lbl">XP Level</span><span class="adm-dfield-val">${s.xp_level ?? '—'}</span></div>
+      <div class="adm-dfield"><i class="fas fa-level-up-alt"></i><span class="adm-dfield-lbl">XP</span><span class="adm-dfield-val">${s.xp_level??'—'}</span></div>
       <div class="adm-dfield"><i class="fas fa-flask"></i><span class="adm-dfield-lbl">Ricerca</span><span class="adm-dfield-val">${_fmt(s.research)}</span></div>
       <div class="adm-dfield"><i class="fas fa-clock"></i><span class="adm-dfield-lbl">Tempo</span><span class="adm-dfield-val">${_fmtTime(s.total_time_sec)}</span></div>
       <div class="adm-dfield"><i class="fas fa-save"></i><span class="adm-dfield-lbl">Salvato</span><span class="adm-dfield-val">${_fmtDate(s.updated_at)}</span></div>
     </div>
     <div class="adm-dfield-block">
       <div class="adm-dfield-block-title">Raw save_data</div>
-      <pre style="font-size:.72rem;color:rgba(255,255,255,.45);overflow-x:auto;white-space:pre-wrap;line-height:1.5">${_esc(JSON.stringify(sd, null, 2).slice(0, 2000))}${JSON.stringify(sd).length > 2000 ? '\n… (troncato)' : ''}</pre>
+      <pre style="font-size:.7rem;color:rgba(255,255,255,.4);overflow-x:auto;white-space:pre-wrap;line-height:1.5">${_esc(JSON.stringify(sd,null,2).slice(0,2000))}${JSON.stringify(sd).length>2000?'\n…(troncato)':''}</pre>
     </div>
-    ${s.email !== ADMIN_EMAIL ? `
-    <div class="adm-drawer-actions">
+    ${s.email!==ADMIN_EMAIL?`<div class="adm-drawer-actions">
       <button class="adm-btn adm-btn-danger" id="da-del-save" style="width:100%;justify-content:center"><i class="fas fa-trash"></i> Elimina salvataggio</button>
-    </div>` : ''}
-  `;
+    </div>`:''}`;
   document.getElementById('da-del-save')?.addEventListener('click', () => { _closeDrawer(); _deleteSave(s.user_id, s.username); });
   _openDrawer();
 }
 
 function _deleteSave(userId, username) {
-  _confirm(`Elimina save di "${username}"`, "Il salvataggio verrà eliminato. L'utente potrà ricominciare da zero.", async () => {
+  _confirm(`Elimina save di "${username}"`, "Il salvataggio verrà eliminato permanentemente.", async () => {
     try {
       await Api.admin.deleteSave(userId);
       _saves = _saves.filter(s => s.user_id !== userId);
@@ -867,49 +728,26 @@ function _deleteSave(userId, username) {
   });
 }
 
-/* ── FOCUS TRAP (stackable) ─────────────────────────── */
-const _FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-let _trapStack = [];
-
-function _trapFocus(container) {
-  const prev = _trapStack[_trapStack.length - 1];
-  if (prev) document.removeEventListener('keydown', prev.handler);
-  const focusables = () => [...container.querySelectorAll(_FOCUSABLE)]
-    .filter(el => !el.disabled && el.offsetParent !== null);
-  const handler = (e) => {
-    if (e.key !== 'Tab') return;
-    const els = focusables();
-    if (!els.length) return;
-    const first = els[0], last = els[els.length - 1];
-    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-  };
-  _trapStack.push({ handler, prevFocus: document.activeElement });
-  document.addEventListener('keydown', handler);
-  const f = focusables()[0];
-  if (f) f.focus();
+// ── RICERCA GLOBALE ──────────────────────────────────────────
+function _globalSearch(q) {
+  if (!q) return;
+  q = q.toLowerCase();
+  const matchSub  = _subs.find(s  => (s.payload?.name||s.payload?.title||'').toLowerCase().includes(q) || s.username?.toLowerCase().includes(q));
+  const matchUser = _users.find(u => u.username?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q));
+  if (matchSub) {
+    _navTo('submissions');
+    setTimeout(() => _openSubDetail(matchSub), 100);
+  } else if (matchUser) {
+    _navTo('users');
+    setTimeout(() => { _userSearch = q; _renderUsers(); _openUserDetail(matchUser); }, 100);
+  } else {
+    _toast('Nessun risultato trovato', 'info');
+  }
 }
 
-function _releaseFocus() {
-  const top = _trapStack.pop();
-  if (!top) return;
-  document.removeEventListener('keydown', top.handler);
-  const restored = _trapStack[_trapStack.length - 1];
-  if (restored) document.addEventListener('keydown', restored.handler);
-  if (top.prevFocus?.focus) top.prevFocus.focus();
-}
-
-function _openDrawer() {
-  document.getElementById('adm-drawer-overlay').style.display = 'block';
-  document.body.style.overflow = 'hidden';
-  _trapFocus(document.getElementById('adm-drawer'));
-}
-function _closeDrawer() {
-  if (document.getElementById('adm-drawer-overlay').style.display === 'none') return;
-  document.getElementById('adm-drawer-overlay').style.display = 'none';
-  document.body.style.overflow = '';
-  _releaseFocus();
-}
+// ── HELPERS ──────────────────────────────────────────────────
+function _openDrawer()  { document.getElementById('adm-drawer-overlay').style.display='block'; document.body.style.overflow='hidden'; }
+function _closeDrawer() { document.getElementById('adm-drawer-overlay').style.display='none'; document.body.style.overflow=''; }
 
 let _confirmCb = null;
 function _confirm(title, msg, cb) {
@@ -917,219 +755,94 @@ function _confirm(title, msg, cb) {
   document.getElementById('adm-confirm-msg').textContent   = msg;
   _confirmCb = cb;
   document.getElementById('adm-confirm-overlay').style.display = 'flex';
-  _trapFocus(document.querySelector('.adm-confirm-box'));
 }
 function _closeConfirm() {
-  if (document.getElementById('adm-confirm-overlay').style.display === 'none') return;
   document.getElementById('adm-confirm-overlay').style.display = 'none';
   _confirmCb = null;
-  _releaseFocus();
 }
 
 let _toastTimer = null;
 function _toast(msg, type = '') {
   const el = document.getElementById('adm-toast');
   el.textContent = msg;
-  el.className = 'adm-toast show' + (type ? ' ' + type : '');
+  el.className = 'adm-toast show' + (type ? ' '+type : '');
   clearTimeout(_toastTimer);
   _toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
 }
 
+function _navTo(section) {
+  document.querySelectorAll('.adm-nav-btn').forEach(b => b.classList.toggle('active', b.dataset.section === section));
+  document.querySelectorAll('.adm-section').forEach(s => s.classList.toggle('active', s.id === `section-${section}`));
+}
+
 function _esc(s) {
-  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 function _statusLabel(s) {
-  return s === 'pending' ? 'In attesa' : s === 'approved' ? 'Approvata' : 'Rifiutata';
+  return s==='pending'?'In attesa':s==='approved'?'Approvata':'Rifiutata';
 }
 function _fmtDate(d) {
   if (!d) return '—';
-  return new Date(d).toLocaleString('it-IT', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  return new Date(d).toLocaleString('it-IT',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
 }
 function _fmt(n) {
-  if (n == null) return '—';
+  if (n==null) return '—';
   const num = parseFloat(n);
   if (isNaN(num)) return '—';
-  if (num >= 1e9) return (num/1e9).toFixed(1) + 'B';
-  if (num >= 1e6) return (num/1e6).toFixed(1) + 'M';
-  if (num >= 1e3) return (num/1e3).toFixed(1) + 'K';
+  if (num>=1e9) return (num/1e9).toFixed(1)+'B';
+  if (num>=1e6) return (num/1e6).toFixed(1)+'M';
+  if (num>=1e3) return (num/1e3).toFixed(1)+'K';
   return Math.floor(num).toString();
 }
 function _fmtTime(sec) {
   if (!sec) return '—';
   const s = Math.floor(parseFloat(sec));
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
-  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+  const h = Math.floor(s/3600), m = Math.floor((s%3600)/60);
+  return h>0?`${h}h ${m}m`:`${m}m`;
 }
 function _spinRefresh(on) {
   document.getElementById('adm-refresh-btn')?.classList.toggle('spinning', on);
 }
 
-/* ── NAVIGATION + URL HASH ─────────────────────────── */
-const _SECTIONS = ['overview', 'submissions', 'users', 'saves'];
-
-function _goToSection(section, opts = {}) {
-  if (!_SECTIONS.includes(section)) section = 'overview';
-  document.querySelectorAll('.adm-nav-btn').forEach(b =>
-    b.classList.toggle('active', b.dataset.section === section));
-  document.querySelectorAll('.adm-section').forEach(s =>
-    s.classList.toggle('active', s.id === 'section-' + section));
-  if (section === 'submissions' && opts.status) {
-    _subStatusFilter = opts.status;
-    _subPage = 1;
-    document.querySelectorAll('#sub-status-tabs .adm-tab').forEach(x =>
-      x.classList.toggle('active', x.dataset.val === opts.status));
-    _renderSubs();
-  }
-  _syncHash();
-}
-
-function _syncHash() {
-  const active = document.querySelector('.adm-nav-btn.active')?.dataset.section || 'overview';
-  let hash = active;
-  if (active === 'submissions' && _subStatusFilter !== 'all') hash += '/' + _subStatusFilter;
-  history.replaceState(null, '', '#' + hash);
-}
-
-function _applyHash() {
-  const raw = (location.hash || '').replace(/^#/, '');
-  if (!raw) return;
-  const [section, sub] = raw.split('/');
-  const validStatus = ['pending', 'approved', 'rejected', 'all'];
-  _goToSection(section, sub && validStatus.includes(sub) ? { status: sub } : {});
-}
-
-/* ── KEYBOARD NAV (submissions) ─────────────────────── */
-function _setSubFocus(idx) {
-  const rows = document.querySelectorAll('#sub-tbody tr');
-  rows.forEach((r, i) => r.classList.toggle('adm-row-focus', i === idx));
-  _subFocusIdx = idx;
-  if (rows[idx]) rows[idx].scrollIntoView({ block: 'nearest' });
-}
-
-function _moveSubFocus(delta) {
-  const rows = document.querySelectorAll('#sub-tbody tr');
-  if (!rows.length) return;
-  const idx = Math.max(0, Math.min(rows.length - 1, _subFocusIdx + delta));
-  _setSubFocus(idx);
-}
-
-function _subRowAction(action) {
-  const tr = document.querySelectorAll('#sub-tbody tr')[_subFocusIdx];
-  if (!tr) return;
-  const s = _subs.find(x => String(x.id) === String(tr.dataset.id));
-  if (!s) return;
-  if (action === 'detail') _openSubDetail(s);
-  else if (action === 'select') _toggleSubSelect(String(s.id));
-  else _updateSub(s, action, tr);
-}
-
-function _handleSubKeys(e) {
-  if (!document.getElementById('section-submissions')?.classList.contains('active')) return;
-  const tag = document.activeElement?.tagName;
-  if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-  if (document.getElementById('adm-drawer-overlay')?.style.display === 'block') return;
-  if (document.getElementById('adm-confirm-overlay')?.style.display === 'flex') return;
-  switch (e.key) {
-    case 'j': e.preventDefault(); _moveSubFocus(1);  break;
-    case 'k': e.preventDefault(); _moveSubFocus(-1); break;
-    case 'a': _subRowAction('approved'); break;
-    case 'r': _subRowAction('rejected'); break;
-    case 'p': _subRowAction('pending');  break;
-    case 'x': e.preventDefault(); _subRowAction('select'); break;
-    case 'Enter': _subRowAction('detail'); break;
-  }
-}
-
+// ── INIT ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const tryInit = () => {
     if (typeof Auth === 'undefined' || typeof Api === 'undefined') { setTimeout(tryInit, 50); return; }
     _guard();
     document.addEventListener('authChange', _guard);
+
     document.getElementById('adm-refresh-btn')?.addEventListener('click', _loadAll);
 
     document.querySelectorAll('.adm-nav-btn').forEach(btn => {
-      btn.addEventListener('click', () => _goToSection(btn.dataset.section));
+      btn.addEventListener('click', () => _navTo(btn.dataset.section));
     });
 
     document.querySelectorAll('.adm-stat-card[data-goto]').forEach(card => {
-      const go = () => _goToSection(card.dataset.goto, card.dataset.gotoStatus ? { status: card.dataset.gotoStatus } : {});
-      card.addEventListener('click', go);
-      card.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); }
-      });
+      card.addEventListener('click', () => _navTo(card.dataset.goto));
     });
 
-    document.querySelectorAll('#sub-status-tabs .adm-tab').forEach(t => {
-      t.addEventListener('click', () => {
-        document.querySelectorAll('#sub-status-tabs .adm-tab').forEach(x => x.classList.remove('active'));
-        t.classList.add('active');
-        _subStatusFilter = t.dataset.val;
-        _subPage = 1;
-        _subSelected.clear();
-        _renderSubs();
-        _syncHash();
-      });
-    });
-
-    document.querySelectorAll('#sub-type-tabs .adm-tab').forEach(t => {
-      t.addEventListener('click', () => {
-        document.querySelectorAll('#sub-type-tabs .adm-tab').forEach(x => x.classList.remove('active'));
-        t.classList.add('active');
-        _subTypeFilter = t.dataset.val;
-        _subPage = 1;
-        _subSelected.clear();
-        _renderSubs();
-      });
-    });
-
-    document.getElementById('sub-bulk-approve')?.addEventListener('click', () => _bulkUpdate('approved'));
-    document.getElementById('sub-bulk-reject')?.addEventListener('click',  () => _bulkUpdate('rejected'));
-    document.getElementById('sub-bulk-delete')?.addEventListener('click',  _bulkDelete);
-    document.getElementById('sub-bulk-clear')?.addEventListener('click',   () => { _subSelected.clear(); _renderSubs(); });
-
-    const _sectionLoaders = {
-      'ov-refresh': () => { _loadStats(); _loadTrends(); },
-      'sub-refresh': _loadSubmissions,
-      'user-refresh': _loadUsers, 'save-refresh': _loadSaves,
-    };
-    Object.entries(_sectionLoaders).forEach(([btnId, loader]) => {
-      document.getElementById(btnId)?.addEventListener('click', loader);
-    });
-
-    document.addEventListener('keydown', _handleSubKeys);
-
-    let _subSearchTimer, _uSearchTimer, _sSearchTimer;
-    document.getElementById('sub-search')?.addEventListener('input', e => {
-      clearTimeout(_subSearchTimer);
-      _subSearchTimer = setTimeout(() => { _subSearch = e.target.value; _subPage = 1; _subSelected.clear(); _renderSubs(); }, 200);
-    });
+    let _uTimer, _sTimer, _gTimer;
     document.getElementById('user-search')?.addEventListener('input', e => {
-      clearTimeout(_uSearchTimer);
-      _uSearchTimer = setTimeout(() => { _userSearch = e.target.value; _userPage = 1; _renderUsers(); }, 200);
+      clearTimeout(_uTimer);
+      _uTimer = setTimeout(() => { _userSearch = e.target.value; _renderUsers(); }, 200);
     });
     document.getElementById('save-search')?.addEventListener('input', e => {
-      clearTimeout(_sSearchTimer);
-      _sSearchTimer = setTimeout(() => { _saveSearch = e.target.value; _savePage = 1; _renderSaves(); }, 200);
+      clearTimeout(_sTimer);
+      _sTimer = setTimeout(() => { _saveSearch = e.target.value; _renderSaves(); }, 200);
+    });
+    document.getElementById('adm-global-search')?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { clearTimeout(_gTimer); _globalSearch(e.target.value.trim()); }
     });
 
     document.getElementById('adm-drawer-backdrop')?.addEventListener('click', _closeDrawer);
     document.getElementById('adm-drawer-close')?.addEventListener('click', _closeDrawer);
     document.getElementById('adm-confirm-cancel')?.addEventListener('click', _closeConfirm);
-    // FIX: salva il callback prima di chiamare _closeConfirm, altrimenti viene azzerato
     document.getElementById('adm-confirm-ok')?.addEventListener('click', () => {
-      const cb = _confirmCb;
-      _closeConfirm();
-      cb?.();
+      const cb = _confirmCb; _closeConfirm(); cb?.();
     });
     document.addEventListener('keydown', e => {
-      if (e.key !== 'Escape') return;
-      if (document.getElementById('adm-confirm-overlay').style.display !== 'none') _closeConfirm();
-      else _closeDrawer();
+      if (e.key === 'Escape') { _closeDrawer(); _closeConfirm(); }
     });
-
-    _applyHash();
-    window.addEventListener('hashchange', _applyHash);
   };
   tryInit();
 });

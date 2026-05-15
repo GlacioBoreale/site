@@ -27,14 +27,14 @@
 
     <header class="adm-header">
         <div class="adm-header-inner">
-            <div class="adm-logo">
-                <i class="fas fa-shield-halved"></i>
-                <span>Glaciopia Admin</span>
+            <div class="adm-header-center">
+                <input class="adm-global-search" id="adm-global-search" type="text" placeholder="Cerca utenti, submission..." autocomplete="off">
             </div>
             <div class="adm-header-right">
+                <div class="adm-status-dot" id="adm-status-dot" title="Stato API"></div>
                 <span class="adm-user-label" id="adm-user-label"></span>
-                <button class="adm-refresh-btn" id="adm-refresh-btn" title="Ricarica tutto"><i class="fas fa-rotate-right"></i></button>
-                <a href="index.html" class="adm-home-btn"><i class="fas fa-arrow-left"></i> Sito</a>
+                <button class="adm-icon-btn" id="adm-refresh-btn" title="Ricarica tutto"><i class="fas fa-rotate-right"></i></button>
+                <a href="index.html" class="adm-icon-btn" title="Torna al sito"><i class="fas fa-arrow-left"></i></a>
             </div>
         </div>
     </header>
@@ -42,6 +42,7 @@
     <div class="adm-layout">
 
         <nav class="adm-nav">
+            <span class="adm-nav-section-label">Principale</span>
             <button class="adm-nav-btn active" data-section="overview">
                 <i class="fas fa-chart-line"></i><span>Overview</span>
             </button>
@@ -49,6 +50,8 @@
                 <i class="fas fa-inbox"></i><span>Submissions</span>
                 <span class="adm-nav-badge" id="nav-badge-submissions"></span>
             </button>
+            <div class="adm-nav-divider"></div>
+            <span class="adm-nav-section-label">Gestione</span>
             <button class="adm-nav-btn" data-section="users">
                 <i class="fas fa-users"></i><span>Utenti</span>
             </button>
@@ -59,65 +62,84 @@
 
         <main class="adm-content">
 
+            <!-- OVERVIEW -->
             <section class="adm-section active" id="section-overview">
-                <div class="adm-section-header"><h1>Overview</h1></div>
-                <div class="adm-stats-grid">
-                    <div class="adm-stat-card">
-                        <div class="adm-stat-icon"><i class="fas fa-users"></i></div>
-                        <div class="adm-stat-body"><span class="adm-stat-value" id="ov-users">—</span><span class="adm-stat-label">Utenti registrati</span></div>
-                    </div>
-                    <div class="adm-stat-card">
-                        <div class="adm-stat-icon adm-stat-icon-green"><i class="fas fa-gamepad"></i></div>
-                        <div class="adm-stat-body"><span class="adm-stat-value" id="ov-saves">—</span><span class="adm-stat-label">Salvataggi attivi</span></div>
-                    </div>
-                    <div class="adm-stat-card">
-                        <div class="adm-stat-icon adm-stat-icon-yellow"><i class="fas fa-inbox"></i></div>
-                        <div class="adm-stat-body"><span class="adm-stat-value" id="ov-subs">—</span><span class="adm-stat-label">Submission totali</span></div>
-                    </div>
-                    <div class="adm-stat-card">
-                        <div class="adm-stat-icon adm-stat-icon-red"><i class="fas fa-clock"></i></div>
-                        <div class="adm-stat-body"><span class="adm-stat-value" id="ov-pending">—</span><span class="adm-stat-label">In attesa</span></div>
+                <div class="adm-page-header">
+                    <div>
+                        <div class="adm-page-title">Overview</div>
+                        <div class="adm-page-subtitle">Riepilogo generale della piattaforma</div>
                     </div>
                 </div>
+
+                <div class="adm-stats-grid">
+                    <div class="adm-stat-card" data-goto="users" style="--glow-color:var(--accent)">
+                        <div class="adm-stat-icon"><i class="fas fa-users"></i></div>
+                        <div class="adm-stat-body">
+                            <span class="adm-stat-value" id="ov-users">—</span>
+                            <span class="adm-stat-label">Utenti registrati</span>
+                        </div>
+                    </div>
+                    <div class="adm-stat-card" data-goto="saves">
+                        <div class="adm-stat-icon adm-stat-icon-green"><i class="fas fa-gamepad"></i></div>
+                        <div class="adm-stat-body">
+                            <span class="adm-stat-value" id="ov-saves">—</span>
+                            <span class="adm-stat-label">Salvataggi attivi</span>
+                        </div>
+                    </div>
+                    <div class="adm-stat-card" data-goto="submissions">
+                        <div class="adm-stat-icon adm-stat-icon-yellow"><i class="fas fa-inbox"></i></div>
+                        <div class="adm-stat-body">
+                            <span class="adm-stat-value" id="ov-subs">—</span>
+                            <span class="adm-stat-label">Submission totali</span>
+                        </div>
+                    </div>
+                    <div class="adm-stat-card" data-goto="submissions">
+                        <div class="adm-stat-icon adm-stat-icon-red"><i class="fas fa-clock"></i></div>
+                        <div class="adm-stat-body">
+                            <span class="adm-stat-value" id="ov-pending">—</span>
+                            <span class="adm-stat-label">In attesa</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="adm-overview-grid">
                     <div class="adm-overview-card">
-                        <div class="adm-overview-card-title"><i class="fas fa-tag"></i> Per tipo</div>
-                        <div class="adm-bar-list" id="ov-by-type"></div>
+                        <div class="adm-overview-card-title"><i class="fas fa-tag"></i> Submission per tipo</div>
+                        <div id="ov-by-type"></div>
                     </div>
                     <div class="adm-overview-card">
-                        <div class="adm-overview-card-title"><i class="fas fa-circle-half-stroke"></i> Per stato</div>
-                        <div class="adm-bar-list" id="ov-by-status"></div>
+                        <div class="adm-overview-card-title"><i class="fas fa-circle-half-stroke"></i> Submission per stato</div>
+                        <div id="ov-by-status"></div>
+                    </div>
+                    <div class="adm-overview-card" style="grid-column:1/-1">
+                        <div class="adm-overview-card-title"><i class="fas fa-bolt"></i> Attività recente</div>
+                        <div class="adm-feed" id="ov-feed">
+                            <div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>
+                        </div>
                     </div>
                 </div>
             </section>
 
+            <!-- SUBMISSIONS -->
             <section class="adm-section" id="section-submissions">
-                <div class="adm-section-header">
-                    <h1>Submissions</h1>
-                    <div class="adm-toolbar">
-                        <div class="adm-tabs" id="sub-status-tabs">
-                            <button class="adm-tab active" data-val="all">Tutte</button>
-                            <button class="adm-tab" data-val="pending">In attesa</button>
-                            <button class="adm-tab" data-val="approved">Approvate</button>
-                            <button class="adm-tab" data-val="rejected">Rifiutate</button>
-                        </div>
-                        <div class="adm-tabs" id="sub-type-tabs">
-                            <button class="adm-tab active" data-val="all">Tutti</button>
-                            <button class="adm-tab" data-val="vtuber">VTuber</button>
-                            <button class="adm-tab" data-val="fanart">Fanart</button>
-                            <button class="adm-tab" data-val="team">Team</button>
-                            <button class="adm-tab" data-val="tag">Tag</button>
-                        </div>
+                <div class="adm-page-header">
+                    <div>
+                        <div class="adm-page-title">Submissions</div>
+                        <div class="adm-page-subtitle">Gestisci le richieste ricevute</div>
                     </div>
                 </div>
-                <div class="adm-table-wrap" id="sub-list">
+                <div class="adm-sub-sections" id="sub-sections">
                     <div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>
                 </div>
             </section>
 
+            <!-- UTENTI -->
             <section class="adm-section" id="section-users">
-                <div class="adm-section-header">
-                    <h1>Utenti</h1>
+                <div class="adm-page-header">
+                    <div>
+                        <div class="adm-page-title">Utenti</div>
+                        <div class="adm-page-subtitle">Tutti gli account registrati</div>
+                    </div>
                     <div class="adm-toolbar">
                         <input class="adm-search" id="user-search" type="text" placeholder="Cerca per username o email...">
                     </div>
@@ -127,9 +149,13 @@
                 </div>
             </section>
 
+            <!-- SALVATAGGI -->
             <section class="adm-section" id="section-saves">
-                <div class="adm-section-header">
-                    <h1>Salvataggi</h1>
+                <div class="adm-page-header">
+                    <div>
+                        <div class="adm-page-title">Salvataggi</div>
+                        <div class="adm-page-subtitle">Dati di gioco degli utenti</div>
+                    </div>
                     <div class="adm-toolbar">
                         <input class="adm-search" id="save-search" type="text" placeholder="Cerca per username o email...">
                     </div>
@@ -144,6 +170,7 @@
 
 </div>
 
+<!-- DRAWER -->
 <div class="adm-drawer-overlay" id="adm-drawer-overlay" style="display:none;">
     <div class="adm-drawer-backdrop" id="adm-drawer-backdrop"></div>
     <div class="adm-drawer" id="adm-drawer">
@@ -155,6 +182,7 @@
     </div>
 </div>
 
+<!-- CONFIRM -->
 <div class="adm-confirm-overlay" id="adm-confirm-overlay" style="display:none;">
     <div class="adm-confirm-box">
         <div class="adm-confirm-icon"><i class="fas fa-triangle-exclamation"></i></div>

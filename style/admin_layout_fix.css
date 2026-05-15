@@ -1,0 +1,15 @@
+/* ── LAYOUT ── */
+.adm-layout {
+  min-height: 100vh;
+  padding-top: var(--header-h);
+}
+
+/* ── CONTENT ── */
+.adm-content {
+  margin-left: var(--nav-w);
+  padding: 2rem;
+  min-width: 0;
+  min-height: calc(100vh - var(--header-h));
+}
+.adm-section { display:none; }
+.adm-section.active { display:block; }

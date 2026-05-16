@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-16T05:54:59Z",
+  "updatedAt": "2026-05-16T08:04:22Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,12 +43,12 @@
     ],
     "randomClips": [
       {
-        "title": "Pronto!!!!!!!",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/MagnificentWittyInternThisIsSparta-ujpniueNUbiV-77b",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/58411f9e-18f1-4a70-aba4-33db15ba0c2d/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 50,
-        "duration": 10.5,
-        "creator": "lucaop69"
+        "title": "Mi serve moderazione non Pix",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/PoliteSolidHawkEleGiggle-6wdUnkC3uEyFMwle",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d0008be4-9538-4f37-893f-a83dda83347b/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 28,
+        "duration": 5,
+        "creator": "BrainSedge"
       },
       {
         "title": "Nixel Fuori Contesto",
@@ -71,7 +71,7 @@
   "youtube": {
     "displayName": "Glacio Boreale",
     "thumbnail": "https://yt3.ggpht.com/ouF6Phe2YjqSFMP7YdxYFTm5l9tyT0-MfdrfDJCcUt2mecJe8JV8h96luOECIiI9vtCjj9pX=s88-c-k-c0x00ffffff-no-rj",
-    "subscribers": 170,
+    "subscribers": 171,
     "url": "https://www.youtube.com/@glacioborealevt",
     "recentVideos": [
       {

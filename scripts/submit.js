@@ -3,6 +3,105 @@
 const ABOUT_MAX_BYTES = 2 * 1024 * 1024;
 let aboutSelectedFile = null;
 
+// ── SOCIAL ICONS MAP ─────────────────────────────────────────
+const SOCIAL_ICONS = {
+  twitch:    'fa-brands fa-twitch',
+  youtube:   'fa-brands fa-youtube',
+  twitter:   'fa-brands fa-x-twitter',
+  x:         'fa-brands fa-x-twitter',
+  instagram: 'fa-brands fa-instagram',
+  tiktok:    'fa-brands fa-tiktok',
+  discord:   'fa-brands fa-discord',
+  github:    'fa-brands fa-github',
+  bluesky:   'fa-brands fa-bluesky',
+};
+
+function _socialIcon(url) {
+  const u = url.toLowerCase();
+  for (const [k, v] of Object.entries(SOCIAL_ICONS)) {
+    if (u.includes(k)) return v;
+  }
+  return 'fa-solid fa-globe';
+}
+
+// ── TEAM LOADER ───────────────────────────────────────────────
+async function loadTeamMembers() {
+  const grid = document.getElementById('team-grid');
+  if (!grid) return;
+
+  // rimuove la card placeholder
+  grid.querySelector('.team-card--placeholder')?.remove();
+
+  try {
+    const data = await Api.team.get();
+    const members = data.members || [];
+    members.forEach((m, i) => {
+      const card = _buildTeamCard(m, grid.children.length + i);
+      // inserisce prima del placeholder se esiste, altrimenti append
+      grid.appendChild(card);
+    });
+  } catch(e) {
+    console.warn('Team dal DB non disponibile:', e.message);
+  }
+
+  // ri-aggiunge la card placeholder in fondo
+  const placeholder = document.createElement('div');
+  placeholder.className = 'team-card team-card--placeholder stagger-item';
+  placeholder.innerHTML = `
+    <div class="team-avatar team-avatar--empty"><i class="fas fa-question"></i></div>
+    <div class="team-info">
+      <h3 class="team-name" data-i18n="about.members.placeholder.name">???</h3>
+      <span class="team-role" data-i18n="about.members.placeholder.role">???</span>
+      <p class="team-desc" data-i18n="about.members.placeholder.desc">Il prossimo potresti essere tu! Manda una candidatura per far parte del team.</p>
+    </div>`;
+  grid.appendChild(placeholder);
+  setTimeout(() => placeholder.classList.add('visible'), grid.children.length * 100);
+}
+
+function _buildTeamCard(m, index) {
+  const card = document.createElement('div');
+  card.className = 'team-card stagger-item';
+
+  // parse social links (stringa separata da virgola o oggetto)
+  let socialLinks = [];
+  if (m.socials) {
+    if (typeof m.socials === 'string') {
+      socialLinks = m.socials.split(',').map(s => s.trim()).filter(Boolean);
+    } else if (typeof m.socials === 'object') {
+      socialLinks = Object.values(m.socials).filter(Boolean);
+    }
+  }
+
+  const linksHtml = socialLinks.map(url =>
+    `<a href="${url}" target="_blank" rel="noopener noreferrer" class="team-link">
+      <i class="${_socialIcon(url)}"></i>
+    </a>`
+  ).join('');
+
+  card.innerHTML = `
+    <div class="team-avatar">
+      <img src="${m.avatar || ''}" alt="${m.name}"
+        onerror="this.closest('.team-avatar').innerHTML='<i class=\\"fas fa-user\\"></i>'">
+    </div>
+    <div class="team-info">
+      <h3 class="team-name">${m.name}</h3>
+      <span class="team-role">${m.role}</span>
+      <p class="team-desc">${m.desc}</p>
+      ${linksHtml ? `<div class="team-links">${linksHtml}</div>` : ''}
+    </div>`;
+
+  const img = card.querySelector('img');
+  const reveal = () => setTimeout(() => card.classList.add('visible'), index * 100);
+  if (!img || img.complete) reveal();
+  else {
+    img.addEventListener('load',  reveal, { once: true });
+    img.addEventListener('error', reveal, { once: true });
+  }
+
+  return card;
+}
+
+// ── FORM CANDIDATURA ──────────────────────────────────────────
 function _submitSetState(btn, msgEl, state, text) {
   btn.disabled = state === 'loading';
   const span = btn.querySelector('span');
@@ -22,7 +121,7 @@ function _clearFeedback(msgEl) {
 function initAboutSubmit() {
   const openBtn   = document.getElementById('about-open-form-btn');
   const modal     = document.getElementById('about-modal');
-  const content   = modal?.querySelector('.popup-content--form');
+  const content   = modal?.querySelector('.popup-content');
   const closeBtn  = document.getElementById('about-modal-close');
   const closeBtn2 = document.getElementById('about-modal-close-btn');
   const submitBtn = document.getElementById('about-submit-btn');
@@ -70,11 +169,8 @@ function initAboutSubmit() {
   openBtn.addEventListener('click', openModal);
   closeBtn?.addEventListener('click', closeModal);
   closeBtn2?.addEventListener('click', closeModal);
-
-  // click sul modal (area fuori dal content) chiude — stesso pattern vtpedia
   modal.addEventListener('click', closeModal);
   content?.addEventListener('click', (e) => e.stopPropagation());
-
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
   submitBtn?.addEventListener('click', async () => {
@@ -174,4 +270,5 @@ function _aboutResetFile() {
 
 document.addEventListener('DOMContentLoaded', () => {
   initAboutSubmit();
+  loadTeamMembers();
 });

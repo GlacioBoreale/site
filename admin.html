@@ -8,6 +8,10 @@
     <link rel="icon" type="image/x-icon" href="https://glaciopia-images.s3.eu-north-1.amazonaws.com/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style/admin.css">
+    <style>
+        .adm-sub-section-body { max-height: 9999px; }
+        .adm-sub-section.collapsed .adm-sub-section-body { max-height: 0 !important; }
+    </style>
     <script src="scripts/api.js"></script>
     <script src="scripts/auth.js"></script>
     <script src="scripts/admin.js" defer></script>
@@ -70,7 +74,6 @@
                         <div class="adm-page-subtitle">Riepilogo generale della piattaforma</div>
                     </div>
                 </div>
-
                 <div class="adm-stats-grid">
                     <div class="adm-stat-card" data-goto="users" style="--glow-color:var(--accent)">
                         <div class="adm-stat-icon"><i class="fas fa-users"></i></div>
@@ -101,7 +104,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="adm-overview-grid">
                     <div class="adm-overview-card">
                         <div class="adm-overview-card-title"><i class="fas fa-tag"></i> Submission per tipo</div>

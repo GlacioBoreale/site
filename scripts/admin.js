@@ -10,10 +10,10 @@ let _saveSearch = '';
 
 const SECTION_TYPES = ['fanart', 'vtuber', 'team', 'tag'];
 const SECTION_META = {
-  fanart: { label: 'Fanart',   icon: 'fa-image',       color: '#6c8fff', bg: 'rgba(108,143,255,.12)' },
-  vtuber: { label: 'VTuber',   icon: 'fa-star',        color: '#c084fc', bg: 'rgba(192,132,252,.12)' },
-  team:   { label: 'Team',     icon: 'fa-users',       color: '#4ade80', bg: 'rgba(74,222,128,.12)'  },
-  tag:    { label: 'Tag',      icon: 'fa-tag',         color: '#fbbf24', bg: 'rgba(251,191,36,.12)'  },
+  fanart: { label: 'Fanart',  icon: 'fa-image',  color: '#6c8fff', bg: 'rgba(108,143,255,.12)' },
+  vtuber: { label: 'VTuber', icon: 'fa-star',   color: '#c084fc', bg: 'rgba(192,132,252,.12)' },
+  team:   { label: 'Team',   icon: 'fa-users',  color: '#4ade80', bg: 'rgba(74,222,128,.12)'  },
+  tag:    { label: 'Tag',    icon: 'fa-tag',    color: '#fbbf24', bg: 'rgba(251,191,36,.12)'  },
 };
 
 const PAGE_SIZE = 6;
@@ -22,10 +22,10 @@ let _sectionState = {};
 SECTION_TYPES.forEach(t => {
   const saved = _lsGet(`adm_section_${t}`) || {};
   _sectionState[t] = {
-    collapsed:  saved.collapsed  ?? false,
-    view:       saved.view       ?? 'grid',
-    filter:     saved.filter     ?? 'all',
-    showCount:  PAGE_SIZE,
+    collapsed: saved.collapsed ?? false,
+    view:      saved.view      ?? 'grid',
+    filter:    saved.filter    ?? 'all',
+    showCount: PAGE_SIZE,
   };
 });
 
@@ -151,10 +151,7 @@ async function _loadSubmissions() {
 function _renderSubSections() {
   const container = document.getElementById('sub-sections');
   container.innerHTML = '';
-  SECTION_TYPES.forEach(type => {
-    const el = _buildSubSection(type);
-    container.appendChild(el);
-  });
+  SECTION_TYPES.forEach(type => container.appendChild(_buildSubSection(type)));
 }
 
 function _buildSubSection(type) {
@@ -181,8 +178,8 @@ function _buildSubSection(type) {
         <span class="adm-sub-section-title">${meta.label}</span>
         <div class="adm-sub-section-counts">${pendingBadge}${totalBadge}</div>
       </div>
-      <div class="adm-sub-section-right" id="sub-right-${type}">
-        <div class="adm-sub-filter-tabs" id="sub-filter-${type}">
+      <div class="adm-sub-section-right">
+        <div class="adm-sub-filter-tabs">
           <button class="adm-sub-filter-tab ${state.filter==='all'?'active':''}" data-val="all">Tutti</button>
           <button class="adm-sub-filter-tab ${state.filter==='pending'?'active':''}" data-val="pending">In attesa</button>
           <button class="adm-sub-filter-tab ${state.filter==='approved'?'active':''}" data-val="approved">Approvati</button>
@@ -198,25 +195,24 @@ function _buildSubSection(type) {
     <div class="adm-sub-section-body" id="sub-body-${type}"></div>
   `;
 
+  // render body subito — nessuna logica max-height in JS
   _renderSubBody(section, type);
 
-  const header     = section.querySelector('.adm-sub-section-header');
+  const header      = section.querySelector('.adm-sub-section-header');
   const collapseBtn = section.querySelector('.adm-sub-collapse-btn');
-  const filterTabs = section.querySelectorAll('.adm-sub-filter-tab');
-  const viewBtns   = section.querySelectorAll('.adm-sub-view-btn');
+  const filterTabs  = section.querySelectorAll('.adm-sub-filter-tab');
+  const viewBtns    = section.querySelectorAll('.adm-sub-view-btn');
 
-  collapseBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
+  const toggleCollapse = () => {
     state.collapsed = !state.collapsed;
     section.classList.toggle('collapsed', state.collapsed);
     _saveSectionState(type);
-  });
+  };
 
+  collapseBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleCollapse(); });
   header.addEventListener('click', (e) => {
     if (e.target.closest('.adm-sub-section-right')) return;
-    state.collapsed = !state.collapsed;
-    section.classList.toggle('collapsed', state.collapsed);
-    _saveSectionState(type);
+    toggleCollapse();
   });
 
   filterTabs.forEach(btn => {
@@ -242,23 +238,16 @@ function _buildSubSection(type) {
     });
   });
 
-  const body = section.querySelector('.adm-sub-section-body');
-  if (!state.collapsed) {
-    body.style.maxHeight = body.scrollHeight + 'px';
-    const observer = new MutationObserver(() => { body.style.maxHeight = 'none'; observer.disconnect(); });
-    observer.observe(body, { childList:true, subtree:true });
-  }
-
   return section;
 }
 
 function _renderSubBody(section, type) {
-  const state     = _sectionState[type];
-  const body      = section.querySelector(`#sub-body-${type}`);
-  const filtered  = _subs.filter(s => s.type === type && (state.filter === 'all' || s.status === state.filter));
-  const visible   = filtered.slice(0, state.showCount);
-  const hasMore   = filtered.length > state.showCount;
-  const canLess   = state.showCount > PAGE_SIZE;
+  const state    = _sectionState[type];
+  const body     = section.querySelector(`#sub-body-${type}`);
+  const filtered = _subs.filter(s => s.type === type && (state.filter === 'all' || s.status === state.filter));
+  const visible  = filtered.slice(0, state.showCount);
+  const hasMore  = filtered.length > state.showCount;
+  const canLess  = state.showCount > PAGE_SIZE;
 
   body.innerHTML = '';
 
@@ -289,15 +278,12 @@ function _renderSubBody(section, type) {
     if (canLess) {
       const btn = document.createElement('button');
       btn.className = 'adm-show-more-btn';
-      btn.style.marginLeft = hasMore ? '.5rem' : '0';
       btn.innerHTML = `<i class="fas fa-chevron-up"></i> Mostra meno`;
       btn.addEventListener('click', () => { state.showCount = PAGE_SIZE; _renderSubBody(section, type); });
       footer.appendChild(btn);
     }
     body.appendChild(footer);
   }
-
-  body.style.maxHeight = 'none';
 }
 
 function _buildSubCard(s, type) {
@@ -307,8 +293,10 @@ function _buildSubCard(s, type) {
   card.className = 'adm-sub-card';
 
   if (s.image_url) {
-    card.innerHTML = `<img class="adm-sub-card-img" src="${_esc(s.image_url)}" alt="" loading="lazy" onerror="this.parentElement.querySelector('.adm-sub-card-img-placeholder').style.display='flex';this.remove()">
-    <div class="adm-sub-card-img-placeholder" style="display:none"><i class="fas fa-image"></i></div>`;
+    card.innerHTML = `
+      <img class="adm-sub-card-img" src="${_esc(s.image_url)}" alt="" loading="lazy"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="adm-sub-card-img-placeholder" style="display:none"><i class="fas fa-image"></i></div>`;
   } else {
     card.innerHTML = `<div class="adm-sub-card-img-placeholder"><i class="fas fa-image"></i></div>`;
   }
@@ -323,7 +311,7 @@ function _buildSubCard(s, type) {
       <div class="adm-sub-card-actions" id="card-actions-${s.id}"></div>
     </div>`;
 
-  _fillCardActions(card.querySelector(`#card-actions-${s.id}`), s, type, card);
+  _fillCardActions(card.querySelector(`#card-actions-${s.id}`), s, type);
 
   if (s.image_url) {
     card.querySelector('.adm-sub-card-img')?.addEventListener('click', (e) => {
@@ -339,25 +327,22 @@ function _buildSubCard(s, type) {
   return card;
 }
 
-function _fillCardActions(el, s, type, parentCard) {
+function _fillCardActions(el, s, type) {
   el.innerHTML = '';
   if (s.status !== 'approved') {
     const b = document.createElement('button');
-    b.className = 'adm-btn adm-btn-approve'; b.innerHTML = '<i class="fas fa-check"></i>';
-    b.title = 'Approva';
-    b.addEventListener('click', (e) => { e.stopPropagation(); _updateSubInline(s, 'approved', type, parentCard); });
+    b.className = 'adm-btn adm-btn-approve'; b.innerHTML = '<i class="fas fa-check"></i>'; b.title = 'Approva';
+    b.addEventListener('click', (e) => { e.stopPropagation(); _updateSubInline(s, 'approved', type); });
     el.appendChild(b);
   }
   if (s.status !== 'rejected') {
     const b = document.createElement('button');
-    b.className = 'adm-btn adm-btn-reject'; b.innerHTML = '<i class="fas fa-times"></i>';
-    b.title = 'Rifiuta';
-    b.addEventListener('click', (e) => { e.stopPropagation(); _updateSubInline(s, 'rejected', type, parentCard); });
+    b.className = 'adm-btn adm-btn-reject'; b.innerHTML = '<i class="fas fa-times"></i>'; b.title = 'Rifiuta';
+    b.addEventListener('click', (e) => { e.stopPropagation(); _updateSubInline(s, 'rejected', type); });
     el.appendChild(b);
   }
   const del = document.createElement('button');
-  del.className = 'adm-btn adm-btn-danger'; del.innerHTML = '<i class="fas fa-trash"></i>';
-  del.title = 'Elimina';
+  del.className = 'adm-btn adm-btn-danger'; del.innerHTML = '<i class="fas fa-trash"></i>'; del.title = 'Elimina';
   del.addEventListener('click', (e) => { e.stopPropagation(); _deleteSub(s.id); });
   el.appendChild(del);
 }
@@ -389,7 +374,7 @@ function _buildSubRow(s, type) {
     </div>`;
 
   row.insertBefore(thumb, row.firstChild);
-  _fillCardActions(row.querySelector(`#row-actions-${s.id}`), s, type, row);
+  _fillCardActions(row.querySelector(`#row-actions-${s.id}`), s, type);
   row.addEventListener('click', (e) => {
     if (e.target.closest('.adm-sub-row-actions') || e.target.closest('.adm-sub-row-thumb')) return;
     _openSubDetail(s);
@@ -398,14 +383,14 @@ function _buildSubRow(s, type) {
   return row;
 }
 
-async function _updateSubInline(s, status, type, card) {
+async function _updateSubInline(s, status, type) {
   try {
     await Api.admin.updateSubmission(s.id, status);
     s.status = status;
     const section = document.querySelector(`.adm-sub-section[data-type="${type}"]`);
     if (section) _renderSubBody(section, type);
     _loadStats();
-    _toast(`${_statusLabel(status)}`, 'ok');
+    _toast(_statusLabel(status), 'ok');
   } catch(e) { _toast(e.message, 'err'); }
 }
 
@@ -531,7 +516,6 @@ function _openSubDetail(s) {
   _openDrawer();
 }
 
-// ── LIGHTBOX ────────────────────────────────────────────────
 function _openImgLightbox(url) {
   if (!url) return;
   const overlay = document.createElement('div');
@@ -747,7 +731,7 @@ function _globalSearch(q) {
 
 // ── HELPERS ──────────────────────────────────────────────────
 function _openDrawer()  { document.getElementById('adm-drawer-overlay').style.display='block'; document.body.style.overflow='hidden'; }
-function _closeDrawer() { document.getElementById('adm-drawer-overlay').style.display='none'; document.body.style.overflow=''; }
+function _closeDrawer() { document.getElementById('adm-drawer-overlay').style.display='none';  document.body.style.overflow=''; }
 
 let _confirmCb = null;
 function _confirm(title, msg, cb) {
@@ -821,7 +805,7 @@ document.addEventListener('DOMContentLoaded', () => {
       card.addEventListener('click', () => _navTo(card.dataset.goto));
     });
 
-    let _uTimer, _sTimer, _gTimer;
+    let _uTimer, _sTimer;
     document.getElementById('user-search')?.addEventListener('input', e => {
       clearTimeout(_uTimer);
       _uTimer = setTimeout(() => { _userSearch = e.target.value; _renderUsers(); }, 200);
@@ -831,7 +815,7 @@ document.addEventListener('DOMContentLoaded', () => {
       _sTimer = setTimeout(() => { _saveSearch = e.target.value; _renderSaves(); }, 200);
     });
     document.getElementById('adm-global-search')?.addEventListener('keydown', e => {
-      if (e.key === 'Enter') { clearTimeout(_gTimer); _globalSearch(e.target.value.trim()); }
+      if (e.key === 'Enter') _globalSearch(e.target.value.trim());
     });
 
     document.getElementById('adm-drawer-backdrop')?.addEventListener('click', _closeDrawer);

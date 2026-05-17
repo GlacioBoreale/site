@@ -13,6 +13,8 @@ const SOCIAL_ICONS = {
   discord:   'fa-brands fa-discord',
   github:    'fa-brands fa-github',
   bluesky:   'fa-brands fa-bluesky',
+  gunslol:   'fa-solid fa-gun',
+  kofi:   'fa-solid fa-heart', // C'è da vedere se funziona, molto probabilmente no
 };
 
 function _socialIcon(url) {

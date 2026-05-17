@@ -3,7 +3,6 @@
 const ABOUT_MAX_BYTES = 2 * 1024 * 1024;
 let aboutSelectedFile = null;
 
-// ── SOCIAL ICONS MAP ─────────────────────────────────────────
 const SOCIAL_ICONS = {
   twitch:    'fa-brands fa-twitch',
   youtube:   'fa-brands fa-youtube',
@@ -24,27 +23,22 @@ function _socialIcon(url) {
   return 'fa-solid fa-globe';
 }
 
-// ── TEAM LOADER ───────────────────────────────────────────────
 async function loadTeamMembers() {
   const grid = document.getElementById('team-grid');
   if (!grid) return;
 
-  // rimuove la card placeholder
   grid.querySelector('.team-card--placeholder')?.remove();
 
   try {
     const data = await Api.team.get();
     const members = data.members || [];
     members.forEach((m, i) => {
-      const card = _buildTeamCard(m, grid.children.length + i);
-      // inserisce prima del placeholder se esiste, altrimenti append
-      grid.appendChild(card);
+      grid.appendChild(_buildTeamCard(m, grid.children.length + i));
     });
   } catch(e) {
     console.warn('Team dal DB non disponibile:', e.message);
   }
 
-  // ri-aggiunge la card placeholder in fondo
   const placeholder = document.createElement('div');
   placeholder.className = 'team-card team-card--placeholder stagger-item';
   placeholder.innerHTML = `
@@ -62,7 +56,6 @@ function _buildTeamCard(m, index) {
   const card = document.createElement('div');
   card.className = 'team-card stagger-item';
 
-  // parse social links (stringa separata da virgola o oggetto)
   let socialLinks = [];
   if (m.socials) {
     if (typeof m.socials === 'string') {
@@ -101,7 +94,6 @@ function _buildTeamCard(m, index) {
   return card;
 }
 
-// ── FORM CANDIDATURA ──────────────────────────────────────────
 function _submitSetState(btn, msgEl, state, text) {
   btn.disabled = state === 'loading';
   const span = btn.querySelector('span');
@@ -211,7 +203,7 @@ function initAboutSubmit() {
         experience,
         contact,
         avatar_url: avatarUrl,
-      });
+      }, avatarUrl);
 
       _submitSetState(submitBtn, msg, 'success', 'Candidatura inviata! Ti risponderemo presto.');
       const span2 = submitBtn.querySelector('span');

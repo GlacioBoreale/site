@@ -154,6 +154,24 @@ function _renderSubSections() {
   SECTION_TYPES.forEach(type => container.appendChild(_buildSubSection(type)));
 }
 
+// helper: aggiorna solo il body di una sezione esistente nel DOM
+function _refreshSectionBody(type) {
+  const section = document.querySelector(`.adm-sub-section[data-type="${type}"]`);
+  if (!section) return;
+  _renderSubBody(section, type);
+  // aggiorna anche i badge
+  const allOfType = _subs.filter(s => s.type === type);
+  const pending   = allOfType.filter(s => s.status === 'pending').length;
+  const counts    = section.querySelector('.adm-sub-section-counts');
+  if (counts) {
+    const pendingBadge = pending > 0
+      ? `<span class="adm-sub-section-badge adm-badge-pending" style="background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.28);color:#fbbf24">${pending}</span>`
+      : '';
+    const totalBadge = `<span class="adm-sub-section-badge" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.4);font-size:.64rem;padding:.15rem .45rem;border-radius:10px;font-family:'Fredoka',sans-serif;font-weight:700">${allOfType.length}</span>`;
+    counts.innerHTML = pendingBadge + totalBadge;
+  }
+}
+
 function _buildSubSection(type) {
   const meta  = SECTION_META[type];
   const state = _sectionState[type];
@@ -192,20 +210,21 @@ function _buildSubSection(type) {
         <button class="adm-sub-collapse-btn" title="Comprimi/Espandi"><i class="fas fa-chevron-down"></i></button>
       </div>
     </div>
-    <div class="adm-sub-section-body" id="sub-body-${type}"></div>
+    <div class="adm-sub-section-body" id="sub-body-${type}" style="display:${state.collapsed?'none':'block'}"></div>
   `;
 
-  // render body subito — nessuna logica max-height in JS
   _renderSubBody(section, type);
 
   const header      = section.querySelector('.adm-sub-section-header');
   const collapseBtn = section.querySelector('.adm-sub-collapse-btn');
   const filterTabs  = section.querySelectorAll('.adm-sub-filter-tab');
   const viewBtns    = section.querySelectorAll('.adm-sub-view-btn');
+  const body        = section.querySelector(`#sub-body-${type}`);
 
   const toggleCollapse = () => {
     state.collapsed = !state.collapsed;
     section.classList.toggle('collapsed', state.collapsed);
+    body.style.display = state.collapsed ? 'none' : 'block';
     _saveSectionState(type);
   };
 
@@ -244,6 +263,8 @@ function _buildSubSection(type) {
 function _renderSubBody(section, type) {
   const state    = _sectionState[type];
   const body     = section.querySelector(`#sub-body-${type}`);
+  if (!body) return;
+
   const filtered = _subs.filter(s => s.type === type && (state.filter === 'all' || s.status === state.filter));
   const visible  = filtered.slice(0, state.showCount);
   const hasMore  = filtered.length > state.showCount;
@@ -387,8 +408,7 @@ async function _updateSubInline(s, status, type) {
   try {
     await Api.admin.updateSubmission(s.id, status);
     s.status = status;
-    const section = document.querySelector(`.adm-sub-section[data-type="${type}"]`);
-    if (section) _renderSubBody(section, type);
+    _refreshSectionBody(type);
     _loadStats();
     _toast(_statusLabel(status), 'ok');
   } catch(e) { _toast(e.message, 'err'); }
@@ -398,8 +418,10 @@ function _deleteSub(id) {
   _confirm('Elimina submission', 'Questa azione è irreversibile. Continuare?', async () => {
     try {
       await Api.admin.deleteSubmission(id);
+      const deleted = _subs.find(s => s.id === id);
       _subs = _subs.filter(s => s.id !== id);
-      _renderSubSections();
+      // aggiorna solo la sezione del tipo eliminato
+      if (deleted) _refreshSectionBody(deleted.type);
       _renderActivityFeed(_subs);
       _loadStats();
       _toast('Submission eliminata', 'ok');
@@ -485,7 +507,7 @@ function _openSubDetail(s) {
         try {
           await Api.admin.removeImage(s.id);
           s.image_url = null;
-          _renderSubSections();
+          _refreshSectionBody(s.type);
           _toast('Immagine rimossa', 'ok');
           _closeDrawer();
         } catch(e) { _toast(e.message, 'err'); }
@@ -500,8 +522,7 @@ function _openSubDetail(s) {
       s.status = newStatus;
       const badge = document.getElementById('drawer-status-badge');
       if (badge) { badge.className = `adm-badge adm-badge-${newStatus}`; badge.textContent = _statusLabel(newStatus); }
-      const secEl = document.querySelector(`.adm-sub-section[data-type="${s.type}"]`);
-      if (secEl) _renderSubBody(secEl, s.type);
+      _refreshSectionBody(s.type);
       _loadStats();
       _toast(`Stato: ${_statusLabel(newStatus)}`, 'ok');
       _closeDrawer();

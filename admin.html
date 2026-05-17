@@ -9,8 +9,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style/admin.css">
     <style>
-        .adm-sub-section-body { max-height: 9999px; }
-        .adm-sub-section.collapsed .adm-sub-section-body { max-height: 0 !important; }
+        .adm-sub-section-body {
+            display: block;
+            overflow: hidden;
+            transition: opacity .2s ease;
+            opacity: 1;
+        }
+        .adm-sub-section.collapsed .adm-sub-section-body {
+            display: none;
+        }
     </style>
     <script src="scripts/api.js"></script>
     <script src="scripts/auth.js"></script>

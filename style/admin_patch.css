@@ -1,6 +1,0 @@
-.adm-sub-section-body {
-  overflow:hidden;
-  max-height: 9999px;
-  transition:max-height .35s cubic-bezier(.16,1,.3,1);
-}
-.adm-sub-section.collapsed .adm-sub-section-body { max-height:0 !important; }

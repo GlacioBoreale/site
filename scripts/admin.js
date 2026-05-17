@@ -36,6 +36,10 @@ function _saveSectionState(type) {
   _lsSet(`adm_section_${type}`, { collapsed: s.collapsed, view: s.view, filter: s.filter });
 }
 
+function _getImgUrl(s) {
+  return s.image_url || s.payload?.avatar_url || null;
+}
+
 function _isAdmin() {
   const user = Auth.getUser();
   return Auth.isLoggedIn() && user?.email === ADMIN_EMAIL;
@@ -135,7 +139,6 @@ function _renderActivityFeed(subs) {
   }).join('');
 }
 
-// ── SUBMISSIONS ──────────────────────────────────────────────
 async function _loadSubmissions() {
   document.getElementById('sub-sections').innerHTML = '<div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
   try {
@@ -154,12 +157,10 @@ function _renderSubSections() {
   SECTION_TYPES.forEach(type => container.appendChild(_buildSubSection(type)));
 }
 
-// helper: aggiorna solo il body di una sezione esistente nel DOM
 function _refreshSectionBody(type) {
   const section = document.querySelector(`.adm-sub-section[data-type="${type}"]`);
   if (!section) return;
   _renderSubBody(section, type);
-  // aggiorna anche i badge
   const allOfType = _subs.filter(s => s.type === type);
   const pending   = allOfType.filter(s => s.status === 'pending').length;
   const counts    = section.querySelector('.adm-sub-section-counts');
@@ -308,14 +309,15 @@ function _renderSubBody(section, type) {
 }
 
 function _buildSubCard(s, type) {
-  const p     = s.payload || {};
-  const title = p.title || p.name || type;
-  const card  = document.createElement('div');
+  const p      = s.payload || {};
+  const title  = p.title || p.name || type;
+  const imgUrl = _getImgUrl(s);
+  const card   = document.createElement('div');
   card.className = 'adm-sub-card';
 
-  if (s.image_url) {
+  if (imgUrl) {
     card.innerHTML = `
-      <img class="adm-sub-card-img" src="${_esc(s.image_url)}" alt="" loading="lazy"
+      <img class="adm-sub-card-img" src="${_esc(imgUrl)}" alt="" loading="lazy"
         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
       <div class="adm-sub-card-img-placeholder" style="display:none"><i class="fas fa-image"></i></div>`;
   } else {
@@ -334,10 +336,10 @@ function _buildSubCard(s, type) {
 
   _fillCardActions(card.querySelector(`#card-actions-${s.id}`), s, type);
 
-  if (s.image_url) {
+  if (imgUrl) {
     card.querySelector('.adm-sub-card-img')?.addEventListener('click', (e) => {
       if (e.target.closest('.adm-sub-card-actions')) return;
-      _openImgLightbox(s.image_url);
+      _openImgLightbox(imgUrl);
     });
   }
   card.addEventListener('click', (e) => {
@@ -369,17 +371,18 @@ function _fillCardActions(el, s, type) {
 }
 
 function _buildSubRow(s, type) {
-  const p     = s.payload || {};
-  const title = p.title || p.name || type;
-  const row   = document.createElement('div');
+  const p      = s.payload || {};
+  const title  = p.title || p.name || type;
+  const imgUrl = _getImgUrl(s);
+  const row    = document.createElement('div');
   row.className = 'adm-sub-row';
 
   const thumb = document.createElement('div');
   thumb.className = 'adm-sub-row-thumb';
-  if (s.image_url) {
-    thumb.innerHTML = `<img src="${_esc(s.image_url)}" alt="" loading="lazy" onerror="this.remove()">`;
+  if (imgUrl) {
+    thumb.innerHTML = `<img src="${_esc(imgUrl)}" alt="" loading="lazy" onerror="this.remove()">`;
     thumb.style.cursor = 'zoom-in';
-    thumb.addEventListener('click', (e) => { e.stopPropagation(); _openImgLightbox(s.image_url); });
+    thumb.addEventListener('click', (e) => { e.stopPropagation(); _openImgLightbox(imgUrl); });
   } else {
     thumb.innerHTML = `<i class="fas fa-image"></i>`;
   }
@@ -420,7 +423,6 @@ function _deleteSub(id) {
       await Api.admin.deleteSubmission(id);
       const deleted = _subs.find(s => s.id === id);
       _subs = _subs.filter(s => s.id !== id);
-      // aggiorna solo la sezione del tipo eliminato
       if (deleted) _refreshSectionBody(deleted.type);
       _renderActivityFeed(_subs);
       _loadStats();
@@ -429,9 +431,9 @@ function _deleteSub(id) {
   });
 }
 
-// ── DRAWER ──────────────────────────────────────────────────
 function _openSubDetail(s) {
-  const p = s.payload || {};
+  const p      = s.payload || {};
+  const imgUrl = _getImgUrl(s);
   document.getElementById('adm-drawer-title').textContent = p.name || p.title || s.type;
 
   const rows = [];
@@ -458,17 +460,19 @@ function _openSubDetail(s) {
       <p style="font-size:.83rem;color:rgba(255,255,255,.55);white-space:pre-wrap;line-height:1.6">${_esc(p.desc || p.experience)}</p>
     </div>` : '';
 
-  const imgHtml = s.image_url ? `
+  const imgHtml = imgUrl ? `
     <div style="position:relative;margin-bottom:1rem;">
-      <img class="adm-drawer-img" src="${_esc(s.image_url)}" alt="" onerror="this.closest('div').style.display='none'" style="margin-bottom:0;">
-      <button id="da-remove-img" class="adm-btn adm-btn-danger" style="position:absolute;top:.5rem;right:.5rem;font-size:.7rem;">
+      <img class="adm-drawer-img" src="${_esc(imgUrl)}" alt="" onerror="this.closest('div').style.display='none'" style="margin-bottom:0;">
+      ${s.image_url ? `<button id="da-remove-img" class="adm-btn adm-btn-danger" style="position:absolute;top:.5rem;right:.5rem;font-size:.7rem;">
         <i class="fas fa-trash"></i> Rimuovi
-      </button>
+      </button>` : ''}
     </div>` : '';
 
-  const socialRows = p.socials ? Object.entries(p.socials).map(([k,v]) => `
-    <div class="adm-dfield"><i class="fas fa-share-nodes"></i><span class="adm-dfield-lbl">${k}</span>
-    <span class="adm-dfield-val"><a href="${_esc(v)}" target="_blank" rel="noopener">${_esc(v)}</a></span></div>`) : [];
+  const socialRows = p.socials && typeof p.socials === 'object'
+    ? Object.entries(p.socials).map(([k,v]) => `
+      <div class="adm-dfield"><i class="fas fa-share-nodes"></i><span class="adm-dfield-lbl">${k}</span>
+      <span class="adm-dfield-val"><a href="${_esc(v)}" target="_blank" rel="noopener">${_esc(v)}</a></span></div>`)
+    : [];
 
   document.getElementById('adm-drawer-body').innerHTML = `
     ${imgHtml}
@@ -497,11 +501,13 @@ function _openSubDetail(s) {
       <button class="adm-btn adm-btn-danger" id="da-delete">🗑 Elimina</button>
     </div>`;
 
-  if (s.image_url) {
+  if (imgUrl) {
     document.querySelector('.adm-drawer-img')?.addEventListener('click', (e) => {
       if (e.target.closest('#da-remove-img')) return;
-      _openImgLightbox(s.image_url);
+      _openImgLightbox(imgUrl);
     });
+  }
+  if (s.image_url) {
     document.getElementById('da-remove-img')?.addEventListener('click', () => {
       _confirm('Rimuovi immagine', "L'immagine verrà rimossa dalla submission.", async () => {
         try {
@@ -555,7 +561,6 @@ function _openImgLightbox(url) {
   document.body.appendChild(overlay);
 }
 
-// ── USERS ────────────────────────────────────────────────────
 async function _loadUsers() {
   document.getElementById('user-list').innerHTML = '<div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
   try {
@@ -647,7 +652,6 @@ function _deleteUser(id, username) {
   });
 }
 
-// ── SAVES ────────────────────────────────────────────────────
 async function _loadSaves() {
   document.getElementById('save-list').innerHTML = '<div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>';
   try {
@@ -733,7 +737,6 @@ function _deleteSave(userId, username) {
   });
 }
 
-// ── RICERCA GLOBALE ──────────────────────────────────────────
 function _globalSearch(q) {
   if (!q) return;
   q = q.toLowerCase();
@@ -750,7 +753,6 @@ function _globalSearch(q) {
   }
 }
 
-// ── HELPERS ──────────────────────────────────────────────────
 function _openDrawer()  { document.getElementById('adm-drawer-overlay').style.display='block'; document.body.style.overflow='hidden'; }
 function _closeDrawer() { document.getElementById('adm-drawer-overlay').style.display='none';  document.body.style.overflow=''; }
 
@@ -809,7 +811,6 @@ function _spinRefresh(on) {
   document.getElementById('adm-refresh-btn')?.classList.toggle('spinning', on);
 }
 
-// ── INIT ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const tryInit = () => {
     if (typeof Auth === 'undefined' || typeof Api === 'undefined') { setTimeout(tryInit, 50); return; }

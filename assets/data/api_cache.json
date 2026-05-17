@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-17T14:56:09Z",
+  "updatedAt": "2026-05-17T16:00:14Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,14 +43,6 @@
     ],
     "randomClips": [
       {
-        "title": "lo ho scammato (ezezezezez111!)",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/AgileFrailHamsterBigBrother-4EpT2lO-Enq1aGJe",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/bea0d82f-417a-44fa-b06f-1b12ea256955/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 27,
-        "duration": 34.9,
-        "creator": "dabidet87"
-      },
-      {
         "title": "face reaveal",
         "url": "https://www.twitch.tv/glacioborealevt/clip/NastyTardyRuffBuddhaBar-e6YHVBz2APguBcQX",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d21ebf4b-0fb8-4254-850a-a9d87f52b6c7/landscape/thumb/thumb-0000000000-480x272.jpg",
@@ -59,12 +51,20 @@
         "creator": "auremdunknown"
       },
       {
-        "title": "wtf is that sound",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/CuriousAdventurousDadHeyGuys-oDbHErbl88zzZ2WY",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d7232c4e-a9c1-49f2-bbae-f9e21984cb34/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 40,
-        "duration": 30,
-        "creator": "antokekt"
+        "title": "Pronto!!!!!!!",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/MagnificentWittyInternThisIsSparta-ujpniueNUbiV-77b",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/58411f9e-18f1-4a70-aba4-33db15ba0c2d/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 50,
+        "duration": 10.5,
+        "creator": "lucaop69"
+      },
+      {
+        "title": "Nixel Fuori Contesto",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/GrossAttractiveHeronANELE-YNXE5gsWGEIkit6p",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/168d92a3-fea4-481c-92c9-4dea74a052bf/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 36,
+        "duration": 7.7,
+        "creator": "Gennarix_"
       }
     ]
   },
@@ -80,7 +80,7 @@
         "thumbnail": "https://i.ytimg.com/vi/D6MsiuipRpo/mqdefault.jpg",
         "publishedAt": "2026-05-02T12:30:14Z",
         "url": "https://www.youtube.com/watch?v=D6MsiuipRpo",
-        "viewCount": 191
+        "viewCount": 190
       },
       {
         "title": "Non Pensavo che 2 Baroni Fossero Così FORTI [Reupload]",

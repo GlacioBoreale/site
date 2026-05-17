@@ -431,6 +431,141 @@ function _deleteSub(id) {
   });
 }
 
+function _buildEditForm(s) {
+  const p    = s.payload || {};
+  const type = s.type;
+
+  const inp = (id, label, val, placeholder = '') => `
+    <div style="margin-bottom:.7rem;">
+      <label style="display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--dim);margin-bottom:.3rem;">${label}</label>
+      <input id="${id}" type="text" value="${_esc(val||'')}" placeholder="${_esc(placeholder)}"
+        style="width:100%;padding:.45rem .7rem;background:var(--raised);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Fredoka',sans-serif;font-size:.85rem;outline:none;">
+    </div>`;
+
+  const ta = (id, label, val, rows = 3) => `
+    <div style="margin-bottom:.7rem;">
+      <label style="display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--dim);margin-bottom:.3rem;">${label}</label>
+      <textarea id="${id}" rows="${rows}"
+        style="width:100%;padding:.45rem .7rem;background:var(--raised);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Fredoka',sans-serif;font-size:.85rem;outline:none;resize:vertical;">${_esc(val||'')}</textarea>
+    </div>`;
+
+  const createdVal = s.created_at ? new Date(s.created_at).toISOString().slice(0,16) : '';
+  const dateField = (id, label, val) => `
+    <div style="margin-bottom:.7rem;">
+      <label style="display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--dim);margin-bottom:.3rem;">${label}</label>
+      <input id="${id}" type="datetime-local" value="${_esc(val||'')}"
+        style="width:100%;padding:.45rem .7rem;background:var(--raised);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Fredoka',sans-serif;font-size:.85rem;outline:none;">
+    </div>`;
+
+  const fields = {
+    fanart: () => `
+      ${inp('ed-title',   'Titolo',  p.title,   'Es. Glacio nel bosco')}
+      ${inp('ed-artist',  'Artista', p.artist,  'Es. ArtistaNome')}
+      ${inp('ed-tags',    'Tag (separati da ;)', (p.tags||[]).join('; '), 'Es. digitale; chibi')}
+      ${inp('ed-socials', 'Social link', typeof p.socials === 'string' ? p.socials : (p.socials ? Object.values(p.socials)[0] : ''), 'https://...')}`,
+    vtuber: () => `
+      ${inp('ed-name',     'Nome',          p.name,     'Es. Glacio Boreale')}
+      ${inp('ed-fullname', 'Nome completo', p.fullname, 'Es. Glacio Boreale VT')}
+      ${inp('ed-channel',  'Canale',        p.channel,  'https://twitch.tv/...')}
+      ${inp('ed-hashtag',  'Hashtag',       p.hashtag,  '#GlacioBoreale')}
+      ${inp('ed-debut',    'Debut',         p.debut,    'Es. 01/01/2023')}
+      ${ta('ed-desc',      'Descrizione',   p.desc, 3)}
+      ${dateField('ed-created', 'Aggiunto il', createdVal)}`,
+    team: () => `
+      ${inp('ed-name',    'Display Name', p.name,   'Es. GlacioBoreale')}
+      ${inp('ed-role',    'Ruolo',        p.role,   'Es. Moderatore')}
+      ${ta('ed-desc',     'Descrizione pubblica', p.desc, 3)}
+      ${inp('ed-socials', 'Social pubblici', typeof p.socials === 'string' ? p.socials : '', 'https://twitter.com/...')}
+      ${ta('ed-experience', 'Esperienze (privato)', p.experience, 3)}`,
+    tag: () => `
+      ${inp('ed-name', 'Nome tag', p.name, 'Es. digitale')}`,
+  };
+
+  return `
+    <div class="adm-dfield-block" id="edit-block">
+      <div class="adm-dfield-block-title" style="cursor:pointer;user-select:none;" id="edit-toggle">
+        <i class="fas fa-pen" style="margin-right:.4rem"></i> Modifica
+        <i class="fas fa-chevron-down" id="edit-chevron" style="margin-left:auto;transition:transform .2s;"></i>
+      </div>
+      <div id="edit-fields" style="display:none;margin-top:.8rem;">
+        ${(fields[type] || fields.tag)()}
+        <div id="edit-feedback" style="font-size:.8rem;margin-bottom:.5rem;"></div>
+        <button id="da-save-edit" class="adm-btn adm-btn-detail" style="width:100%;justify-content:center;">
+          <i class="fas fa-floppy-disk"></i> Salva modifiche
+        </button>
+      </div>
+    </div>`;
+}
+
+function _bindEditForm(s) {
+  const toggle  = document.getElementById('edit-toggle');
+  const fields  = document.getElementById('edit-fields');
+  const chevron = document.getElementById('edit-chevron');
+  const saveBtn = document.getElementById('da-save-edit');
+  const fb      = document.getElementById('edit-feedback');
+
+  toggle?.addEventListener('click', () => {
+    const open = fields.style.display === 'none';
+    fields.style.display = open ? 'block' : 'none';
+    chevron.style.transform = open ? 'rotate(180deg)' : '';
+  });
+
+  saveBtn?.addEventListener('click', async () => {
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Salvataggio...';
+    fb.textContent = '';
+
+    const newPayload = {};
+    const type = s.type;
+
+    if (type === 'fanart') {
+      newPayload.title   = document.getElementById('ed-title')?.value.trim();
+      newPayload.artist  = document.getElementById('ed-artist')?.value.trim();
+      const rawTags = document.getElementById('ed-tags')?.value.trim();
+      newPayload.tags = rawTags ? rawTags.split(';').map(t => t.trim().toLowerCase()).filter(Boolean) : ['untagged'];
+      const socialVal = document.getElementById('ed-socials')?.value.trim();
+      newPayload.socials = socialVal ? { link: socialVal } : {};
+    }
+    if (type === 'vtuber') {
+      newPayload.name     = document.getElementById('ed-name')?.value.trim();
+      newPayload.fullname = document.getElementById('ed-fullname')?.value.trim();
+      newPayload.channel  = document.getElementById('ed-channel')?.value.trim();
+      newPayload.hashtag  = document.getElementById('ed-hashtag')?.value.trim();
+      newPayload.debut    = document.getElementById('ed-debut')?.value.trim();
+      newPayload.desc     = document.getElementById('ed-desc')?.value.trim();
+    }
+    if (type === 'team') {
+      newPayload.name       = document.getElementById('ed-name')?.value.trim();
+      newPayload.role       = document.getElementById('ed-role')?.value.trim();
+      newPayload.desc       = document.getElementById('ed-desc')?.value.trim();
+      newPayload.socials    = document.getElementById('ed-socials')?.value.trim();
+      newPayload.experience = document.getElementById('ed-experience')?.value.trim();
+    }
+    if (type === 'tag') {
+      newPayload.name = document.getElementById('ed-name')?.value.trim().toLowerCase();
+    }
+
+    const newCreatedAt = type === 'vtuber'
+      ? document.getElementById('ed-created')?.value || undefined
+      : undefined;
+
+    try {
+      await Api.admin.editSubmission(s.id, newPayload, newCreatedAt);
+      Object.assign(s.payload, newPayload);
+      if (newCreatedAt) s.created_at = new Date(newCreatedAt).toISOString();
+      _refreshSectionBody(type);
+      fb.style.color = 'var(--green)';
+      fb.textContent = 'Salvato!';
+    } catch(e) {
+      fb.style.color = 'var(--red)';
+      fb.textContent = e.message || 'Errore durante il salvataggio.';
+    }
+
+    saveBtn.disabled = false;
+    saveBtn.innerHTML = '<i class="fas fa-floppy-disk"></i> Salva modifiche';
+  });
+}
+
 function _openSubDetail(s) {
   const p      = s.payload || {};
   const imgUrl = _getImgUrl(s);
@@ -490,6 +625,7 @@ function _openSubDetail(s) {
     </div>
     ${descHtml}
     ${socialRows.length ? `<div class="adm-dfield-block"><div class="adm-dfield-block-title">Social</div>${socialRows.join('')}</div>` : ''}
+    ${_buildEditForm(s)}
     <div class="adm-dfield-block">
       <div class="adm-dfield-block-title">Nota admin (opzionale)</div>
       <textarea class="adm-drawer-note" id="drawer-note" placeholder="Aggiungi una nota...">${_esc(p.admin_note || '')}</textarea>
@@ -500,6 +636,8 @@ function _openSubDetail(s) {
       ${s.status !== 'pending'  ? `<button class="adm-btn adm-btn-pending" id="da-pending">⏱ Pending</button>` : ''}
       <button class="adm-btn adm-btn-danger" id="da-delete">🗑 Elimina</button>
     </div>`;
+
+  _bindEditForm(s);
 
   if (imgUrl) {
     document.querySelector('.adm-drawer-img')?.addEventListener('click', (e) => {

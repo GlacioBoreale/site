@@ -80,15 +80,16 @@ const Api = (() => {
     },
 
     admin: {
-      getStats:           ()                   => request('GET',    '/admin/stats'),
-      getSubmissions:     ()                   => request('GET',    '/admin/submissions'),
-      updateSubmission:   (id, status, note)   => request('PATCH',  `/admin/submissions/${id}`, { status, note }),
-      removeImage:        (id)                 => request('PATCH',  `/admin/submissions/${id}`, { remove_image: true }),
-      deleteSubmission:   (id)                 => request('DELETE', `/admin/submissions/${id}`),
-      getUsers:           ()                   => request('GET',    '/admin/users'),
-      deleteUser:         (id)                 => request('DELETE', `/admin/users/${id}`),
-      getSaves:           ()                   => request('GET',    '/admin/saves'),
-      deleteSave:         (userId)             => request('DELETE', `/admin/saves/${userId}`),
+      getStats:           ()                        => request('GET',    '/admin/stats'),
+      getSubmissions:     ()                        => request('GET',    '/admin/submissions'),
+      updateSubmission:   (id, status, note)        => request('PATCH',  `/admin/submissions/${id}`, { status, note }),
+      editSubmission:     (id, payload, created_at) => request('PATCH',  `/admin/submissions/${id}`, { update_payload: payload, update_created_at: created_at }),
+      removeImage:        (id)                      => request('PATCH',  `/admin/submissions/${id}`, { remove_image: true }),
+      deleteSubmission:   (id)                      => request('DELETE', `/admin/submissions/${id}`),
+      getUsers:           ()                        => request('GET',    '/admin/users'),
+      deleteUser:         (id)                      => request('DELETE', `/admin/users/${id}`),
+      getSaves:           ()                        => request('GET',    '/admin/saves'),
+      deleteSave:         (userId)                  => request('DELETE', `/admin/saves/${userId}`),
     },
   };
 })();

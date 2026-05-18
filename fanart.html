@@ -128,17 +128,15 @@
                 </div>
 
                 <div class="sf-group">
-                    <label class="sf-label" for="fa-tags-input">Tag</label>
+                    <label class="sf-label">Tag</label>
                     <div class="fa-tag-chips" id="fa-tag-chips"></div>
+                    <div class="fa-top-tags" id="fa-top-tags"></div>
                     <div class="fa-tag-input-row">
                         <input class="sf-input" id="fa-tags-input" type="text"
-                            placeholder="Es. digitale; fan art; chibi"
-                            autocomplete="off" maxlength="200">
-                        <button type="button" class="fa-tag-suggest-btn" id="fa-tag-suggest-btn" title="Proponi nuovi tag">
-                            <i class="fas fa-plus"></i>
-                        </button>
+                            placeholder="Cerca un tag..." autocomplete="off" maxlength="60">
                     </div>
-                    <span class="sf-hint">Separa i tag con <code>;</code> — se vuoto verrà usato <em>untagged</em>.</span>
+                    <div id="fa-tag-propose-container"></div>
+                    <span class="sf-hint">Clicca i tag suggeriti o cerca — se non esiste puoi proporlo.</span>
                 </div>
 
                 <div class="sf-group">

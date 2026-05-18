@@ -180,34 +180,43 @@
 
 .no-results { text-align: center; color: var(--text-muted); font-family: 'Fredoka', sans-serif; font-size: 1.05rem; padding: 3rem 0; }
 
-/* ── Tag input ── */
-.fa-tag-input-row { display: flex; gap: 0.4rem; align-items: center; position: relative; }
-.fa-tag-input-row .sf-input { flex: 1; }
-
-.fa-tag-suggest-btn {
-  width: 36px; height: 36px; flex-shrink: 0;
-  border-radius: var(--radius-sm);
-  background: rgba(91,156,246,0.08); border: 1px solid rgba(91,156,246,0.25);
-  color: var(--accent); font-size: 0.88rem; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: background 0.15s, border-color 0.15s;
+/* ── Top tags ── */
+.fa-top-tags {
+  display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.5rem;
 }
-.fa-tag-suggest-btn:hover { background: rgba(91,156,246,0.16); border-color: rgba(91,156,246,0.45); }
+.fa-top-tag {
+  padding: 0.25rem 0.7rem; border-radius: 20px;
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  color: var(--text-muted); font-family: 'Fredoka', sans-serif;
+  font-size: 0.78rem; font-weight: 500; cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.fa-top-tag:hover { background: rgba(102,126,234,0.1); border-color: rgba(102,126,234,0.3); color: rgba(102,126,234,0.9); }
+.fa-top-tag.selected { background: rgba(102,126,234,0.15); border-color: rgba(102,126,234,0.5); color: rgba(102,126,234,1); }
 
-.fa-tag-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.35rem; }
+/* ── Tag chips selezionati ── */
+.fa-tag-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.4rem; }
 .fa-tag-chip {
-  display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.22rem 0.6rem;
+  display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.22rem 0.5rem 0.22rem 0.65rem;
   border-radius: 20px; font-family: 'Fredoka', sans-serif; font-size: 0.75rem; font-weight: 500;
 }
-.fa-tag-chip-known   { background: rgba(102,126,234,0.12); border: 1px solid rgba(102,126,234,0.3);  color: rgba(102,126,234,0.95); }
-.fa-tag-chip-new     { background: rgba(245,197,66,0.1);   border: 1px solid rgba(245,197,66,0.3);   color: #f5c542; }
-.fa-tag-chip-untagged{ background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-dim); font-style: italic; }
-.fa-tag-chip-new::before { content: '+ '; opacity: 0.7; }
+.fa-tag-chip-known { background: rgba(102,126,234,0.12); border: 1px solid rgba(102,126,234,0.3); color: rgba(102,126,234,0.95); }
+.fa-chip-remove {
+  width: 16px; height: 16px; border-radius: 50%; border: none;
+  background: rgba(102,126,234,0.2); color: rgba(102,126,234,0.8);
+  font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  line-height: 1; padding: 0; transition: background 0.1s;
+}
+.fa-chip-remove:hover { background: rgba(248,113,113,0.3); color: #f87171; }
+
+/* ── Tag input row ── */
+.fa-tag-input-row { position: relative; }
+.fa-tag-input-row .sf-input { width: 100%; }
 
 /* ── Tag autocomplete dropdown ── */
 .fa-tag-dropdown {
   display: none; position: absolute;
-  top: calc(100% + 4px); left: 0; right: 36px;
+  top: calc(100% + 4px); left: 0; right: 0;
   background: var(--bg-surface); border: 1px solid var(--border);
   border-radius: var(--radius-md); z-index: 300; overflow: hidden;
   box-shadow: var(--shadow-md); max-height: 220px; overflow-y: auto;
@@ -222,8 +231,50 @@
 }
 .fa-tag-option::before { content: '#'; color: rgba(102,126,234,0.5); font-size: 0.8rem; }
 .fa-tag-option:last-child { border-bottom: none; }
-.fa-tag-option:hover,
-.fa-tag-option.highlighted { background: rgba(102,126,234,0.08); color: rgba(102,126,234,0.95); }
+.fa-tag-option:hover, .fa-tag-option.highlighted { background: rgba(102,126,234,0.08); color: rgba(102,126,234,0.95); }
+
+.fa-tag-propose {
+  padding: 0.6rem 0.9rem; font-family: 'Fredoka', sans-serif;
+  font-size: 0.82rem; color: var(--text-muted);
+  display: flex; align-items: center; gap: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+.fa-tag-propose i { color: rgba(245,197,66,0.7); font-size: 0.78rem; }
+.fa-tag-propose-link {
+  color: #f5c542; cursor: pointer; text-decoration: underline;
+  transition: color 0.15s;
+}
+.fa-tag-propose-link:hover { color: #fde68a; }
+
+/* ── Form proposta tag ── */
+.fa-tag-propose-form {
+  margin-top: 0.7rem;
+  background: rgba(245,197,66,0.05);
+  border: 1px solid rgba(245,197,66,0.2);
+  border-radius: var(--radius-md);
+  padding: 0.9rem 1rem;
+  animation: fadeInScale 0.2s ease;
+}
+.fa-tag-propose-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 0.8rem;
+  font-family: 'Fredoka', sans-serif; font-size: 0.82rem; font-weight: 600;
+  color: #f5c542;
+}
+.fa-tag-propose-close {
+  width: 22px; height: 22px; border-radius: 50%; border: none;
+  background: rgba(245,197,66,0.1); color: rgba(245,197,66,0.7);
+  font-size: 0.72rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+.fa-tag-propose-close:hover { background: rgba(245,197,66,0.2); color: #f5c542; }
+.fa-tag-propose-fb {
+  font-family: 'Fredoka', sans-serif; font-size: 0.78rem;
+  margin-bottom: 0.5rem; min-height: 1rem;
+}
+.fa-tag-propose-fb.error   { color: #f87171; }
+.fa-tag-propose-fb.success { color: #4ade80; }
 
 /* ── Lightbox ── */
 .fanart-popup { display: none; position: fixed; inset: 0; z-index: 9999; }
@@ -266,12 +317,10 @@
 .fanart-social-link.bluesky:hover  { background: rgba(0,133,255,0.15); border-color: #0085FF; color: #0085FF; }
 .fanart-social-link.website:hover  { background: rgba(91,156,246,0.15); border-color: var(--accent); color: var(--accent); }
 
-
 @keyframes heroFadeDown {
   from { opacity: 0; transform: translateY(-20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
 
 @media (max-width: 480px) {
   .fanart-main { padding: 1rem; }

@@ -3,10 +3,10 @@ let approvedTags = [];
 let currentFilter = 'all';
 let currentSearch = '';
 let suggestionIndex = -1;
-let tagSuggestionIndex = -1;
 
 const FA_MAX_BYTES = 15 * 1024 * 1024;
 let faSelectedFile = null;
+let faSelectedTags = [];
 
 async function loadFanartData() {
     const grid = document.getElementById('fanart-grid');
@@ -30,18 +30,204 @@ async function loadFanartData() {
 async function loadApprovedTags() {
     try {
         const data = await Api.tags.fanart();
-        approvedTags = data.tags || ['untagged'];
+        approvedTags = (data.tags || ['untagged']).filter(t => t !== 'untagged');
     } catch {
-        approvedTags = ['untagged'];
+        approvedTags = [];
     }
+    _renderTopTags();
     _buildFilterDropdown();
 }
+
+// ── TOP 5 TAG CLICCABILI ─────────────────────────────────────
+
+function _getTopTags() {
+    const counts = {};
+    fanarts.forEach(f => {
+        (f.tags || []).forEach(t => {
+            if (t !== 'untagged') counts[t] = (counts[t] || 0) + 1;
+        });
+    });
+    return approvedTags
+        .slice()
+        .sort((a, b) => (counts[b] || 0) - (counts[a] || 0))
+        .slice(0, 5);
+}
+
+function _renderTopTags() {
+    const container = document.getElementById('fa-top-tags');
+    if (!container) return;
+    const top = _getTopTags();
+    container.innerHTML = top.map(t => `
+        <button type="button" class="fa-top-tag${faSelectedTags.includes(t) ? ' selected' : ''}" data-tag="${t}">#${t}</button>
+    `).join('');
+    container.querySelectorAll('.fa-top-tag').forEach(btn => {
+        btn.addEventListener('click', () => _toggleTag(btn.dataset.tag));
+    });
+}
+
+function _toggleTag(tag) {
+    const idx = faSelectedTags.indexOf(tag);
+    if (idx === -1) {
+        faSelectedTags.push(tag);
+    } else {
+        faSelectedTags.splice(idx, 1);
+    }
+    _renderTopTags();
+    _renderSelectedChips();
+    const input = document.getElementById('fa-tags-input');
+    if (input) input.value = '';
+    _hideTagDropdown();
+}
+
+function _renderSelectedChips() {
+    const chips = document.getElementById('fa-tag-chips');
+    if (!chips) return;
+    chips.innerHTML = faSelectedTags.map(t => `
+        <span class="fa-tag-chip fa-tag-chip-known">
+            #${t}
+            <button type="button" class="fa-chip-remove" data-tag="${t}">×</button>
+        </span>
+    `).join('');
+    chips.querySelectorAll('.fa-chip-remove').forEach(btn => {
+        btn.addEventListener('click', () => _toggleTag(btn.dataset.tag));
+    });
+}
+
+// ── TAG SEARCH DROPDOWN ──────────────────────────────────────
+
+function _getTagSuggestions(query) {
+    if (!query) return [];
+    const q = query.toLowerCase();
+    return approvedTags
+        .filter(t => t.includes(q) && !faSelectedTags.includes(t))
+        .slice(0, 8);
+}
+
+function _showTagDropdown(query, input) {
+    let box = document.getElementById('fa-tag-dropdown');
+    if (!box) {
+        box = document.createElement('div');
+        box.id = 'fa-tag-dropdown';
+        box.className = 'fa-tag-dropdown';
+        input.parentElement.style.position = 'relative';
+        input.parentElement.appendChild(box);
+    }
+
+    const suggestions = _getTagSuggestions(query);
+    box.innerHTML = '';
+
+    if (suggestions.length) {
+        suggestions.forEach(t => {
+            const el = document.createElement('div');
+            el.className = 'fa-tag-option';
+            el.textContent = t;
+            el.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                _toggleTag(t);
+                input.value = '';
+                _hideTagDropdown();
+                input.focus();
+            });
+            box.appendChild(el);
+        });
+    }
+
+    if (query && !approvedTags.includes(query.toLowerCase())) {
+        const propose = document.createElement('div');
+        propose.className = 'fa-tag-propose';
+        propose.innerHTML = `<i class="fas fa-plus-circle"></i> Tag non trovato? <span class="fa-tag-propose-link">Proponilo</span>`;
+        propose.querySelector('.fa-tag-propose-link').addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            _openTagProposeForm(query);
+            _hideTagDropdown();
+        });
+        box.appendChild(propose);
+    }
+
+    if (box.children.length) {
+        box.classList.add('visible');
+    } else {
+        box.classList.remove('visible');
+    }
+}
+
+function _hideTagDropdown() {
+    const box = document.getElementById('fa-tag-dropdown');
+    if (box) { box.innerHTML = ''; box.classList.remove('visible'); }
+}
+
+// ── FORM PROPOSTA TAG ────────────────────────────────────────
+
+function _openTagProposeForm(prefill) {
+    const existing = document.getElementById('fa-tag-propose-form');
+    if (existing) { existing.remove(); return; }
+
+    const container = document.getElementById('fa-tag-propose-container');
+    if (!container) return;
+
+    const form = document.createElement('div');
+    form.id = 'fa-tag-propose-form';
+    form.className = 'fa-tag-propose-form';
+    form.innerHTML = `
+        <div class="fa-tag-propose-header">
+            <span>Proponi un nuovo tag</span>
+            <button type="button" class="fa-tag-propose-close" id="fa-tag-propose-close"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="sf-group" style="margin-bottom:.6rem;">
+            <label class="sf-label" style="font-size:.72rem;">Nome del tag</label>
+            <input class="sf-input" id="fa-propose-name" type="text" value="${prefill || ''}" placeholder="Es. chibi" maxlength="40">
+        </div>
+        <div class="sf-group" style="margin-bottom:.8rem;">
+            <label class="sf-label" style="font-size:.72rem;">Motivo</label>
+            <input class="sf-input" id="fa-propose-reason" type="text" placeholder="Perché dovrebbe essere aggiunto?" maxlength="200">
+        </div>
+        <div class="fa-tag-propose-fb" id="fa-propose-fb"></div>
+        <div style="display:flex;gap:.5rem;">
+            <button type="button" class="sf-submit-btn" id="fa-propose-submit" style="flex:1;padding:.45rem;font-size:.82rem;justify-content:center;">
+                <i class="fas fa-paper-plane"></i> <span>Invia</span>
+            </button>
+            <button type="button" class="popup-form-close-btn" id="fa-propose-cancel" style="padding:.45rem .9rem;font-size:.82rem;">Chiudi</button>
+        </div>`;
+
+    form.querySelector('#fa-tag-propose-close').addEventListener('click', () => form.remove());
+    form.querySelector('#fa-propose-cancel').addEventListener('click', () => form.remove());
+
+    form.querySelector('#fa-propose-submit').addEventListener('click', async () => {
+        const name   = form.querySelector('#fa-propose-name').value.trim().toLowerCase();
+        const reason = form.querySelector('#fa-propose-reason').value.trim();
+        const fb     = form.querySelector('#fa-propose-fb');
+
+        if (!name) { fb.textContent = 'Inserisci un nome per il tag.'; fb.className = 'fa-tag-propose-fb error'; return; }
+        if (!reason) { fb.textContent = 'Inserisci un motivo.'; fb.className = 'fa-tag-propose-fb error'; return; }
+        if (!Auth || !Auth.isLoggedIn()) { fb.textContent = 'Devi essere loggato.'; fb.className = 'fa-tag-propose-fb error'; return; }
+
+        const btn = form.querySelector('#fa-propose-submit');
+        btn.disabled = true;
+        btn.querySelector('span').textContent = 'Invio...';
+        try {
+            await Api.submit.post('tag', { name, reason }, null);
+            fb.textContent = 'Proposta inviata! Verrà esaminata al più presto.';
+            fb.className = 'fa-tag-propose-fb success';
+            setTimeout(() => form.remove(), 2000);
+        } catch(e) {
+            fb.textContent = e.message || 'Errore durante l\'invio.';
+            fb.className = 'fa-tag-propose-fb error';
+            btn.disabled = false;
+            btn.querySelector('span').textContent = 'Invia';
+        }
+    });
+
+    container.appendChild(form);
+    form.querySelector('#fa-propose-name')?.focus();
+}
+
+// ── FILTER DROPDOWN ──────────────────────────────────────────
 
 function _buildFilterDropdown() {
     const dropdown = document.getElementById('filter-dropdown');
     if (!dropdown) return;
     dropdown.innerHTML = '';
-    ['all', ...approvedTags].forEach(tag => {
+    ['all', 'untagged', ...approvedTags].forEach(tag => {
         const btn = document.createElement('button');
         btn.className = 'filter-option' + (tag === currentFilter ? ' active' : '');
         btn.dataset.filter = tag;
@@ -59,111 +245,7 @@ function _buildFilterDropdown() {
     });
 }
 
-function _parseTags(raw) {
-    if (!raw || !raw.trim()) return ['untagged'];
-    const tags = raw.split(';').map(t => t.trim().toLowerCase()).filter(Boolean);
-    return tags.length ? tags : ['untagged'];
-}
-
-function _classifyTags(tags) {
-    return tags.map(t => ({
-        name: t,
-        known: t === 'untagged' || approvedTags.includes(t),
-    }));
-}
-
-function _renderTagChips(raw) {
-    const chips = document.getElementById('fa-tag-chips');
-    if (!chips) return;
-    const tags = _parseTags(raw);
-    chips.innerHTML = _classifyTags(tags).map(({ name, known }) => {
-        const cls = name === 'untagged'
-            ? 'fa-tag-chip fa-tag-chip-untagged'
-            : known ? 'fa-tag-chip fa-tag-chip-known' : 'fa-tag-chip fa-tag-chip-new';
-        return `<span class="${cls}">${name === 'untagged' ? 'untagged' : name}</span>`;
-    }).join('');
-}
-
-function _getTagSuggestions(inputValue) {
-    const parts = inputValue.split(';');
-    const current = parts[parts.length - 1].trim().toLowerCase();
-    if (!current) return [];
-    const already = parts.slice(0, -1).map(t => t.trim().toLowerCase());
-    return approvedTags
-        .filter(t => t !== 'untagged' && t.includes(current) && !already.includes(t))
-        .slice(0, 8);
-}
-
-function _showTagDropdown(suggestions, input) {
-    let box = document.getElementById('fa-tag-dropdown');
-    if (!box) {
-        box = document.createElement('div');
-        box.id = 'fa-tag-dropdown';
-        box.className = 'fa-tag-dropdown';
-        input.parentElement.style.position = 'relative';
-        input.parentElement.appendChild(box);
-    }
-    tagSuggestionIndex = -1;
-    if (!suggestions.length) { box.innerHTML = ''; box.classList.remove('visible'); return; }
-    box.innerHTML = suggestions.map((t, i) =>
-        `<div class="fa-tag-option" data-tag="${t}" data-index="${i}">${t}</div>`
-    ).join('');
-    box.querySelectorAll('.fa-tag-option').forEach(el => {
-        el.addEventListener('mousedown', (e) => {
-            e.preventDefault();
-            _applyTagSuggestion(input, el.dataset.tag);
-        });
-    });
-    box.classList.add('visible');
-}
-
-function _hideTagDropdown() {
-    const box = document.getElementById('fa-tag-dropdown');
-    if (box) { box.innerHTML = ''; box.classList.remove('visible'); }
-    tagSuggestionIndex = -1;
-}
-
-function _applyTagSuggestion(input, tag) {
-    const parts = input.value.split(';');
-    parts[parts.length - 1] = ' ' + tag;
-    input.value = parts.join(';') + '; ';
-    input.dispatchEvent(new Event('input'));
-    _hideTagDropdown();
-    input.focus();
-    const len = input.value.length;
-    input.setSelectionRange(len, len);
-}
-
-function _initTagAutocomplete(input) {
-    input.addEventListener('input', () => {
-        _renderTagChips(input.value);
-        const suggestions = _getTagSuggestions(input.value);
-        _showTagDropdown(suggestions, input);
-    });
-    input.addEventListener('keydown', (e) => {
-        const box = document.getElementById('fa-tag-dropdown');
-        if (!box?.classList.contains('visible')) return;
-        const items = box.querySelectorAll('.fa-tag-option');
-        if (!items.length) return;
-        if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            tagSuggestionIndex = Math.min(tagSuggestionIndex + 1, items.length - 1);
-            items.forEach((el, i) => el.classList.toggle('highlighted', i === tagSuggestionIndex));
-        } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            tagSuggestionIndex = Math.max(tagSuggestionIndex - 1, -1);
-            items.forEach((el, i) => el.classList.toggle('highlighted', i === tagSuggestionIndex));
-        } else if (e.key === 'Enter' || e.key === 'Tab') {
-            if (tagSuggestionIndex >= 0 && items[tagSuggestionIndex]) {
-                e.preventDefault();
-                _applyTagSuggestion(input, items[tagSuggestionIndex].dataset.tag);
-            }
-        } else if (e.key === 'Escape') {
-            _hideTagDropdown();
-        }
-    });
-    input.addEventListener('blur', () => setTimeout(_hideTagDropdown, 150));
-}
+// ── RENDER ───────────────────────────────────────────────────
 
 function getFilteredFanarts() {
     return fanarts.filter(f => {
@@ -208,6 +290,8 @@ function createFanartCard(f) {
     card.addEventListener('click', () => openLightbox(f));
     return card;
 }
+
+// ── LIGHTBOX ─────────────────────────────────────────────────
 
 const SOCIAL_META = {
     twitter:   { icon: 'fa-brands fa-x-twitter',  label: 'X / Twitter' },
@@ -258,7 +342,12 @@ function closeLightbox() {
     document.body.style.overflow = '';
 }
 
+// ── SUBMIT FORM ──────────────────────────────────────────────
+
 function openSubmitModal() {
+    faSelectedTags = [];
+    _renderTopTags();
+    _renderSelectedChips();
     document.getElementById('submit-modal').classList.add('active');
     document.body.classList.add('modal-open');
     document.body.style.overflow = 'hidden';
@@ -270,6 +359,8 @@ function closeSubmitModal() {
     document.body.style.overflow = '';
     _faFeedbackClear();
     _hideTagDropdown();
+    faSelectedTags = [];
+    _renderSelectedChips();
     const chips = document.getElementById('fa-tag-chips');
     if (chips) chips.innerHTML = '';
 }
@@ -332,35 +423,30 @@ function initFanartDropzone() {
 
 function initFanartForm() {
     initFanartDropzone();
-    const tagsInput = document.getElementById('fa-tags-input');
-    if (tagsInput) _initTagAutocomplete(tagsInput);
 
-    document.getElementById('fa-tag-suggest-btn')?.addEventListener('click', async () => {
-        const raw = tagsInput?.value || '';
-        const tags = _parseTags(raw);
-        const newTags = tags.filter(t => t !== 'untagged' && !approvedTags.includes(t));
-        if (!newTags.length) { _faFeedbackSet('Nessun tag nuovo da proporre — tutti quelli inseriti sono già approvati.', 'error'); return; }
-        if (!Auth || !Auth.isLoggedIn()) { _faFeedbackSet('Devi essere loggato per proporre nuovi tag.', 'error'); return; }
-        const btn = document.getElementById('fa-tag-suggest-btn');
-        btn.disabled = true;
-        try {
-            await Promise.all(newTags.map(name => Api.submit.post('tag', { name }, null).catch(() => {})));
-            _faFeedbackSet(`${newTags.length} tag proposto/i in revisione: ${newTags.join(', ')}`, 'success');
-        } catch(e) {
-            _faFeedbackSet(e.message || 'Errore durante la proposta.', 'error');
-        } finally {
-            btn.disabled = false;
-        }
-    });
+    const tagsInput = document.getElementById('fa-tags-input');
+    if (tagsInput) {
+        tagsInput.addEventListener('input', () => {
+            const q = tagsInput.value.trim().toLowerCase();
+            if (q) {
+                _showTagDropdown(q, tagsInput);
+            } else {
+                _hideTagDropdown();
+            }
+        });
+        tagsInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') _hideTagDropdown();
+        });
+        tagsInput.addEventListener('blur', () => setTimeout(_hideTagDropdown, 150));
+    }
 
     const btn = document.getElementById('fa-submit-btn');
     if (!btn) return;
     btn.addEventListener('click', async () => {
         _faFeedbackClear();
-        const title   = document.getElementById('fa-title')?.value.trim();
-        const artist  = document.getElementById('fa-artist')?.value.trim();
-        const tagsRaw = document.getElementById('fa-tags-input')?.value.trim();
-        const social  = document.getElementById('fa-socials')?.value.trim();
+        const title  = document.getElementById('fa-title')?.value.trim();
+        const artist = document.getElementById('fa-artist')?.value.trim();
+        const social = document.getElementById('fa-socials')?.value.trim();
         if (!title || !artist) { _faFeedbackSet('Titolo e nome artista sono obbligatori (*).', 'error'); return; }
         if (!faSelectedFile)   { _faFeedbackSet("Seleziona un'immagine da caricare.", 'error'); return; }
         if (!Auth || !Auth.isLoggedIn()) { _faFeedbackSet('Devi essere loggato per inviare una fanart.', 'error'); return; }
@@ -369,11 +455,17 @@ function initFanartForm() {
         try {
             const imageUrl = await Api.upload.file(faSelectedFile, 'fanart');
             btn.querySelector('span').textContent = 'Invio in corso...';
-            await Api.submit.post('fanart', { title, artist, image: imageUrl, tags_raw: tagsRaw || '', socials: social ? { website: social } : {} }, imageUrl);
+            const tags = faSelectedTags.length ? faSelectedTags : ['untagged'];
+            await Api.submit.post('fanart', {
+                title, artist, image: imageUrl,
+                tags,
+                socials: social ? { website: social } : {}
+            }, imageUrl);
             _faFeedbackSet('Fanart inviata! La esamineremo il prima possibile.', 'success');
-            ['fa-title','fa-artist','fa-tags-input','fa-socials'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-            const chips = document.getElementById('fa-tag-chips');
-            if (chips) chips.innerHTML = '';
+            ['fa-title','fa-artist','fa-socials'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+            faSelectedTags = [];
+            _renderTopTags();
+            _renderSelectedChips();
             _faResetFile();
         } catch (err) {
             _faFeedbackSet(err.message || "Errore durante l'invio. Riprova.", 'error');
@@ -383,6 +475,8 @@ function initFanartForm() {
         }
     });
 }
+
+// ── SEARCH BAR ───────────────────────────────────────────────
 
 function buildSuggestions(query) {
     if (!query || query.length < 1) return [];

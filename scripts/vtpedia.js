@@ -6,6 +6,8 @@ const SF_MAX_BYTES = 15 * 1024 * 1024;
 let sfSelectedFiles = [null, null, null];
 
 async function loadVTubersData() {
+    const grid = document.getElementById('vtuber-grid');
+    grid.innerHTML = '<div class="page-loading">Caricamento...</div>';
     try {
         const data = await Api.vtubers.get();
         vtubers = data.vtubers || [];
@@ -146,8 +148,6 @@ function copySponsorCmd() {
     });
 }
 
-// ── 3 SLOT IMMAGINE ───────────────────────────────────────────
-
 function _sfSetFile(file, slot) {
     if (!file) return;
     if (!file.type.startsWith('image/')) { _sfSetFeedback('Formato non supportato. Usa JPG, PNG, GIF o WEBP.', 'error'); return; }
@@ -187,14 +187,10 @@ function initSubmitDropzones() {
         const pickBtn   = document.getElementById(`sf-pick-btn-${slot}`);
         const removeBtn = document.getElementById(`sf-remove-btn-${slot}`);
         if (!zone) return;
-
-        // rimuove pointer-events inline che potrebbero bloccare il drag
         zone.style.pointerEvents = 'all';
-
         pickBtn?.addEventListener('click', (e) => { e.stopPropagation(); input.click(); });
         input?.addEventListener('change', () => { if (input.files[0]) _sfSetFile(input.files[0], slot); });
         removeBtn?.addEventListener('click', (e) => { e.stopPropagation(); _sfResetFile(slot); });
-
         zone.addEventListener('dragenter', (e) => { e.preventDefault(); e.stopPropagation(); zone.classList.add('drag-over'); });
         zone.addEventListener('dragover',  (e) => { e.preventDefault(); e.stopPropagation(); zone.classList.add('drag-over'); });
         zone.addEventListener('dragleave', (e) => { e.stopPropagation(); zone.classList.remove('drag-over'); });

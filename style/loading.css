@@ -1,0 +1,32 @@
+
+
+.page-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  padding: 4rem 2rem;
+  color: rgba(255,255,255,0.35);
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.page-loading::before {
+  content: '';
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.12);
+  border-top-color: rgba(255,255,255,0.4);
+  border-radius: 50%;
+  animation: page-spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes page-spin {
+  to { transform: rotate(360deg); }
+}

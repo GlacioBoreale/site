@@ -14,7 +14,7 @@ const SOCIAL_ICONS = {
   github:    'fa-brands fa-github',
   bluesky:   'fa-brands fa-bluesky',
   gunslol:   'fa-solid fa-gun',
-  kofi:   'fa-solid fa-heart', // C'è da vedere se funziona, molto probabilmente no
+  kofi:      'fa-solid fa-heart',
 };
 
 function _socialIcon(url) {
@@ -34,10 +34,12 @@ async function loadTeamMembers() {
   try {
     const data = await Api.team.get();
     const members = data.members || [];
+    document.getElementById('team-loading')?.remove();
     members.forEach((m, i) => {
       grid.appendChild(_buildTeamCard(m, grid.children.length + i));
     });
   } catch(e) {
+    document.getElementById('team-loading')?.remove();
     console.warn('Team dal DB non disponibile:', e.message);
   }
 

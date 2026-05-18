@@ -9,6 +9,8 @@ const FA_MAX_BYTES = 15 * 1024 * 1024;
 let faSelectedFile = null;
 
 async function loadFanartData() {
+    const grid = document.getElementById('fanart-grid');
+    grid.innerHTML = '<div class="page-loading">Caricamento...</div>';
     try {
         const data = await Api.fanarts.get();
         fanarts = data.fanarts || [];
@@ -471,7 +473,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('submit-fanart-btn').addEventListener('click', openSubmitModal);
 
-    // click sul modal (area fuori dal content) chiude — stesso pattern vtpedia
     const submitModal   = document.getElementById('submit-modal');
     const submitContent = submitModal?.querySelector('.popup-content--form');
     submitModal?.addEventListener('click', closeSubmitModal);

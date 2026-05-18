@@ -38,8 +38,6 @@ async function loadApprovedTags() {
     _buildFilterDropdown();
 }
 
-// ── TOP 5 TAG CLICCABILI ─────────────────────────────────────
-
 function _getTopTags() {
     const counts = {};
     fanarts.forEach(f => {
@@ -93,8 +91,6 @@ function _renderSelectedChips() {
     });
 }
 
-// ── TAG SEARCH DROPDOWN ──────────────────────────────────────
-
 function _getTagSuggestions(query) {
     if (!query) return [];
     const q = query.toLowerCase();
@@ -113,9 +109,32 @@ function _showTagDropdown(query, input) {
         input.parentElement.appendChild(box);
     }
 
-    const suggestions = _getTagSuggestions(query);
     box.innerHTML = '';
 
+    if (!query) {
+        const top = _getTopTags().filter(t => !faSelectedTags.includes(t));
+        if (!top.length) { box.classList.remove('visible'); return; }
+        const header = document.createElement('div');
+        header.className = 'fa-tag-dropdown-header';
+        header.textContent = 'Tag consigliati';
+        box.appendChild(header);
+        top.forEach(t => {
+            const el = document.createElement('div');
+            el.className = 'fa-tag-option';
+            el.textContent = t;
+            el.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                _toggleTag(t);
+                _hideTagDropdown();
+                input.focus();
+            });
+            box.appendChild(el);
+        });
+        box.classList.add('visible');
+        return;
+    }
+
+    const suggestions = _getTagSuggestions(query);
     if (suggestions.length) {
         suggestions.forEach(t => {
             const el = document.createElement('div');
@@ -132,7 +151,7 @@ function _showTagDropdown(query, input) {
         });
     }
 
-    if (query && !approvedTags.includes(query.toLowerCase())) {
+    if (!approvedTags.includes(query.toLowerCase())) {
         const propose = document.createElement('div');
         propose.className = 'fa-tag-propose';
         propose.innerHTML = `<i class="fas fa-plus-circle"></i> Tag non trovato? <span class="fa-tag-propose-link">Proponilo</span>`;
@@ -155,8 +174,6 @@ function _hideTagDropdown() {
     const box = document.getElementById('fa-tag-dropdown');
     if (box) { box.innerHTML = ''; box.classList.remove('visible'); }
 }
-
-// ── FORM PROPOSTA TAG ────────────────────────────────────────
 
 function _openTagProposeForm(prefill) {
     const existing = document.getElementById('fa-tag-propose-form');
@@ -197,7 +214,7 @@ function _openTagProposeForm(prefill) {
         const reason = form.querySelector('#fa-propose-reason').value.trim();
         const fb     = form.querySelector('#fa-propose-fb');
 
-        if (!name) { fb.textContent = 'Inserisci un nome per il tag.'; fb.className = 'fa-tag-propose-fb error'; return; }
+        if (!name)   { fb.textContent = 'Inserisci un nome per il tag.'; fb.className = 'fa-tag-propose-fb error'; return; }
         if (!reason) { fb.textContent = 'Inserisci un motivo.'; fb.className = 'fa-tag-propose-fb error'; return; }
         if (!Auth || !Auth.isLoggedIn()) { fb.textContent = 'Devi essere loggato.'; fb.className = 'fa-tag-propose-fb error'; return; }
 
@@ -210,7 +227,7 @@ function _openTagProposeForm(prefill) {
             fb.className = 'fa-tag-propose-fb success';
             setTimeout(() => form.remove(), 2000);
         } catch(e) {
-            fb.textContent = e.message || 'Errore durante l\'invio.';
+            fb.textContent = e.message || "Errore durante l'invio.";
             fb.className = 'fa-tag-propose-fb error';
             btn.disabled = false;
             btn.querySelector('span').textContent = 'Invia';
@@ -220,8 +237,6 @@ function _openTagProposeForm(prefill) {
     container.appendChild(form);
     form.querySelector('#fa-propose-name')?.focus();
 }
-
-// ── FILTER DROPDOWN ──────────────────────────────────────────
 
 function _buildFilterDropdown() {
     const dropdown = document.getElementById('filter-dropdown');
@@ -244,8 +259,6 @@ function _buildFilterDropdown() {
         dropdown.appendChild(btn);
     });
 }
-
-// ── RENDER ───────────────────────────────────────────────────
 
 function getFilteredFanarts() {
     return fanarts.filter(f => {
@@ -290,8 +303,6 @@ function createFanartCard(f) {
     card.addEventListener('click', () => openLightbox(f));
     return card;
 }
-
-// ── LIGHTBOX ─────────────────────────────────────────────────
 
 const SOCIAL_META = {
     twitter:   { icon: 'fa-brands fa-x-twitter',  label: 'X / Twitter' },
@@ -341,8 +352,6 @@ function closeLightbox() {
     document.body.classList.remove('modal-open');
     document.body.style.overflow = '';
 }
-
-// ── SUBMIT FORM ──────────────────────────────────────────────
 
 function openSubmitModal() {
     faSelectedTags = [];
@@ -426,13 +435,11 @@ function initFanartForm() {
 
     const tagsInput = document.getElementById('fa-tags-input');
     if (tagsInput) {
+        tagsInput.addEventListener('focus', () => {
+            _showTagDropdown(tagsInput.value.trim().toLowerCase(), tagsInput);
+        });
         tagsInput.addEventListener('input', () => {
-            const q = tagsInput.value.trim().toLowerCase();
-            if (q) {
-                _showTagDropdown(q, tagsInput);
-            } else {
-                _hideTagDropdown();
-            }
+            _showTagDropdown(tagsInput.value.trim().toLowerCase(), tagsInput);
         });
         tagsInput.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') _hideTagDropdown();
@@ -475,8 +482,6 @@ function initFanartForm() {
         }
     });
 }
-
-// ── SEARCH BAR ───────────────────────────────────────────────
 
 function buildSuggestions(query) {
     if (!query || query.length < 1) return [];

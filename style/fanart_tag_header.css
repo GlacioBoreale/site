@@ -1,0 +1,9 @@
+.fa-tag-dropdown-header {
+  padding: .45rem .9rem;
+  font-family: 'Fredoka', sans-serif;
+  font-size: .68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+  background: rgba(255,255,255,.02);
+}

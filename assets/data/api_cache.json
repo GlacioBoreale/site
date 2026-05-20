@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-20T09:33:56Z",
+  "updatedAt": "2026-05-20T12:24:40Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,28 +43,28 @@
     ],
     "randomClips": [
       {
-        "title": "lo ho scammato (ezezezezez111!)",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/AgileFrailHamsterBigBrother-4EpT2lO-Enq1aGJe",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/bea0d82f-417a-44fa-b06f-1b12ea256955/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 27,
-        "duration": 34.9,
+        "title": "Mi serve moderazione non Pix",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/PoliteSolidHawkEleGiggle-6wdUnkC3uEyFMwle",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d0008be4-9538-4f37-893f-a83dda83347b/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 28,
+        "duration": 5,
+        "creator": "BrainSedge"
+      },
+      {
+        "title": "L'anklebraking, il faking, la finta. ",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/BoredKawaiiTermiteBatChest-7EJbluOQBVS99ske",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/eca71458-7ab4-4ad1-9313-8f853515d8cf/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 49,
+        "duration": 19.1,
         "creator": "dabidet87"
       },
       {
-        "title": "face reaveal",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/NastyTardyRuffBuddhaBar-e6YHVBz2APguBcQX",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d21ebf4b-0fb8-4254-850a-a9d87f52b6c7/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 39,
-        "duration": 5,
-        "creator": "auremdunknown"
-      },
-      {
-        "title": "When Tryhard hits...",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/InventiveApatheticApeTwitchRPG-b0Jt3pe210IVYMm2",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/9e740908-f37a-48f0-b0f0-ef47f715aa99/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 60,
-        "duration": 48.8,
-        "creator": "GlacioBorealeVT"
+        "title": "non ridete",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/EndearingConsiderateGazelle4Head-uRdAcYrWkqUWIEsi",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/6bd098a0-58a9-4716-adb1-9881ce4ed341/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 26,
+        "duration": 28,
+        "creator": "schilla0"
       }
     ]
   },

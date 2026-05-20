@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-20T00:05:56Z",
+  "updatedAt": "2026-05-20T05:04:52Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,28 +43,28 @@
     ],
     "randomClips": [
       {
-        "title": "Nixel Fuori Contesto",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/GrossAttractiveHeronANELE-YNXE5gsWGEIkit6p",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/168d92a3-fea4-481c-92c9-4dea74a052bf/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 36,
-        "duration": 7.7,
-        "creator": "Gennarix_"
-      },
-      {
-        "title": "*fence di tronco di legno nero*",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/RealFairDinosaurPipeHype-PSVPhKBODLDg4H8G",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/8cf14860-1e27-4760-a801-1bcfa169e7e9/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 35,
-        "duration": 8.6,
-        "creator": "Chompy_Sellino"
-      },
-      {
         "title": "è un disegno quello lo sai?",
         "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableRenownedAuberginePMSTwin",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/9ad6f3f6-e229-4706-9d83-12185bbce8b9/landscape/thumb/thumb-0000000000-480x272.jpg",
         "views": 39,
         "duration": 7.1,
         "creator": "andreaproob"
+      },
+      {
+        "title": "When Tryhard hits...",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/InventiveApatheticApeTwitchRPG-b0Jt3pe210IVYMm2",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/9e740908-f37a-48f0-b0f0-ef47f715aa99/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 60,
+        "duration": 48.8,
+        "creator": "GlacioBorealeVT"
+      },
+      {
+        "title": "lo ho scammato (ezezezezez111!)",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/AgileFrailHamsterBigBrother-4EpT2lO-Enq1aGJe",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/bea0d82f-417a-44fa-b06f-1b12ea256955/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 27,
+        "duration": 34.9,
+        "creator": "dabidet87"
       }
     ]
   },

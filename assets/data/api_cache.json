@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-21T11:24:32Z",
+  "updatedAt": "2026-05-21T15:26:00Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,28 +43,28 @@
     ],
     "randomClips": [
       {
-        "title": "Ultima live della settimana | !discord",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableSassyPotKevinTurtle-yFcxFVAwuLGfTCcA",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/7e38dbd1-45ba-4df3-9207-fb0f83b3aa3a/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 26,
-        "duration": 26,
-        "creator": "ocarito1"
-      },
-      {
-        "title": "When Tryhard hits...",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/InventiveApatheticApeTwitchRPG-b0Jt3pe210IVYMm2",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/9e740908-f37a-48f0-b0f0-ef47f715aa99/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 61,
-        "duration": 48.8,
-        "creator": "GlacioBorealeVT"
-      },
-      {
         "title": "Il saving, ez",
         "url": "https://www.twitch.tv/glacioborealevt/clip/ResourcefulDependableHamBatChest-8RO63Cu2CHD0E6H4",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/543f3f8b-4431-4e1a-b483-c7eba163fbf0/landscape/thumb/thumb-0000000000-480x272.jpg",
         "views": 53,
         "duration": 14,
         "creator": "dabidet87"
+      },
+      {
+        "title": "Nuh-uh ✨✨",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/ImportantSmellyQueleaGrammarKing-g7bfcOfJhMxoUW_w",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d69f1625-028d-4a74-80cc-93624b14cbbf/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 34,
+        "duration": 11,
+        "creator": "dabidet87"
+      },
+      {
+        "title": "*fence di tronco di legno nero*",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/RealFairDinosaurPipeHype-PSVPhKBODLDg4H8G",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/8cf14860-1e27-4760-a801-1bcfa169e7e9/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 35,
+        "duration": 8.6,
+        "creator": "Chompy_Sellino"
       }
     ]
   },

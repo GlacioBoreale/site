@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-27T21:55:06Z",
+  "updatedAt": "2026-05-27T23:17:11Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,20 +43,12 @@
     ],
     "randomClips": [
       {
-        "title": "wtf is that sound",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/CuriousAdventurousDadHeyGuys-oDbHErbl88zzZ2WY",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d7232c4e-a9c1-49f2-bbae-f9e21984cb34/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 41,
-        "duration": 30,
-        "creator": "antokekt"
-      },
-      {
-        "title": "L'anklebraking, il faking, la finta. ",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/BoredKawaiiTermiteBatChest-7EJbluOQBVS99ske",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/eca71458-7ab4-4ad1-9313-8f853515d8cf/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 50,
-        "duration": 19.1,
-        "creator": "dabidet87"
+        "title": "Ultima live della settimana | !discord",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableSassyPotKevinTurtle-yFcxFVAwuLGfTCcA",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/7e38dbd1-45ba-4df3-9207-fb0f83b3aa3a/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 26,
+        "duration": 26,
+        "creator": "ocarito1"
       },
       {
         "title": "Mi serve moderazione non Pix",
@@ -65,6 +57,14 @@
         "views": 28,
         "duration": 5,
         "creator": "BrainSedge"
+      },
+      {
+        "title": "When Tryhard hits...",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/InventiveApatheticApeTwitchRPG-b0Jt3pe210IVYMm2",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/9e740908-f37a-48f0-b0f0-ef47f715aa99/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 61,
+        "duration": 48.8,
+        "creator": "GlacioBorealeVT"
       }
     ]
   },

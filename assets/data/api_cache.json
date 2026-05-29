@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-29T03:36:23Z",
+  "updatedAt": "2026-05-29T07:56:02Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,28 +43,28 @@
     ],
     "randomClips": [
       {
-        "title": "lo ho scammato (ezezezezez111!)",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/AgileFrailHamsterBigBrother-4EpT2lO-Enq1aGJe",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/bea0d82f-417a-44fa-b06f-1b12ea256955/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 27,
-        "duration": 34.9,
-        "creator": "dabidet87"
-      },
-      {
-        "title": "Ultima live della settimana | !discord",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableSassyPotKevinTurtle-yFcxFVAwuLGfTCcA",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/7e38dbd1-45ba-4df3-9207-fb0f83b3aa3a/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 26,
-        "duration": 26,
-        "creator": "ocarito1"
-      },
-      {
         "title": "è un disegno quello lo sai?",
         "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableRenownedAuberginePMSTwin",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/9ad6f3f6-e229-4706-9d83-12185bbce8b9/landscape/thumb/thumb-0000000000-480x272.jpg",
         "views": 39,
         "duration": 7.1,
         "creator": "andreaproob"
+      },
+      {
+        "title": "no scope memento🗿 (bello il no scope btw)",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/ElegantRelievedSashimiPJSugar-dkfv5Z1lAz_BQPEY",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/97119400-4f77-48c5-a9aa-234298af1237/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 29,
+        "duration": 12.6,
+        "creator": "dabidet87"
+      },
+      {
+        "title": "Pronto!!!!!!!",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/MagnificentWittyInternThisIsSparta-ujpniueNUbiV-77b",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/58411f9e-18f1-4a70-aba4-33db15ba0c2d/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 50,
+        "duration": 10.5,
+        "creator": "lucaop69"
       }
     ]
   },

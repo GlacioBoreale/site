@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-29T21:07:42Z",
+  "updatedAt": "2026-05-29T23:12:32Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,28 +43,28 @@
     ],
     "randomClips": [
       {
+        "title": "\"Perché non finisce?\"💀",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/InspiringCuriousWolfFrankerZ-x0jLKt-ggFr_O2mw",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/88a68584-2d26-4d35-8d5b-30c80fdc2d4d/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 44,
+        "duration": 18.4,
+        "creator": "dabidet87"
+      },
+      {
+        "title": "è un disegno quello lo sai?",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableRenownedAuberginePMSTwin",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/9ad6f3f6-e229-4706-9d83-12185bbce8b9/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 39,
+        "duration": 7.1,
+        "creator": "andreaproob"
+      },
+      {
         "title": "Nuh-uh ✨✨",
         "url": "https://www.twitch.tv/glacioborealevt/clip/ImportantSmellyQueleaGrammarKing-g7bfcOfJhMxoUW_w",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d69f1625-028d-4a74-80cc-93624b14cbbf/landscape/thumb/thumb-0000000000-480x272.jpg",
         "views": 34,
         "duration": 11,
         "creator": "dabidet87"
-      },
-      {
-        "title": "When Tryhard hits...",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/InventiveApatheticApeTwitchRPG-b0Jt3pe210IVYMm2",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/9e740908-f37a-48f0-b0f0-ef47f715aa99/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 61,
-        "duration": 48.8,
-        "creator": "GlacioBorealeVT"
-      },
-      {
-        "title": "wtf is that sound",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/CuriousAdventurousDadHeyGuys-oDbHErbl88zzZ2WY",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d7232c4e-a9c1-49f2-bbae-f9e21984cb34/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 41,
-        "duration": 30,
-        "creator": "antokekt"
       }
     ]
   },

@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-03T04:06:15Z",
+  "updatedAt": "2026-06-03T09:25:11Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,20 +43,12 @@
     ],
     "randomClips": [
       {
-        "title": "wtf is that sound",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/CuriousAdventurousDadHeyGuys-oDbHErbl88zzZ2WY",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d7232c4e-a9c1-49f2-bbae-f9e21984cb34/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 41,
-        "duration": 30,
-        "creator": "antokekt"
-      },
-      {
-        "title": "Nixel Fuori Contesto",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/GrossAttractiveHeronANELE-YNXE5gsWGEIkit6p",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/168d92a3-fea4-481c-92c9-4dea74a052bf/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 36,
-        "duration": 7.7,
-        "creator": "Gennarix_"
+        "title": "Nuh-uh ✨✨",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/ImportantSmellyQueleaGrammarKing-g7bfcOfJhMxoUW_w",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d69f1625-028d-4a74-80cc-93624b14cbbf/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 34,
+        "duration": 11,
+        "creator": "dabidet87"
       },
       {
         "title": "AHAHAAH",
@@ -65,13 +57,21 @@
         "views": 31,
         "duration": 11.4,
         "creator": "OriginalEromo"
+      },
+      {
+        "title": "Pronto!!!!!!!",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/MagnificentWittyInternThisIsSparta-ujpniueNUbiV-77b",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/58411f9e-18f1-4a70-aba4-33db15ba0c2d/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 50,
+        "duration": 10.5,
+        "creator": "lucaop69"
       }
     ]
   },
   "youtube": {
     "displayName": "Glacio Boreale",
     "thumbnail": "https://yt3.ggpht.com/ouF6Phe2YjqSFMP7YdxYFTm5l9tyT0-MfdrfDJCcUt2mecJe8JV8h96luOECIiI9vtCjj9pX=s88-c-k-c0x00ffffff-no-rj",
-    "subscribers": 181,
+    "subscribers": 180,
     "url": "https://www.youtube.com/@glacioborealevt",
     "recentVideos": [
       {

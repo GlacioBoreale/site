@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-07T03:56:06Z",
+  "updatedAt": "2026-06-07T07:56:13Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,11 +43,19 @@
     ],
     "randomClips": [
       {
-        "title": "no scope memento🗿 (bello il no scope btw)",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/ElegantRelievedSashimiPJSugar-dkfv5Z1lAz_BQPEY",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/97119400-4f77-48c5-a9aa-234298af1237/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 29,
-        "duration": 12.6,
+        "title": "face reaveal",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/NastyTardyRuffBuddhaBar-e6YHVBz2APguBcQX",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d21ebf4b-0fb8-4254-850a-a9d87f52b6c7/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 39,
+        "duration": 5,
+        "creator": "auremdunknown"
+      },
+      {
+        "title": "Il saving, ez",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/ResourcefulDependableHamBatChest-8RO63Cu2CHD0E6H4",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/543f3f8b-4431-4e1a-b483-c7eba163fbf0/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 53,
+        "duration": 14,
         "creator": "dabidet87"
       },
       {
@@ -57,14 +65,6 @@
         "views": 39,
         "duration": 7.1,
         "creator": "andreaproob"
-      },
-      {
-        "title": "*fence di tronco di legno nero*",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/RealFairDinosaurPipeHype-PSVPhKBODLDg4H8G",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/8cf14860-1e27-4760-a801-1bcfa169e7e9/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 35,
-        "duration": 8.6,
-        "creator": "Chompy_Sellino"
       }
     ]
   },

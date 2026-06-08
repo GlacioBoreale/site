@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-08T20:16:08Z",
+  "updatedAt": "2026-06-08T22:26:31Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,20 +43,20 @@
     ],
     "randomClips": [
       {
-        "title": "lo ho scammato (ezezezezez111!)",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/AgileFrailHamsterBigBrother-4EpT2lO-Enq1aGJe",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/bea0d82f-417a-44fa-b06f-1b12ea256955/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 27,
-        "duration": 34.9,
-        "creator": "dabidet87"
-      },
-      {
         "title": "Ultima live della settimana | !discord",
         "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableSassyPotKevinTurtle-yFcxFVAwuLGfTCcA",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/7e38dbd1-45ba-4df3-9207-fb0f83b3aa3a/landscape/thumb/thumb-0000000000-480x272.jpg",
         "views": 26,
         "duration": 26,
         "creator": "ocarito1"
+      },
+      {
+        "title": "Mi serve moderazione non Pix",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/PoliteSolidHawkEleGiggle-6wdUnkC3uEyFMwle",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d0008be4-9538-4f37-893f-a83dda83347b/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 28,
+        "duration": 5,
+        "creator": "BrainSedge"
       },
       {
         "title": "*fence di tronco di legno nero*",
@@ -80,7 +80,7 @@
         "thumbnail": "https://i.ytimg.com/vi/VDmtmXM6ciA/mqdefault.jpg",
         "publishedAt": "2026-06-07T09:30:05Z",
         "url": "https://www.youtube.com/watch?v=VDmtmXM6ciA",
-        "viewCount": 26
+        "viewCount": 28
       },
       {
         "title": "Minecraft Horror ma L'Editor non ha Pippato Abbastanza",

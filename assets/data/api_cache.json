@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-10T16:58:20Z",
+  "updatedAt": "2026-06-10T19:42:12Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,20 +43,12 @@
     ],
     "randomClips": [
       {
-        "title": "\"Perché non finisce?\"💀",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/InspiringCuriousWolfFrankerZ-x0jLKt-ggFr_O2mw",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/88a68584-2d26-4d35-8d5b-30c80fdc2d4d/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 44,
-        "duration": 18.4,
-        "creator": "dabidet87"
-      },
-      {
-        "title": "Nixel Fuori Contesto",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/GrossAttractiveHeronANELE-YNXE5gsWGEIkit6p",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/168d92a3-fea4-481c-92c9-4dea74a052bf/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 36,
-        "duration": 7.7,
-        "creator": "Gennarix_"
+        "title": "When Tryhard hits...",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/InventiveApatheticApeTwitchRPG-b0Jt3pe210IVYMm2",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/9e740908-f37a-48f0-b0f0-ef47f715aa99/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 61,
+        "duration": 48.8,
+        "creator": "GlacioBorealeVT"
       },
       {
         "title": "Ultima live della settimana | !discord",
@@ -65,6 +57,14 @@
         "views": 26,
         "duration": 26,
         "creator": "ocarito1"
+      },
+      {
+        "title": "Nuh-uh ✨✨",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/ImportantSmellyQueleaGrammarKing-g7bfcOfJhMxoUW_w",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d69f1625-028d-4a74-80cc-93624b14cbbf/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 34,
+        "duration": 11,
+        "creator": "dabidet87"
       }
     ]
   },

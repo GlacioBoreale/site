@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-17T00:16:04Z",
+  "updatedAt": "2026-06-17T06:10:58Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,27 +43,27 @@
     ],
     "randomClips": [
       {
-        "title": "face reaveal",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/NastyTardyRuffBuddhaBar-e6YHVBz2APguBcQX",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d21ebf4b-0fb8-4254-850a-a9d87f52b6c7/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 39,
-        "duration": 5,
-        "creator": "auremdunknown"
-      },
-      {
-        "title": "Ultima live della settimana | !discord",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableSassyPotKevinTurtle-yFcxFVAwuLGfTCcA",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/7e38dbd1-45ba-4df3-9207-fb0f83b3aa3a/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 26,
-        "duration": 26,
-        "creator": "ocarito1"
-      },
-      {
         "title": "L'anklebraking, il faking, la finta. ",
         "url": "https://www.twitch.tv/glacioborealevt/clip/BoredKawaiiTermiteBatChest-7EJbluOQBVS99ske",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/eca71458-7ab4-4ad1-9313-8f853515d8cf/landscape/thumb/thumb-0000000000-480x272.jpg",
         "views": 50,
         "duration": 19.1,
+        "creator": "dabidet87"
+      },
+      {
+        "title": "When Tryhard hits...",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/InventiveApatheticApeTwitchRPG-b0Jt3pe210IVYMm2",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/9e740908-f37a-48f0-b0f0-ef47f715aa99/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 61,
+        "duration": 48.8,
+        "creator": "GlacioBorealeVT"
+      },
+      {
+        "title": "Il saving, ez",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/ResourcefulDependableHamBatChest-8RO63Cu2CHD0E6H4",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/543f3f8b-4431-4e1a-b483-c7eba163fbf0/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 53,
+        "duration": 14,
         "creator": "dabidet87"
       }
     ]

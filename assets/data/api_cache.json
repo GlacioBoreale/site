@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-06-22T19:26:49Z",
+  "updatedAt": "2026-06-22T22:01:47Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
     "followers": 1186,
     "url": "https://twitch.tv/glacioborealevt",
-    "isLive": true,
+    "isLive": false,
     "stream": {
-      "title": "Un po' di chiacchiere e codice prima di giocare ad Elysium | ► Vtuber ITA ◄ | !ds !ig",
-      "game": "Just Chatting",
-      "gameBoxArt": "https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg",
-      "viewers": 5,
-      "startedAt": "2026-06-22T18:28:44Z",
-      "thumbnail": "https://static-cdn.jtvnw.net/previews-ttv/live_user_glacioborealevt-1280x720.jpg"
+      "title": "",
+      "game": "",
+      "gameBoxArt": "",
+      "viewers": 0,
+      "startedAt": "",
+      "thumbnail": ""
     },
     "offlineImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/101d761a-4950-4c4e-87f7-f81e912529c8-channel_offline_image-1920x1080.png",
     "topClips": [
@@ -43,28 +43,28 @@
     ],
     "randomClips": [
       {
-        "title": "Pronto!!!!!!!",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/MagnificentWittyInternThisIsSparta-ujpniueNUbiV-77b",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/58411f9e-18f1-4a70-aba4-33db15ba0c2d/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 50,
-        "duration": 10.5,
-        "creator": "lucaop69"
-      },
-      {
-        "title": "Il saving, ez",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/ResourcefulDependableHamBatChest-8RO63Cu2CHD0E6H4",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/543f3f8b-4431-4e1a-b483-c7eba163fbf0/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 53,
-        "duration": 14,
+        "title": "\"Perché non finisce?\"💀",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/InspiringCuriousWolfFrankerZ-x0jLKt-ggFr_O2mw",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/88a68584-2d26-4d35-8d5b-30c80fdc2d4d/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 44,
+        "duration": 18.4,
         "creator": "dabidet87"
       },
       {
-        "title": "lo ho scammato (ezezezezez111!)",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/AgileFrailHamsterBigBrother-4EpT2lO-Enq1aGJe",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/bea0d82f-417a-44fa-b06f-1b12ea256955/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 27,
-        "duration": 34.9,
-        "creator": "dabidet87"
+        "title": "When Tryhard hits...",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/InventiveApatheticApeTwitchRPG-b0Jt3pe210IVYMm2",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/9e740908-f37a-48f0-b0f0-ef47f715aa99/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 61,
+        "duration": 48.8,
+        "creator": "GlacioBorealeVT"
+      },
+      {
+        "title": "Mi serve moderazione non Pix",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/PoliteSolidHawkEleGiggle-6wdUnkC3uEyFMwle",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d0008be4-9538-4f37-893f-a83dda83347b/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 28,
+        "duration": 5,
+        "creator": "BrainSedge"
       }
     ]
   },
@@ -88,7 +88,7 @@
         "thumbnail": "https://i.ytimg.com/vi/D6MsiuipRpo/mqdefault.jpg",
         "publishedAt": "2026-05-02T12:30:14Z",
         "url": "https://www.youtube.com/watch?v=D6MsiuipRpo",
-        "viewCount": 246
+        "viewCount": 248
       },
       {
         "title": "Non Pensavo che 2 Baroni Fossero Così FORTI [Reupload]",

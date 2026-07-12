@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-12T08:26:48Z",
+  "updatedAt": "2026-07-12T10:27:26Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,20 +43,20 @@
     ],
     "randomClips": [
       {
-        "title": "AHAHAAH",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/CoySilkyJuiceKappaRoss-wI0uSDy-6120KAAv",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/0d21e85a-1313-4df5-bcac-d0e93fc5768d/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 32,
-        "duration": 11.4,
-        "creator": "OriginalEromo"
+        "title": "When Tryhard hits...",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/InventiveApatheticApeTwitchRPG-b0Jt3pe210IVYMm2",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/9e740908-f37a-48f0-b0f0-ef47f715aa99/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 63,
+        "duration": 48.8,
+        "creator": "GlacioBorealeVT"
       },
       {
-        "title": "Ultima live della settimana | !discord",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableSassyPotKevinTurtle-yFcxFVAwuLGfTCcA",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/7e38dbd1-45ba-4df3-9207-fb0f83b3aa3a/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 26,
-        "duration": 26,
-        "creator": "ocarito1"
+        "title": "Nuh-uh ✨✨",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/ImportantSmellyQueleaGrammarKing-g7bfcOfJhMxoUW_w",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d69f1625-028d-4a74-80cc-93624b14cbbf/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 34,
+        "duration": 11,
+        "creator": "dabidet87"
       },
       {
         "title": "*fence di tronco di legno nero*",
@@ -71,9 +71,17 @@
   "youtube": {
     "displayName": "Glacio Boreale",
     "thumbnail": "https://yt3.ggpht.com/ouF6Phe2YjqSFMP7YdxYFTm5l9tyT0-MfdrfDJCcUt2mecJe8JV8h96luOECIiI9vtCjj9pX=s88-c-k-c0x00ffffff-no-rj",
-    "subscribers": 185,
+    "subscribers": 186,
     "url": "https://www.youtube.com/@glacioborealevt",
     "recentVideos": [
+      {
+        "title": "2 Idioti Sopravvivono a 16 Entità su Minecraft",
+        "videoId": "ikAqzhnMUq0",
+        "thumbnail": "https://i.ytimg.com/vi/ikAqzhnMUq0/mqdefault.jpg",
+        "publishedAt": "2026-07-12T08:30:05Z",
+        "url": "https://www.youtube.com/watch?v=ikAqzhnMUq0",
+        "viewCount": 8
+      },
       {
         "title": "Subnautica 2 ma la Nostra Sanità Mentale ha i Minuti Contati...",
         "videoId": "VDmtmXM6ciA",
@@ -89,14 +97,6 @@
         "publishedAt": "2026-05-02T12:30:14Z",
         "url": "https://www.youtube.com/watch?v=D6MsiuipRpo",
         "viewCount": 251
-      },
-      {
-        "title": "Non Pensavo che 2 Baroni Fossero Così FORTI [Reupload]",
-        "videoId": "MKUd3bB70Ko",
-        "thumbnail": "https://i.ytimg.com/vi/MKUd3bB70Ko/mqdefault.jpg",
-        "publishedAt": "2026-02-17T07:30:09Z",
-        "url": "https://www.youtube.com/watch?v=MKUd3bB70Ko",
-        "viewCount": 69
       }
     ]
   },

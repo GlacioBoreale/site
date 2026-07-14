@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-14T21:57:08Z",
+  "updatedAt": "2026-07-14T23:00:08Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,14 +43,6 @@
     ],
     "randomClips": [
       {
-        "title": "Pronto!!!!!!!",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/MagnificentWittyInternThisIsSparta-ujpniueNUbiV-77b",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/58411f9e-18f1-4a70-aba4-33db15ba0c2d/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 50,
-        "duration": 10.5,
-        "creator": "lucaop69"
-      },
-      {
         "title": "L'anklebraking, il faking, la finta. ",
         "url": "https://www.twitch.tv/glacioborealevt/clip/BoredKawaiiTermiteBatChest-7EJbluOQBVS99ske",
         "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/eca71458-7ab4-4ad1-9313-8f853515d8cf/landscape/thumb/thumb-0000000000-480x272.jpg",
@@ -59,19 +51,27 @@
         "creator": "dabidet87"
       },
       {
-        "title": "AHAHAAH",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/CoySilkyJuiceKappaRoss-wI0uSDy-6120KAAv",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/0d21e85a-1313-4df5-bcac-d0e93fc5768d/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 32,
-        "duration": 11.4,
-        "creator": "OriginalEromo"
+        "title": "wtf is that sound",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/CuriousAdventurousDadHeyGuys-oDbHErbl88zzZ2WY",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d7232c4e-a9c1-49f2-bbae-f9e21984cb34/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 41,
+        "duration": 30,
+        "creator": "antokekt"
+      },
+      {
+        "title": "streamers luck ",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/CrowdedFurryTireWOOP-W-kBSOuRuJ90WPSj",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/7fe2f5e2-721d-48c2-aeac-660eb843fc3c/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 57,
+        "duration": 51.8,
+        "creator": "sachiiscorner"
       }
     ]
   },
   "youtube": {
     "displayName": "Glacio Boreale",
     "thumbnail": "https://yt3.ggpht.com/ouF6Phe2YjqSFMP7YdxYFTm5l9tyT0-MfdrfDJCcUt2mecJe8JV8h96luOECIiI9vtCjj9pX=s88-c-k-c0x00ffffff-no-rj",
-    "subscribers": 187,
+    "subscribers": 188,
     "url": "https://www.youtube.com/@glacioborealevt",
     "recentVideos": [
       {
@@ -80,7 +80,7 @@
         "thumbnail": "https://i.ytimg.com/vi/ikAqzhnMUq0/mqdefault.jpg",
         "publishedAt": "2026-07-12T08:30:05Z",
         "url": "https://www.youtube.com/watch?v=ikAqzhnMUq0",
-        "viewCount": 31
+        "viewCount": 35
       },
       {
         "title": "Subnautica 2 ma la Nostra Sanità Mentale ha i Minuti Contati...",

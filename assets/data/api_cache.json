@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-17T15:12:39Z",
+  "updatedAt": "2026-07-17T17:10:50Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
@@ -43,12 +43,20 @@
     ],
     "randomClips": [
       {
-        "title": "Ultima live della settimana | !discord",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/PiliableSassyPotKevinTurtle-yFcxFVAwuLGfTCcA",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/7e38dbd1-45ba-4df3-9207-fb0f83b3aa3a/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 26,
-        "duration": 26,
-        "creator": "ocarito1"
+        "title": "Mi serve moderazione non Pix",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/PoliteSolidHawkEleGiggle-6wdUnkC3uEyFMwle",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d0008be4-9538-4f37-893f-a83dda83347b/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 28,
+        "duration": 5,
+        "creator": "BrainSedge"
+      },
+      {
+        "title": "*fence di tronco di legno nero*",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/RealFairDinosaurPipeHype-PSVPhKBODLDg4H8G",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/8cf14860-1e27-4760-a801-1bcfa169e7e9/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 35,
+        "duration": 8.6,
+        "creator": "Chompy_Sellino"
       },
       {
         "title": "Nixel Fuori Contesto",
@@ -57,21 +65,13 @@
         "views": 36,
         "duration": 7.7,
         "creator": "Gennarix_"
-      },
-      {
-        "title": "AHAHAAH",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/CoySilkyJuiceKappaRoss-wI0uSDy-6120KAAv",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/0d21e85a-1313-4df5-bcac-d0e93fc5768d/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 32,
-        "duration": 11.4,
-        "creator": "OriginalEromo"
       }
     ]
   },
   "youtube": {
     "displayName": "Glacio Boreale",
     "thumbnail": "https://yt3.ggpht.com/ouF6Phe2YjqSFMP7YdxYFTm5l9tyT0-MfdrfDJCcUt2mecJe8JV8h96luOECIiI9vtCjj9pX=s88-c-k-c0x00ffffff-no-rj",
-    "subscribers": 189,
+    "subscribers": 188,
     "url": "https://www.youtube.com/@glacioborealevt",
     "recentVideos": [
       {
@@ -88,7 +88,7 @@
         "thumbnail": "https://i.ytimg.com/vi/ikAqzhnMUq0/mqdefault.jpg",
         "publishedAt": "2026-07-12T08:30:05Z",
         "url": "https://www.youtube.com/watch?v=ikAqzhnMUq0",
-        "viewCount": 40
+        "viewCount": 42
       },
       {
         "title": "Subnautica 2 ma la Nostra Sanità Mentale ha i Minuti Contati...",

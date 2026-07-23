@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-07-23T17:27:04Z",
+  "updatedAt": "2026-07-23T19:15:59Z",
   "twitch": {
     "displayName": "GlacioBorealeVT",
     "profileImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/5aafd08d-0cd1-498c-abdf-186479214cc8-profile_image-300x300.png",
     "followers": 1193,
     "url": "https://twitch.tv/glacioborealevt",
-    "isLive": false,
+    "isLive": true,
     "stream": {
-      "title": "",
-      "game": "",
-      "gameBoxArt": "",
-      "viewers": 0,
-      "startedAt": "",
-      "thumbnail": ""
+      "title": "【VTuber 🇮🇹】 Isolato contro un alieno. Per la terza volta. | !ds !ig",
+      "game": "Just Chatting",
+      "gameBoxArt": "https://static-cdn.jtvnw.net/ttv-boxart/509658-144x192.jpg",
+      "viewers": 1,
+      "startedAt": "2026-07-23T18:30:12Z",
+      "thumbnail": "https://static-cdn.jtvnw.net/previews-ttv/live_user_glacioborealevt-1280x720.jpg"
     },
     "offlineImage": "https://static-cdn.jtvnw.net/jtv_user_pictures/101d761a-4950-4c4e-87f7-f81e912529c8-channel_offline_image-1920x1080.png",
     "topClips": [
@@ -43,28 +43,28 @@
     ],
     "randomClips": [
       {
-        "title": "Nuh-uh ✨✨",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/ImportantSmellyQueleaGrammarKing-g7bfcOfJhMxoUW_w",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d69f1625-028d-4a74-80cc-93624b14cbbf/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 34,
-        "duration": 11,
+        "title": "no scope memento🗿 (bello il no scope btw)",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/ElegantRelievedSashimiPJSugar-dkfv5Z1lAz_BQPEY",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/97119400-4f77-48c5-a9aa-234298af1237/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 29,
+        "duration": 12.6,
         "creator": "dabidet87"
       },
       {
-        "title": "Nixel Fuori Contesto",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/GrossAttractiveHeronANELE-YNXE5gsWGEIkit6p",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/168d92a3-fea4-481c-92c9-4dea74a052bf/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 36,
-        "duration": 7.7,
-        "creator": "Gennarix_"
+        "title": "\"Perché non finisce?\"💀",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/InspiringCuriousWolfFrankerZ-x0jLKt-ggFr_O2mw",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/88a68584-2d26-4d35-8d5b-30c80fdc2d4d/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 44,
+        "duration": 18.4,
+        "creator": "dabidet87"
       },
       {
-        "title": "Pronto!!!!!!!",
-        "url": "https://www.twitch.tv/glacioborealevt/clip/MagnificentWittyInternThisIsSparta-ujpniueNUbiV-77b",
-        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/58411f9e-18f1-4a70-aba4-33db15ba0c2d/landscape/thumb/thumb-0000000000-480x272.jpg",
-        "views": 50,
-        "duration": 10.5,
-        "creator": "lucaop69"
+        "title": "wtf is that sound",
+        "url": "https://www.twitch.tv/glacioborealevt/clip/CuriousAdventurousDadHeyGuys-oDbHErbl88zzZ2WY",
+        "thumbnail": "https://static-cdn.jtvnw.net/twitch-video-assets/twitch-vap-video-assets-prod-us-west-2/d7232c4e-a9c1-49f2-bbae-f9e21984cb34/landscape/thumb/thumb-0000000000-480x272.jpg",
+        "views": 41,
+        "duration": 30,
+        "creator": "antokekt"
       }
     ]
   },

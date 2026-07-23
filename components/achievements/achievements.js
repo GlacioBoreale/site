@@ -502,8 +502,6 @@ function initAchievements() {
     }
   });
 
-  window.addEventListener('languageChanged', () => initNavLiveBadge());
-
   const path = window.location.pathname;
   if (path.includes('vtpedia'))  unlockAchievement('visited_vtpedia');
   if (path.includes('fanart'))   unlockAchievement('visited_fanart');

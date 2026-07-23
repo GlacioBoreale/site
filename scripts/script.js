@@ -4,7 +4,7 @@
 })();
 
 const IMG_CDN = 'https://glaciopia-images.s3.eu-north-1.amazonaws.com';
-const AUDIO_CDN = 'https://glaciopia-images.s3.eu-north-1.amazonaws.com';
+const AUDIO_CDN = 'https://glaciopia-audio.s3.eu-north-1.amazonaws.com';
 
 let currentLang  = localStorage.getItem('language') || 'it';
 let translations = {};

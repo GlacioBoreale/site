@@ -73,10 +73,24 @@ async function loadRepos() {
     if (auto) auto.checked = data.auto_sync !== false;
     setRepoLastSync(data.last_sync);
     renderRepos();
+    maybeAutoSync(data);
   } catch (e) {
     const el = document.getElementById('repo-list');
     if (el) el.innerHTML = `<div class="adm-empty">Errore nel caricamento delle repo.</div>`;
   }
+}
+
+let autoSyncDone = false;
+
+function maybeAutoSync(data) {
+  if (autoSyncDone) return;
+  if (data.auto_sync === false) return;
+  if (data.last_sync) {
+    const days = (Date.now() - new Date(data.last_sync).getTime()) / 86400000;
+    if (days < 3) return;
+  }
+  autoSyncDone = true;
+  doRepoSync();
 }
 
 function setRepoLastSync(iso) {
@@ -144,11 +158,38 @@ function renderRepos() {
   });
 }
 
+const GITHUB_USER = 'GlacioBoreale';
+
+async function fetchGithubRepos() {
+  const r = await fetch(`https://api.github.com/users/${GITHUB_USER}/repos?per_page=100&sort=pushed`, {
+    headers: { 'Accept': 'application/vnd.github+json' },
+  });
+  if (!r.ok) throw new Error(`GitHub API ${r.status}`);
+  const raw = await r.json();
+
+  return raw
+    .filter(x => !x.private && !x.fork)
+    .map(x => ({
+      id:          x.id,
+      name:        x.name,
+      description: x.description,
+      language:    x.language,
+      stars:       x.stargazers_count || 0,
+      forks:       x.forks_count || 0,
+      url:         x.html_url,
+      homepage:    x.homepage || null,
+      preview:     `https://raw.githubusercontent.com/${x.owner.login}/${x.name}/${x.default_branch}/preview.png`,
+      topics:      x.topics || [],
+      pushed_at:   x.pushed_at,
+    }));
+}
+
 async function doRepoSync() {
   const btn = document.getElementById('repo-sync-btn');
   if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Sincronizzo...'; }
   try {
-    const r = await Api.admin.syncRepos();
+    const list = await fetchGithubRepos();
+    const r = await Api.admin.syncRepos(list);
     showToast(`Sincronizzate ${r.count} repo`, 'success');
     await loadRepos();
   } catch (e) {

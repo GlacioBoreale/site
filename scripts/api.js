@@ -95,7 +95,7 @@ const Api = (() => {
       getSaves:           ()                        => request('GET',    '/admin/saves'),
       deleteSave:         (userId)                  => request('DELETE', `/admin/saves/${userId}`),
       getRepos:           ()                        => request('GET',    '/admin/repos'),
-      syncRepos:          ()                        => request('POST',   '/admin/repos/sync'),
+      syncRepos:          (repos)                   => request('POST',   '/admin/repos/sync', { repos }),
       setReposAutoSync:   (autoSync)                => request('PATCH',  '/admin/repos/settings', { auto_sync: autoSync }),
       updateRepo:         (id, data)                => request('PATCH',  `/admin/repos/${id}`, data),
     },

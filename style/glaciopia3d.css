@@ -1,0 +1,125 @@
+/* ── GLACIOPIA 3D LOGO ── */
+
+.gl-welcome {
+  font-family: 'Fredoka', sans-serif;
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 0.4rem;
+  animation: heroFadeDown 0.9s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+.glaciopia-logo-3d {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.04em;
+  margin-bottom: 2rem;
+  animation: heroFadeDown 0.9s 0.05s cubic-bezier(0.16,1,0.3,1) both;
+  cursor: default;
+  user-select: none;
+  position: relative;
+}
+
+.gl-letter {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(2.8rem, 7vw, 5.2rem);
+  font-weight: 400;
+  color: #e8f4ff;
+  display: inline-block;
+  line-height: 1;
+  position: relative; /* necessario per z-index */
+  transition: color 0.8s ease-out, text-shadow 0.8s ease-out;
+
+  --ex: 0px;
+  --ey: 5px;
+
+  text-shadow:
+    calc(var(--ex) * 0.06) calc(var(--ey) * 0.06) 0 #c0cce0,
+    calc(var(--ex) * 0.13) calc(var(--ey) * 0.13) 0 #aabbd0,
+    calc(var(--ex) * 0.19) calc(var(--ey) * 0.19) 0 #9aaabf,
+    calc(var(--ex) * 0.25) calc(var(--ey) * 0.25) 0 #8a99ae,
+    calc(var(--ex) * 0.31) calc(var(--ey) * 0.31) 0 #7a889d,
+    calc(var(--ex) * 0.38) calc(var(--ey) * 0.38) 0 #6a778c,
+    calc(var(--ex) * 0.44) calc(var(--ey) * 0.44) 0 #5a667b,
+    calc(var(--ex) * 0.50) calc(var(--ey) * 0.50) 0 #4a556a,
+    calc(var(--ex) * 0.56) calc(var(--ey) * 0.56) 0 #3a4459,
+    calc(var(--ex) * 0.63) calc(var(--ey) * 0.63) 0 #2a3348,
+    calc(var(--ex) * 0.69) calc(var(--ey) * 0.69) 0 #1e2437,
+    calc(var(--ex) * 0.75) calc(var(--ey) * 0.75) 0 #141828,
+    calc(var(--ex) * 0.81) calc(var(--ey) * 0.81) 0 #0c1018,
+    calc(var(--ex) * 0.88) calc(var(--ey) * 0.88) 0 #06080c,
+    calc(var(--ex) * 0.94) calc(var(--ey) * 0.94) 0 #020406,
+    calc(var(--ex) * 1.00) calc(var(--ey) * 1.00) 0 #010202,
+    calc(var(--ex) * 1.10) calc(var(--ey) * 1.10) 14px rgba(0,0,0,0.55),
+    calc(var(--ex) * 1.50) calc(var(--ey) * 1.50) 28px rgba(0,0,0,0.28);
+}
+
+.gl-letter.lit {
+  color: #ffffff;
+  transition: none;
+  text-shadow:
+    calc(var(--ex) * 0.06) calc(var(--ey) * 0.06) 0 #aad4ff,
+    calc(var(--ex) * 0.13) calc(var(--ey) * 0.13) 0 #88bbff,
+    calc(var(--ex) * 0.19) calc(var(--ey) * 0.19) 0 #66a2ff,
+    calc(var(--ex) * 0.25) calc(var(--ey) * 0.25) 0 #4489ff,
+    calc(var(--ex) * 0.31) calc(var(--ey) * 0.31) 0 #2270ff,
+    calc(var(--ex) * 0.38) calc(var(--ey) * 0.38) 0 #1060ee,
+    calc(var(--ex) * 0.44) calc(var(--ey) * 0.44) 0 #0050dd,
+    calc(var(--ex) * 0.50) calc(var(--ey) * 0.50) 0 #0040cc,
+    calc(var(--ex) * 0.56) calc(var(--ey) * 0.56) 0 #0032bb,
+    calc(var(--ex) * 0.63) calc(var(--ey) * 0.63) 0 #0024aa,
+    calc(var(--ex) * 0.69) calc(var(--ey) * 0.69) 0 #001899,
+    calc(var(--ex) * 0.75) calc(var(--ey) * 0.75) 0 #000e88,
+    calc(var(--ex) * 0.81) calc(var(--ey) * 0.81) 0 #000677,
+    calc(var(--ex) * 0.88) calc(var(--ey) * 0.88) 0 #000266,
+    calc(var(--ex) * 0.94) calc(var(--ey) * 0.94) 0 #000155,
+    calc(var(--ex) * 1.00) calc(var(--ey) * 1.00) 0 #000044,
+    calc(var(--ex) * 1.10) calc(var(--ey) * 1.10) 14px rgba(0,0,0,0.6),
+    0 0 24px rgba(91,156,246,0.95),
+    0 0 55px rgba(91,156,246,0.55);
+  animation: glLetterHit 0.6s ease-in-out forwards;
+}
+
+.gl-letter.complete {
+  color: #fff8e8;
+  transition: none;
+  text-shadow:
+    calc(var(--ex) * 0.06) calc(var(--ey) * 0.06) 0 #ffe0aa,
+    calc(var(--ex) * 0.13) calc(var(--ey) * 0.13) 0 #ffcc88,
+    calc(var(--ex) * 0.19) calc(var(--ey) * 0.19) 0 #ffb866,
+    calc(var(--ex) * 0.25) calc(var(--ey) * 0.25) 0 #ffa444,
+    calc(var(--ex) * 0.31) calc(var(--ey) * 0.31) 0 #ff9022,
+    calc(var(--ex) * 0.38) calc(var(--ey) * 0.38) 0 #ee7c00,
+    calc(var(--ex) * 0.44) calc(var(--ey) * 0.44) 0 #dd6800,
+    calc(var(--ex) * 0.50) calc(var(--ey) * 0.50) 0 #cc5400,
+    calc(var(--ex) * 0.56) calc(var(--ey) * 0.56) 0 #bb4000,
+    calc(var(--ex) * 0.63) calc(var(--ey) * 0.63) 0 #aa2e00,
+    calc(var(--ex) * 0.69) calc(var(--ey) * 0.69) 0 #991e00,
+    calc(var(--ex) * 0.75) calc(var(--ey) * 0.75) 0 #881200,
+    calc(var(--ex) * 0.81) calc(var(--ey) * 0.81) 0 #770800,
+    calc(var(--ex) * 0.88) calc(var(--ey) * 0.88) 0 #660400,
+    calc(var(--ex) * 0.94) calc(var(--ey) * 0.94) 0 #550200,
+    calc(var(--ex) * 1.00) calc(var(--ey) * 1.00) 0 #440100,
+    calc(var(--ex) * 1.10) calc(var(--ey) * 1.10) 14px rgba(0,0,0,0.6),
+    0 0 24px rgba(255,160,40,0.95),
+    0 0 55px rgba(255,120,0,0.55);
+  animation: glLetterComplete 0.85s ease-in-out forwards;
+}
+
+@keyframes glLetterHit {
+  0%   { transform: translateY(0)     rotateY(0deg)   scale(1);    }
+  30%  { transform: translateY(-26px) rotateY(180deg) scale(1.18); }
+  70%  { transform: translateY(-8px)  rotateY(300deg) scale(1.06); }
+  100% { transform: translateY(0)     rotateY(360deg) scale(1);    }
+}
+
+@keyframes glLetterComplete {
+  0%   { transform: translateY(0)     rotateY(0deg)   scale(1);    }
+  25%  { transform: translateY(-38px) rotateY(180deg) scale(1.26); }
+  65%  { transform: translateY(-12px) rotateY(310deg) scale(1.1);  }
+  85%  { transform: translateY(-3px)  rotateY(350deg) scale(1.03); }
+  100% { transform: translateY(0)     rotateY(360deg) scale(1);    }
+}

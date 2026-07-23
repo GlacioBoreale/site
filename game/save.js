@@ -48,6 +48,7 @@ function buildSaveObj() {
     prestigeCount:        G.prestigeCount || 0,
     leaderboardUnlocked:  G.leaderboardUnlocked,
     leaderboardOptIn:     G.leaderboardOptIn,
+    pointCostMult:        G.pointCostMult,
     nodes: {},
   };
   NODE_DEFS.forEach(n => { save.nodes[n.id] = { ...nodeState[n.id] }; });
@@ -220,6 +221,7 @@ function replayEffects() {
   G.startGoldMultiP      = 1;
   G.startGoldMultiL      = 1;
   G.mat2Unlocked         = false;
+  G.pointCostMult        = 1;
   NODE_DEFS.find(n => n.id === 'multiInc').maxLevel = 3;
   NODE_DEFS.find(n => n.id === 'start').maxLevel    = 1;
   NODE_DEFS.find(n => n.id === 'flat2x').maxLevel   = 1;

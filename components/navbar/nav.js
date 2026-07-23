@@ -8,9 +8,9 @@ async function loadNavbar() {
     initLangSelector();
     initMobileMenu();
     initMirage();
-    initNavLiveBadge();
     initSettingsPanel();
     initTheme();
+    initNavDropdowns();
     _updateNavHeight();
 
     const ro = new ResizeObserver(_updateNavHeight);
@@ -36,6 +36,30 @@ const languages = [
   { value: 'en', flag: 'https://flagcdn.com/w20/gb.png', flag2x: 'https://flagcdn.com/w40/gb.png', code: 'EN', label: 'English'  },
   { value: 'ro', flag: 'https://flagcdn.com/w20/ro.png', flag2x: 'https://flagcdn.com/w40/ro.png', code: 'RO', label: 'Română'   },
 ];
+
+function initNavDropdowns() {
+  document.querySelectorAll('.nav-dropdown-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const key   = btn.dataset.dropdown;
+      const panel = btn.nextElementSibling;
+      const isOpen = panel.classList.contains('open');
+
+      document.querySelectorAll('.nav-dropdown-panel').forEach(p => p.classList.remove('open'));
+      document.querySelectorAll('.nav-dropdown-btn').forEach(b => b.classList.remove('open'));
+
+      if (!isOpen) {
+        panel.classList.add('open');
+        btn.classList.add('open');
+      }
+    });
+  });
+
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.nav-dropdown-panel').forEach(p => p.classList.remove('open'));
+    document.querySelectorAll('.nav-dropdown-btn').forEach(b => b.classList.remove('open'));
+  });
+}
 
 function initLangSelector() {
   buildLangMenus();
@@ -100,21 +124,12 @@ function updateSettingsLangUI(lang) {
 }
 
 function initSettingsPanel() {
-  const btn   = document.getElementById('nav-settings-btn');
-  const panel = document.getElementById('settings-panel');
-  if (!btn || !panel) return;
+  const btn = document.getElementById('nav-settings-btn');
+  if (!btn) return;
 
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
-    const open = panel.classList.contains('open');
-    open ? closeSettingsPanel() : openSettingsPanel();
-  });
-
-  panel.addEventListener('click', (e) => e.stopPropagation());
-
-  document.getElementById('open-achievements-btn')?.addEventListener('click', () => {
-    closeSettingsPanel();
-    if (typeof openAchievementPopup === 'function') openAchievementPopup();
+    if (typeof openSettingsPopup === 'function') openSettingsPopup();
   });
 
   document.getElementById('mobile-open-achievements-btn')?.addEventListener('click', () => {
@@ -144,10 +159,7 @@ function applyTheme(theme, save, event) {
     }
   };
 
-  if (!save || !event) {
-    doApply();
-    return;
-  }
+  if (!save || !event) { doApply(); return; }
 
   if (theme === 'light') {
     _flashbangTransition(doApply);
@@ -160,40 +172,22 @@ function _flashbangTransition(doApply) {
   const flash = document.createElement('div');
   flash.style.cssText = `
     position: fixed; inset: 0; z-index: 99999;
-    background: #fff;
-    opacity: 0;
-    pointer-events: none;
+    background: #fff; opacity: 0; pointer-events: none;
   `;
   document.body.appendChild(flash);
-
   flash.animate(
-    [
-      { opacity: 0 },
-      { opacity: 1, offset: 0.15 },
-      { opacity: 1, offset: 0.25 },
-      { opacity: 0 }
-    ],
+    [{ opacity: 0 }, { opacity: 1, offset: 0.15 }, { opacity: 1, offset: 0.25 }, { opacity: 0 }],
     { duration: 600, easing: 'ease-out', fill: 'forwards' }
   ).finished.then(() => flash.remove());
-
   setTimeout(doApply, 80);
 }
 
 function _circleTransition(event, doApply) {
-  if (!document.startViewTransition) {
-    doApply();
-    return;
-  }
-
+  if (!document.startViewTransition) { doApply(); return; }
   const x = event.clientX;
   const y = event.clientY;
-  const maxR = Math.hypot(
-    Math.max(x, window.innerWidth  - x),
-    Math.max(y, window.innerHeight - y)
-  );
-
+  const maxR = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
   const transition = document.startViewTransition(() => { doApply(); });
-
   transition.ready.then(() => {
     document.documentElement.animate(
       { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${maxR}px at ${x}px ${y}px)`] },
@@ -250,35 +244,6 @@ function showMirage() {
   }, 2800);
 }
 
-async function initNavLiveBadge() {
-  const btn  = document.getElementById('nav-live-btn');
-  const text = document.getElementById('nav-live-text');
-  if (!btn || !text) return;
-
-  const depth = (window.location.pathname.match(/\//g) || []).length - 1;
-  const base  = depth > 0 ? '../'.repeat(depth) : './';
-
-  try {
-    const res = await fetch(`${base}assets/data/api_cache.json`);
-    if (!res.ok) return;
-    const data = await res.json();
-    const isLive = data?.twitch?.isLive;
-    const t = window._translations || {};
-    const ach = t.ach || {};
-    if (isLive) {
-      btn.href = 'https://twitch.tv/glacioborealevt';
-      btn.target = '_blank';
-      btn.rel = 'noopener';
-      btn.classList.add('is-live');
-      text.textContent = ach.liveOnline || 'Glacio è in LIVE!';
-    } else {
-      btn.href = `${base}socials.html`;
-      btn.target = '';
-      text.textContent = ach.liveOffline || 'Glacio è Offline';
-    }
-  } catch(e) {}
-}
-
 function initMobileMenu() {
   const hamburgerBtn = document.getElementById('hamburger-btn');
   const mobileMenu   = document.getElementById('mobile-menu');
@@ -291,10 +256,12 @@ function initMobileMenu() {
   });
 
   mobileMenu.querySelectorAll('.mm-page-btn').forEach(link => {
-    link.addEventListener('click', () => {
-      hamburgerBtn.classList.remove('active');
-      mobileMenu.classList.remove('active');
-    });
+    if (!link.classList.contains('mm-page-soon')) {
+      link.addEventListener('click', () => {
+        hamburgerBtn.classList.remove('active');
+        mobileMenu.classList.remove('active');
+      });
+    }
   });
 
   _initMobileLangDropdown();
@@ -305,6 +272,12 @@ function initMobileMenu() {
     hamburgerBtn.classList.remove('active');
     mobileMenu.classList.remove('active');
     if (typeof openAchievementPopup === 'function') openAchievementPopup();
+  });
+
+  document.getElementById('mobile-open-settings-btn')?.addEventListener('click', () => {
+    hamburgerBtn.classList.remove('active');
+    mobileMenu.classList.remove('active');
+    if (typeof openSettingsPopup === 'function') openSettingsPopup();
   });
 
   document.addEventListener('click', e => {

@@ -70,6 +70,10 @@ const Api = (() => {
       get: () => request('GET', '/team'),
     },
 
+    repos: {
+      get: () => request('GET', '/repos'),
+    },
+
     submit: {
       post: (type, payload, imageUrl) =>
         request('POST', '/submit', { type, payload, image_url: imageUrl }),
@@ -90,6 +94,10 @@ const Api = (() => {
       deleteUser:         (id)                      => request('DELETE', `/admin/users/${id}`),
       getSaves:           ()                        => request('GET',    '/admin/saves'),
       deleteSave:         (userId)                  => request('DELETE', `/admin/saves/${userId}`),
+      getRepos:           ()                        => request('GET',    '/admin/repos'),
+      syncRepos:          ()                        => request('POST',   '/admin/repos/sync'),
+      setReposAutoSync:   (autoSync)                => request('PATCH',  '/admin/repos/settings', { auto_sync: autoSync }),
+      updateRepo:         (id, data)                => request('PATCH',  `/admin/repos/${id}`, data),
     },
   };
 })();

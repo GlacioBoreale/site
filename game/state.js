@@ -50,6 +50,7 @@ const G = {
   autonio:           0,
   bits:              0,
   bitsUnlocked:      false,
+  pointCostMult:     1,
 };
 
 // ─── STATO NODI ───────────────────────────────────────────────────────────────
@@ -84,8 +85,9 @@ function isLocked(nd) {
 
 // ─── COSTI ────────────────────────────────────────────────────────────────────
 function nodeCost(nd, lvl) {
-  if (nd.costFn) return nd.costFn(lvl);
-  return Math.floor(nd.baseCost * Math.pow(nd.costScale, lvl));
+  let cost = nd.costFn ? nd.costFn(lvl) : Math.floor(nd.baseCost * Math.pow(nd.costScale, lvl));
+  if (nd.zone === 'base') cost = Math.floor(cost * G.pointCostMult);
+  return cost;
 }
 
 function researchCost(nd, lvl) {
@@ -183,6 +185,7 @@ function trimDecimals(s) {
 }
 
 function fmt(n) {
+  n = Number(n);
   if (!isFinite(n) || isNaN(n)) return '0';
   if (n < 1000) return trimDecimals(n.toFixed(n < 10 ? 2 : 0));
   let i = 0;
@@ -191,6 +194,7 @@ function fmt(n) {
 }
 
 function fmtLambda(n) {
+  n = Number(n);
   if (!isFinite(n) || isNaN(n)) return '0';
   if (n < 1000) return trimDecimals(n.toFixed(2));
   let i = 0;

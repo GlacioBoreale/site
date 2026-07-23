@@ -1,0 +1,294 @@
+/* ══════════════════════════════════════════
+   SETTINGS POPUP — centro schermo
+   ══════════════════════════════════════════ */
+#settings-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+#settings-popup.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.settings-popup-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(5px);
+}
+
+.settings-popup-panel {
+  position: relative;
+  z-index: 1;
+  background: var(--bg-surface, #111);
+  border: 1px solid var(--border, rgba(255,255,255,0.1));
+  border-radius: 20px;
+  width: min(560px, 94vw);
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.7);
+  animation: setPopupIn 0.22s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes setPopupIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.settings-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.4rem 1.6rem;
+  border-bottom: 1px solid var(--border, rgba(255,255,255,0.08));
+  position: sticky;
+  top: 0;
+  background: var(--bg-surface, #111);
+  z-index: 2;
+  border-radius: 20px 20px 0 0;
+}
+.settings-popup-header h2 {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--text, #fff);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.settings-popup-header h2 .fa-gear { color: var(--accent, #5b9cf6); font-size: 1.1rem; }
+
+.settings-popup-close {
+  width: 34px; height: 34px;
+  border-radius: 9px;
+  border: 1px solid var(--border, rgba(255,255,255,0.1));
+  background: var(--card-bg, rgba(255,255,255,0.05));
+  color: var(--text-muted, rgba(255,255,255,0.5));
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, color 0.15s, transform 0.3s;
+}
+.settings-popup-close:hover {
+  background: var(--card-hover, rgba(255,255,255,0.1));
+  color: var(--text, #fff);
+  transform: rotate(90deg);
+}
+
+.settings-popup-body {
+  padding: 1.4rem 1.6rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+.set-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.set-section-title {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim, rgba(255,255,255,0.3));
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Lingua */
+.set-lang-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+.set-lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.7rem;
+  border-radius: 10px;
+  background: var(--card-bg, rgba(255,255,255,0.04));
+  border: 1px solid var(--border, rgba(255,255,255,0.08));
+  color: var(--text-muted, rgba(255,255,255,0.55));
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.13s, border-color 0.13s, color 0.13s;
+}
+.set-lang-btn:hover { background: var(--card-hover, rgba(255,255,255,0.08)); color: var(--text, #fff); }
+.set-lang-btn.active {
+  background: rgba(91,156,246,0.1);
+  border-color: rgba(91,156,246,0.35);
+  color: var(--text, #fff);
+}
+
+/* Tema */
+.set-theme-row { display: flex; gap: 0.6rem; }
+.set-theme-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem;
+  border-radius: 10px;
+  background: var(--card-bg, rgba(255,255,255,0.04));
+  border: 1px solid var(--border-mid, rgba(255,255,255,0.14));
+  color: var(--text-muted, rgba(255,255,255,0.55));
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.13s, border-color 0.13s, color 0.13s;
+}
+.set-theme-btn:hover { background: var(--card-hover, rgba(255,255,255,0.08)); color: var(--text, #fff); }
+.set-theme-btn.active {
+  background: rgba(91,156,246,0.12);
+  border-color: rgba(91,156,246,0.4);
+  color: var(--text, #fff);
+}
+#set-theme-light { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.16); color: rgba(255,255,255,0.7); }
+#set-theme-light:hover { background: rgba(255,255,255,0.12); color: #fff; }
+#set-theme-light.active { background: rgba(91,156,246,0.12); border-color: rgba(91,156,246,0.4); color: var(--text,#fff); }
+
+/* Toggle (switch) */
+.set-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.set-toggle-text { flex: 1; }
+.set-toggle-label {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text, #fff);
+}
+.set-toggle-desc {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.8rem;
+  color: var(--text-muted, rgba(255,255,255,0.45));
+  line-height: 1.5;
+  margin-top: 0.15rem;
+}
+.set-switch {
+  flex-shrink: 0;
+  width: 48px;
+  height: 28px;
+  border-radius: 100px;
+  background: var(--card-hover, rgba(255,255,255,0.1));
+  border: 1px solid var(--border-mid, rgba(255,255,255,0.14));
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s, border-color 0.2s;
+  padding: 0;
+}
+.set-switch-knob {
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s cubic-bezier(0.16,1,0.3,1);
+}
+.set-switch.on {
+  background: rgba(91,156,246,0.5);
+  border-color: rgba(91,156,246,0.6);
+}
+.set-switch.on .set-switch-knob { transform: translateX(20px); }
+
+/* Achievement */
+.set-ach-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0.9rem;
+  border-radius: 11px;
+  background: rgba(245,197,66,0.06);
+  border: 1px solid rgba(245,197,66,0.16);
+  color: var(--text-muted, rgba(255,255,255,0.6));
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.set-ach-btn:hover { background: rgba(245,197,66,0.12); border-color: rgba(245,197,66,0.3); color: var(--text, #fff); }
+.set-ach-btn-left { display: flex; align-items: center; gap: 0.6rem; }
+.set-ach-btn-left .fa-trophy { color: #f5c542; }
+.set-ach-count {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: rgba(245,197,66,0.75);
+  background: rgba(245,197,66,0.1);
+  padding: 0.15rem 0.5rem;
+  border-radius: 100px;
+}
+
+/* Reset / danger */
+.set-section-danger .set-section-title { color: rgba(248,113,113,0.6); }
+.set-reset-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 0.7rem;
+  border-radius: 10px;
+  background: rgba(248,113,113,0.08);
+  border: 1px solid rgba(248,113,113,0.25);
+  color: #f87171;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.set-reset-btn:hover { background: rgba(248,113,113,0.16); border-color: rgba(248,113,113,0.4); }
+.set-reset-btn.arming {
+  background: rgba(248,113,113,0.28);
+  border-color: rgba(248,113,113,0.7);
+  color: #fff;
+  animation: resetShake 0.25s ease;
+}
+@keyframes resetShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+.set-reset-desc {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.78rem;
+  color: var(--text-muted, rgba(255,255,255,0.4));
+  line-height: 1.5;
+}
+
+@media (max-width: 480px) {
+  .set-lang-grid { grid-template-columns: repeat(2, 1fr); }
+  .settings-popup-body { padding: 1.2rem 1.1rem 1.5rem; }
+}
+
+/* ══════════════════════════════════════════
+   REDUCE MOTION — disattiva animazioni globali
+   ══════════════════════════════════════════ */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.001s !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001s !important;
+  scroll-behavior: auto !important;
+}

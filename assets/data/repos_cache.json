@@ -1,0 +1,3 @@
+{
+  "_deprecated": "I progetti ora arrivano dall'API /repos (tabella github_repos). Questo file non viene piu letto."
+}

@@ -1,48 +1,55 @@
-// Applica il tema salvato subito, prima del render, per evitare flash
 (function() {
-  const t = localStorage.getItem('glaciopia_theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', t);
+  const saved = localStorage.getItem('glaciopia_theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
 })();
 
 const IMG_CDN = 'https://glaciopia-images.s3.eu-north-1.amazonaws.com';
-const AUDIO_CDN = 'https://glaciopia-audio.s3.eu-north-1.amazonaws.com';
 
-let currentLang = localStorage.getItem('language') || 'it';
+let currentLang  = localStorage.getItem('language') || 'it';
 let translations = {};
 
 async function loadTranslations(lang) {
   try {
-    const response = await fetch(`./language/${lang}.json`);
-    if (!response.ok) throw new Error('Errore nel caricamento traduzioni');
-    translations = await response.json();
-    updatePage();
-  } catch (error) {
-    console.error('Errore traduzioni:', error);
+    const res = await fetch(`./language/${lang}.json`);
+    if (!res.ok) throw new Error();
+    translations = await res.json();
+    applyTranslations();
+  } catch (e) {
+    console.error('Errore caricamento traduzioni:', e);
   }
 }
 
-function updatePage() {
+function applyTranslations() {
   document.documentElement.lang = currentLang;
   document.documentElement.setAttribute('translate', 'no');
-  let noTranslateMeta = document.querySelector('meta[name="google"]');
-  if (!noTranslateMeta) {
-    noTranslateMeta = document.createElement('meta');
-    noTranslateMeta.name = 'google';
-    noTranslateMeta.content = 'notranslate';
-    document.head.appendChild(noTranslateMeta);
+
+  let noTranslate = document.querySelector('meta[name="google"]');
+  if (!noTranslate) {
+    noTranslate = document.createElement('meta');
+    noTranslate.name    = 'google';
+    noTranslate.content = 'notranslate';
+    document.head.appendChild(noTranslate);
   }
 
-  document.querySelectorAll('[data-i18n]').forEach(element => {
-    const key = element.getAttribute('data-i18n');
-    const translation = getNestedTranslation(key);
-    if (translation) element.textContent = translation;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const val = getNestedTranslation(el.getAttribute('data-i18n'));
+    if (val) el.textContent = val;
   });
 
-  const titleElement = document.querySelector('title[data-i18n]');
-  if (titleElement) {
-    const key = titleElement.getAttribute('data-i18n');
-    const translation = getNestedTranslation(key);
-    if (translation) document.title = translation;
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const val = getNestedTranslation(el.getAttribute('data-i18n-html'));
+    if (val) el.innerHTML = val;
+  });
+
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const val = getNestedTranslation(el.getAttribute('data-i18n-placeholder'));
+    if (val) el.placeholder = val;
+  });
+
+  const titleEl = document.querySelector('title[data-i18n]');
+  if (titleEl) {
+    const val = getNestedTranslation(titleEl.getAttribute('data-i18n'));
+    if (val) document.title = val;
   }
 
   window.dispatchEvent(new Event('languageChanged'));
@@ -52,7 +59,7 @@ function getNestedTranslation(key) {
   return key.split('.').reduce((obj, k) => obj?.[k], translations);
 }
 
-function initKonamiCode() {
+function initKonami() {
   const sequence = [
     'ArrowUp','ArrowUp','ArrowDown','ArrowDown',
     'ArrowLeft','ArrowRight','ArrowLeft','ArrowRight',
@@ -72,12 +79,12 @@ function initKonamiCode() {
   });
 }
 
-async function init() {
+async function startApp() {
   await loadNavbar();
   if (typeof loadFooter === 'function') await loadFooter();
   await loadTranslations(currentLang);
   if (typeof initAchievements === 'function') initAchievements();
-  initKonamiCode();
+  initKonami();
 }
 
-window.addEventListener('DOMContentLoaded', init);
+window.addEventListener('DOMContentLoaded', startApp);

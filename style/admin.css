@@ -571,6 +571,33 @@ body {
 .adm-loading { padding:3rem; color:var(--dim); display:flex; align-items:center; justify-content:center; gap:.6rem; }
 .adm-empty { text-align:center; padding:2.5rem; color:var(--dim); font-size:.88rem; }
 
+/* ── REPO / PROGETTI ── */
+.adm-repo-bar {
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:1rem;
+  background:var(--card); border:1px solid var(--border);
+  border-radius:12px; padding:.9rem 1.2rem; margin-bottom:1.2rem;
+}
+.adm-repo-toggle {
+  display:flex; align-items:center; gap:.6rem;
+  font-size:.86rem; color:var(--muted); cursor:pointer; user-select:none;
+}
+.adm-repo-toggle input { width:16px; height:16px; accent-color:var(--accent); cursor:pointer; }
+.adm-repo-lastsync { font-size:.76rem; color:var(--dim); }
+
+.adm-repo-name { color:var(--text); font-weight:600; font-size:.9rem; }
+.adm-repo-desc {
+  font-size:.76rem; color:var(--dim); margin-top:.15rem;
+  max-width:340px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.adm-repo-vis { display:inline-flex; align-items:center; cursor:pointer; }
+.adm-repo-vis input { width:18px; height:18px; accent-color:var(--green); cursor:pointer; }
+
+@media (max-width:768px) {
+  .adm-repo-bar { padding:.8rem 1rem; }
+  .adm-repo-desc { max-width:200px; }
+}
+
 /* ════════════════════════════════════════════
    RESPONSIVE
    ════════════════════════════════════════════ */

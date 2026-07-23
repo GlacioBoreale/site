@@ -1,14 +1,14 @@
-let fanarts = [];
+let fanarts      = [];
 let approvedTags = [];
-let currentFilter = 'all';
-let currentSearch = '';
-let suggestionIndex = -1;
+let activeFilter = 'all';
+let searchQuery  = '';
+let searchCursor = -1;
 
-const FA_MAX_BYTES = 15 * 1024 * 1024;
-let faSelectedFile = null;
-let faSelectedTags = [];
+const MAX_FILE_SIZE = 15 * 1024 * 1024;
+let selectedFile = null;
+let selectedTags = [];
 
-async function loadFanartData() {
+async function loadFanarts() {
     const grid = document.getElementById('fanart-grid');
     grid.innerHTML = '<div class="page-loading">Caricamento...</div>';
     try {
@@ -16,10 +16,9 @@ async function loadFanartData() {
         fanarts = data.fanarts || [];
     } catch {
         try {
-            const response = await fetch('./assets/data/fanarts.json');
-            if (!response.ok) throw new Error();
-            const data = await response.json();
-            fanarts = data.fanarts || [];
+            const res = await fetch('./assets/data/fanarts.json');
+            if (!res.ok) throw new Error();
+            fanarts = (await res.json()).fanarts || [];
         } catch {
             fanarts = [];
         }
@@ -27,79 +26,70 @@ async function loadFanartData() {
     renderFanarts();
 }
 
-async function loadApprovedTags() {
+async function loadTags() {
     try {
         const data = await Api.tags.fanart();
         approvedTags = (data.tags || ['untagged']).filter(t => t !== 'untagged');
     } catch {
         approvedTags = [];
     }
-    _renderTopTags();
-    _buildFilterDropdown();
+    renderTopTags();
+    buildFilterDropdown();
 }
 
-function _getTopTags() {
+function getTopTags() {
     const counts = {};
     fanarts.forEach(f => {
         (f.tags || []).forEach(t => {
             if (t !== 'untagged') counts[t] = (counts[t] || 0) + 1;
         });
     });
-    return approvedTags
-        .slice()
-        .sort((a, b) => (counts[b] || 0) - (counts[a] || 0))
-        .slice(0, 5);
+    return approvedTags.slice().sort((a, b) => (counts[b] || 0) - (counts[a] || 0)).slice(0, 5);
 }
 
-function _renderTopTags() {
+function renderTopTags() {
     const container = document.getElementById('fa-top-tags');
     if (!container) return;
-    const top = _getTopTags();
-    container.innerHTML = top.map(t => `
-        <button type="button" class="fa-top-tag${faSelectedTags.includes(t) ? ' selected' : ''}" data-tag="${t}">#${t}</button>
+    container.innerHTML = getTopTags().map(t => `
+        <button type="button" class="fa-top-tag${selectedTags.includes(t) ? ' selected' : ''}" data-tag="${t}">#${t}</button>
     `).join('');
     container.querySelectorAll('.fa-top-tag').forEach(btn => {
-        btn.addEventListener('click', () => _toggleTag(btn.dataset.tag));
+        btn.addEventListener('click', () => toggleTag(btn.dataset.tag));
     });
 }
 
-function _toggleTag(tag) {
-    const idx = faSelectedTags.indexOf(tag);
-    if (idx === -1) {
-        faSelectedTags.push(tag);
-    } else {
-        faSelectedTags.splice(idx, 1);
-    }
-    _renderTopTags();
-    _renderSelectedChips();
+function toggleTag(tag) {
+    const idx = selectedTags.indexOf(tag);
+    if (idx === -1) selectedTags.push(tag);
+    else            selectedTags.splice(idx, 1);
+    renderTopTags();
+    renderSelectedTags();
     const input = document.getElementById('fa-tags-input');
     if (input) input.value = '';
-    _hideTagDropdown();
+    hideTagDropdown();
 }
 
-function _renderSelectedChips() {
+function renderSelectedTags() {
     const chips = document.getElementById('fa-tag-chips');
     if (!chips) return;
-    chips.innerHTML = faSelectedTags.map(t => `
+    chips.innerHTML = selectedTags.map(t => `
         <span class="fa-tag-chip fa-tag-chip-known">
             #${t}
             <button type="button" class="fa-chip-remove" data-tag="${t}">×</button>
         </span>
     `).join('');
     chips.querySelectorAll('.fa-chip-remove').forEach(btn => {
-        btn.addEventListener('click', () => _toggleTag(btn.dataset.tag));
+        btn.addEventListener('click', () => toggleTag(btn.dataset.tag));
     });
 }
 
-function _getTagSuggestions(query) {
+function getTagSuggestions(query) {
     if (!query) return [];
     const q = query.toLowerCase();
-    return approvedTags
-        .filter(t => t.includes(q) && !faSelectedTags.includes(t))
-        .slice(0, 8);
+    return approvedTags.filter(t => t.includes(q) && !selectedTags.includes(t)).slice(0, 8);
 }
 
-function _showTagDropdown(query, input) {
+function showTagDropdown(query, input) {
     let box = document.getElementById('fa-tag-dropdown');
     if (!box) {
         box = document.createElement('div');
@@ -112,7 +102,7 @@ function _showTagDropdown(query, input) {
     box.innerHTML = '';
 
     if (!query) {
-        const top = _getTopTags().filter(t => !faSelectedTags.includes(t));
+        const top = getTopTags().filter(t => !selectedTags.includes(t));
         if (!top.length) { box.classList.remove('visible'); return; }
         const header = document.createElement('div');
         header.className = 'fa-tag-dropdown-header';
@@ -124,8 +114,8 @@ function _showTagDropdown(query, input) {
             el.textContent = t;
             el.addEventListener('mousedown', (e) => {
                 e.preventDefault();
-                _toggleTag(t);
-                _hideTagDropdown();
+                toggleTag(t);
+                hideTagDropdown();
                 input.focus();
             });
             box.appendChild(el);
@@ -134,22 +124,19 @@ function _showTagDropdown(query, input) {
         return;
     }
 
-    const suggestions = _getTagSuggestions(query);
-    if (suggestions.length) {
-        suggestions.forEach(t => {
-            const el = document.createElement('div');
-            el.className = 'fa-tag-option';
-            el.textContent = t;
-            el.addEventListener('mousedown', (e) => {
-                e.preventDefault();
-                _toggleTag(t);
-                input.value = '';
-                _hideTagDropdown();
-                input.focus();
-            });
-            box.appendChild(el);
+    getTagSuggestions(query).forEach(t => {
+        const el = document.createElement('div');
+        el.className = 'fa-tag-option';
+        el.textContent = t;
+        el.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            toggleTag(t);
+            input.value = '';
+            hideTagDropdown();
+            input.focus();
         });
-    }
+        box.appendChild(el);
+    });
 
     if (!approvedTags.includes(query.toLowerCase())) {
         const propose = document.createElement('div');
@@ -157,25 +144,21 @@ function _showTagDropdown(query, input) {
         propose.innerHTML = `<i class="fas fa-plus-circle"></i> Tag non trovato? <span class="fa-tag-propose-link">Proponilo</span>`;
         propose.querySelector('.fa-tag-propose-link').addEventListener('mousedown', (e) => {
             e.preventDefault();
-            _openTagProposeForm(query);
-            _hideTagDropdown();
+            openProposeForm(query);
+            hideTagDropdown();
         });
         box.appendChild(propose);
     }
 
-    if (box.children.length) {
-        box.classList.add('visible');
-    } else {
-        box.classList.remove('visible');
-    }
+    box.children.length ? box.classList.add('visible') : box.classList.remove('visible');
 }
 
-function _hideTagDropdown() {
+function hideTagDropdown() {
     const box = document.getElementById('fa-tag-dropdown');
     if (box) { box.innerHTML = ''; box.classList.remove('visible'); }
 }
 
-function _openTagProposeForm(prefill) {
+function openProposeForm(prefill) {
     const existing = document.getElementById('fa-tag-propose-form');
     if (existing) { existing.remove(); return; }
 
@@ -188,7 +171,7 @@ function _openTagProposeForm(prefill) {
     form.innerHTML = `
         <div class="fa-tag-propose-header">
             <span>Proponi un nuovo tag</span>
-            <button type="button" class="fa-tag-propose-close" id="fa-tag-propose-close"><i class="fas fa-times"></i></button>
+            <button type="button" class="fa-tag-propose-close"><i class="fas fa-times"></i></button>
         </div>
         <div class="sf-group" style="margin-bottom:.6rem;">
             <label class="sf-label" style="font-size:.72rem;">Nome del tag</label>
@@ -206,7 +189,7 @@ function _openTagProposeForm(prefill) {
             <button type="button" class="popup-form-close-btn" id="fa-propose-cancel" style="padding:.45rem .9rem;font-size:.82rem;">Chiudi</button>
         </div>`;
 
-    form.querySelector('#fa-tag-propose-close').addEventListener('click', () => form.remove());
+    form.querySelector('.fa-tag-propose-close').addEventListener('click', () => form.remove());
     form.querySelector('#fa-propose-cancel').addEventListener('click', () => form.remove());
 
     form.querySelector('#fa-propose-submit').addEventListener('click', async () => {
@@ -216,7 +199,7 @@ function _openTagProposeForm(prefill) {
 
         if (!name)   { fb.textContent = 'Inserisci un nome per il tag.'; fb.className = 'fa-tag-propose-fb error'; return; }
         if (!reason) { fb.textContent = 'Inserisci un motivo.'; fb.className = 'fa-tag-propose-fb error'; return; }
-        if (!Auth || !Auth.isLoggedIn()) { fb.textContent = 'Devi essere loggato.'; fb.className = 'fa-tag-propose-fb error'; return; }
+        if (!Auth?.isLoggedIn()) { fb.textContent = 'Devi essere loggato.'; fb.className = 'fa-tag-propose-fb error'; return; }
 
         const btn = form.querySelector('#fa-propose-submit');
         btn.disabled = true;
@@ -226,7 +209,7 @@ function _openTagProposeForm(prefill) {
             fb.textContent = 'Proposta inviata! Verrà esaminata al più presto.';
             fb.className = 'fa-tag-propose-fb success';
             setTimeout(() => form.remove(), 2000);
-        } catch(e) {
+        } catch (e) {
             fb.textContent = e.message || "Errore durante l'invio.";
             fb.className = 'fa-tag-propose-fb error';
             btn.disabled = false;
@@ -238,19 +221,19 @@ function _openTagProposeForm(prefill) {
     form.querySelector('#fa-propose-name')?.focus();
 }
 
-function _buildFilterDropdown() {
+function buildFilterDropdown() {
     const dropdown = document.getElementById('filter-dropdown');
     if (!dropdown) return;
     dropdown.innerHTML = '';
     ['all', 'untagged', ...approvedTags].forEach(tag => {
         const btn = document.createElement('button');
-        btn.className = 'filter-option' + (tag === currentFilter ? ' active' : '');
+        btn.className   = 'filter-option' + (tag === activeFilter ? ' active' : '');
         btn.dataset.filter = tag;
         btn.textContent = tag === 'all' ? 'Tutte' : tag === 'untagged' ? 'Senza tag' : tag;
         btn.addEventListener('click', () => {
             dropdown.querySelectorAll('.filter-option').forEach(o => o.classList.remove('active'));
             btn.classList.add('active');
-            currentFilter = tag;
+            activeFilter = tag;
             document.getElementById('filter-label').textContent = btn.textContent;
             dropdown.classList.remove('open');
             document.getElementById('filter-toggle-btn').classList.remove('open');
@@ -262,39 +245,36 @@ function _buildFilterDropdown() {
 
 function getFilteredFanarts() {
     return fanarts.filter(f => {
-        const title  = (f.title || '').toLowerCase();
-        const artist = (f.artist || '').toLowerCase();
-        const query  = currentSearch.toLowerCase();
-        const matchSearch = !query || title.includes(query) || artist.includes(query);
-        const tags = (f.tags && f.tags.length) ? f.tags : ['untagged'];
-        const matchFilter = currentFilter === 'all' || tags.includes(currentFilter);
+        const q           = searchQuery.toLowerCase();
+        const matchSearch = !q || (f.title || '').toLowerCase().includes(q) || (f.artist || '').toLowerCase().includes(q);
+        const tags        = f.tags?.length ? f.tags : ['untagged'];
+        const matchFilter = activeFilter === 'all' || tags.includes(activeFilter);
         return matchSearch && matchFilter;
     });
 }
 
 function renderFanarts() {
-    const grid = document.getElementById('fanart-grid');
+    const grid      = document.getElementById('fanart-grid');
     const noResults = document.getElementById('no-results');
-    const filtered = getFilteredFanarts();
-    grid.innerHTML = '';
-    if (filtered.length === 0) { noResults.style.display = 'block'; return; }
+    const filtered  = getFilteredFanarts();
+    grid.innerHTML  = '';
+    if (!filtered.length) { noResults.style.display = 'block'; return; }
     noResults.style.display = 'none';
-    filtered.forEach(f => grid.appendChild(createFanartCard(f)));
+    filtered.forEach(f => grid.appendChild(buildFanartCard(f)));
 }
 
-function createFanartCard(f) {
-    const card = document.createElement('div');
+function buildFanartCard(f) {
+    const card   = document.createElement('div');
     card.className = 'fanart-card';
-    const title  = f.title || '';
     const byText = getNestedTranslation('fanart.by') || 'di';
-    const tags   = (f.tags && f.tags.length) ? f.tags : ['untagged'];
+    const tags   = f.tags?.length ? f.tags : ['untagged'];
     card.innerHTML = `
         <div class="fanart-card-img-wrapper">
-            <img src="${f.image}" alt="${title}" loading="lazy" onerror="this.src=IMG_CDN+'/vtubers/placeholder.png'">
+            <img src="${f.image}" alt="${f.title || ''}" loading="lazy" onerror="this.src=IMG_CDN+'/vtubers/placeholder.png'">
             <div class="fanart-card-overlay"><i class="fas fa-expand"></i></div>
         </div>
         <div class="fanart-card-info">
-            <div class="fanart-card-title">${title}</div>
+            <div class="fanart-card-title">${f.title || ''}</div>
             <div class="fanart-card-artist">${byText} ${f.artist}</div>
             <div class="fanart-card-tags">${tags.map(t =>
                 `<span class="tag-badge${t === 'untagged' ? ' tag-untagged' : ''}">${t}</span>`
@@ -304,7 +284,7 @@ function createFanartCard(f) {
     return card;
 }
 
-const SOCIAL_META = {
+const SOCIAL_ICONS = {
     twitter:   { icon: 'fa-brands fa-x-twitter',  label: 'X / Twitter' },
     x:         { icon: 'fa-brands fa-x-twitter',  label: 'X / Twitter' },
     instagram: { icon: 'fa-brands fa-instagram',   label: 'Instagram' },
@@ -313,28 +293,44 @@ const SOCIAL_META = {
     tiktok:    { icon: 'fa-brands fa-tiktok',      label: 'TikTok' },
     bluesky:   { icon: 'fa-brands fa-bluesky',     label: 'Bluesky' },
     discord:   { icon: 'fa-brands fa-discord',     label: 'Discord' },
+    linktree:  { icon: 'fa-solid fa-tree',         label: 'Linktree' },
     website:   { icon: 'fa-solid fa-globe',        label: 'Website' },
 };
 
+function getSocialMeta(url) {
+    const u = url.toLowerCase();
+    if (u.includes('twitter.com') || u.includes('x.com')) return SOCIAL_ICONS.x;
+    if (u.includes('instagram'))  return SOCIAL_ICONS.instagram;
+    if (u.includes('twitch'))     return SOCIAL_ICONS.twitch;
+    if (u.includes('youtube') || u.includes('youtu.be')) return SOCIAL_ICONS.youtube;
+    if (u.includes('tiktok'))     return SOCIAL_ICONS.tiktok;
+    if (u.includes('bsky') || u.includes('bluesky')) return SOCIAL_ICONS.bluesky;
+    if (u.includes('discord'))    return SOCIAL_ICONS.discord;
+    if (u.includes('linktr.ee') || u.includes('linktree')) return SOCIAL_ICONS.linktree;
+    return SOCIAL_ICONS.website;
+}
+
 function openLightbox(f) {
-    const title   = f.title || '';
-    const byText  = getNestedTranslation('fanart.by') || 'di';
-    const tags    = (f.tags && f.tags.length) ? f.tags : ['untagged'];
+    const tags    = f.tags?.length ? f.tags : ['untagged'];
     const socials = f.socials || {};
-    const popupImg = document.getElementById('fanart-popup-img');
-    popupImg.onerror = function() { this.src = IMG_CDN + '/vtubers/placeholder.png'; this.onerror = null; };
-    popupImg.src = f.image;
-    popupImg.alt = title;
-    document.getElementById('fanart-popup-title').textContent = title;
+    const byText  = getNestedTranslation('fanart.by') || 'di';
+
+    const img = document.getElementById('fanart-popup-img');
+    img.onerror = function() { this.src = IMG_CDN + '/vtubers/placeholder.png'; this.onerror = null; };
+    img.src = f.image;
+    img.alt = f.title || '';
+
+    document.getElementById('fanart-popup-title').textContent  = f.title || '';
     document.getElementById('fanart-popup-artist').textContent = `${byText} ${f.artist}`;
     document.getElementById('fanart-popup-tags').innerHTML = tags.map(t =>
         `<span class="tag-badge${t === 'untagged' ? ' tag-untagged' : ''}">${t}</span>`
     ).join('');
+
     const socialsEl = document.getElementById('fanart-popup-socials');
-    const entries = Object.entries(socials);
-    if (entries.length > 0) {
+    const entries   = Object.entries(socials);
+    if (entries.length) {
         socialsEl.innerHTML = entries.map(([p, url]) => {
-            const meta = SOCIAL_META[p] || { icon: 'fa-solid fa-link', label: p };
+            const meta = SOCIAL_ICONS[p] || getSocialMeta(url);
             return `<a href="${url}" target="_blank" rel="noopener" class="fanart-social-link ${p}" title="${meta.label}"><i class="${meta.icon}"></i></a>`;
         }).join('');
         socialsEl.style.display = 'flex';
@@ -342,6 +338,7 @@ function openLightbox(f) {
         socialsEl.innerHTML = '';
         socialsEl.style.display = 'none';
     }
+
     document.getElementById('fanart-popup').classList.add('active');
     document.body.classList.add('modal-open');
     document.body.style.overflow = 'hidden';
@@ -354,9 +351,9 @@ function closeLightbox() {
 }
 
 function openSubmitModal() {
-    faSelectedTags = [];
-    _renderTopTags();
-    _renderSelectedChips();
+    selectedTags = [];
+    renderTopTags();
+    renderSelectedTags();
     document.getElementById('submit-modal').classList.add('active');
     document.body.classList.add('modal-open');
     document.body.style.overflow = 'hidden';
@@ -366,116 +363,107 @@ function closeSubmitModal() {
     document.getElementById('submit-modal').classList.remove('active');
     document.body.classList.remove('modal-open');
     document.body.style.overflow = '';
-    _faFeedbackClear();
-    _hideTagDropdown();
-    faSelectedTags = [];
-    _renderSelectedChips();
-    const chips = document.getElementById('fa-tag-chips');
-    if (chips) chips.innerHTML = '';
+    clearFeedback();
+    hideTagDropdown();
+    selectedTags = [];
+    renderSelectedTags();
 }
 
-function _faFeedbackSet(msg, type) {
+function setFeedback(msg, type) {
     const el = document.getElementById('fa-feedback');
     if (!el) return;
     el.textContent = msg;
-    el.className = 'sf-feedback ' + type;
+    el.className   = 'sf-feedback ' + type;
 }
 
-function _faFeedbackClear() {
+function clearFeedback() {
     const el = document.getElementById('fa-feedback');
     if (!el) return;
     el.textContent = '';
-    el.className = 'sf-feedback';
+    el.className   = 'sf-feedback';
 }
 
-function _faSetFile(file) {
+function setSelectedFile(file) {
     if (!file) return;
-    if (!file.type.startsWith('image/')) { _faFeedbackSet('Formato non supportato. Usa JPG, PNG, GIF o WEBP.', 'error'); return; }
-    if (file.size > FA_MAX_BYTES) { _faFeedbackSet(`Il file supera il limite di 15 MB (${(file.size/1024/1024).toFixed(1)} MB).`, 'error'); return; }
-    faSelectedFile = file;
-    _faFeedbackClear();
+    if (!file.type.startsWith('image/')) { setFeedback('Formato non supportato. Usa JPG, PNG, GIF o WEBP.', 'error'); return; }
+    if (file.size > MAX_FILE_SIZE)       { setFeedback(`Il file supera il limite di 15 MB (${(file.size/1024/1024).toFixed(1)} MB).`, 'error'); return; }
+    selectedFile = file;
+    clearFeedback();
     const reader = new FileReader();
     reader.onload = (e) => {
-        document.getElementById('fa-preview-img').src = e.target.result;
-        document.getElementById('fa-filename').textContent = file.name;
+        document.getElementById('fa-preview-img').src       = e.target.result;
+        document.getElementById('fa-filename').textContent  = file.name;
         document.getElementById('fa-preview').style.display = 'flex';
         document.getElementById('fa-dropzone-inner').style.display = 'none';
     };
     reader.readAsDataURL(file);
 }
 
-function _faResetFile() {
-    faSelectedFile = null;
-    document.getElementById('fa-image-file').value = '';
-    document.getElementById('fa-preview').style.display = 'none';
-    document.getElementById('fa-dropzone-inner').style.display = 'flex';
-    document.getElementById('fa-preview-img').src = '';
+function resetFile() {
+    selectedFile = null;
+    document.getElementById('fa-image-file').value              = '';
+    document.getElementById('fa-preview').style.display         = 'none';
+    document.getElementById('fa-dropzone-inner').style.display  = 'flex';
+    document.getElementById('fa-preview-img').src               = '';
 }
 
-function initFanartDropzone() {
+function initDropzone() {
     const zone      = document.getElementById('fa-dropzone');
     const input     = document.getElementById('fa-image-file');
     const pickBtn   = document.getElementById('fa-pick-btn');
     const removeBtn = document.getElementById('fa-remove-btn');
     if (!zone) return;
     pickBtn.addEventListener('click', () => input.click());
-    input.addEventListener('change', () => { if (input.files[0]) _faSetFile(input.files[0]); });
-    removeBtn.addEventListener('click', (e) => { e.stopPropagation(); _faResetFile(); });
-    zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
+    input.addEventListener('change', () => { if (input.files[0]) setSelectedFile(input.files[0]); });
+    removeBtn.addEventListener('click', (e) => { e.stopPropagation(); resetFile(); });
+    zone.addEventListener('dragover',  (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
     zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
     zone.addEventListener('drop', (e) => {
         e.preventDefault(); zone.classList.remove('drag-over');
-        const file = e.dataTransfer.files[0];
-        if (file) _faSetFile(file);
+        if (e.dataTransfer.files[0]) setSelectedFile(e.dataTransfer.files[0]);
     });
 }
 
-function initFanartForm() {
-    initFanartDropzone();
+function initSubmitForm() {
+    initDropzone();
 
     const tagsInput = document.getElementById('fa-tags-input');
     if (tagsInput) {
-        tagsInput.addEventListener('focus', () => {
-            _showTagDropdown(tagsInput.value.trim().toLowerCase(), tagsInput);
-        });
-        tagsInput.addEventListener('input', () => {
-            _showTagDropdown(tagsInput.value.trim().toLowerCase(), tagsInput);
-        });
-        tagsInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') _hideTagDropdown();
-        });
-        tagsInput.addEventListener('blur', () => setTimeout(_hideTagDropdown, 150));
+        tagsInput.addEventListener('focus', () => showTagDropdown(tagsInput.value.trim().toLowerCase(), tagsInput));
+        tagsInput.addEventListener('input', () => showTagDropdown(tagsInput.value.trim().toLowerCase(), tagsInput));
+        tagsInput.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideTagDropdown(); });
+        tagsInput.addEventListener('blur', () => setTimeout(hideTagDropdown, 150));
     }
 
     const btn = document.getElementById('fa-submit-btn');
     if (!btn) return;
     btn.addEventListener('click', async () => {
-        _faFeedbackClear();
+        clearFeedback();
         const title  = document.getElementById('fa-title')?.value.trim();
         const artist = document.getElementById('fa-artist')?.value.trim();
         const social = document.getElementById('fa-socials')?.value.trim();
-        if (!title || !artist) { _faFeedbackSet('Titolo e nome artista sono obbligatori (*).', 'error'); return; }
-        if (!faSelectedFile)   { _faFeedbackSet("Seleziona un'immagine da caricare.", 'error'); return; }
-        if (!Auth || !Auth.isLoggedIn()) { _faFeedbackSet('Devi essere loggato per inviare una fanart.', 'error'); return; }
+        if (!title || !artist)    { setFeedback('Titolo e nome artista sono obbligatori (*).', 'error'); return; }
+        if (!selectedFile)        { setFeedback("Seleziona un'immagine da caricare.", 'error'); return; }
+        if (!Auth?.isLoggedIn())  { setFeedback('Devi essere loggato per inviare una fanart.', 'error'); return; }
+
         btn.disabled = true;
         btn.querySelector('span').textContent = 'Caricamento immagine...';
         try {
-            const imageUrl = await Api.upload.file(faSelectedFile, 'fanart');
+            const imageUrl = await Api.upload.file(selectedFile, 'fanart');
             btn.querySelector('span').textContent = 'Invio in corso...';
-            const tags = faSelectedTags.length ? faSelectedTags : ['untagged'];
             await Api.submit.post('fanart', {
                 title, artist, image: imageUrl,
-                tags,
+                tags: selectedTags.length ? selectedTags : ['untagged'],
                 socials: social ? { website: social } : {}
             }, imageUrl);
-            _faFeedbackSet('Fanart inviata! La esamineremo il prima possibile.', 'success');
+            setFeedback('Fanart inviata! La esamineremo il prima possibile.', 'success');
             ['fa-title','fa-artist','fa-socials'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
-            faSelectedTags = [];
-            _renderTopTags();
-            _renderSelectedChips();
-            _faResetFile();
-        } catch (err) {
-            _faFeedbackSet(err.message || "Errore durante l'invio. Riprova.", 'error');
+            selectedTags = [];
+            renderTopTags();
+            renderSelectedTags();
+            resetFile();
+        } catch (e) {
+            setFeedback(e.message || "Errore durante l'invio. Riprova.", 'error');
         } finally {
             btn.disabled = false;
             btn.querySelector('span').textContent = 'Invia fanart';
@@ -483,18 +471,16 @@ function initFanartForm() {
     });
 }
 
-function buildSuggestions(query) {
-    if (!query || query.length < 1) return [];
-    const q = query.toLowerCase();
-    const results = [];
+function getSearchSuggestions(query) {
+    if (!query) return [];
+    const q    = query.toLowerCase();
     const seen = new Set();
+    const out  = [];
     fanarts.forEach(f => {
-        const title  = f.title  || '';
-        const artist = f.artist || '';
-        if (title.toLowerCase().includes(q)  && !seen.has('t:' + title))  { seen.add('t:' + title);  results.push({ text: title,  icon: 'fa-image' }); }
-        if (artist.toLowerCase().includes(q) && !seen.has('a:' + artist)) { seen.add('a:' + artist); results.push({ text: artist, icon: 'fa-user' }); }
+        if ((f.title || '').toLowerCase().includes(q)  && !seen.has('t:' + f.title))  { seen.add('t:' + f.title);  out.push({ text: f.title,  icon: 'fa-image' }); }
+        if ((f.artist || '').toLowerCase().includes(q) && !seen.has('a:' + f.artist)) { seen.add('a:' + f.artist); out.push({ text: f.artist, icon: 'fa-user' }); }
     });
-    return results.slice(0, 6);
+    return out.slice(0, 6);
 }
 
 function highlightMatch(text, query) {
@@ -503,14 +489,14 @@ function highlightMatch(text, query) {
     return text.slice(0, idx) + `<span class="suggestion-match">${text.slice(idx, idx + query.length)}</span>` + text.slice(idx + query.length);
 }
 
-function showSuggestions(suggestions) {
+function showSearchSuggestions(suggestions) {
     const box = document.getElementById('search-suggestions');
-    suggestionIndex = -1;
+    searchCursor = -1;
     if (!suggestions.length) { box.innerHTML = ''; box.classList.remove('visible'); return; }
     box.innerHTML = suggestions.map((s, i) =>
         `<div class="suggestion-item" data-index="${i}" data-text="${s.text}">
             <i class="fas ${s.icon}"></i>
-            <span>${highlightMatch(s.text, currentSearch)}</span>
+            <span>${highlightMatch(s.text, searchQuery)}</span>
         </div>`
     ).join('');
     box.querySelectorAll('.suggestion-item').forEach(el => {
@@ -518,7 +504,7 @@ function showSuggestions(suggestions) {
             e.preventDefault();
             const input = document.getElementById('fanart-search');
             input.value = el.dataset.text;
-            currentSearch = el.dataset.text;
+            searchQuery = el.dataset.text;
             box.classList.remove('visible');
             renderFanarts();
         });
@@ -526,9 +512,9 @@ function showSuggestions(suggestions) {
     box.classList.add('visible');
 }
 
-function hideSuggestions() {
+function hideSearchSuggestions() {
     document.getElementById('search-suggestions').classList.remove('visible');
-    suggestionIndex = -1;
+    searchCursor = -1;
 }
 
 function initFilterDropdown() {
@@ -539,16 +525,16 @@ function initFilterDropdown() {
     dropdown.addEventListener('click', (e) => e.stopPropagation());
 }
 
-function initSearchKeyboard() {
+function initSearchBar() {
     const input = document.getElementById('fanart-search');
     const box   = document.getElementById('search-suggestions');
     input.addEventListener('keydown', (e) => {
         const items = box.querySelectorAll('.suggestion-item');
         if (!items.length) return;
-        if (e.key === 'ArrowDown') { e.preventDefault(); suggestionIndex = Math.min(suggestionIndex + 1, items.length - 1); items.forEach((el, i) => el.classList.toggle('highlighted', i === suggestionIndex)); }
-        else if (e.key === 'ArrowUp') { e.preventDefault(); suggestionIndex = Math.max(suggestionIndex - 1, -1); items.forEach((el, i) => el.classList.toggle('highlighted', i === suggestionIndex)); }
-        else if (e.key === 'Enter' && suggestionIndex >= 0 && items[suggestionIndex]) { input.value = items[suggestionIndex].dataset.text; currentSearch = input.value; hideSuggestions(); renderFanarts(); }
-        else if (e.key === 'Escape') hideSuggestions();
+        if (e.key === 'ArrowDown') { e.preventDefault(); searchCursor = Math.min(searchCursor + 1, items.length - 1); items.forEach((el, i) => el.classList.toggle('highlighted', i === searchCursor)); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); searchCursor = Math.max(searchCursor - 1, -1); items.forEach((el, i) => el.classList.toggle('highlighted', i === searchCursor)); }
+        else if (e.key === 'Enter' && searchCursor >= 0 && items[searchCursor]) { input.value = items[searchCursor].dataset.text; searchQuery = input.value; hideSearchSuggestions(); renderFanarts(); }
+        else if (e.key === 'Escape') hideSearchSuggestions();
     });
 }
 
@@ -559,16 +545,16 @@ window.addEventListener('languageChanged', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadFanartData();
-    loadApprovedTags();
+    loadFanarts();
+    loadTags();
     initFilterDropdown();
-    initSearchKeyboard();
-    initFanartForm();
+    initSearchBar();
+    initSubmitForm();
 
     const searchInput = document.getElementById('fanart-search');
-    searchInput.addEventListener('input', () => { currentSearch = searchInput.value; renderFanarts(); showSuggestions(buildSuggestions(currentSearch)); });
-    searchInput.addEventListener('focus', () => { if (currentSearch) showSuggestions(buildSuggestions(currentSearch)); });
-    searchInput.addEventListener('blur', () => setTimeout(hideSuggestions, 150));
+    searchInput.addEventListener('input', () => { searchQuery = searchInput.value; renderFanarts(); showSearchSuggestions(getSearchSuggestions(searchQuery)); });
+    searchInput.addEventListener('focus', () => { if (searchQuery) showSearchSuggestions(getSearchSuggestions(searchQuery)); });
+    searchInput.addEventListener('blur', () => setTimeout(hideSearchSuggestions, 150));
 
     document.getElementById('submit-fanart-btn').addEventListener('click', openSubmitModal);
 

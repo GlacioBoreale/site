@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="components/navbar/nav.css">
     <link rel="stylesheet" href="components/footer/footer.css">
     <link rel="stylesheet" href="components/achievements/achievements.css">
+    <link rel="stylesheet" href="style/settings.css">
     <link rel="stylesheet" href="style/vtpedia.css">
     <link rel="stylesheet" href="style/popup-form.css">
     <script src="scripts/api.js"></script>
@@ -19,6 +20,7 @@
     <script src="components/navbar/nav.js"></script>
     <script src="components/footer/footer.js"></script>
     <script src="components/achievements/achievements.js"></script>
+    <script src="scripts/settings.js"></script>
     <script src="scripts/script.js"></script>
     <script src="scripts/vtpedia.js"></script>
 </head>
@@ -67,108 +69,50 @@
                     </ul>
                 </div>
 
-                <div class="submit-sponsor">
-                    <h3><i class="fas fa-bullhorn"></i> <span data-i18n="vtpedia.sponsorTitle">Sponsorizzazione richiesta</span></h3>
-                    <p class="submit-sponsor-desc" data-i18n="vtpedia.sponsorDesc">Per essere incluso nella VTPedia devi sponsorizzare Glaciopia sulla tua piattaforma principale.</p>
-
-                    <div class="sponsor-platform twitch-sponsor">
-                        <div class="sponsor-platform-header"><i class="fab fa-twitch"></i> <span>Twitch</span></div>
-                        <div class="sponsor-options">
-                            <div class="sponsor-option">
-                                <i class="fas fa-link"></i>
-                                <div>
-                                    <strong data-i18n="vtpedia.sponsorTwitchLink">Link nel pannello</strong>
-                                    <span data-i18n="vtpedia.sponsorTwitchLinkDesc">Aggiungi un link a glaciopia.com nel pannello del tuo canale</span>
-                                </div>
-                            </div>
-                            <div class="sponsor-option">
-                                <i class="fas fa-terminal"></i>
-                                <div>
-                                    <strong data-i18n="vtpedia.sponsorTwitchCmd">Comando chat</strong>
-                                    <span data-i18n="vtpedia.sponsorTwitchCmdDesc">Crea un comando con questo testo:</span>
-                                    <code class="sponsor-code" id="sponsor-cmd-text">Visita glaciopia.com! Casa della famigerata VTPedia (di cui @nomestreamer fa parte)!</code>
-                                    <button class="sponsor-copy-btn" id="sponsor-copy-btn" onclick="copySponsorCmd()">
-                                        <i class="fas fa-copy"></i>
-                                        <span data-i18n="vtpedia.sponsorCopy">Copia</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="sponsor-platform youtube-sponsor">
-                        <div class="sponsor-platform-header"><i class="fab fa-youtube"></i> <span>YouTube</span></div>
-                        <div class="sponsor-options">
-                            <div class="sponsor-option">
-                                <i class="fas fa-link"></i>
-                                <div>
-                                    <strong data-i18n="vtpedia.sponsorYtLink">Link nella descrizione</strong>
-                                    <span data-i18n="vtpedia.sponsorYtLinkDesc">Aggiungi glaciopia.com nella descrizione del canale</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="sponsor-platform other-sponsor">
-                        <div class="sponsor-platform-header"><i class="fas fa-share-nodes"></i> <span data-i18n="vtpedia.sponsorOther">Altra piattaforma</span></div>
-                        <div class="sponsor-options">
-                            <div class="sponsor-option">
-                                <i class="fas fa-link"></i>
-                                <div>
-                                    <strong data-i18n="vtpedia.sponsorOtherLink">Link in bio / descrizione</strong>
-                                    <span data-i18n="vtpedia.sponsorOtherLinkDesc">Aggiungi glaciopia.com nella bio della tua piattaforma principale</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <p class="sponsor-note">⚠️ Indica nel form quale metodo hai scelto, così possiamo verificarlo.</p>
-                </div>
-
                 <div class="submit-form-section">
-                    <h3><i class="fas fa-pen-to-square"></i> <span>Compila la richiesta</span></h3>
+                    <h3><i class="fas fa-pen-to-square"></i> <span data-i18n="vtpedia.formSection">Compila la richiesta</span></h3>
 
                     <div class="sf-group">
-                        <label class="sf-label" for="sf-name">Nome del VTuber <span class="sf-req">*</span></label>
-                        <input class="sf-input" id="sf-name" type="text" placeholder="Es. Glacio Boreale" maxlength="80" required>
+                        <label class="sf-label" for="sf-name"><span data-i18n="vtpedia.fName">Nome del VTuber</span> <span class="sf-req">*</span></label>
+                        <input class="sf-input" id="sf-name" type="text" placeholder="Es. Glacio Boreale" data-i18n-placeholder="vtpedia.fNamePlaceholder" maxlength="80" required>
                     </div>
 
                     <div class="sf-group">
-                        <label class="sf-label" for="sf-fullname">Nome completo / personaggio</label>
-                        <input class="sf-input" id="sf-fullname" type="text" placeholder="Es. Glacio Boreale VT" maxlength="120">
+                        <label class="sf-label" for="sf-fullname" data-i18n="vtpedia.fFullname">Nome completo / personaggio</label>
+                        <input class="sf-input" id="sf-fullname" type="text" placeholder="Es. Glacio Boreale VT" data-i18n-placeholder="vtpedia.fFullnamePlaceholder" maxlength="120">
                     </div>
 
                     <div class="sf-group">
-                        <label class="sf-label" for="sf-channel">Link canale principale <span class="sf-req">*</span></label>
+                        <label class="sf-label" for="sf-channel"><span data-i18n="vtpedia.fChannel">Link canale principale</span> <span class="sf-req">*</span></label>
                         <input class="sf-input" id="sf-channel" type="url" placeholder="https://twitch.tv/..." required>
                     </div>
 
                     <div class="sf-group">
-                        <label class="sf-label" for="sf-hashtag">Hashtag ufficiali</label>
+                        <label class="sf-label" for="sf-hashtag" data-i18n="vtpedia.fHashtag">Hashtag ufficiali</label>
                         <input class="sf-input" id="sf-hashtag" type="text" placeholder="#GlacioBoreale #GlacioVT">
                     </div>
 
                     <div class="sf-group">
-                        <label class="sf-label" for="sf-debut">Data di debut</label>
-                        <input class="sf-input" id="sf-debut" type="text" placeholder="Es. 01/01/2023">
+                        <label class="sf-label" for="sf-debut" data-i18n="vtpedia.fDebut">Data di debut</label>
+                        <input class="sf-input" id="sf-debut" type="text" placeholder="Es. 01/01/2023" data-i18n-placeholder="vtpedia.fDebutPlaceholder">
                     </div>
 
                     <div class="sf-group">
-                        <label class="sf-label" for="sf-desc">Descrizione breve <span class="sf-req">*</span></label>
-                        <textarea class="sf-input sf-textarea" id="sf-desc" placeholder="Max 300 caratteri..." maxlength="300" rows="3" required></textarea>
+                        <label class="sf-label" for="sf-desc"><span data-i18n="vtpedia.fDesc">Descrizione breve</span> <span class="sf-req">*</span></label>
+                        <textarea class="sf-input sf-textarea" id="sf-desc" placeholder="Max 300 caratteri..." data-i18n-placeholder="vtpedia.fDescPlaceholder" maxlength="300" rows="3" required></textarea>
                         <span class="sf-charcount"><span id="sf-desc-count">0</span>/300</span>
                     </div>
 
                     <div class="sf-group">
-                        <label class="sf-label">Immagini avatar <span class="sf-req">*</span> <span class="sf-hint" style="font-weight:400">(fino a 3, max 15 MB ciascuna)</span></label>
+                        <label class="sf-label"><span data-i18n="vtpedia.fImages">Immagini avatar</span> <span class="sf-req">*</span> <span class="sf-hint" style="font-weight:400" data-i18n="vtpedia.fImagesHint">(fino a 3, max 15 MB ciascuna)</span></label>
                         <div class="sf-image-slots">
                             <div class="sf-image-slot">
-                                <span class="sf-slot-label">Principale <span class="sf-req">*</span></span>
+                                <span class="sf-slot-label"><span data-i18n="vtpedia.fSlotMain">Principale</span> <span class="sf-req">*</span></span>
                                 <div class="sf-dropzone" id="sf-dropzone-0">
                                     <input type="file" id="sf-image-file-0" accept="image/jpeg,image/png,image/gif,image/webp" hidden>
                                     <div class="sf-dropzone-inner" id="sf-dropzone-inner-0">
                                         <i class="fas fa-cloud-upload-alt"></i>
-                                        <span class="sf-dropzone-label">Trascina o <button type="button" class="sf-dropzone-pick" id="sf-pick-btn-0">scegli</button></span>
+                                        <span class="sf-dropzone-label"><span data-i18n="vtpedia.fDropzone">Trascina o</span> <button type="button" class="sf-dropzone-pick" id="sf-pick-btn-0" data-i18n="vtpedia.fDropzonePick">scegli</button></span>
                                     </div>
                                     <div class="sf-dropzone-preview" id="sf-preview-0" style="display:none;">
                                         <img id="sf-preview-img-0" src="" alt="">
@@ -178,12 +122,12 @@
                                 </div>
                             </div>
                             <div class="sf-image-slot">
-                                <span class="sf-slot-label">Opzionale 2</span>
+                                <span class="sf-slot-label" data-i18n="vtpedia.fSlotOpt2">Opzionale 2</span>
                                 <div class="sf-dropzone" id="sf-dropzone-1">
                                     <input type="file" id="sf-image-file-1" accept="image/jpeg,image/png,image/gif,image/webp" hidden>
                                     <div class="sf-dropzone-inner" id="sf-dropzone-inner-1">
                                         <i class="fas fa-cloud-upload-alt"></i>
-                                        <span class="sf-dropzone-label">Trascina o <button type="button" class="sf-dropzone-pick" id="sf-pick-btn-1">scegli</button></span>
+                                        <span class="sf-dropzone-label"><span data-i18n="vtpedia.fDropzone">Trascina o</span> <button type="button" class="sf-dropzone-pick" id="sf-pick-btn-1" data-i18n="vtpedia.fDropzonePick">scegli</button></span>
                                     </div>
                                     <div class="sf-dropzone-preview" id="sf-preview-1" style="display:none;">
                                         <img id="sf-preview-img-1" src="" alt="">
@@ -193,12 +137,12 @@
                                 </div>
                             </div>
                             <div class="sf-image-slot">
-                                <span class="sf-slot-label">Opzionale 3</span>
+                                <span class="sf-slot-label" data-i18n="vtpedia.fSlotOpt3">Opzionale 3</span>
                                 <div class="sf-dropzone" id="sf-dropzone-2">
                                     <input type="file" id="sf-image-file-2" accept="image/jpeg,image/png,image/gif,image/webp" hidden>
                                     <div class="sf-dropzone-inner" id="sf-dropzone-inner-2">
                                         <i class="fas fa-cloud-upload-alt"></i>
-                                        <span class="sf-dropzone-label">Trascina o <button type="button" class="sf-dropzone-pick" id="sf-pick-btn-2">scegli</button></span>
+                                        <span class="sf-dropzone-label"><span data-i18n="vtpedia.fDropzone">Trascina o</span> <button type="button" class="sf-dropzone-pick" id="sf-pick-btn-2" data-i18n="vtpedia.fDropzonePick">scegli</button></span>
                                     </div>
                                     <div class="sf-dropzone-preview" id="sf-preview-2" style="display:none;">
                                         <img id="sf-preview-img-2" src="" alt="">
@@ -210,31 +154,15 @@
                         </div>
                     </div>
 
-                    <div class="sf-group">
-                        <label class="sf-label" for="sf-sponsor">Metodo di sponsorizzazione <span class="sf-req">*</span></label>
-                        <select class="sf-input sf-select" id="sf-sponsor" required>
-                            <option value="" disabled selected>Seleziona...</option>
-                            <option value="twitch_panel">Twitch — Link nel pannello</option>
-                            <option value="twitch_cmd">Twitch — Comando chat</option>
-                            <option value="youtube_desc">YouTube — Link nella descrizione</option>
-                            <option value="other_bio">Altra piattaforma — Link in bio</option>
-                        </select>
-                    </div>
-
-                    <div class="sf-group">
-                        <label class="sf-label" for="sf-proof">Link/prova della sponsorizzazione <span class="sf-req">*</span></label>
-                        <input class="sf-input" id="sf-proof" type="url" placeholder="https://..." required>
-                    </div>
-
                     <div class="sf-feedback" id="sf-feedback"></div>
                 </div>
 
                 <div class="popup-form-actions">
                     <button class="sf-submit-btn" id="sf-submit-btn" type="button">
                         <i class="fas fa-paper-plane"></i>
-                        <span>Invia richiesta</span>
+                        <span data-i18n="vtpedia.fSubmit">Invia richiesta</span>
                     </button>
-                    <button class="popup-form-close-btn" id="sf-close-btn" type="button">Chiudi</button>
+                    <button class="popup-form-close-btn" id="sf-close-btn" type="button" data-i18n="vtpedia.fClose">Chiudi</button>
                 </div>
 
             </div>

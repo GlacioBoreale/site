@@ -59,6 +59,11 @@ html {
   scroll-behavior: smooth;
 }
 
+:root {
+  --wallpaper: none;
+  --wallpaper-opacity: 1;
+}
+
 body {
   font-family: 'Fredoka', sans-serif;
   line-height: 1.65;
@@ -68,6 +73,21 @@ body {
   padding-top: 70px;
   position: relative;
   transition: background 0.3s ease, color 0.3s ease;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-image: var(--wallpaper);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  opacity: var(--wallpaper-opacity);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
 }
 
 body::before {

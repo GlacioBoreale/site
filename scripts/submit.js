@@ -1,9 +1,9 @@
 'use strict';
 
-const ABOUT_MAX_BYTES = 2 * 1024 * 1024;
-let aboutSelectedFile = null;
+const AVATAR_MAX_SIZE = 2 * 1024 * 1024;
+let selectedAvatar = null;
 
-const SOCIAL_ICONS = {
+const SOCIAL_ICON_MAP = {
   twitch:    'fa-brands fa-twitch',
   youtube:   'fa-brands fa-youtube',
   twitter:   'fa-brands fa-x-twitter',
@@ -17,9 +17,9 @@ const SOCIAL_ICONS = {
   kofi:      'fa-solid fa-heart',
 };
 
-function _socialIcon(url) {
+function getSocialIcon(url) {
   const u = url.toLowerCase();
-  for (const [k, v] of Object.entries(SOCIAL_ICONS)) {
+  for (const [k, v] of Object.entries(SOCIAL_ICON_MAP)) {
     if (u.includes(k)) return v;
   }
   return 'fa-solid fa-globe';
@@ -32,15 +32,13 @@ async function loadTeamMembers() {
   grid.querySelector('.team-card--placeholder')?.remove();
 
   try {
-    const data = await Api.team.get();
+    const data    = await Api.team.get();
     const members = data.members || [];
     document.getElementById('team-loading')?.remove();
-    members.forEach((m, i) => {
-      grid.appendChild(_buildTeamCard(m, grid.children.length + i));
-    });
-  } catch(e) {
+    members.forEach((m, i) => grid.appendChild(buildTeamCard(m, grid.children.length + i)));
+  } catch (e) {
     document.getElementById('team-loading')?.remove();
-    console.warn('Team dal DB non disponibile:', e.message);
+    console.warn('Team non disponibile:', e.message);
   }
 
   const placeholder = document.createElement('div');
@@ -54,24 +52,23 @@ async function loadTeamMembers() {
     </div>`;
   grid.appendChild(placeholder);
   setTimeout(() => placeholder.classList.add('visible'), grid.children.length * 100);
+
+  if (typeof applyTranslations === 'function') applyTranslations();
 }
 
-function _buildTeamCard(m, index) {
+function buildTeamCard(m, index) {
   const card = document.createElement('div');
   card.className = 'team-card stagger-item';
 
   let socialLinks = [];
   if (m.socials) {
-    if (typeof m.socials === 'string') {
-      socialLinks = m.socials.split(',').map(s => s.trim()).filter(Boolean);
-    } else if (typeof m.socials === 'object') {
-      socialLinks = Object.values(m.socials).filter(Boolean);
-    }
+    if (typeof m.socials === 'string') socialLinks = m.socials.split(',').map(s => s.trim()).filter(Boolean);
+    else if (typeof m.socials === 'object') socialLinks = Object.values(m.socials).filter(Boolean);
   }
 
   const linksHtml = socialLinks.map(url =>
     `<a href="${url}" target="_blank" rel="noopener noreferrer" class="team-link">
-      <i class="${_socialIcon(url)}"></i>
+      <i class="${getSocialIcon(url)}"></i>
     </a>`
   ).join('');
 
@@ -87,7 +84,7 @@ function _buildTeamCard(m, index) {
       ${linksHtml ? `<div class="team-links">${linksHtml}</div>` : ''}
     </div>`;
 
-  const img = card.querySelector('img');
+  const img    = card.querySelector('img');
   const reveal = () => setTimeout(() => card.classList.add('visible'), index * 100);
   if (!img || img.complete) reveal();
   else {
@@ -98,20 +95,56 @@ function _buildTeamCard(m, index) {
   return card;
 }
 
-function _submitSetState(btn, msgEl, state, text) {
+function setSubmitState(btn, msgEl, state, text) {
   btn.disabled = state === 'loading';
   const span = btn.querySelector('span');
   if (span && state === 'loading') span.textContent = text || 'Caricamento...';
   if (msgEl) {
     msgEl.textContent = state !== 'loading' ? (text || '') : '';
-    msgEl.className = 'sf-feedback' + (state === 'success' ? ' success' : state === 'error' ? ' error' : '');
+    msgEl.className   = 'sf-feedback' + (state === 'success' ? ' success' : state === 'error' ? ' error' : '');
   }
 }
 
-function _clearFeedback(msgEl) {
+function clearSubmitMsg(msgEl) {
   if (!msgEl) return;
   msgEl.textContent = '';
-  msgEl.className = 'sf-feedback';
+  msgEl.className   = 'sf-feedback';
+}
+
+function setAvatarFile(file, msgEl) {
+  if (!file.type.startsWith('image/') || file.type === 'image/gif') {
+    if (msgEl) { msgEl.textContent = 'Usa JPG, PNG o WEBP.'; msgEl.className = 'sf-feedback error'; }
+    return;
+  }
+  if (file.size > AVATAR_MAX_SIZE) {
+    if (msgEl) { msgEl.textContent = `L'immagine supera i 2 MB (${(file.size/1024/1024).toFixed(1)} MB).`; msgEl.className = 'sf-feedback error'; }
+    return;
+  }
+  selectedAvatar = file;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img   = document.getElementById('about-preview-img');
+    const fname = document.getElementById('about-filename');
+    const prev  = document.getElementById('about-preview');
+    const inner = document.getElementById('about-dropzone-inner');
+    if (img)   img.src             = e.target.result;
+    if (fname) fname.textContent   = file.name;
+    if (prev)  prev.style.display  = 'flex';
+    if (inner) inner.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function resetAvatarFile() {
+  selectedAvatar = null;
+  const input = document.getElementById('about-image-file');
+  const img   = document.getElementById('about-preview-img');
+  const prev  = document.getElementById('about-preview');
+  const inner = document.getElementById('about-dropzone-inner');
+  if (input) input.value        = '';
+  if (img)   img.src            = '';
+  if (prev)  prev.style.display = 'none';
+  if (inner) inner.style.display = 'flex';
 }
 
 function initAboutSubmit() {
@@ -139,13 +172,13 @@ function initAboutSubmit() {
 
   if (zone) {
     pickBtn?.addEventListener('click', () => input.click());
-    input?.addEventListener('change', () => { if (input.files[0]) _aboutSetFile(input.files[0], msg); });
-    removeBtn?.addEventListener('click', (e) => { e.stopPropagation(); _aboutResetFile(); });
-    zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
+    input?.addEventListener('change', () => { if (input.files[0]) setAvatarFile(input.files[0], msg); });
+    removeBtn?.addEventListener('click', (e) => { e.stopPropagation(); resetAvatarFile(); });
+    zone.addEventListener('dragover',  (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
     zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
     zone.addEventListener('drop', (e) => {
       e.preventDefault(); zone.classList.remove('drag-over');
-      if (e.dataTransfer.files[0]) _aboutSetFile(e.dataTransfer.files[0], msg);
+      if (e.dataTransfer.files[0]) setAvatarFile(e.dataTransfer.files[0], msg);
     });
   }
 
@@ -159,7 +192,7 @@ function initAboutSubmit() {
     modal.classList.remove('active');
     document.body.classList.remove('modal-open');
     document.body.style.overflow = '';
-    _clearFeedback(msg);
+    clearSubmitMsg(msg);
   }
 
   openBtn.addEventListener('click', openModal);
@@ -170,7 +203,7 @@ function initAboutSubmit() {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
   submitBtn?.addEventListener('click', async () => {
-    _clearFeedback(msg);
+    clearSubmitMsg(msg);
 
     const displayName = document.getElementById('about-display-name')?.value.trim();
     const role        = document.getElementById('about-role')?.value.trim();
@@ -180,88 +213,44 @@ function initAboutSubmit() {
     const contact     = document.getElementById('about-contact')?.value.trim();
 
     if (!displayName || !role || !desc || !experience || !contact) {
-      _submitSetState(submitBtn, msg, 'error', 'Compila tutti i campi obbligatori (*).');
+      setSubmitState(submitBtn, msg, 'error', 'Compila tutti i campi obbligatori (*).');
       return;
     }
-    if (!aboutSelectedFile) {
-      _submitSetState(submitBtn, msg, 'error', "L'immagine profilo è obbligatoria.");
+    if (!selectedAvatar) {
+      setSubmitState(submitBtn, msg, 'error', "L'immagine profilo è obbligatoria.");
       return;
     }
-    if (!Auth || !Auth.isLoggedIn()) {
-      _submitSetState(submitBtn, msg, 'error', 'Devi essere loggato per inviare una candidatura.');
+    if (!Auth?.isLoggedIn()) {
+      setSubmitState(submitBtn, msg, 'error', 'Devi essere loggato per inviare una candidatura.');
       return;
     }
 
-    _submitSetState(submitBtn, msg, 'loading', 'Caricamento immagine...');
+    setSubmitState(submitBtn, msg, 'loading', 'Caricamento immagine...');
     try {
-      const avatarUrl = await Api.upload.file(aboutSelectedFile, 'team');
-
+      const avatarUrl = await Api.upload.file(selectedAvatar, 'team');
       const span = submitBtn.querySelector('span');
       if (span) span.textContent = 'Invio in corso...';
 
       await Api.submit.post('team', {
-        name:       displayName,
-        role,
-        desc,
-        socials,
-        experience,
-        contact,
-        avatar_url: avatarUrl,
+        name: displayName, role, desc, socials, experience, contact, avatar_url: avatarUrl,
       }, avatarUrl);
 
-      _submitSetState(submitBtn, msg, 'success', 'Candidatura inviata! Ti risponderemo presto.');
+      setSubmitState(submitBtn, msg, 'success', 'Candidatura inviata! Ti risponderemo presto.');
       const span2 = submitBtn.querySelector('span');
       if (span2) span2.textContent = 'Invia candidatura';
 
       ['about-display-name','about-role','about-desc','about-socials','about-experience','about-contact'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
+        const el = document.getElementById(id); if (el) el.value = '';
       });
       if (descCnt) descCnt.textContent = '0';
       if (expCnt)  expCnt.textContent  = '0';
-      _aboutResetFile();
+      resetAvatarFile();
     } catch (e) {
-      _submitSetState(submitBtn, msg, 'error', e.message || "Errore durante l'invio.");
+      setSubmitState(submitBtn, msg, 'error', e.message || "Errore durante l'invio.");
       const span = submitBtn.querySelector('span');
       if (span) span.textContent = 'Invia candidatura';
     }
   });
-}
-
-function _aboutSetFile(file, msgEl) {
-  if (!file.type.startsWith('image/') || file.type === 'image/gif') {
-    if (msgEl) { msgEl.textContent = 'Usa JPG, PNG o WEBP.'; msgEl.className = 'sf-feedback error'; }
-    return;
-  }
-  if (file.size > ABOUT_MAX_BYTES) {
-    if (msgEl) { msgEl.textContent = `L'immagine supera i 2 MB (${(file.size/1024/1024).toFixed(1)} MB).`; msgEl.className = 'sf-feedback error'; }
-    return;
-  }
-  aboutSelectedFile = file;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const img   = document.getElementById('about-preview-img');
-    const fname = document.getElementById('about-filename');
-    const prev  = document.getElementById('about-preview');
-    const inner = document.getElementById('about-dropzone-inner');
-    if (img)   img.src = e.target.result;
-    if (fname) fname.textContent = file.name;
-    if (prev)  prev.style.display  = 'flex';
-    if (inner) inner.style.display = 'none';
-  };
-  reader.readAsDataURL(file);
-}
-
-function _aboutResetFile() {
-  aboutSelectedFile = null;
-  const input = document.getElementById('about-image-file');
-  const img   = document.getElementById('about-preview-img');
-  const prev  = document.getElementById('about-preview');
-  const inner = document.getElementById('about-dropzone-inner');
-  if (input) input.value = '';
-  if (img)   img.src = '';
-  if (prev)  prev.style.display  = 'none';
-  if (inner) inner.style.display = 'flex';
 }
 
 document.addEventListener('DOMContentLoaded', () => {

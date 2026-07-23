@@ -5,16 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>404 - Glaciopia</title>
     <link rel="icon" type="image/x-icon" href="https://glaciopia-images.s3.eu-north-1.amazonaws.com/favicon.ico">
-
     <link rel="stylesheet" href="style/style.css">
     <link rel="stylesheet" href="style/404.css">
     <link rel="stylesheet" href="components/achievements/achievements.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script>(function(){var t=localStorage.getItem('glaciopia_theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+    <style>
+      html, body {
+        height: 100%;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+      }
+      .container-404 {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
 </head>
 <body>
     <div class="container-404">
-        <div class=content-404>
+        <div class="content-404">
             <div class="image-container">
                  <img src="https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin1.png" alt="404 Error" class="error-image">
             </div>
@@ -29,148 +43,107 @@
                 <span data-i18n="404.coinText" style="display:none;">Clicca per lanciare!</span>
             </div>
         </div>
-        <div class="mini-footer">
-            <p>© <span id="year"></span> GlacioBoreale - Made with ❤️ and ☕</p>
-        </div>
     </div>
 
-    
-    <!-- Konami code -->
     <script>
-        document.getElementById('year').textContent = new Date().getFullYear();
         let konamiCode = [];
-        const konamiSeq = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        const konamiSeq = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
         document.addEventListener('keydown', (e) => {
             konamiCode.push(e.key);
             konamiCode = konamiCode.slice(-10);
             if (konamiCode.join('') === konamiSeq.join('')) {
                 document.body.style.animation = 'rainbow 2s infinite';
-                setTimeout(() => {
-                    document.body.style.animation = '';
-                }, 5000);
+                setTimeout(() => { document.body.style.animation = ''; }, 5000);
                 if (typeof unlockAchievement === 'function') unlockAchievement('konami');
             }
         });
     </script>
-    
-    <!-- Coin flip -->
+
     <script>
     let coinUnlocked = false;
-    let typedText = '';
+    let typedText    = '';
     const secretCode = 'coin';
-    let coinImages = [];
-    let isFlipping = false;
-
+    let coinImages   = [];
+    let isFlipping   = false;
 
     function loadCoinImages() {
-        coinImages = [
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin1.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin2.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin3.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin4.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin5.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin6.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin7.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin8.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin9.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin10.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin11.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin12.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin13.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin14.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin15.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin16.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin17.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin18.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin19.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin20.png',
-            'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin21.png'
-        ];
+        const base = 'https://glaciopia-images.s3.eu-north-1.amazonaws.com/404/coin';
+        coinImages = Array.from({ length: 21 }, (_, i) => `${base}${i + 1}.png`);
     }
 
     document.addEventListener('keypress', (e) => {
         typedText += e.key.toLowerCase();
-        
-        if (typedText.length > secretCode.length) {
-            typedText = typedText.slice(-secretCode.length);
-        }
-        
-        if (typedText === secretCode && !coinUnlocked) {
-            unlockCoinFeature();
-        }
+        if (typedText.length > secretCode.length) typedText = typedText.slice(-secretCode.length);
+        if (typedText === secretCode && !coinUnlocked) unlockCoinFeature();
     });
 
     function unlockCoinFeature() {
         coinUnlocked = true;
+        loadCoinImages();
+        coinImages.forEach(src => { const img = new Image(); img.src = src; });
         if (typeof unlockAchievement === 'function') unlockAchievement('coin_flip');
+
         const imageContainer = document.querySelector('.image-container');
-        const errorImage = document.querySelector('.error-image');
-        
+        const errorImage     = document.querySelector('.error-image');
         if (!imageContainer || !errorImage) return;
-        
+
         imageContainer.classList.add('coin-unlocked');
-        
+
         const tooltip = document.createElement('div');
-        tooltip.className = 'coin-tooltip-hint';
+        tooltip.className   = 'coin-tooltip-hint';
         tooltip.textContent = document.querySelector('[data-i18n="404.coinText"]').textContent;
         imageContainer.appendChild(tooltip);
-        
-        setTimeout(() => {
-            tooltip.classList.add('show');
-        }, 100);
-        
-        setTimeout(() => {
-            tooltip.classList.remove('show');
-        }, 3000);
-        
+        setTimeout(() => tooltip.classList.add('show'),    100);
+        setTimeout(() => tooltip.classList.remove('show'), 3000);
+
         imageContainer.addEventListener('click', flipCoin);
     }
 
     function flipCoin() {
         if (isFlipping || !coinUnlocked) return;
-        
         isFlipping = true;
-        const errorImage = document.querySelector('.error-image');
-        const imageContainer = document.querySelector('.image-container');
-        
-        imageContainer.classList.add('flipping');
-        
-        let flipCount = 0;
-        const maxFlips = 20;
-        const flipInterval = setInterval(() => {
-            const randomImage = coinImages[Math.floor(Math.random() * coinImages.length)];
-            errorImage.src = randomImage;
-            flipCount++;
-            
-            if (flipCount >= maxFlips) {
-                clearInterval(flipInterval);
-                
-                const finalImage = coinImages[Math.floor(Math.random() * coinImages.length)];
-                errorImage.src = finalImage;
 
-                const isCoin1 = finalImage.endsWith('coin1.png');
-                const isEromo = finalImage.endsWith('coin2.png') || finalImage.endsWith('coin3.png');
-                
-                setTimeout(() => {
-                    imageContainer.classList.remove('flipping');
-                    imageContainer.classList.add('landing');
-                    
-                    setTimeout(() => {
-                        imageContainer.classList.remove('landing');
-                        isFlipping = false;
-                        if (typeof unlockAchievement === 'function') {
-                            if (isCoin1) unlockAchievement('rome');
-                            if (isEromo) unlockAchievement('eromo');
-                        }
-                    }, 500);
-                }, 500);
+        const errorImage     = document.querySelector('.error-image');
+        const imageContainer = document.querySelector('.image-container');
+
+        imageContainer.classList.add('flipping');
+
+        const finalImage = coinImages[Math.floor(Math.random() * coinImages.length)];
+        const isCoin1    = finalImage.endsWith('coin1.png');
+        const isEromo    = finalImage.endsWith('coin2.png') || finalImage.endsWith('coin3.png');
+
+        const FLIP_DURATION = 2400;
+        const rand = () => coinImages[Math.floor(Math.random() * coinImages.length)];
+
+        // I 4 balzi (in % della durata): 0-28, 28-50, 50-70, 70-90.
+        // Ad ogni balzo meno cambi immagine = più lento.
+        const bounces = [
+            { start: 0.00, end: 0.28, count: 8 },
+            { start: 0.28, end: 0.50, count: 5 },
+            { start: 0.50, end: 0.70, count: 3 },
+            { start: 0.70, end: 0.90, count: 2 },
+        ];
+
+        bounces.forEach(b => {
+            const span = (b.end - b.start) * FLIP_DURATION;
+            for (let i = 0; i < b.count; i++) {
+                const delay = b.start * FLIP_DURATION + (span / b.count) * i;
+                setTimeout(() => { errorImage.src = rand(); }, Math.round(delay));
             }
-        }, 100);
+        });
+
+        setTimeout(() => {
+            errorImage.src = finalImage;
+            imageContainer.classList.remove('flipping');
+            isFlipping = false;
+            if (typeof unlockAchievement === 'function') {
+                if (isCoin1) unlockAchievement('rome');
+                if (isEromo) unlockAchievement('eromo');
+            }
+        }, FLIP_DURATION);
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        loadCoinImages();
-    });
+    document.addEventListener('DOMContentLoaded', loadCoinImages);
     </script>
 
     <script src="components/achievements/achievements.js"></script>
@@ -179,8 +152,6 @@
     window.addEventListener('DOMContentLoaded', () => {
         loadTranslations(currentLang);
         if (typeof initAchievements === 'function') initAchievements();
-
-        // Se l'URL non termina con /404.html l'utente è arrivato tramite un link inesistente
         const path = window.location.pathname;
         if (!path.endsWith('/404.html') && !path.endsWith('/404')) {
             if (typeof unlockAchievement === 'function') unlockAchievement('fourofour');

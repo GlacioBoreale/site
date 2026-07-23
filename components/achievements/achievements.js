@@ -135,6 +135,15 @@ const ACHIEVEMENTS = [
     category: 'segreto',
   },
   {
+    id: 'glaciopia_combo',
+    icon: '✨',
+    name: 'GLACIOPIA!',
+    desc: 'Hai completato la combo segreta di GLACIOPIA. Sei un vero fan!',
+    hint: 'CAPS LOCK potrebbe tornarti utile...',
+    secret: true,
+    category: 'segreto',
+  },
+  {
     id: 'all_achievements',
     icon: '🏆',
     name: 'Cacciatore di Trofei',
@@ -179,6 +188,55 @@ function loadUnlocked() {
   return Object.keys(loadData());
 }
 
+const _ACH_SOUND_URL = 'https://glaciopia-logo3d.s3.eu-north-1.amazonaws.com/achievementGet.mp3';
+let _achAudioBuf = null;
+let _achAC = null;
+
+function _getAchAC() {
+  if (!_achAC) _achAC = new (window.AudioContext || window.webkitAudioContext)();
+  return _achAC;
+}
+
+async function _preloadAchievementSound() {
+  if (_achAudioBuf) return;
+  try {
+    const res  = await fetch(_ACH_SOUND_URL);
+    const data = await res.arrayBuffer();
+    _achAudioBuf = await _getAchAC().decodeAudioData(data);
+  } catch(e) {}
+}
+
+function _playAchievementSound() {
+  if (_achAudioBuf) {
+    try {
+      const ctx    = _getAchAC();
+      if (ctx.state === 'suspended') ctx.resume();
+      const source = ctx.createBufferSource();
+      const gain   = ctx.createGain();
+      source.buffer   = _achAudioBuf;
+      gain.gain.value = 0.8;
+      source.connect(gain);
+      gain.connect(ctx.destination);
+      source.start(0);
+    } catch(e) {}
+  } else {
+    _preloadAchievementSound().then(() => {
+      if (!_achAudioBuf) return;
+      try {
+        const ctx    = _getAchAC();
+        if (ctx.state === 'suspended') ctx.resume();
+        const source = ctx.createBufferSource();
+        const gain   = ctx.createGain();
+        source.buffer   = _achAudioBuf;
+        gain.gain.value = 0.8;
+        source.connect(gain);
+        gain.connect(ctx.destination);
+        source.start(0);
+      } catch(e) {}
+    });
+  }
+}
+
 function unlockAchievement(id) {
   const ach = ACHIEVEMENTS.find(a => a.id === id);
   if (!ach) return;
@@ -191,6 +249,7 @@ function unlockAchievement(id) {
 
   queueToast(ach);
   updateAchievementCounter();
+  if (id === 'glaciopia_combo') _playAchievementSound();
 
   if (id !== 'all_achievements') {
     const others = ACHIEVEMENTS.filter(a => a.id !== 'all_achievements');
@@ -426,6 +485,10 @@ function updateAchievementCounter() {
 function initAchievements() {
   unlockAchievement('first_visit');
   updateAchievementCounter();
+
+  document.addEventListener('click',   _preloadAchievementSound, { once: true });
+  document.addEventListener('keydown', _preloadAchievementSound, { once: true });
+  document.addEventListener('touchstart', _preloadAchievementSound, { once: true });
 
   window.addEventListener('languageChanged', () => {
     updateAchievementCounter();

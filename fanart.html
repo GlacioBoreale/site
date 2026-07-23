@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="components/navbar/nav.css">
     <link rel="stylesheet" href="components/footer/footer.css">
     <link rel="stylesheet" href="components/achievements/achievements.css">
+    <link rel="stylesheet" href="style/settings.css">
     <link rel="stylesheet" href="style/fanart.css">
     <link rel="stylesheet" href="style/popup-form.css">
     <script src="scripts/api.js"></script>
@@ -19,6 +20,7 @@
     <script src="components/navbar/nav.js"></script>
     <script src="components/footer/footer.js"></script>
     <script src="components/achievements/achievements.js"></script>
+    <script src="scripts/settings.js"></script>
     <script src="scripts/script.js"></script>
     <script src="scripts/fanart.js"></script>
 </head>
@@ -48,11 +50,11 @@
                 <div class="filter-dropdown-wrapper">
                     <button class="filter-toggle-btn" id="filter-toggle-btn">
                         <i class="fas fa-filter"></i>
-                        <span id="filter-label">Tutte</span>
+                        <span id="filter-label" data-i18n="fanart.filterAll">Tutte</span>
                         <i class="fas fa-chevron-down filter-chevron"></i>
                     </button>
                     <div class="filter-dropdown" id="filter-dropdown">
-                        <button class="filter-option active" data-filter="all">Tutte</button>
+                        <button class="filter-option active" data-filter="all" data-i18n="fanart.filterAll">Tutte</button>
                     </div>
                 </div>
             </div>
@@ -87,7 +89,7 @@
                 <div class="popup-form-header">
                     <i class="fas fa-paper-plane popup-form-icon"></i>
                     <h2 data-i18n="fanart.submitTitle">Invia la tua Fanart</h2>
-                    <p data-i18n="fanart.submitDesc">Compila il form — la tua fanart arriverà direttamente al database per la revisione.</p>
+                    <p data-i18n="fanart.submitDesc">Compila il form! La tua fanart arriverà direttamente al database per la revisione.</p>
                 </div>
 
                 <div class="submit-rules">
@@ -95,29 +97,29 @@
                     <ul>
                         <li data-i18n="fanart.rule1">Invia solo artwork originali tuoi.</li>
                         <li data-i18n="fanart.rule2">Nessun contenuto NSFW o offensivo.</li>
-                        <li data-i18n="fanart.rule3">Formati accettati: JPG, PNG, GIF, WEBP — max 15 MB.</li>
-                        <li data-i18n="fanart.rule4">Includi il titolo dell'opera e il tuo nome/username.</li>
+                        <li data-i18n="fanart.rule3">Formati accettati: JPG, PNG, GIF, WEBP | max 15 MB.</li>
+                        <li data-i18n="fanart.rule4">Includi il nome dell'opera e il tuo nome d'arte.</li>
                     </ul>
                 </div>
 
                 <div class="sf-group">
-                    <label class="sf-label" for="fa-title">Titolo dell'opera <span class="sf-req">*</span></label>
-                    <input class="sf-input" id="fa-title" type="text" placeholder="Es. Glacio nel bosco" maxlength="120" required>
+                    <label class="sf-label" for="fa-title"><span data-i18n="fanart.fTitle">Nome dell'opera</span> <span class="sf-req">*</span></label>
+                    <input class="sf-input" id="fa-title" type="text" placeholder="Es. Glacio nel bosco" data-i18n-placeholder="fanart.fTitlePlaceholder" maxlength="120" required>
                 </div>
 
                 <div class="sf-group">
-                    <label class="sf-label" for="fa-artist">Il tuo nome / username <span class="sf-req">*</span></label>
-                    <input class="sf-input" id="fa-artist" type="text" placeholder="Es. ArtistaNome" maxlength="80" required>
+                    <label class="sf-label" for="fa-artist"><span data-i18n="fanart.fArtist">Username / Nome d'arte</span> <span class="sf-req">*</span></label>
+                    <input class="sf-input" id="fa-artist" type="text" placeholder="Es. 3FS" data-i18n-placeholder="fanart.fArtistPlaceholder" maxlength="80" required>
                 </div>
 
                 <div class="sf-group">
-                    <label class="sf-label">Immagine <span class="sf-req">*</span></label>
+                    <label class="sf-label"><span data-i18n="fanart.fImage">Immagine</span> <span class="sf-req">*</span></label>
                     <div class="sf-dropzone" id="fa-dropzone">
                         <input type="file" id="fa-image-file" accept="image/jpeg,image/png,image/gif,image/webp" hidden>
                         <div class="sf-dropzone-inner" id="fa-dropzone-inner">
                             <i class="fas fa-cloud-upload-alt"></i>
-                            <span class="sf-dropzone-label">Trascina qui o <button type="button" class="sf-dropzone-pick" id="fa-pick-btn">scegli file</button></span>
-                            <span class="sf-hint">JPG, PNG, GIF, WEBP — max 15 MB</span>
+                            <span class="sf-dropzone-label"><span data-i18n="fanart.fDropzone">Trascina qui o</span> <button type="button" class="sf-dropzone-pick" id="fa-pick-btn" data-i18n="fanart.fDropzonePick">scegli file</button></span>
+                            <span class="sf-hint" data-i18n="fanart.fImageHint">JPG, PNG, GIF, WEBP | max 15 MB</span>
                         </div>
                         <div class="sf-dropzone-preview" id="fa-preview" style="display:none;">
                             <img id="fa-preview-img" src="" alt="">
@@ -128,21 +130,20 @@
                 </div>
 
                 <div class="sf-group">
-                    <label class="sf-label">Tag</label>
+                    <label class="sf-label" data-i18n="fanart.fTags">Tag</label>
                     <div class="fa-tag-chips" id="fa-tag-chips"></div>
-                    <div class="fa-top-tags" id="fa-top-tags"></div>
                     <div class="fa-tag-input-row">
                         <input class="sf-input" id="fa-tags-input" type="text"
-                            placeholder="Cerca un tag..." autocomplete="off" maxlength="60">
+                            placeholder="Cerca un tag..." data-i18n-placeholder="fanart.fTagsPlaceholder" autocomplete="off" maxlength="60">
                     </div>
                     <div id="fa-tag-propose-container"></div>
-                    <span class="sf-hint">Clicca i tag suggeriti o cerca — se non esiste puoi proporlo.</span>
+                    <span class="sf-hint" data-i18n="fanart.fTagsHint">Clicca i tag suggeriti oppure cerca ed usa quelli già presenti... se non esiste puoi proporlo.</span>
                 </div>
 
                 <div class="sf-group">
-                    <label class="sf-label" for="fa-socials">Social link</label>
-                    <input class="sf-input" id="fa-socials" type="url" placeholder="https://twitter.com/... (opzionale)">
-                    <span class="sf-hint">Link principale al tuo profilo — opzionale</span>
+                    <label class="sf-label" for="fa-socials" data-i18n="fanart.fSocials">Social link</label>
+                    <input class="sf-input" id="fa-socials" type="url" placeholder="https://x.com/... (opzionale)" data-i18n-placeholder="fanart.fSocialsPlaceholder">
+                    <span class="sf-hint" data-i18n="fanart.fSocialsHint">Link ai tuoi profili (Completamente opzionale)</span>
                 </div>
 
                 <div class="sf-feedback" id="fa-feedback"></div>
@@ -150,9 +151,9 @@
                 <div class="popup-form-actions">
                     <button class="sf-submit-btn" id="fa-submit-btn" type="button">
                         <i class="fas fa-paper-plane"></i>
-                        <span>Invia fanart</span>
+                        <span data-i18n="fanart.fSubmit">Invia fanart</span>
                     </button>
-                    <button class="popup-form-close-btn" id="submit-close-btn" type="button">Chiudi</button>
+                    <button class="popup-form-close-btn" id="submit-close-btn" type="button" data-i18n="fanart.fClose">Chiudi</button>
                 </div>
 
             </div>

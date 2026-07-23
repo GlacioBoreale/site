@@ -498,6 +498,7 @@ async function loadLeaderboard() {
     }
     _lbLoaded = true;
     if (loadingEl) loadingEl.style.display = 'none';
+    console.log('[LB] prestige rows:', (_lbData.prestige || []).map(r => ({ u: r.username, p: r.prestige, type: typeof r.prestige })));
     renderLeaderboard();
   } catch (err) {
     console.error('[LB error]', err);

@@ -164,7 +164,23 @@ const Auth = (() => {
             <span data-i18n="auth.registerBtn">Crea account</span>
           </button>
 
-          <p class="auth-switch">
+          <div id="auth-reg-code-block" style="display:none;">
+            <div class="auth-field" style="margin-top:0.85rem;">
+              <label for="auth-reg-code" data-i18n="auth.code">Codice</label>
+              <input class="auth-input auth-code-input" id="auth-reg-code" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code">
+            </div>
+            <p class="auth-forgot-text" id="auth-reg-code-hint" style="margin-bottom:0.6rem;"></p>
+            <div class="auth-error" id="auth-reg-code-error"></div>
+            <button class="auth-submit" id="auth-reg-verify-btn">
+              <span data-i18n="auth.verifyBtn">Verifica</span>
+            </button>
+            <p class="auth-switch">
+              <span data-i18n="auth.noCode">Non hai ricevuto il codice?</span>
+              <button type="button" id="auth-reg-resend-btn" data-i18n="auth.resend">Reinvia</button>
+            </p>
+          </div>
+
+          <p class="auth-switch" id="auth-reg-switch-login">
             <span data-i18n="auth.hasAccount">Hai già un account?</span>
             <button type="button" data-goto="login" data-i18n="auth.goLogin">Accedi</button>
           </p>
@@ -316,11 +332,42 @@ const Auth = (() => {
       try {
         await register(username, email, pass);
         _pendingEmail = email;
-        showVerifyView(email);
+        showRegCodeStep(email);
       } catch (e) {
         err.textContent = e.message;
       } finally {
         setAuthLoading(btn, false);
+      }
+    });
+
+    document.getElementById('auth-reg-verify-btn').addEventListener('click', async () => {
+      const btn  = document.getElementById('auth-reg-verify-btn');
+      const code = document.getElementById('auth-reg-code').value.trim();
+      const err  = document.getElementById('auth-reg-code-error');
+      err.textContent = '';
+      if (!code) { err.textContent = at('auth.errEmptyCode', 'Inserisci il codice.'); return; }
+
+      setAuthLoading(btn, true);
+      try {
+        await verify(_pendingEmail, code);
+        closeAuthModal();
+      } catch (e) {
+        err.textContent = e.message;
+      } finally {
+        setAuthLoading(btn, false);
+      }
+    });
+
+    document.getElementById('auth-reg-resend-btn').addEventListener('click', async () => {
+      const err = document.getElementById('auth-reg-code-error');
+      err.textContent = '';
+      try {
+        await resend(_pendingEmail);
+        err.style.color = 'var(--accent, #5b9cf6)';
+        err.textContent = at('auth.resendDone', 'Nuovo codice inviato.');
+      } catch (e) {
+        err.style.color = '';
+        err.textContent = e.message;
       }
     });
 
@@ -401,6 +448,19 @@ const Auth = (() => {
 
   let _pendingEmail = '';
 
+  function showRegCodeStep(email) {
+    document.getElementById('auth-reg-username').disabled = true;
+    document.getElementById('auth-reg-email').disabled    = true;
+    document.getElementById('auth-reg-password').disabled = true;
+    document.getElementById('auth-reg-btn').style.display = 'none';
+    const switchLogin = document.getElementById('auth-reg-switch-login');
+    if (switchLogin) switchLogin.style.display = 'none';
+    const hint = document.getElementById('auth-reg-code-hint');
+    if (hint) hint.textContent = at('auth.verifyHint', 'Controlla la casella') + ' ' + email;
+    document.getElementById('auth-reg-code-block').style.display = 'block';
+    setTimeout(() => document.getElementById('auth-reg-code')?.focus(), 60);
+  }
+
   function showVerifyView(email) {
     const hint = document.getElementById('auth-verify-hint');
     if (hint) hint.textContent = at('auth.verifyHint', 'Controlla la casella') + ' ' + email;
@@ -426,9 +486,26 @@ const Auth = (() => {
       v.classList.toggle('hidden', v.dataset.view !== view);
     });
     modal.querySelectorAll('.auth-error').forEach(e => e.textContent = '');
+    if (view === 'register') resetRegView();
     setTimeout(() => {
       modal.querySelector(`.auth-view[data-view="${view}"] .auth-input`)?.focus();
     }, 60);
+  }
+
+  function resetRegView() {
+    const block = document.getElementById('auth-reg-code-block');
+    if (!block) return;
+    block.style.display = 'none';
+    ['auth-reg-username','auth-reg-email','auth-reg-password'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.disabled = false;
+    });
+    const btn = document.getElementById('auth-reg-btn');
+    if (btn) btn.style.display = '';
+    const switchLogin = document.getElementById('auth-reg-switch-login');
+    if (switchLogin) switchLogin.style.display = '';
+    const codeErr = document.getElementById('auth-reg-code-error');
+    if (codeErr) codeErr.textContent = '';
   }
 
   function openAuthModal() {

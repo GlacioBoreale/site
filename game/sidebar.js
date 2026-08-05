@@ -498,13 +498,21 @@ async function loadLeaderboard() {
     }
     _lbLoaded = true;
     if (loadingEl) loadingEl.style.display = 'none';
-    console.log('[LB] prestige rows:', (_lbData.prestige || []).map(r => ({ u: r.username, p: r.prestige, type: typeof r.prestige })));
     renderLeaderboard();
   } catch (err) {
     console.error('[LB error]', err);
     if (loadingEl) loadingEl.style.display = 'none';
     if (rowsEl) rowsEl.innerHTML = '<div class="panel-wip"><i class="fas fa-ranking-star"></i>Nessun dato</div>';
   }
+}
+
+function _lbEscape(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function renderLeaderboard(forcedTab) {
@@ -531,7 +539,7 @@ function renderLeaderboard(forcedTab) {
     if (r) {
       html += '<div class="lb-row' + (isMe ? ' lb-me' : '') + '" style="--lb-color:' + color + '">' +
         '<span class="lb-pos">' + (i + 1) + '</span>' +
-        '<span class="lb-name">' + r.username + '</span>' +
+        '<span class="lb-name">' + _lbEscape(r.username) + '</span>' +
         '<span class="lb-val">' + meta.fmtVal(r) + '</span>' +
         '</div>';
     } else {
@@ -555,7 +563,7 @@ function renderLeaderboard(forcedTab) {
     if (meRowEl) meRowEl.innerHTML =
       '<div class="lb-me-row" style="--lb-color:' + color + '">' +
       '<span class="lb-my-pos">' + (myIdx + 1) + '</span>' +
-      '<span class="lb-my-name">' + r.username + ' <span style="font-size:0.7rem;opacity:0.55">(tu)</span></span>' +
+      '<span class="lb-my-name">' + _lbEscape(r.username) + ' <span style="font-size:0.7rem;opacity:0.55">(tu)</span></span>' +
       '<span class="lb-my-val">' + meta.fmtVal(r) + '</span>' +
       '</div>';
     if (guestEl) guestEl.innerHTML = '';

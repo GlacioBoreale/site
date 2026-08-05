@@ -15,7 +15,8 @@ const Api = (() => {
     if (body !== undefined) opts.body = JSON.stringify(body);
     const r    = await fetch(API_BASE + path, opts);
     const data = await r.json();
-    if (r.status === 401 && token) {
+    const isAuthEndpoint = path.startsWith('/auth/');
+    if (r.status === 401 && token && !isAuthEndpoint) {
       Api.setToken(null);
       if (typeof Auth !== 'undefined') Auth.logout();
     }

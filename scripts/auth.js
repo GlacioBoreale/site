@@ -48,6 +48,8 @@ const Auth = (() => {
   }
 
   async function login(email, password) {
+    Api.setToken(null);
+    setUser(null);
     const data = await Api.auth.login(email, password);
     Api.setToken(data.token);
     setUser(data.user);

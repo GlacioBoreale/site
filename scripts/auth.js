@@ -122,7 +122,7 @@ const Auth = (() => {
 
           <div class="auth-field">
             <label for="auth-reg-username" data-i18n="auth.username">Username</label>
-            <input class="auth-input" id="auth-reg-username" type="text" autocomplete="username" maxlength="32" placeholder="IsottaCiabatta">
+            <input class="auth-input" id="auth-reg-username" type="text" autocomplete="username" maxlength="18" placeholder="IsottaCiabatta">
           </div>
 
           <div class="auth-field">

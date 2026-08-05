@@ -19,7 +19,13 @@ const Api = (() => {
       Api.setToken(null);
       if (typeof Auth !== 'undefined') Auth.logout();
     }
-    if (!r.ok) throw new Error(data.error || 'Request failed');
+    if (!r.ok) {
+      const err = new Error(data.error || 'Request failed');
+      err.data = data;
+      err.status = r.status;
+      if (data.needs_verification) err.needs_verification = true;
+      throw err;
+    }
     return data;
   }
 
@@ -41,6 +47,14 @@ const Api = (() => {
         request('POST', '/auth/register', { username, email, password }),
       login: (email, password) =>
         request('POST', '/auth/login', { email, password }),
+      verify: (email, code) =>
+        request('POST', '/auth/verify', { email, code }),
+      resend: (email) =>
+        request('POST', '/auth/resend', { email }),
+      forgot: (email) =>
+        request('POST', '/auth/forgot', { email }),
+      reset: (email, code, password) =>
+        request('POST', '/auth/reset', { email, code, password }),
     },
 
     save: {
@@ -94,6 +108,7 @@ const Api = (() => {
       deleteUser:         (id)                      => request('DELETE', `/admin/users/${id}`),
       getSaves:           ()                        => request('GET',    '/admin/saves'),
       deleteSave:         (userId)                  => request('DELETE', `/admin/saves/${userId}`),
+      updateUser:         (userId, data)            => request('PATCH',  `/admin/users/${userId}`, data),
       getRepos:           ()                        => request('GET',    '/admin/repos'),
       syncRepos:          (repos)                   => request('POST',   '/admin/repos/sync', { repos }),
       setReposAutoSync:   (autoSync)                => request('PATCH',  '/admin/repos/settings', { auto_sync: autoSync }),

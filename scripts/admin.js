@@ -887,7 +887,11 @@ function openUserDrawer(u) {
       <div class="adm-dfield"><i class="fas fa-user"></i><span class="adm-dfield-lbl">Username</span><span class="adm-dfield-val">${esc(u.username)}</span></div>
       <div class="adm-dfield"><i class="fas fa-envelope"></i><span class="adm-dfield-lbl">Email</span><span class="adm-dfield-val">${esc(u.email)}</span></div>
       <div class="adm-dfield"><i class="fas fa-calendar"></i><span class="adm-dfield-lbl">Registrato</span><span class="adm-dfield-val">${fmtDate(u.created_at)}</span></div>
+      <div class="adm-dfield"><i class="fas fa-envelope-circle-check"></i><span class="adm-dfield-lbl">Verificato</span><span class="adm-dfield-val">${u.verified === false ? '<span style="color:#f87171">No</span>' : '<span style="color:#4ade80">S\u00ec</span>'}</span></div>
     </div>
+    ${u.verified === false ? `<div class="adm-dfield-block">
+      <button id="da-verify-user" class="adm-btn adm-btn-detail" style="width:100%;justify-content:center"><i class="fas fa-circle-check"></i> Verifica manualmente</button>
+    </div>` : ''}
     <div class="adm-dfield-block">
       <div class="adm-dfield-block-title">Gioco</div>
       <div class="adm-dfield"><i class="fas fa-star"></i><span class="adm-dfield-lbl">Punti</span><span class="adm-dfield-val">${fmt(u.points)}</span></div>
@@ -897,10 +901,93 @@ function openUserDrawer(u) {
       <div class="adm-dfield"><i class="fas fa-clock"></i><span class="adm-dfield-lbl">Tempo</span><span class="adm-dfield-val">${fmtTime(u.total_time_sec)}</span></div>
       <div class="adm-dfield"><i class="fas fa-save"></i><span class="adm-dfield-lbl">Ultimo save</span><span class="adm-dfield-val">${fmtDate(u.last_save)}</span></div>
     </div>
+    <div class="adm-dfield-block" id="user-edit-block">
+      <div class="adm-dfield-block-title" style="cursor:pointer;user-select:none;" id="user-edit-toggle">
+        <i class="fas fa-pen" style="margin-right:.4rem"></i> Modifica account
+        <i class="fas fa-chevron-down" id="user-edit-chevron" style="margin-left:auto;transition:transform .2s;"></i>
+      </div>
+      <div id="user-edit-fields" style="display:none;margin-top:.8rem;">
+        <div style="margin-bottom:.7rem;">
+          <label style="display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--dim);margin-bottom:.3rem;">Username</label>
+          <input id="ue-username" type="text" value="${esc(u.username)}" maxlength="18"
+            style="width:100%;padding:.45rem .7rem;background:var(--raised);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Fredoka',sans-serif;font-size:.85rem;outline:none;">
+        </div>
+        <div style="margin-bottom:.7rem;">
+          <label style="display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--dim);margin-bottom:.3rem;">Email</label>
+          <input id="ue-email" type="email" value="${esc(u.email)}"
+            style="width:100%;padding:.45rem .7rem;background:var(--raised);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Fredoka',sans-serif;font-size:.85rem;outline:none;">
+        </div>
+        <div id="user-edit-feedback" style="font-size:.8rem;margin-bottom:.5rem;"></div>
+        <button id="da-save-user" class="adm-btn adm-btn-detail" style="width:100%;justify-content:center;">
+          <i class="fas fa-floppy-disk"></i> Salva modifiche
+        </button>
+      </div>
+    </div>
     ${u.email !== ADMIN_EMAIL ? `<div class="adm-drawer-actions">
       <button class="adm-btn adm-btn-danger" id="da-del-user" style="width:100%;justify-content:center"><i class="fas fa-trash"></i> Elimina utente</button>
     </div>` : ''}`;
   document.getElementById('da-del-user')?.addEventListener('click', () => { closeDrawer(); deleteUser(u.id, u.username); });
+
+  document.getElementById('da-verify-user')?.addEventListener('click', async () => {
+    const btn = document.getElementById('da-verify-user');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Verifico...';
+    try {
+      const r = await Api.admin.updateUser(u.id, { verified: true });
+      Object.assign(u, r.user);
+      renderUsers();
+      showToast('Utente verificato', 'ok');
+      openUserDrawer(u);
+    } catch(e) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-circle-check"></i> Verifica manualmente';
+      showToast(e.message, 'err');
+    }
+  });
+
+  const ueToggle  = document.getElementById('user-edit-toggle');
+  const ueFields  = document.getElementById('user-edit-fields');
+  const ueChevron = document.getElementById('user-edit-chevron');
+  ueToggle?.addEventListener('click', () => {
+    const open = ueFields.style.display === 'none';
+    ueFields.style.display    = open ? 'block' : 'none';
+    ueChevron.style.transform = open ? 'rotate(180deg)' : '';
+  });
+
+  document.getElementById('da-save-user')?.addEventListener('click', async () => {
+    const btn = document.getElementById('da-save-user');
+    const fb  = document.getElementById('user-edit-feedback');
+    const newUsername = document.getElementById('ue-username')?.value.trim();
+    const newEmail    = document.getElementById('ue-email')?.value.trim();
+    fb.textContent = '';
+
+    const data = {};
+    if (newUsername && newUsername !== u.username) data.username = newUsername;
+    if (newEmail && newEmail !== u.email)          data.email    = newEmail;
+    if (!Object.keys(data).length) {
+      fb.style.color = 'var(--dim)';
+      fb.textContent = 'Nessuna modifica da salvare.';
+      return;
+    }
+
+    btn.disabled  = true;
+    btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Salvataggio...';
+    try {
+      const r = await Api.admin.updateUser(u.id, data);
+      Object.assign(u, r.user);
+      renderUsers();
+      fb.style.color = 'var(--green)';
+      fb.textContent = 'Salvato!';
+      document.getElementById('adm-drawer-title').textContent = u.username;
+      showToast('Utente aggiornato', 'ok');
+    } catch(e) {
+      fb.style.color = 'var(--red)';
+      fb.textContent = e.message || 'Errore durante il salvataggio.';
+    }
+    btn.disabled  = false;
+    btn.innerHTML = '<i class="fas fa-floppy-disk"></i> Salva modifiche';
+  });
+
   openDrawer();
 }
 

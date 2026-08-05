@@ -54,7 +54,7 @@ function renderTwitch(twitch) {
         liveEmbed.style.display   = 'block';
         offlineMedia.style.display = 'none';
         const embed = document.getElementById('twitch-embed');
-        if (embed) embed.src = `https://player.twitch.tv/?channel=glacioborealevt&parent=${window.location.hostname}&autoplay=false`;
+        if (embed) embed.src = `https://player.twitch.tv/?channel=glacioboreale&parent=${window.location.hostname}&autoplay=false`;
     } else {
         liveEmbed.style.display   = 'none';
         offlineMedia.style.display = 'block';

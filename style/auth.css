@@ -252,6 +252,18 @@
 }
 [data-theme="light"] .auth-forgot-text { color: rgba(10,10,20,0.55); }
 
+.auth-code-input {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: 0.4em;
+  padding-left: 0.9rem;
+}
+.auth-code-input::placeholder {
+  letter-spacing: 0.4em;
+  font-size: 1.5rem;
+}
+
 .logout-btn {
   background: rgba(248,113,113,0.1);
   border-color: rgba(248,113,113,0.3);

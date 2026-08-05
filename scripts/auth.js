@@ -23,10 +23,28 @@ const Auth = (() => {
 
   async function register(username, email, password) {
     const data = await Api.auth.register(username, email, password);
+    // ora la registrazione non logga: richiede verifica email
+    return data;
+  }
+
+  async function verify(email, code) {
+    const data = await Api.auth.verify(email, code);
     Api.setToken(data.token);
     setUser(data.user);
-    handleAuthChange();
+    handleAuthChange(true);
     return data.user;
+  }
+
+  async function resend(email) {
+    return Api.auth.resend(email);
+  }
+
+  async function forgot(email) {
+    return Api.auth.forgot(email);
+  }
+
+  async function reset(email, code, password) {
+    return Api.auth.reset(email, code, password);
   }
 
   async function login(email, password) {
@@ -152,16 +170,69 @@ const Auth = (() => {
           </p>
         </div>
 
+        <div class="auth-view hidden" data-view="verify">
+          <div class="auth-header">
+            <div class="auth-icon"><i class="fas fa-envelope-circle-check"></i></div>
+            <h2 data-i18n="auth.verifyTitle">Verifica la tua email</h2>
+            <p data-i18n="auth.verifySubtitle">Ti abbiamo inviato un codice a 6 cifre</p>
+          </div>
+          <p class="auth-forgot-text" id="auth-verify-hint"></p>
+          <div class="auth-field">
+            <label for="auth-verify-code" data-i18n="auth.code">Codice</label>
+            <input class="auth-input auth-code-input" id="auth-verify-code" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code">
+          </div>
+          <div class="auth-error" id="auth-verify-error"></div>
+          <button class="auth-submit" id="auth-verify-btn">
+            <span data-i18n="auth.verifyBtn">Verifica</span>
+          </button>
+          <p class="auth-switch">
+            <span data-i18n="auth.noCode">Non hai ricevuto il codice?</span>
+            <button type="button" id="auth-resend-btn" data-i18n="auth.resend">Reinvia</button>
+          </p>
+        </div>
+
         <div class="auth-view hidden" data-view="forgot">
           <div class="auth-header">
             <div class="auth-icon"><i class="fas fa-key"></i></div>
             <h2 data-i18n="auth.forgotTitle">Password dimenticata</h2>
+            <p data-i18n="auth.forgotSubtitle">Inserisci la tua email per ricevere un codice</p>
           </div>
-          <p class="auth-forgot-text" data-i18n="auth.forgotText">Il recupero automatico non è ancora attivo. Scrivi a glaciopia@outlook.com dall'indirizzo del tuo account e ti aiuteremo a rientrare.</p>
-          <a class="auth-submit auth-submit-link" href="mailto:glaciopia@outlook.com?subject=Recupero%20password">
-            <i class="fas fa-envelope"></i>
-            <span data-i18n="auth.forgotMail">Scrivi a glaciopia@outlook.com</span>
-          </a>
+          <div class="auth-field">
+            <label for="auth-forgot-email" data-i18n="auth.email">Email</label>
+            <input class="auth-input" id="auth-forgot-email" type="email" autocomplete="email" placeholder="nome@esempio.com">
+          </div>
+          <div class="auth-error" id="auth-forgot-error"></div>
+          <button class="auth-submit" id="auth-forgot-send-btn">
+            <span data-i18n="auth.forgotSendBtn">Invia codice</span>
+          </button>
+          <p class="auth-switch">
+            <button type="button" data-goto="login" data-i18n="auth.backToLogin">Torna al login</button>
+          </p>
+        </div>
+
+        <div class="auth-view hidden" data-view="reset">
+          <div class="auth-header">
+            <div class="auth-icon"><i class="fas fa-lock-open"></i></div>
+            <h2 data-i18n="auth.resetTitle">Nuova password</h2>
+            <p data-i18n="auth.resetSubtitle">Inserisci il codice ricevuto e la nuova password</p>
+          </div>
+          <div class="auth-field">
+            <label for="auth-reset-code" data-i18n="auth.code">Codice</label>
+            <input class="auth-input auth-code-input" id="auth-reset-code" type="text" inputmode="numeric" maxlength="6" placeholder="000000">
+          </div>
+          <div class="auth-field">
+            <label for="auth-reset-password" data-i18n="auth.newPassword">Nuova password</label>
+            <div class="auth-input-wrap">
+              <input class="auth-input" id="auth-reset-password" type="password" autocomplete="new-password" placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022">
+              <button class="auth-eye" data-target="auth-reset-password" type="button" aria-label="Mostra password">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div class="auth-error" id="auth-reset-error"></div>
+          <button class="auth-submit" id="auth-reset-btn">
+            <span data-i18n="auth.resetBtn">Reimposta password</span>
+          </button>
           <p class="auth-switch">
             <button type="button" data-goto="login" data-i18n="auth.backToLogin">Torna al login</button>
           </p>
@@ -213,7 +284,12 @@ const Auth = (() => {
         await login(email, pass);
         closeAuthModal();
       } catch (e) {
-        err.textContent = e.message;
+        if (e.needs_verification || e.data?.needs_verification) {
+          _pendingEmail = e.data?.email || email;
+          showVerifyView(_pendingEmail);
+        } else {
+          err.textContent = e.message;
+        }
       } finally {
         setAuthLoading(btn, false);
       }
@@ -239,6 +315,25 @@ const Auth = (() => {
       setAuthLoading(btn, true);
       try {
         await register(username, email, pass);
+        _pendingEmail = email;
+        showVerifyView(email);
+      } catch (e) {
+        err.textContent = e.message;
+      } finally {
+        setAuthLoading(btn, false);
+      }
+    });
+
+    document.getElementById('auth-verify-btn').addEventListener('click', async () => {
+      const btn  = document.getElementById('auth-verify-btn');
+      const code = document.getElementById('auth-verify-code').value.trim();
+      const err  = document.getElementById('auth-verify-error');
+      err.textContent = '';
+      if (!code) { err.textContent = at('auth.errEmptyCode', 'Inserisci il codice.'); return; }
+
+      setAuthLoading(btn, true);
+      try {
+        await verify(_pendingEmail, code);
         closeAuthModal();
       } catch (e) {
         err.textContent = e.message;
@@ -247,7 +342,69 @@ const Auth = (() => {
       }
     });
 
+    document.getElementById('auth-resend-btn').addEventListener('click', async () => {
+      const err = document.getElementById('auth-verify-error');
+      err.textContent = '';
+      try {
+        await resend(_pendingEmail);
+        err.style.color = 'var(--accent, #5b9cf6)';
+        err.textContent = at('auth.resendDone', 'Nuovo codice inviato.');
+      } catch (e) {
+        err.style.color = '';
+        err.textContent = e.message;
+      }
+    });
+
+    document.getElementById('auth-forgot-send-btn').addEventListener('click', async () => {
+      const btn   = document.getElementById('auth-forgot-send-btn');
+      const email = document.getElementById('auth-forgot-email').value.trim();
+      const err   = document.getElementById('auth-forgot-error');
+      err.textContent = '';
+      if (!email) { err.textContent = at('auth.errEmptyEmail', 'Inserisci la tua email.'); return; }
+
+      setAuthLoading(btn, true);
+      try {
+        await forgot(email);
+        _pendingEmail = email;
+        showAuthView('reset');
+      } catch (e) {
+        err.textContent = e.message;
+      } finally {
+        setAuthLoading(btn, false);
+      }
+    });
+
+    document.getElementById('auth-reset-btn').addEventListener('click', async () => {
+      const btn  = document.getElementById('auth-reset-btn');
+      const code = document.getElementById('auth-reset-code').value.trim();
+      const pass = document.getElementById('auth-reset-password').value;
+      const err  = document.getElementById('auth-reset-error');
+      err.textContent = '';
+      if (!code || !pass) { err.textContent = at('auth.errEmptyReset', 'Inserisci codice e nuova password.'); return; }
+      if (pass.length < 6) { err.textContent = at('auth.errShortPassword', 'La password deve avere almeno 6 caratteri.'); return; }
+
+      setAuthLoading(btn, true);
+      try {
+        await reset(_pendingEmail, code, pass);
+        showAuthView('login');
+        const lerr = document.getElementById('auth-login-error');
+        if (lerr) { lerr.style.color = 'var(--accent, #5b9cf6)'; lerr.textContent = at('auth.resetDone', 'Password reimpostata! Ora puoi accedere.'); }
+      } catch (e) {
+        err.textContent = e.message;
+      } finally {
+        setAuthLoading(btn, false);
+      }
+    });
+
     if (typeof applyTranslations === 'function') applyTranslations();
+  }
+
+  let _pendingEmail = '';
+
+  function showVerifyView(email) {
+    const hint = document.getElementById('auth-verify-hint');
+    if (hint) hint.textContent = at('auth.verifyHint', 'Controlla la casella') + ' ' + email;
+    showAuthView('verify');
   }
 
   function at(key, fallback) {
@@ -331,5 +488,5 @@ const Auth = (() => {
 
   document.addEventListener('navbarLoaded', initNavAuthBtn);
 
-  return { register, login, logout, isLoggedIn, getUser, openAuthModal, initNavAuthBtn };
+  return { register, verify, resend, forgot, reset, login, logout, isLoggedIn, getUser, openAuthModal, initNavAuthBtn };
 })();

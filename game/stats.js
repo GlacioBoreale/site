@@ -34,12 +34,12 @@ const STATS_DEFS = {
     },
     {
       id:    'bits',
-      label: () => fmt(G.bits) + ' ฿',
-      rate:  () => '',
-      color: '#e040fb',
-      bg:    'rgba(224,64,251,0.13)',
-      icon:  '฿',
-      check: () => G.bitsUnlocked,
+      label: () => fmt(G.bits) + ' \u0e3f',
+      rate:  () => { const r = (typeof bitsPerSec === 'function') ? bitsPerSec() : 0; return r > 0 ? '+' + fmt(r) + ' \u0e3f/s' : ''; },
+      color: '#f87171',
+      bg:    'rgba(248,113,113,0.13)',
+      icon:  '\u0e3f',
+      check: () => G.automationUnlocked && (nodeState['a_startAuto']?.level || 0) > 0,
     },
 
   ],

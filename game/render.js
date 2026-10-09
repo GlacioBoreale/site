@@ -94,7 +94,7 @@ const ZONE_COLORS = {
   base:       { a: '#ffffff', b: '#cccccc', glow: 'rgba(255,255,255,0.10)', border: 'rgba(255,255,255,0.55)' },
   research:   { a: '#38bdf8', b: '#7dd3fc', glow: 'rgba(56,189,248,0.12)',  border: 'rgba(56,189,248,0.55)'  },
   prestige:   { a: '#fbbf24', b: '#fde68a', glow: 'rgba(251,191,36,0.12)',  border: 'rgba(251,191,36,0.55)'  },
-  automation: { a: '#f87171', b: '#fca5a5', glow: 'rgba(248,113,113,0.12)', border: 'rgba(248,113,113,0.55)' },
+  automation: { a: '#f87171', b: '#CB2B7A', glow: 'rgba(248,113,113,0.12)', border: 'rgba(248,113,113,0.55)' },
 };
 
 function zoneColor(nd) {
@@ -121,7 +121,7 @@ function getTheme() {
 const ZONE_BG = {
   base:       [20,  20,  22],
   research:   [30,  36,  58],
-  automation: [52,  24,  28],
+  automation: [108, 42,  52],
   prestige:   [38,  36,  14],
 };
 
@@ -192,6 +192,14 @@ function drawGrid(T) {
 }
 
 // CONNESSIONI
+// Collegamenti che devono passare all'esterno (a sinistra) invece della bezier diretta.
+// Coppie 'parentId>childId'.
+const EXTERNAL_LEFT_LINKS = new Set([
+  'a_rupgPg3>a_rupgPg4',
+  'a_rupgPg4>a_rupgPg5',
+  'a_rupgPg5>a_rupgPg1b',
+]);
+
 function drawConnections(T) {
   if (window._cfgShowConnections === false) return;
   NODE_DEFS.forEach(nd => {
@@ -203,14 +211,30 @@ function drawConnections(T) {
       const zc   = zoneColor(nd);
       const x1 = parent.x + camX, y1 = parent.y + camY;
       const x2 = nd.x     + camX, y2 = nd.y     + camY;
-      const mx = (x1 + x2) / 2;
-      ctx.beginPath();
-      ctx.moveTo(x1, y1);
-      ctx.bezierCurveTo(mx, y1, mx, y2, x2, y2);
+
       ctx.strokeStyle = done ? zc.a : T.line;
       ctx.lineWidth   = done ? 3 : 1.5;
       ctx.setLineDash([]);
-      ctx.stroke();
+
+      if (EXTERNAL_LEFT_LINKS.has(pid + '>' + nd.id)) {
+        // percorso a L esterno a sinistra: esce dal lato sx del parent,
+        // scende/sale su un binario verticale, rientra dal lato sx del figlio
+        const railX = Math.min(x1, x2) - NODE_W / 2 - 40;
+        const px1   = x1 - NODE_W / 2;
+        const px2   = x2 - NODE_W / 2;
+        ctx.beginPath();
+        ctx.moveTo(px1, y1);
+        ctx.lineTo(railX, y1);
+        ctx.lineTo(railX, y2);
+        ctx.lineTo(px2, y2);
+        ctx.stroke();
+      } else {
+        const mx = (x1 + x2) / 2;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.bezierCurveTo(mx, y1, mx, y2, x2, y2);
+        ctx.stroke();
+      }
     });
   });
 }
@@ -225,11 +249,80 @@ function hexToRgba(hex, alpha) {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-function costStr(cost, isRNode, isPNode, isPrestNode) {
+function costStr(cost, isRNode, isPNode, isPrestNode, isBitNode) {
   if (isPrestNode && !G.hasPrestiged) return 'You need to prestige at least once';
   if (cost === 0) return 'Free';
+  if (isBitNode) return fmt(cost) + ' \u0e3f';
   if (isPrestNode || isPNode) return fmt(cost) + ' ¥';
   return isRNode ? fmtLambda(cost) + ' λ' : fmt(cost) + ' ₽';
+}
+
+// NODO TOGGLE (#0a mode_switch) - on/off invece di comprato/comprabile
+function drawToggleNode(nd, T, zc, sx, sy, nx, ny, isHover) {
+  const PAD = 11;
+  const on  = G.automationEnabled;
+  const pulse = 0.5 + 0.5 * Math.sin(_now / 210);
+
+  // ENABLED = stile "buyable" (glow acceso). DISABLED = stile "bought" (spento).
+  if (on) {
+    ctx.save();
+    ctx.shadowColor = zc.a;
+    ctx.shadowBlur  = 16 + (isHover ? 8 * pulse : 0);
+    roundRect(nx - 2, ny - 2, NODE_W + 4, NODE_H + 4, CORNER + 2);
+    ctx.strokeStyle = hexToRgba(zc.a, '0.9');
+    ctx.lineWidth   = 3.5;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // sfondo
+  roundRect(nx, ny, NODE_W, NODE_H, CORNER);
+  ctx.fillStyle = on
+    ? (T.light ? 'rgba(235,240,255,0.97)' : 'rgba(18,18,30,0.97)')
+    : (T.light ? 'rgba(235,240,255,0.85)' : 'rgba(18,18,30,0.85)');
+  ctx.fill();
+
+  // bordo
+  roundRect(nx, ny, NODE_W, NODE_H, CORNER);
+  if (on) {
+    ctx.strokeStyle = zc.a;
+    ctx.lineWidth   = 3.5;
+  } else {
+    ctx.strokeStyle = hexToRgba(zc.a, '0.18');
+    ctx.lineWidth   = 1;
+  }
+  ctx.stroke();
+
+  // label + titolo
+  const row1Y = ny + PAD + 12;
+  ctx.textAlign = 'left';
+  ctx.font      = 'bold 12px Fredoka, sans-serif';
+  ctx.fillStyle = hexToRgba(zc.a, '1');
+  ctx.fillText(nd.label, nx + PAD, row1Y);
+
+  ctx.textAlign = 'right';
+  ctx.font      = '600 12px Fredoka, sans-serif';
+  ctx.fillStyle = hexToRgba(zc.a, '1');
+  const _ndTitle = typeof nd.title === 'function' ? nd.title() : nd.title;
+  ctx.fillText(_ndTitle, nx + NODE_W - PAD, row1Y);
+
+  // separatore
+  const sepY = row1Y + 7;
+  ctx.beginPath();
+  ctx.moveTo(nx + PAD, sepY);
+  ctx.lineTo(nx + NODE_W - PAD, sepY);
+  ctx.strokeStyle = T.nodeBorder;
+  ctx.lineWidth   = 1;
+  ctx.stroke();
+
+  // testo centrale: "Automation" (bianco) + enabled/disabled (secondario)
+  ctx.textAlign = 'center';
+  ctx.font      = 'bold 15px Fredoka, sans-serif';
+  ctx.fillStyle = T.text;
+  ctx.fillText('Automation', sx, sy + 2);
+  ctx.font      = '600 13px Fredoka, sans-serif';
+  ctx.fillStyle = '#CB2B7A';
+  ctx.fillText(on ? 'enabled' : 'disabled', sx, sy + 20);
 }
 
 // NODI
@@ -246,14 +339,21 @@ function drawNodes(T) {
     const nx = sx - NODE_W / 2, ny = sy - NODE_H / 2;
     const PAD = 11;
 
+    // TOGGLE (#0a mode_switch): stato speciale on/off, non segue comprato/comprabile
+    if (nd.isToggle) {
+      drawToggleNode(nd, T, zc, sx, sy, nx, ny, isHover);
+      return;
+    }
+
     const locked       = isLocked(nd);
     const isPrestigeBtn = !!nd.isPrestigeBtn;
     const isRNode      = (nd.zone === 'research' && nd.id !== 'researchUnlock') || !!nd.costInLambda;
     const isPNode      = nd.zone === 'prestige' && !isPrestigeBtn;
     const isPrestNode  = !!nd.costInPrestige;
+    const isBitNode    = nd.zone === 'automation' && !nd.isToggle && nd.id !== 'a_startAuto';
     const cost         = isPNode ? nodeCost(nd, st.level) : isRNode ? researchCost(nd, st.level) : nodeCost(nd, st.level);
     const prestigeReady = isPrestigeBtn && G.points >= 10e15;
-    const canAfford    = isPrestigeBtn ? prestigeReady : (!maxed && !locked && (isPrestNode ? (G.hasPrestiged && G.prestige >= cost) : isPNode ? G.prestige >= cost : isRNode ? G.research >= cost : G.points >= cost));
+    const canAfford    = isPrestigeBtn ? prestigeReady : (!maxed && !locked && (isBitNode ? G.bits >= cost : isPrestNode ? (G.hasPrestiged && G.prestige >= cost) : isPNode ? G.prestige >= cost : isRNode ? G.research >= cost : G.points >= cost));
     const buyable      = isPrestigeBtn ? prestigeReady : (!maxed && !locked && canAfford);
 
     const pulse = 0.5 + 0.5 * Math.sin(_now / 210);
@@ -430,9 +530,9 @@ function drawNodes(T) {
         ctx.font      = '600 11px Fredoka, sans-serif';
         if (maxed || bought) {
           ctx.fillStyle = hexToRgba(zc.a, '1');
-          ctx.fillText(maxed ? 'Maxed!' : costStr(cost, isRNode, isPNode, isPrestNode), nx + NODE_W - PAD, row2Y);
+          ctx.fillText(maxed ? 'Maxed!' : costStr(cost, isRNode, isPNode, isPrestNode, isBitNode), nx + NODE_W - PAD, row2Y);
         } else {
-          const cs = costStr(cost, isRNode, isPNode, isPrestNode);
+          const cs = costStr(cost, isRNode, isPNode, isPrestNode, isBitNode);
           ctx.fillStyle = cs === 'Free' ? T.green : (cs === 'You need to prestige at least once' ? 'rgba(248,113,113,0.9)' : canAfford ? T.textMuted : 'rgba(248,113,113,0.9)');
           ctx.fillText(cs, nx + NODE_W - PAD, row2Y);
         }
@@ -457,6 +557,8 @@ function drawCurrencyPanels(T) {
     _currencyCache.pendingR = pendingResearch();
     _currencyCache.prestige = G.prestige;
     _currencyCache.pendingP = pendingPrestige() - G.prestige;
+    _currencyCache.bits     = G.bits || 0;
+    _currencyCache.bitsRate = (typeof bitsPerSec === 'function') ? bitsPerSec() : (G.bitsRate || 0);
   }
 
   const panels = [
@@ -475,6 +577,15 @@ function drawCurrencyPanels(T) {
       color:    ZONE_COLORS.prestige.a,
       always:   false,
       check:    () => G.hasPrestiged,
+    },
+
+    {
+      anchor: 'a_startAuto',
+      getValue: () => fmt(_currencyCache.bits) + ' \u0e3f',
+      getRate:  () => _currencyCache.bitsRate > 0 ? '+' + fmt(_currencyCache.bitsRate) + ' \u0e3f/s' : '',
+      color:    ZONE_COLORS.automation.a,
+      always:   false,
+      check:    () => G.automationUnlocked && (nodeState['a_startAuto']?.level > 0),
     },
   ];
 

@@ -51,6 +51,14 @@ const G = {
   bits:              0,
   bitsUnlocked:      false,
   pointCostMult:     1,
+  levelTransformerUnlocked: false,
+  automationUnlocked:       false,
+  automationEnabled:        true,
+  equippedTransformer:      null,
+  reachedLvl100:            false,
+  automatorBought:          false,
+  boosterPBought:           false,
+  cubeClicks:               0,
 };
 
 // ─── STATO NODI ───────────────────────────────────────────────────────────────
@@ -65,6 +73,12 @@ const REQUIRES_TNH      = new Set(['oneUp', 'downsizing', 'holyGrail', 'afterHal
 
 function isVisible(nd) {
   if (nd.zone === 'research' && nd.id !== 'researchUnlock') return false;
+  if (nd.zone === 'automation') {
+    if (!G.automationUnlocked) return false;
+    if (nd.parents.length === 0) return true;
+    if (nd.parents.includes('incrementalDream')) return true;
+    return nd.parents.every(pid => (nodeState[pid]?.level ?? 0) >= 1);
+  }
   if (nd.zone === 'prestige') {
     if (!G.hasPrestiged && !nd.isPrestigeBtn && (nodeState['prestigeUnlock']?.level ?? 0) < 1) return false;
     if (G.hasPrestiged && nd.parents.includes('prestigeUnlock')) return true;
@@ -109,6 +123,174 @@ function pendingPrestige() {
 }
 
 // ─── HELPERS / LEVELING ───────────────────────────────────────────────────────
+function _autoNodeBought(id) {
+  return (nodeState[id]?.level || 0) > 0;
+}
+function _autoNodeLevel(id) {
+  return nodeState[id]?.level || 0;
+}
+function _countBoughtByLabelSuffix(suffix) {
+  let n = 0;
+  for (const nd of NODE_DEFS) {
+    if (nd.zone !== 'automation') continue;
+    if (!nd.label || !nd.label.startsWith('#')) continue;
+    if (!nd.label.endsWith(suffix)) continue;
+    if ((nodeState[nd.id]?.level || 0) > 0) n++;
+  }
+  return n;
+}
+
+function bitsExponent() {
+  let exp = 0.01;
+  if (_autoNodeBought('bg_pow1')) exp += 0.0025;
+  if (_autoNodeBought('bg_evil')) exp *= 2;
+  if (_autoNodeBought('bg_pow2')) exp += 0.0025;
+  return exp;
+}
+
+function bitsPerSec() {
+  if (!G.automationUnlocked) return 0;
+  if (!_autoNodeBought('a_startAuto')) return 0;
+
+  const pg = Math.max(0, G.pps);
+  let gain = Math.pow(pg, bitsExponent());
+
+  if (_autoNodeBought('bg_multi'))
+    gain *= Math.pow(1.5, _autoNodeLevel('bg_multi'));
+
+  if (_autoNodeBought('bg_mulSelf'))
+    gain *= Math.pow(1.125, _countBoughtByLabelSuffix('bg'));
+
+  if (_autoNodeBought('bg_mulA'))
+    gain *= Math.pow(1.1, _countBoughtByLabelSuffix('a'));
+
+  if (_autoNodeBought('bg_gain2x'))
+    gain *= 2;
+
+  if (_autoNodeBought('bg_random'))
+    gain *= 1 + Math.random() * 2;
+
+  if (_autoNodeBought('bg_25x'))
+    gain *= 2.5;
+
+  if (_autoNodeBought('bg_lambdaBoost')) {
+    const lam = Math.max(0, G.research);
+    const boost = Math.log(1 + lam) / Math.log(5);
+    gain *= Math.max(1, Math.pow(boost, 0.75) / 10);
+  }
+
+  return gain;
+}
+
+// mappa: id nodo automate -> [min, max] label punti che automatizza
+const AUTOMATE_RANGES = {
+  a_automate1_5:   [1, 5],
+  a_automate6_8:   [6, 8],
+  a_automate9_15:  [9, 15],
+  a_automate16_20: [16, 20],
+  a_automate21_25: [21, 25],
+  a_automate26_30: [26, 30],
+};
+
+// mappa: id nodo r_upg automation -> id nodo ricerca da automatizzare
+const RUPG_MAP = {
+  a_rupgPg:   'r_pointGain',
+  a_rupgLs:   'r_leftSide',
+  a_rupgRs:   'r_rightSide',
+  a_rupgPg2:  'r_pointGain2',
+  a_rupgPg3:  'r_pointGain3',
+  a_rupgM:    'r_materialize',
+  a_rupgM2:   'r_materialize2',
+  a_rupgPg4:  'r_pointGain4',
+  a_rupgPg1b: 'r_pointGain1b',
+  // non ancora esistenti (arriveranno): a_rupgPg5, a_rupgM3, a_rupgM1b
+};
+
+// cache label -> nodo punti (zona base), costruita una volta
+let _pointNodeByNum = null;
+function _getPointNodeByNum(num) {
+  if (!_pointNodeByNum) {
+    _pointNodeByNum = {};
+    for (const nd of NODE_DEFS) {
+      if (nd.zone !== 'base') continue;
+      const m = /^#(\d+)$/.exec(nd.label || '');
+      if (m) _pointNodeByNum[+m[1]] = nd;
+    }
+  }
+  return _pointNodeByNum[num] || null;
+}
+
+function _autoBuyNode(nd, ultra) {
+  const st = nodeState[nd.id];
+  if (!st || !isVisible(nd) || isLocked(nd)) return false;
+  let bought = false;
+  do {
+    if (st.level >= nd.maxLevel) break;
+    const cost = nodeCost(nd, st.level);
+    if (G.points < cost) break;
+    G.points -= cost;
+    st.level++;
+    nd.onBuy(st.level);
+    bought = true;
+  } while (ultra);
+  return bought;
+}
+
+function _autoBuyResearchNode(nd, ultra) {
+  const st = nodeState[nd.id];
+  if (!st) return false;
+  if (!G.researchUnlocked) return false;
+  if (isLocked(nd)) return false;
+  // i nodi ricerca hanno isVisible=false (pannello separato): uso i prerequisiti reali
+  const parentsOk = nd.parents.every(pid => (nodeState[pid]?.level ?? 0) >= 1);
+  if (!parentsOk) return false;
+  let bought = false;
+  do {
+    if (st.level >= nd.maxLevel) break;
+    const cost = researchCost(nd, st.level);
+    if (G.research < cost) break;
+    G.research -= cost;
+    st.level++;
+    nd.onBuy(st.level);
+    bought = true;
+  } while (ultra);
+  return bought;
+}
+
+function runAutomation(dt) {
+  if (!G.automationUnlocked) return;
+  if (!G.automationEnabled) return;
+  if (!_autoNodeBought('a_startAuto')) return;
+
+  // leggero delay dopo una conversione, prima di ricomprare i nodi (come nell'originale):
+  // evita il loop research<->punti quando si converte ripetutamente
+  if (G.lastConvertTime && (Date.now() - G.lastConvertTime) < 500) return;
+
+  const ultra = _autoNodeBought('a_ultra');
+  let anyBought = false;
+
+  // automate(N,M): compra i nodi punti #N-M
+  for (const autoId in AUTOMATE_RANGES) {
+    if (!_autoNodeBought(autoId)) continue;
+    const [min, max] = AUTOMATE_RANGES[autoId];
+    for (let num = min; num <= max; num++) {
+      const nd = _getPointNodeByNum(num);
+      if (!nd) continue;
+      if (_autoBuyNode(nd, ultra)) anyBought = true;
+    }
+  }
+
+  // r_upg(...): automatizza i nodi ricerca corrispondenti
+  for (const autoId in RUPG_MAP) {
+    if (!_autoNodeBought(autoId)) continue;
+    const rNode = NODE_DEFS.find(n => n.id === RUPG_MAP[autoId]);
+    if (!rNode) continue;
+    if (_autoBuyResearchNode(rNode, ultra)) anyBought = true;
+  }
+
+  if (anyBought) recalcPps();
+}
+
 function xpForLevel(lvl) {
   return Math.round(2 * Math.pow(2, lvl) / (G.xpReqDiv || 1));
 }

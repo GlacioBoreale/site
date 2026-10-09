@@ -150,15 +150,32 @@ function handleNodeClick(nd, lx, ly) {
     return;
   }
 
+  // toggle on/off (#0a mode_switch): non si compra, si attiva/disattiva
+  if (nd.isToggle) {
+    G.automationEnabled = !G.automationEnabled;
+    saveGame();
+    return;
+  }
 
   const st = nodeState[nd.id];
   if (!isVisible(nd) || isLocked(nd) || st.level >= nd.maxLevel) return;
   const isRNode = (nd.zone === 'research' && nd.id !== 'researchUnlock') || !!nd.costInLambda;
   const isPNode = nd.zone === 'prestige' && !nd.isPrestigeBtn;
   const isPrestNode = !!nd.costInPrestige;
-  
+  const isBitNode = nd.zone === 'automation' && !nd.isToggle && nd.id !== 'a_startAuto';
+
   if (isPrestNode && !G.hasPrestiged) return;
 
+  if (isBitNode) {
+    const cost = nodeCost(nd, st.level);
+    if (G.bits < cost) return;
+    G.bits -= cost;
+    st.level++;
+    nd.onBuy(st.level);
+    recalcPps();
+    saveGame();
+    return;
+  }
 
   const isPointUpgrade = !isRNode && !isPNode && !isPrestNode && nd.zone === 'base';
   const buyMax = G.fastAndFurious && isPointUpgrade && (typeof CFG === 'undefined' || CFG.buyMaxPointUpgrades !== false);

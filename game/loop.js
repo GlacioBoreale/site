@@ -20,6 +20,11 @@ function gameLoop(ts) {
   G.points      += earned;
   G.totalEarned += earned;
 
+  if (G.automationUnlocked && (nodeState['a_startAuto']?.level || 0) > 0) {
+    G.bits += bitsPerSec() * dt;
+    runAutomation(dt);
+  }
+
   updateHUD();
 
   const T = getTheme();
@@ -33,25 +38,26 @@ function gameLoop(ts) {
   drawNodes(T);
   drawCurrencyPanels(T);
   ctx.restore();
-  tickLevelingPanel();
+  tickLevelingPanel(dt);
   tickResearchPanel();
   tickStats(dt);
 
   requestAnimationFrame(gameLoop);
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
   resize();
   centerCamera();
   loadGame();
+
+  // carica il cloud UNA VOLTA all'apertura, prima di avviare il gioco
+  const isLogged = typeof Auth !== 'undefined' && Auth.isLoggedIn();
+  if (isLogged && typeof syncCloudSave === 'function') {
+    try { await syncCloudSave(false); } catch (e) { /* ignora, gioca col locale */ }
+  }
+
   requestAnimationFrame(gameLoop);
   setTimeout(() => { gameReady = true; }, 300);
-  setTimeout(() => {
-    if (typeof syncCloudSave === 'function') {
-      const isLogged = typeof Auth !== 'undefined' && Auth.isLoggedIn();
-      syncCloudSave(isLogged);
-    }
-  }, 1000);
 });
 
 window.addEventListener('resize', () => {

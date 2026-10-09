@@ -25,6 +25,13 @@ function buildSaveObj() {
     rMulti:               G.rMulti,
     prestige:             G.prestige,
     hasPrestiged:         G.hasPrestiged,
+    bits:                 G.bits,
+    automationEnabled:    G.automationEnabled,
+    equippedTransformer:  G.equippedTransformer,
+    reachedLvl100:        G.reachedLvl100,
+    automatorBought:      G.automatorBought,
+    boosterPBought:       G.boosterPBought,
+    cubeClicks:           G.cubeClicks,
     prestigeMulti:        G.prestigeMulti,
     prestigeGainMulti:    G.prestigeGainMulti,
     rLambdaMulti:         G.rLambdaMulti,
@@ -82,6 +89,13 @@ function applysave(save) {
   G.rMulti               = save.rMulti               || 1;
   G.prestige             = save.prestige             || 0;
   G.hasPrestiged         = save.hasPrestiged         || false;
+  G.bits                 = save.bits                 || 0;
+  G.automationEnabled    = save.automationEnabled === undefined ? true : save.automationEnabled;
+  G.equippedTransformer  = save.equippedTransformer  || null;
+  G.reachedLvl100        = save.reachedLvl100        || false;
+  G.automatorBought      = save.automatorBought      || false;
+  G.boosterPBought       = save.boosterPBought       || false;
+  G.cubeClicks           = save.cubeClicks           || 0;
   G.prestigeMulti        = save.prestigeMulti        || 1;
   G.prestigeGainMulti    = save.prestigeGainMulti    || 1;
   G.rLambdaMulti         = save.rLambdaMulti         || 1;
@@ -222,6 +236,8 @@ function replayEffects() {
   G.startGoldMultiL      = 1;
   G.mat2Unlocked         = false;
   G.pointCostMult        = 1;
+  G.levelTransformerUnlocked = false;
+  G.automationUnlocked       = false;
   NODE_DEFS.find(n => n.id === 'multiInc').maxLevel = 3;
   NODE_DEFS.find(n => n.id === 'start').maxLevel    = 1;
   NODE_DEFS.find(n => n.id === 'flat2x').maxLevel   = 1;

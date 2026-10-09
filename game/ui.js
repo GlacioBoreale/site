@@ -73,9 +73,14 @@ function updateConvertPanel() {
   }
 }
 
+let _lastConvert = 0;
 btnConvert.addEventListener('click', () => {
+  const now = Date.now();
+  if (now - _lastConvert < 400) return;
   const gained = pendingResearch();
   if (gained < 1) return;
+  _lastConvert = now;
+  G.lastConvertTime = now;
   G.research         += gained;
   G.points            = 0;
   G.totalEarned       = 0;
@@ -83,6 +88,7 @@ btnConvert.addEventListener('click', () => {
   G.multiplier        = 1;
   G.flatMulti         = 1;
   G.selfBoost         = false;
+  G.selfBoostExp      = 0.16;
   G.growsUnlocked     = false;
   G.extraLevels       = 0;
   G.push4research     = false;
@@ -147,10 +153,10 @@ function doPrestige() {
   NODE_DEFS.find(n => n.id === 'multiInc').maxLevel = 3;
   NODE_DEFS.find(n => n.id === 'start').maxLevel    = 1;
   NODE_DEFS.forEach(nd => {
-    if (nd.zone !== 'prestige' && !nd.permanent && !nd.isPrestigeBtn) nodeState[nd.id].level = 0;
+    if (nd.zone !== 'prestige' && nd.zone !== 'automation' && !nd.permanent && !nd.isPrestigeBtn) nodeState[nd.id].level = 0;
   });
   topologicalSort().forEach(nd => {
-    if (nd.permanent || nd.zone === 'prestige' || nd.isPrestigeBtn) {
+    if (nd.permanent || nd.zone === 'prestige' || nd.zone === 'automation' || nd.isPrestigeBtn) {
       const lvl = nodeState[nd.id].level;
       for (let i = 0; i < lvl; i++) nd.onBuy(i + 1);
     }

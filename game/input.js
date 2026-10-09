@@ -20,8 +20,10 @@ canvas.addEventListener('mousemove', e => {
     const dx = e.clientX - dragStart.x;
     const dy = e.clientY - dragStart.y;
     if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasDragged = true;
-    camX = camStart.x + dx / zoom;
-    camY = camStart.y + dy / zoom;
+    if (hasDragged) {
+      camX = camStart.x + dx / zoom;
+      camY = camStart.y + dy / zoom;
+    }
   }
   const w = worldPos(mousePos.x, mousePos.y);
   hoveredNode = nodeAt(w.x, w.y);
@@ -84,8 +86,10 @@ canvas.addEventListener('touchmove', e => {
     const dx = t.clientX - dragStart.x;
     const dy = t.clientY - dragStart.y;
     if (Math.abs(dx) > 4 || Math.abs(dy) > 4) hasDragged = true;
-    camX = camStart.x + dx / zoom;
-    camY = camStart.y + dy / zoom;
+    if (hasDragged) {
+      camX = camStart.x + dx / zoom;
+      camY = camStart.y + dy / zoom;
+    }
   } else if (e.touches.length === 2 && _pinchStartDist > 0) {
     const newDist = _pinchDist(e);
     zoom = Math.min(2, Math.max(0.3, _pinchStartZoom * (newDist / _pinchStartDist)));
@@ -146,13 +150,15 @@ function handleNodeClick(nd, lx, ly) {
     return;
   }
 
+
   const st = nodeState[nd.id];
   if (!isVisible(nd) || isLocked(nd) || st.level >= nd.maxLevel) return;
   const isRNode = (nd.zone === 'research' && nd.id !== 'researchUnlock') || !!nd.costInLambda;
   const isPNode = nd.zone === 'prestige' && !nd.isPrestigeBtn;
   const isPrestNode = !!nd.costInPrestige;
-
+  
   if (isPrestNode && !G.hasPrestiged) return;
+
 
   const isPointUpgrade = !isRNode && !isPNode && !isPrestNode && nd.zone === 'base';
   const buyMax = G.fastAndFurious && isPointUpgrade && (typeof CFG === 'undefined' || CFG.buyMaxPointUpgrades !== false);

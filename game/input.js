@@ -47,6 +47,41 @@ canvas.addEventListener('mouseup', e => {
 
 canvas.addEventListener('contextmenu', e => e.preventDefault());
 
+// ─── ZOOM + RESET TASTO CENTRALE
+const ZOOM_MIN = 0.3;
+const ZOOM_MAX = 2;
+
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  // punto del mondo sotto il cursore prima dello zoom
+  const wx = mx / zoom - camX;
+  const wy = my / zoom - camY;
+
+  const fac  = e.deltaY < 0 ? 1.1 : 1 / 1.1;
+  const moveitmoveit = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, zoom * fac));
+  if (moveitmoveit === zoom) return;
+  zoom = moveitmoveit;
+
+  // riaggancia la camera così il punto sotto il mouse resta fermo
+  camX = mx / zoom - wx;
+  camY = my / zoom - wy;
+}, { passive: false });
+
+canvas.addEventListener('auxclick', e => {
+  // tasto centrale (button 1): ricentra e ripristina lo zoom di default
+  if (e.button === 1) {
+    e.preventDefault();
+    centerCamera();
+  }
+});
+
+// evita lo scroll automatico del browser all'apertura col tasto centrale
+canvas.addEventListener('mousedown', e => { if (e.button === 1) e.preventDefault(); });
+
 canvas.addEventListener('mouseleave', () => {
   isDragging  = false;
   hoveredNode = null;

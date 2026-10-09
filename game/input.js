@@ -19,7 +19,7 @@ canvas.addEventListener('mousemove', e => {
   if (isDragging) {
     const dx = e.clientX - dragStart.x;
     const dy = e.clientY - dragStart.y;
-    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) hasDragged = true;
+    if (Math.abs(dx) > 7 || Math.abs(dy) > 7) hasDragged = true;
     if (hasDragged) {
       camX = camStart.x + dx / zoom;
       camY = camStart.y + dy / zoom;
@@ -85,7 +85,7 @@ canvas.addEventListener('touchmove', e => {
     const t  = e.touches[0];
     const dx = t.clientX - dragStart.x;
     const dy = t.clientY - dragStart.y;
-    if (Math.abs(dx) > 4 || Math.abs(dy) > 4) hasDragged = true;
+    if (Math.abs(dx) > 12 || Math.abs(dy) > 12) hasDragged = true;
     if (hasDragged) {
       camX = camStart.x + dx / zoom;
       camY = camStart.y + dy / zoom;

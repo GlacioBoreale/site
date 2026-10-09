@@ -241,6 +241,10 @@ function tickLevelingPanel(dt) {
 //  LEVEL TRANSFORMER PANEL — sopra il pannello Leveling, da #7p
 // ════════════════════════════════════════════════════════
 
+// Interruttore di rilascio: finché è false il pannello resta nascosto a tutti,
+// anche a chi ha sbloccato #7p. Mettere a true quando il Level Transformer è pronto.
+const LEVEL_TRANSFORMER_RELEASED = false;
+
 let _ltBuilt = false;
 let _ltEl    = null;
 let _ltListEl = null;
@@ -445,7 +449,7 @@ function positionTransformerPanel() {
 
 let _ltLastRenderState = '';
 function tickTransformerPanel() {
-  if (!G.levelTransformerUnlocked) {
+  if (!LEVEL_TRANSFORMER_RELEASED || !G.levelTransformerUnlocked) {
     if (_ltEl) _ltEl.classList.remove('lt-visible');
     return;
   }

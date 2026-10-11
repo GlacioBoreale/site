@@ -38,7 +38,16 @@ const ITEMS = [
   { id: 'saves',        icon: 'fa-floppy-disk',  labelKey: 'sidebar.saves',        color: 'si-c-saves',     panel: 'panel-saves',        wip: false },
   { id: 'maintenance',  icon: 'fa-wrench',       labelKey: 'sidebar.maintenance',  color: 'si-c-maintain',  panel: 'panel-maintenance',  wip: true  },
 ];
-function _sbLabel(item) { return gt(item.labelKey) || item.labelKey; }
+const SB_FALLBACK = {
+  'sidebar.settings':     'SETTINGS',
+  'sidebar.stats':        'STATS',
+  'sidebar.achievements': 'ACHIEVEMENTS',
+  'sidebar.menu':         'MENU',
+  'sidebar.leaderboard':  'LEADERBOARD',
+  'sidebar.saves':        'SAVES',
+  'sidebar.maintenance':  'MAINTENANCE',
+};
+function _sbLabel(item) { return gt(item.labelKey) || SB_FALLBACK[item.labelKey] || item.labelKey; }
 
 const PAIRS = [[2, 4], [1, 5], [0, 6]];
 const PAIR_DELAY = 150;
@@ -1120,6 +1129,10 @@ document.addEventListener('DOMContentLoaded', () => {
   buildSidebar();
   buildPanels();
   applySettings();
+  // se le traduzioni sono già caricate, applicale subito (evita di mostrare le chiavi grezze)
+  if (typeof applyGameTranslations === 'function' && typeof translations !== 'undefined' && translations && Object.keys(translations).length) {
+    applyGameTranslations();
+  }
   _statLoadPins();
   _statBuildPinnedBar();
   _statRenderPinnedBar();

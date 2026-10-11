@@ -59,6 +59,7 @@ const G = {
   automatorBought:          false,
   boosterPBought:           false,
   cubeClicks:               0,
+  radioAutoOpened:          false,
 };
 
 // ─── STATO NODI ───────────────────────────────────────────────────────────────

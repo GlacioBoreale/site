@@ -1,9 +1,20 @@
 'use strict';
 
 const REDUCE_MOTION_KEY = 'glaciopia_reduce_motion';
+const SHOW_CONTROLS_KEY = 'glaciopia_show_controls';
 
 function isReduceMotion() {
   return localStorage.getItem(REDUCE_MOTION_KEY) === '1';
+}
+
+function showControlsHint() {
+  // default: visibile (true) finché non disattivato
+  return localStorage.getItem(SHOW_CONTROLS_KEY) !== '0';
+}
+
+function applyShowControls(on) {
+  const el = document.getElementById('controls-hint');
+  if (el) el.classList.toggle('ch-hidden', !on);
 }
 
 function applyReduceMotion(on) {
@@ -60,6 +71,15 @@ function buildSettingsPopup() {
               <span class="set-switch-knob"></span>
             </button>
           </div>
+          <div class="set-toggle-row">
+            <div class="set-toggle-text">
+              <p class="set-toggle-label" data-i18n="settings.showControls">Mostra controlli</p>
+              <p class="set-toggle-desc" data-i18n="settings.showControlsDesc">Mostra il riquadro dei controlli in alto a sinistra nel gioco.</p>
+            </div>
+            <button class="set-switch" id="set-show-controls" role="switch" aria-checked="true">
+              <span class="set-switch-knob"></span>
+            </button>
+          </div>
         </div>
 
         <div class="set-section">
@@ -92,6 +112,7 @@ function buildSettingsPopup() {
   buildSettingsLang();
   buildSettingsThemeButtons();
   buildSettingsReduceMotion();
+  buildSettingsShowControls();
   bindSettingsAchievements();
   bindSettingsReset();
   syncSettingsUI();
@@ -144,6 +165,25 @@ function buildSettingsReduceMotion() {
     applyReduceMotion(next);
     syncReduceMotionSwitch();
   });
+}
+
+function buildSettingsShowControls() {
+  const sw = document.getElementById('set-show-controls');
+  if (!sw) return;
+  sw.addEventListener('click', () => {
+    const next = !showControlsHint();
+    localStorage.setItem(SHOW_CONTROLS_KEY, next ? '1' : '0');
+    applyShowControls(next);
+    syncShowControlsSwitch();
+  });
+}
+
+function syncShowControlsSwitch() {
+  const sw = document.getElementById('set-show-controls');
+  if (!sw) return;
+  const on = showControlsHint();
+  sw.classList.toggle('on', on);
+  sw.setAttribute('aria-checked', on ? 'true' : 'false');
 }
 
 function syncReduceMotionSwitch() {
@@ -217,6 +257,7 @@ function syncSettingsUI() {
   const theme = localStorage.getItem('glaciopia_theme') || 'dark';
   syncSettingsTheme(theme);
   syncReduceMotionSwitch();
+  syncShowControlsSwitch();
 
   const achCount = document.getElementById('set-ach-count');
   if (achCount && typeof ACHIEVEMENTS !== 'undefined') {
@@ -248,3 +289,13 @@ document.addEventListener('keydown', (e) => {
 (function initReduceMotionEarly() {
   if (isReduceMotion()) applyReduceMotion(true);
 })();
+
+// icona "?" controlli: espandi/chiudi al click + stato iniziale dal setting
+document.addEventListener('DOMContentLoaded', () => {
+  const hint = document.getElementById('controls-hint');
+  const icon = document.getElementById('ch-icon');
+  if (hint && icon) {
+    applyShowControls(showControlsHint());
+    icon.addEventListener('click', () => hint.classList.toggle('open'));
+  }
+});

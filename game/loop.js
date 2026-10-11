@@ -31,9 +31,9 @@ function gameLoop(ts) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   lerpBg(dt);
   drawBackground();
+  drawGrid(T);
   ctx.save();
   ctx.scale(zoom, zoom);
-  drawGrid(T);
   drawConnections(T);
   drawNodes(T);
   drawCurrencyPanels(T);

@@ -467,6 +467,13 @@ function syncRadioVisibility() {
     buildToggleBtn();
     const btn = document.getElementById('radio-toggle-btn');
     if (btn) btn.classList.add('visible');
+    // prima volta che si sblocca: apri subito lo stereo in basso a sinistra
+    if (!G.radioAutoOpened) {
+      G.radioAutoOpened = true;
+      if (typeof saveGame === 'function') saveGame();
+      if (w) { w.classList.remove('hidden'); w.classList.add('visible-radio'); }
+      if (btn) { btn.innerHTML = '<i class="fas fa-chevron-left"></i>'; btn.style.left = '360px'; }
+    }
   }
 }
 

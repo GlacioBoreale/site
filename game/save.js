@@ -32,6 +32,7 @@ function buildSaveObj() {
     automatorBought:      G.automatorBought,
     boosterPBought:       G.boosterPBought,
     cubeClicks:           G.cubeClicks,
+    radioAutoOpened:      G.radioAutoOpened,
     prestigeMulti:        G.prestigeMulti,
     prestigeGainMulti:    G.prestigeGainMulti,
     rLambdaMulti:         G.rLambdaMulti,
@@ -96,6 +97,7 @@ function applysave(save) {
   G.automatorBought      = save.automatorBought      || false;
   G.boosterPBought       = save.boosterPBought       || false;
   G.cubeClicks           = save.cubeClicks           || 0;
+  G.radioAutoOpened      = save.radioAutoOpened      || false;
   G.prestigeMulti        = save.prestigeMulti        || 1;
   G.prestigeGainMulti    = save.prestigeGainMulti    || 1;
   G.rLambdaMulti         = save.rLambdaMulti         || 1;

@@ -178,7 +178,8 @@ function drawGrid(T) {
   if (window._cfgShowGrid === false) return;
   if (window.innerWidth <= 900) return;
   if (canvas.width < 900) return;
-  const scaledGrid = GRID * zoom;
+  // passo fisso: la griglia non scala con lo zoom, resta sempre uguale
+  const scaledGrid = GRID;
   const offX = ((camX * zoom % scaledGrid) + scaledGrid) % scaledGrid;
   const offY = ((camY * zoom % scaledGrid) + scaledGrid) % scaledGrid;
   ctx.strokeStyle = T.grid;

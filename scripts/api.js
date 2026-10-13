@@ -63,6 +63,7 @@ const Api = (() => {
       put:    (saveData, points, prestige, xpLevel, optIn, research, totalTimeSec) =>
         request('PUT', '/save', { save_data: saveData, points, prestige, xp_level: xpLevel, opt_in: optIn ?? false, research: research ?? 0, total_time_sec: totalTimeSec ?? 0 }),
       delete: () => request('DELETE', '/save'),
+      ackAdmin: () => request('POST', '/save/ack-admin'),
     },
 
     leaderboard: {
@@ -109,6 +110,7 @@ const Api = (() => {
       deleteUser:         (id)                      => request('DELETE', `/admin/users/${id}`),
       getSaves:           ()                        => request('GET',    '/admin/saves'),
       deleteSave:         (userId)                  => request('DELETE', `/admin/saves/${userId}`),
+      updateUserGame:     (userId, data)            => request('PATCH',  `/admin/saves/${userId}/game`, data),
       updateUser:         (userId, data)            => request('PATCH',  `/admin/users/${userId}`, data),
       getRepos:           ()                        => request('GET',    '/admin/repos'),
       syncRepos:          (repos)                   => request('POST',   '/admin/repos/sync', { repos }),

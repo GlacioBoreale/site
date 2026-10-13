@@ -186,6 +186,24 @@ async function syncCloudSave(forceCloud = false) {
   try {
     const data = await Api.save.get();
     if (!data.save_data) return;
+
+    // l'admin ha modificato i dati di gioco: applica il save, sovrascrivi le
+    // colonne modificate, avvisa il player e azzera il flag
+    if (data.admin_modified) {
+      applysave(data.save_data);
+      if (data.points         != null) G.points      = Number(data.points);
+      if (data.prestige       != null) G.prestige    = Number(data.prestige);
+      if (data.xp_level       != null) G.xpLevel     = Number(data.xp_level);
+      if (data.research       != null) G.research    = Number(data.research);
+      if (data.total_time_sec != null) G.totalTimeSec = Number(data.total_time_sec);
+      recalcPps();
+      saveGame();
+      try { await Api.save.ackAdmin(); } catch (_) {}
+      await pushCloudSave();
+      if (typeof showAdminModifiedPopup === 'function') showAdminModifiedPopup();
+      return;
+    }
+
     const localRaw = localStorage.getItem(SAVE_KEY);
     const localSave = localRaw ? JSON.parse(localRaw) : null;
     const cloudTs = data.updated_at ? new Date(data.updated_at).getTime() : 0;

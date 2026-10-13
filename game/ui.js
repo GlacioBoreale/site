@@ -197,3 +197,21 @@ document.getElementById('reset-confirm').addEventListener('click', async () => {
 document.getElementById('btn-center').addEventListener('click', () => {
   centerCamera();
 });
+
+// POPUP: dati modificati da un amministratore
+function showAdminModifiedPopup() {
+  if (document.getElementById('admin-mod-popup')) return;
+  const el = document.createElement('div');
+  el.id = 'admin-mod-popup';
+  el.innerHTML = `
+    <div class="amp-backdrop"></div>
+    <div class="amp-box">
+      <div class="amp-icon"><i class="fas fa-shield-halved"></i></div>
+      <h2>Dati aggiornati</h2>
+      <p>I tuoi dati di gioco sono stati modificati da un amministratore. I nuovi valori sono gi\u00e0 stati caricati.</p>
+      <button class="amp-ok" id="amp-ok">Ho capito</button>
+    </div>`;
+  document.body.appendChild(el);
+  const close = () => el.remove();
+  el.querySelector('#amp-ok').addEventListener('click', close);
+}

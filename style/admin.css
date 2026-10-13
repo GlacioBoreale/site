@@ -571,6 +571,16 @@ body {
 .adm-loading { padding:3rem; color:var(--dim); display:flex; align-items:center; justify-content:center; gap:.6rem; }
 .adm-empty { text-align:center; padding:2.5rem; color:var(--dim); font-size:.88rem; }
 
+/* ── EMAIL SPOILER (clicca per rivelare) ── */
+.adm-email-spoiler { cursor:pointer; user-select:none; }
+.adm-email-spoiler .adm-email-shown  { display:none; }
+.adm-email-spoiler .adm-email-hidden {
+  color:var(--dim); font-style:italic; font-size:.78rem;
+  border-bottom:1px dashed var(--border2); padding-bottom:1px;
+}
+.adm-email-spoiler.revealed .adm-email-hidden { display:none; }
+.adm-email-spoiler.revealed .adm-email-shown  { display:inline; user-select:text; }
+
 /* ── REPO / PROGETTI ── */
 .adm-repo-bar {
   display:flex; align-items:center; justify-content:space-between;

@@ -1168,3 +1168,45 @@ body.page-game textarea {
 @media (max-width: 900px) {
   .controls-hint { display: none; }
 }
+
+/* POPUP: dati modificati da un amministratore */
+#admin-mod-popup {
+  position: fixed; inset: 0; z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fredoka', sans-serif;
+}
+.amp-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); }
+.amp-box {
+  position: relative; z-index: 1;
+  background: rgba(14,14,24,0.98);
+  border: 1px solid rgba(108,143,255,0.35);
+  border-radius: 18px;
+  padding: 2rem 1.9rem 1.6rem;
+  width: min(380px, 92vw);
+  text-align: center;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.7);
+  animation: ampIn 0.22s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes ampIn { from { opacity:0; transform: translateY(16px) scale(0.97);} to { opacity:1; transform:none; } }
+.amp-icon {
+  width: 52px; height: 52px; margin: 0 auto 0.8rem;
+  border-radius: 14px;
+  background: rgba(108,143,255,0.14);
+  border: 1px solid rgba(108,143,255,0.3);
+  color: #6c8fff; font-size: 1.3rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.amp-box h2 { font-family: 'Fredoka One', sans-serif; font-size: 1.35rem; font-weight: 400; color: #fff; margin-bottom: 0.5rem; }
+.amp-box p { font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.6; margin-bottom: 1.3rem; }
+.amp-ok {
+  width: 100%; padding: 0.75rem;
+  background: rgba(108,143,255,0.18);
+  border: 1px solid rgba(108,143,255,0.4);
+  border-radius: 11px;
+  font-family: 'Fredoka', sans-serif; font-size: 1rem; font-weight: 600;
+  color: #6c8fff; cursor: pointer; transition: background 0.2s;
+}
+.amp-ok:hover { background: rgba(108,143,255,0.3); }
+[data-theme="light"] .amp-box { background: rgba(245,248,255,0.99); }
+[data-theme="light"] .amp-box h2 { color: #0a0a14; }
+[data-theme="light"] .amp-box p  { color: rgba(10,10,20,0.6); }

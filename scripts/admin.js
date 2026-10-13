@@ -858,7 +858,7 @@ function renderUsers() {
     const isOwner = u.email === ADMIN_EMAIL;
     tr.innerHTML  = `
       <td class="adm-td-main">${esc(u.username)}${isOwner ? '&nbsp;<span style="color:#c084fc;font-size:.7rem">(admin)</span>' : ''}</td>
-      <td>${esc(u.email)}</td>
+      <td>${emailSpoiler(u.email)}</td>
       <td>${fmtDate(u.created_at)}</td>
       <td class="adm-td-num">${fmt(u.points)}</td>
       <td class="adm-td-num">${fmt(u.prestige)}</td>
@@ -885,7 +885,7 @@ function openUserDrawer(u) {
     <div class="adm-dfield-block">
       <div class="adm-dfield-block-title">Account</div>
       <div class="adm-dfield"><i class="fas fa-user"></i><span class="adm-dfield-lbl">Username</span><span class="adm-dfield-val">${esc(u.username)}</span></div>
-      <div class="adm-dfield"><i class="fas fa-envelope"></i><span class="adm-dfield-lbl">Email</span><span class="adm-dfield-val">${esc(u.email)}</span></div>
+      <div class="adm-dfield"><i class="fas fa-envelope"></i><span class="adm-dfield-lbl">Email</span><span class="adm-dfield-val">${emailSpoiler(u.email)}</span></div>
       <div class="adm-dfield"><i class="fas fa-calendar"></i><span class="adm-dfield-lbl">Registrato</span><span class="adm-dfield-val">${fmtDate(u.created_at)}</span></div>
       <div class="adm-dfield"><i class="fas fa-envelope-circle-check"></i><span class="adm-dfield-lbl">Verificato</span><span class="adm-dfield-val">${u.verified === false ? '<span style="color:#f87171">No</span>' : '<span style="color:#4ade80">S\u00ec</span>'}</span></div>
     </div>
@@ -900,6 +900,30 @@ function openUserDrawer(u) {
       <div class="adm-dfield"><i class="fas fa-flask"></i><span class="adm-dfield-lbl">Ricerca</span><span class="adm-dfield-val">${fmt(u.research)}</span></div>
       <div class="adm-dfield"><i class="fas fa-clock"></i><span class="adm-dfield-lbl">Tempo</span><span class="adm-dfield-val">${fmtTime(u.total_time_sec)}</span></div>
       <div class="adm-dfield"><i class="fas fa-save"></i><span class="adm-dfield-lbl">Ultimo save</span><span class="adm-dfield-val">${fmtDate(u.last_save)}</span></div>
+    </div>
+    <div class="adm-dfield-block" id="user-game-block">
+      <div class="adm-dfield-block-title" style="cursor:pointer;user-select:none;" id="user-game-toggle">
+        <i class="fas fa-sliders" style="margin-right:.4rem"></i> Modifica dati di gioco
+        <i class="fas fa-chevron-down" id="user-game-chevron" style="margin-left:auto;transition:transform .2s;"></i>
+      </div>
+      <div id="user-game-fields" style="display:none;margin-top:.8rem;">
+        ${[
+          ['ug-points',   'Punti',    u.points],
+          ['ug-prestige', 'Prestige', u.prestige],
+          ['ug-xp_level', 'Livello XP', u.xp_level],
+          ['ug-research', 'Ricerca',  u.research],
+          ['ug-time',     'Tempo (secondi)', u.total_time_sec],
+        ].map(([id, label, val]) => `
+          <div style="margin-bottom:.7rem;">
+            <label style="display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--dim);margin-bottom:.3rem;">${label}</label>
+            <input id="${id}" type="number" min="0" step="any" value="${val != null ? Number(val) : ''}"
+              style="width:100%;padding:.45rem .7rem;background:var(--raised);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Fredoka',sans-serif;font-size:.85rem;outline:none;">
+          </div>`).join('')}
+        <div id="user-game-feedback" style="font-size:.8rem;margin-bottom:.5rem;"></div>
+        <button id="da-save-game" class="adm-btn adm-btn-detail" style="width:100%;justify-content:center;">
+          <i class="fas fa-floppy-disk"></i> Salva dati di gioco
+        </button>
+      </div>
     </div>
     <div class="adm-dfield-block" id="user-edit-block">
       <div class="adm-dfield-block-title" style="cursor:pointer;user-select:none;" id="user-edit-toggle">
@@ -988,6 +1012,52 @@ function openUserDrawer(u) {
     btn.innerHTML = '<i class="fas fa-floppy-disk"></i> Salva modifiche';
   });
 
+  const ugToggle  = document.getElementById('user-game-toggle');
+  const ugFields  = document.getElementById('user-game-fields');
+  const ugChevron = document.getElementById('user-game-chevron');
+  ugToggle?.addEventListener('click', () => {
+    const open = ugFields.style.display === 'none';
+    ugFields.style.display    = open ? 'block' : 'none';
+    ugChevron.style.transform = open ? 'rotate(180deg)' : '';
+  });
+
+  document.getElementById('da-save-game')?.addEventListener('click', async () => {
+    const btn = document.getElementById('da-save-game');
+    const fb  = document.getElementById('user-game-feedback');
+    fb.textContent = '';
+
+    const map = {
+      points:         document.getElementById('ug-points')?.value,
+      prestige:       document.getElementById('ug-prestige')?.value,
+      xp_level:       document.getElementById('ug-xp_level')?.value,
+      research:       document.getElementById('ug-research')?.value,
+      total_time_sec: document.getElementById('ug-time')?.value,
+    };
+    const data = {};
+    Object.entries(map).forEach(([k, v]) => { if (v !== '' && v != null) data[k] = v; });
+    if (!Object.keys(data).length) {
+      fb.style.color = 'var(--dim)';
+      fb.textContent = 'Nessun valore da salvare.';
+      return;
+    }
+
+    btn.disabled  = true;
+    btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Salvataggio...';
+    try {
+      const r = await Api.admin.updateUserGame(u.id, data);
+      Object.assign(u, r.save);
+      renderUsers();
+      fb.style.color = 'var(--green)';
+      fb.textContent = 'Dati di gioco aggiornati!';
+      showToast('Dati di gioco aggiornati', 'ok');
+    } catch(e) {
+      fb.style.color = 'var(--red)';
+      fb.textContent = e.message || 'Errore durante il salvataggio.';
+    }
+    btn.disabled  = false;
+    btn.innerHTML = '<i class="fas fa-floppy-disk"></i> Salva dati di gioco';
+  });
+
   openDrawer();
 }
 
@@ -1033,7 +1103,7 @@ function renderSaves() {
   filtered.forEach(s => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td class="adm-td-main">${esc(s.username)}<br><span style="font-size:.7rem;color:var(--dim)">${esc(s.email)}</span></td>
+      <td class="adm-td-main">${esc(s.username)}<br><span style="font-size:.7rem;color:var(--dim)">${emailSpoiler(s.email)}</span></td>
       <td class="adm-td-num">${fmt(s.points)}</td>
       <td class="adm-td-num">${fmt(s.prestige)}</td>
       <td class="adm-td-num">${s.xp_level ?? '—'}</td>
@@ -1135,6 +1205,11 @@ function navTo(section) {
 
 function esc(s) {
   return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+// email nascosta dietro spoiler: clicca per rivelare (privacy/screenshot sicuri)
+function emailSpoiler(email) {
+  const e = esc(email || '—');
+  return `<span class="adm-email-spoiler" title="Clicca per rivelare" onclick="this.classList.toggle('revealed')"><span class="adm-email-hidden">•••••• clicca per rivelare</span><span class="adm-email-shown">${e}</span></span>`;
 }
 function statusLabel(s) {
   return s === 'pending' ? 'In attesa' : s === 'approved' ? 'Approvata' : 'Rifiutata';

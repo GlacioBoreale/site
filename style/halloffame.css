@@ -1,0 +1,135 @@
+.hof-hero {
+  text-align: center;
+  padding: 3.5rem 2rem 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  animation: fadeDown 0.8s cubic-bezier(0.16,1,0.3,1) both;
+  position: relative;
+  z-index: 1;
+}
+
+.hof-label {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.7rem;
+}
+
+.hof-hero h1 {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 400;
+  background: linear-gradient(135deg, var(--text) 30%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.7rem;
+}
+
+.hof-subtitle {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.97rem;
+  color: var(--text-muted);
+}
+
+.hof-section {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 2rem 4rem;
+}
+
+.hof-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+  gap: 1.2rem;
+  justify-content: center;
+}
+
+.hof-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.8rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.6rem;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.hof-card:hover {
+  border-color: var(--border-mid);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+
+.hof-card-medal {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  box-shadow: 0 4px 18px rgba(91,156,246,0.35);
+  margin-bottom: 0.2rem;
+}
+
+.hof-card-name {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.hof-card-badge {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+  background: rgba(91,156,246,0.1);
+  border: 1px solid rgba(91,156,246,0.22);
+  padding: 0.2rem 0.7rem;
+  border-radius: var(--radius-sm);
+}
+
+.hof-card-note {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-top: 0.1rem;
+}
+
+.hof-empty {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  text-align: center;
+  padding: 3rem 2rem;
+  color: var(--text-dim);
+}
+.hof-empty i {
+  font-size: 2.6rem;
+  color: var(--accent);
+  opacity: 0.6;
+}
+.hof-empty p {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 600px) {
+  .hof-hero h1 { font-size: 2rem; }
+  .hof-grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  .hof-card { padding: 1.3rem 0.9rem; }
+}

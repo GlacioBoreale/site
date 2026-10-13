@@ -66,6 +66,17 @@ const Api = (() => {
       ackAdmin: () => request('POST', '/save/ack-admin'),
     },
 
+    me: {
+      get:            ()                    => request('GET',   '/me'),
+      update:         (data)                => request('PATCH', '/me', data),
+      requestPwdCode: ()                    => request('POST',  '/me/password-code'),
+      changePassword: (data)                => request('POST',  '/me/password', data),
+    },
+
+    hallOfFame: {
+      get: () => request('GET', '/hall-of-fame'),
+    },
+
     leaderboard: {
       get: () => request('GET', '/leaderboard'),
     },
@@ -116,6 +127,10 @@ const Api = (() => {
       syncRepos:          (repos)                   => request('POST',   '/admin/repos/sync', { repos }),
       setReposAutoSync:   (autoSync)                => request('PATCH',  '/admin/repos/settings', { auto_sync: autoSync }),
       updateRepo:         (id, data)                => request('PATCH',  `/admin/repos/${id}`, data),
+      getHallOfFame:      ()                        => request('GET',    '/admin/hall-of-fame'),
+      createHallOfFame:   (data)                    => request('POST',   '/admin/hall-of-fame', data),
+      updateHallOfFame:   (id, data)                => request('PATCH',  `/admin/hall-of-fame/${id}`, data),
+      deleteHallOfFame:   (id)                      => request('DELETE', `/admin/hall-of-fame/${id}`),
     },
   };
 })();

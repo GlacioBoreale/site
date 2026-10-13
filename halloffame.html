@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hall of Fame - Glaciopia</title>
+    <link rel="icon" type="image/x-icon" href="https://glaciopia-images.s3.eu-north-1.amazonaws.com/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/loading.css">
+    <link rel="stylesheet" href="style/auth.css">
+    <link rel="stylesheet" href="components/navbar/nav.css">
+    <link rel="stylesheet" href="components/footer/footer.css">
+    <link rel="stylesheet" href="components/achievements/achievements.css">
+    <link rel="stylesheet" href="style/settings.css">
+    <link rel="stylesheet" href="style/halloffame.css">
+    <script src="scripts/api.js"></script>
+    <script src="scripts/auth.js"></script>
+    <script src="components/navbar/nav.js"></script>
+    <script src="components/footer/footer.js"></script>
+    <script src="components/achievements/achievements.js"></script>
+    <script src="scripts/settings.js"></script>
+    <script src="scripts/script.js"></script>
+    <script src="scripts/halloffame.js"></script>
+</head>
+<body>
+    <div id="navbar-placeholder"></div>
+
+    <main>
+        <section class="hof-hero">
+            <p class="hof-label" data-i18n="hof.label">Hall of Fame</p>
+            <h1 data-i18n="hof.title">Hall of Fame</h1>
+            <p class="hof-subtitle" data-i18n="hof.subtitle">Chi ha reso Glaciopia migliore</p>
+        </section>
+
+        <section class="hof-section">
+            <div class="hof-grid" id="hof-grid">
+                <div class="page-loading" id="hof-loading" data-i18n="hof.loading">Caricamento...</div>
+            </div>
+            <div class="hof-empty" id="hof-empty" style="display:none;">
+                <i class="fas fa-trophy"></i>
+                <p data-i18n="hof.empty">La Hall of Fame è ancora vuota. Torna presto!</p>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+</body>
+</html>

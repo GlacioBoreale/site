@@ -7,6 +7,7 @@ let submissions  = [];
 let users        = [];
 let saves        = [];
 let repos        = [];
+let hallOfFame   = [];
 let userSearch   = '';
 let saveSearch   = '';
 
@@ -61,7 +62,7 @@ function checkAccess() {
 async function loadAll() {
   setRefreshSpinner(true);
   checkApiStatus();
-  await Promise.allSettled([loadStats(), loadSubmissions(), loadUsers(), loadSaves(), loadRepos()]);
+  await Promise.allSettled([loadStats(), loadSubmissions(), loadUsers(), loadSaves(), loadRepos(), loadHallOfFame()]);
   setRefreshSpinner(false);
 }
 
@@ -1267,6 +1268,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('repo-sync-btn')?.addEventListener('click', doRepoSync);
+    document.getElementById('hof-add-btn')?.addEventListener('click', () => openHofDrawer(null));
     document.getElementById('repo-auto-sync')?.addEventListener('change', async (e) => {
       try {
         await Api.admin.setReposAutoSync(e.target.checked);
@@ -1289,3 +1291,152 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   tryInit();
 });
+
+async function loadHallOfFame() {
+  try {
+    const data = await Api.admin.getHallOfFame();
+    hallOfFame = data.entries || [];
+    renderHallOfFame();
+  } catch (e) {
+    const el = document.getElementById('hof-list');
+    if (el) el.innerHTML = `<div class="adm-empty">Errore nel caricamento della Hall of Fame.</div>`;
+  }
+}
+
+function renderHallOfFame() {
+  const el = document.getElementById('hof-list');
+  if (!el) return;
+  if (!hallOfFame.length) {
+    el.innerHTML = `<div class="adm-empty">Nessuna voce. Premi "Aggiungi" per premiare qualcuno.</div>`;
+    return;
+  }
+  el.innerHTML = `
+    <table class="adm-table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Badge</th>
+          <th>Nota</th>
+          <th>Ordine</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        ${hallOfFame.map(h => `
+          <tr>
+            <td>${esc(h.user_name || h.name)}${h.username ? ` <span class="adm-dim">@${esc(h.username)}</span>` : ''}</td>
+            <td>${h.badge ? `<span class="adm-chip">${esc(h.badge)}</span>` : '<span class="adm-dim">—</span>'}</td>
+            <td>${h.note ? esc(h.note) : '<span class="adm-dim">—</span>'}</td>
+            <td>${h.sort_order ?? 0}</td>
+            <td style="text-align:right;white-space:nowrap;">
+              <button class="adm-icon-btn" data-hof-edit="${esc(h.id)}" title="Modifica"><i class="fas fa-pen"></i></button>
+              <button class="adm-icon-btn" data-hof-del="${esc(h.id)}" title="Elimina"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+  el.querySelectorAll('[data-hof-edit]').forEach(b => {
+    b.addEventListener('click', () => openHofDrawer(hallOfFame.find(h => h.id === b.dataset.hofEdit)));
+  });
+  el.querySelectorAll('[data-hof-del]').forEach(b => {
+    b.addEventListener('click', () => {
+      const entry = hallOfFame.find(h => h.id === b.dataset.hofDel);
+      showConfirm('Elimina voce', `Rimuovere "${entry?.user_name || entry?.name || ''}" dalla Hall of Fame?`, async () => {
+        try {
+          await Api.admin.deleteHallOfFame(b.dataset.hofDel);
+          hallOfFame = hallOfFame.filter(h => h.id !== b.dataset.hofDel);
+          renderHallOfFame();
+          showToast('Voce rimossa', 'success');
+        } catch (e) {
+          showToast('Errore: ' + e.message, 'error');
+        }
+      });
+    });
+  });
+}
+
+function openHofDrawer(entry) {
+  const isEdit = !!entry;
+  document.getElementById('adm-drawer-title').textContent = isEdit ? 'Modifica voce' : 'Nuova voce Hall of Fame';
+  const userOptions = users
+    .slice()
+    .sort((a, b) => (a.username || '').localeCompare(b.username || ''))
+    .map(u => `<option value="${esc(u.id)}" ${entry && entry.user_id === u.id ? 'selected' : ''}>${esc(u.username)}${u.display_name ? ` (${esc(u.display_name)})` : ''}</option>`)
+    .join('');
+
+  const body = document.getElementById('adm-drawer-body');
+  body.innerHTML = `
+    <div class="adm-form-group">
+      <label class="adm-form-label">Utente registrato <span class="adm-dim">(opzionale)</span></label>
+      <select class="adm-input" id="hof-user">
+        <option value="">— Nessuno (nome manuale) —</option>
+        ${userOptions}
+      </select>
+      <span class="adm-form-hint">Se selezioni un utente, viene mostrato il suo nome visualizzato.</span>
+    </div>
+    <div class="adm-form-group">
+      <label class="adm-form-label">Nome manuale</label>
+      <input class="adm-input" id="hof-name" type="text" maxlength="40" value="${esc(entry?.name || '')}" placeholder="Usato se non selezioni un utente">
+    </div>
+    <div class="adm-form-group">
+      <label class="adm-form-label">Badge</label>
+      <input class="adm-input" id="hof-badge" type="text" maxlength="40" value="${esc(entry?.badge || '')}" placeholder="Es. Bug Hunter, Beta Tester">
+    </div>
+    <div class="adm-form-group">
+      <label class="adm-form-label">Nota</label>
+      <textarea class="adm-input" id="hof-note" rows="3" maxlength="500" placeholder="Una frase di riconoscimento...">${esc(entry?.note || '')}</textarea>
+    </div>
+    <div class="adm-form-group">
+      <label class="adm-form-label">Ordine</label>
+      <input class="adm-input" id="hof-order" type="number" value="${entry?.sort_order ?? 0}" placeholder="0">
+      <span class="adm-form-hint">Numero più basso = più in alto.</span>
+    </div>
+    <div class="adm-form-feedback" id="hof-feedback"></div>
+    <button class="adm-btn adm-btn-wide" id="hof-save-btn"><i class="fas fa-floppy-disk"></i> ${isEdit ? 'Salva modifiche' : 'Crea voce'}</button>
+  `;
+
+  document.getElementById('hof-save-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('hof-save-btn');
+    const fb  = document.getElementById('hof-feedback');
+    fb.textContent = '';
+    const payload = {
+      user_id:    document.getElementById('hof-user').value || null,
+      name:       document.getElementById('hof-name').value.trim(),
+      badge:      document.getElementById('hof-badge').value.trim(),
+      note:       document.getElementById('hof-note').value.trim(),
+      sort_order: Number(document.getElementById('hof-order').value) || 0,
+    };
+    if (!payload.user_id && !payload.name) {
+      fb.style.color = 'var(--danger, #f87171)';
+      fb.textContent = 'Serve un utente o un nome manuale.';
+      return;
+    }
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Salvataggio...';
+    try {
+      let res;
+      if (isEdit) res = await Api.admin.updateHallOfFame(entry.id, payload);
+      else        res = await Api.admin.createHallOfFame(payload);
+      const saved = res.entry;
+      if (isEdit) {
+        const i = hallOfFame.findIndex(h => h.id === entry.id);
+        if (i !== -1) hallOfFame[i] = saved;
+      } else {
+        hallOfFame.push(saved);
+      }
+      hallOfFame.sort((a, b) => (a.sort_order - b.sort_order) || String(a.created_at).localeCompare(String(b.created_at)));
+      renderHallOfFame();
+      closeDrawer();
+      showToast(isEdit ? 'Voce aggiornata' : 'Voce aggiunta', 'success');
+    } catch (e) {
+      fb.style.color = 'var(--danger, #f87171)';
+      fb.textContent = 'Errore: ' + e.message;
+      btn.disabled = false;
+      btn.innerHTML = `<i class="fas fa-floppy-disk"></i> ${isEdit ? 'Salva modifiche' : 'Crea voce'}`;
+    }
+  });
+
+  openDrawer();
+}

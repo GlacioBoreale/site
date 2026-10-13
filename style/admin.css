@@ -401,6 +401,32 @@ body {
 .adm-btn-detail  { background:rgba(108,143,255,.1);  color:var(--accent); border:1px solid rgba(108,143,255,.22); }
 .adm-btn-danger  { background:rgba(248,113,113,.1);  color:var(--red);    border:1px solid rgba(248,113,113,.22); }
 .adm-btn-neutral { background:rgba(255,255,255,.06); color:var(--muted);  border:1px solid var(--border); }
+.adm-btn-primary { background:rgba(108,143,255,.14); color:var(--accent); border:1px solid rgba(108,143,255,.3); }
+.adm-btn-wide { width:100%; justify-content:center; padding:.6rem .7rem; font-size:.82rem; margin-top:.3rem; }
+
+.adm-form-group { margin-bottom:.9rem; display:flex; flex-direction:column; gap:.3rem; }
+.adm-form-label {
+  font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em;
+  color:var(--dim); font-family:'Fredoka',sans-serif;
+}
+.adm-form-hint { font-size:.72rem; color:var(--dim); line-height:1.45; }
+.adm-form-feedback { font-size:.8rem; font-family:'Fredoka',sans-serif; min-height:1rem; line-height:1.4; }
+.adm-input {
+  width:100%; box-sizing:border-box;
+  padding:.5rem .7rem; background:var(--raised);
+  border:1px solid var(--border); border-radius:6px;
+  color:var(--text); font-family:'Fredoka',sans-serif; font-size:.85rem;
+  outline:none; transition:border-color .15s;
+}
+.adm-input:focus { border-color:rgba(108,143,255,.5); }
+textarea.adm-input { resize:vertical; min-height:72px; }
+.adm-chip {
+  display:inline-block; padding:.12rem .5rem; border-radius:5px;
+  background:rgba(108,143,255,.12); color:var(--accent);
+  border:1px solid rgba(108,143,255,.22);
+  font-size:.72rem; font-weight:600;
+}
+.adm-dim { color:var(--dim); }
 
 /* ── TABLE ── */
 .adm-table-wrap { overflow-x:auto; }

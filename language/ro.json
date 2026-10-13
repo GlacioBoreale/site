@@ -7,7 +7,33 @@
     "VTPedia": "VTPedia",
     "socials": "Socials",
     "contact": "Contact",
-    "fanart": "Fanart"
+    "fanart": "Fanart",
+    "halloffame": "Hall of Fame"
+  },
+  "hof": {
+    "label": "Hall of Fame",
+    "title": "Hall of Fame",
+    "subtitle": "Cei care au făcut Glaciopia mai bună",
+    "loading": "Se încarcă...",
+    "empty": "Hall of Fame este încă goală. Revino curând!"
+  },
+  "profile": {
+    "tabInfo": "Informații",
+    "tabPassword": "Parolă",
+    "displayName": "Nume afișat",
+    "saveInfo": "Salvează modificările",
+    "saved": "Profil actualizat!",
+    "noChanges": "Nicio modificare de salvat.",
+    "since": "Înregistrat la",
+    "logout": "Deconectare",
+    "modeCurrent": "Cu parola actuală",
+    "modeCode": "Cu cod email",
+    "currentPwd": "Parola actuală",
+    "sendCode": "Trimite-mi un cod",
+    "codeSent": "Cod trimis pe emailul tău.",
+    "savePwd": "Actualizează parola",
+    "pwdUpdated": "Parolă actualizată!",
+    "errNoCurrent": "Introdu parola actuală."
   },
   "home": {
     "title": "Bine ai venit pe Glaciopia",

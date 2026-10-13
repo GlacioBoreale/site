@@ -47,6 +47,28 @@ const Auth = (() => {
     return Api.auth.reset(email, code, password);
   }
 
+  function displayNameOf(u) {
+    if (!u) return '';
+    return (u.display_name && u.display_name.trim()) ? u.display_name : u.username;
+  }
+
+  async function updateProfile(data) {
+    const res = await Api.me.update(data);
+    if (res.token) Api.setToken(res.token);
+    setUser(res.user);
+    refreshNavUser();
+    document.dispatchEvent(new Event('authChange'));
+    return res.user;
+  }
+
+  async function requestPasswordCode() {
+    return Api.me.requestPwdCode();
+  }
+
+  async function changePassword(data) {
+    return Api.me.changePassword(data);
+  }
+
   async function login(email, password) {
     Api.setToken(null);
     setUser(null);
@@ -76,8 +98,9 @@ const Auth = (() => {
     if (!btn) return;
     const user = getUser();
     if (isLoggedIn() && user) {
-      if (label)  label.textContent  = user.username;
-      if (avatar) avatar.textContent = user.username.charAt(0).toUpperCase();
+      const dn = displayNameOf(user);
+      if (label)  label.textContent  = dn;
+      if (avatar) avatar.textContent = dn.charAt(0).toUpperCase();
       btn.classList.add('logged-in');
     } else {
       if (label)  label.textContent  = 'Login';
@@ -522,35 +545,210 @@ const Auth = (() => {
     document.body.classList.remove('modal-open');
   }
 
+  function closeProfileModal() {
+    document.getElementById('profile-modal')?.classList.remove('open');
+    document.body.classList.remove('modal-open');
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    }[c]));
+  }
+
   function buildProfileModal() {
-    if (document.getElementById('profile-modal')) {
-      document.getElementById('profile-modal').classList.add('open');
-      document.body.classList.add('modal-open');
-      return;
-    }
+    const existing = document.getElementById('profile-modal');
+    if (existing) existing.remove();
+
+    const user = getUser();
     const modal = document.createElement('div');
     modal.id = 'profile-modal';
-    const user = getUser();
     modal.innerHTML = `
       <div class="auth-backdrop"></div>
       <div class="auth-box">
-        <div class="profile-avatar">${user.username.charAt(0).toUpperCase()}</div>
-        <div class="profile-username">${user.username}</div>
-        <div class="profile-email">${user.email}</div>
-        <div class="profile-since">Registrato il ${new Date(user.created_at).toLocaleDateString('it-IT')}</div>
-        <button class="auth-submit logout-btn" id="profile-logout-btn">Logout</button>
+        <button class="auth-close" id="profile-close-btn" aria-label="Chiudi"><i class="fas fa-xmark"></i></button>
+
+        <div class="profile-avatar" id="profile-avatar">${esc(displayNameOf(user).charAt(0).toUpperCase())}</div>
+        <div class="profile-username" id="profile-dn-label">${esc(displayNameOf(user))}</div>
+        <div class="profile-email" id="profile-email-label">${esc(user.email)}</div>
+        <div class="profile-since">${at('profile.since', 'Registrato il')} ${new Date(user.created_at).toLocaleDateString('it-IT')}</div>
+
+        <div class="profile-tabs">
+          <button class="profile-tab active" data-ptab="info" data-i18n="profile.tabInfo">Informazioni</button>
+          <button class="profile-tab" data-ptab="password" data-i18n="profile.tabPassword">Password</button>
+        </div>
+
+        <div class="profile-pane" data-ppane="info">
+          <div class="auth-field">
+            <label for="profile-display-name" data-i18n="profile.displayName">Nome visualizzato</label>
+            <input class="auth-input" id="profile-display-name" type="text" maxlength="24" placeholder="${esc(user.username)}" value="${esc(user.display_name || '')}">
+          </div>
+          <div class="auth-field">
+            <label for="profile-email-input" data-i18n="auth.email">Email</label>
+            <input class="auth-input" id="profile-email-input" type="email" autocomplete="email" value="${esc(user.email)}">
+          </div>
+          <div class="auth-error" id="profile-info-error"></div>
+          <button class="auth-submit" id="profile-save-info-btn"><span data-i18n="profile.saveInfo">Salva modifiche</span></button>
+        </div>
+
+        <div class="profile-pane" data-ppane="password" style="display:none;">
+          <div class="profile-pwd-mode">
+            <button class="profile-mode-btn active" data-pmode="current" data-i18n="profile.modeCurrent">Con password attuale</button>
+            <button class="profile-mode-btn" data-pmode="code" data-i18n="profile.modeCode">Con codice email</button>
+          </div>
+
+          <div class="auth-field" id="profile-current-wrap">
+            <label for="profile-current-pwd" data-i18n="profile.currentPwd">Password attuale</label>
+            <div class="auth-input-wrap">
+              <input class="auth-input" id="profile-current-pwd" type="password" autocomplete="current-password" placeholder="••••••••">
+              <button class="auth-eye" data-target="profile-current-pwd" type="button" aria-label="Mostra password"><i class="fas fa-eye"></i></button>
+            </div>
+          </div>
+
+          <div class="auth-field" id="profile-code-wrap" style="display:none;">
+            <label for="profile-pwd-code" data-i18n="auth.code">Codice</label>
+            <input class="auth-input auth-code-input" id="profile-pwd-code" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code">
+            <button class="auth-forgot" id="profile-send-code-btn" type="button" data-i18n="profile.sendCode">Inviami un codice</button>
+            <p class="auth-forgot-text" id="profile-code-hint" style="text-align:left;margin-top:0.2rem;"></p>
+          </div>
+
+          <div class="auth-field">
+            <label for="profile-new-pwd" data-i18n="auth.newPassword">Nuova password</label>
+            <div class="auth-input-wrap">
+              <input class="auth-input" id="profile-new-pwd" type="password" autocomplete="new-password" placeholder="••••••••">
+              <button class="auth-eye" data-target="profile-new-pwd" type="button" aria-label="Mostra password"><i class="fas fa-eye"></i></button>
+            </div>
+          </div>
+          <div class="auth-error" id="profile-pwd-error"></div>
+          <button class="auth-submit" id="profile-save-pwd-btn"><span data-i18n="profile.savePwd">Aggiorna password</span></button>
+        </div>
+
+        <button class="auth-submit logout-btn" id="profile-logout-btn"><span data-i18n="profile.logout">Logout</span></button>
       </div>
     `;
     document.body.appendChild(modal);
-    modal.querySelector('.auth-backdrop').addEventListener('click', () => {
-      modal.classList.remove('open');
-      document.body.classList.remove('modal-open');
+
+    const close = () => closeProfileModal();
+    modal.querySelector('.auth-backdrop').addEventListener('click', close);
+    document.getElementById('profile-close-btn').addEventListener('click', close);
+
+    modal.querySelectorAll('.profile-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        modal.querySelectorAll('.profile-tab').forEach(t => t.classList.toggle('active', t === tab));
+        modal.querySelectorAll('.profile-pane').forEach(p => {
+          p.style.display = p.dataset.ppane === tab.dataset.ptab ? 'flex' : 'none';
+        });
+      });
     });
+
+    modal.querySelectorAll('.profile-mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mode = btn.dataset.pmode;
+        modal.querySelectorAll('.profile-mode-btn').forEach(b => b.classList.toggle('active', b === btn));
+        document.getElementById('profile-current-wrap').style.display = mode === 'current' ? 'flex' : 'none';
+        document.getElementById('profile-code-wrap').style.display    = mode === 'code' ? 'flex' : 'none';
+        document.getElementById('profile-pwd-error').textContent = '';
+      });
+    });
+
+    modal.querySelectorAll('.auth-eye').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const input = document.getElementById(btn.dataset.target);
+        const show  = input.type === 'password';
+        input.type  = show ? 'text' : 'password';
+        btn.innerHTML = `<i class="fas fa-eye${show ? '-slash' : ''}"></i>`;
+      });
+    });
+
+    document.getElementById('profile-save-info-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('profile-save-info-btn');
+      const err = document.getElementById('profile-info-error');
+      err.style.color = '';
+      err.textContent = '';
+      const u = getUser();
+      const dn    = document.getElementById('profile-display-name').value.trim();
+      const email = document.getElementById('profile-email-input').value.trim();
+      const payload = {};
+      if (dn !== (u.display_name || '')) payload.display_name = dn;
+      if (email && email.toLowerCase() !== (u.email || '').toLowerCase()) payload.email = email;
+      if (!Object.keys(payload).length) {
+        err.style.color = 'var(--accent, #5b9cf6)';
+        err.textContent = at('profile.noChanges', 'Nessuna modifica da salvare.');
+        return;
+      }
+      setAuthLoading(btn, true);
+      try {
+        const updated = await updateProfile(payload);
+        document.getElementById('profile-dn-label').textContent = displayNameOf(updated);
+        document.getElementById('profile-email-label').textContent = updated.email;
+        document.getElementById('profile-avatar').textContent = displayNameOf(updated).charAt(0).toUpperCase();
+        err.style.color = 'var(--accent, #5b9cf6)';
+        err.textContent = at('profile.saved', 'Profilo aggiornato!');
+      } catch (e) {
+        err.style.color = '';
+        err.textContent = e.message;
+      } finally {
+        setAuthLoading(btn, false);
+      }
+    });
+
+    document.getElementById('profile-send-code-btn').addEventListener('click', async () => {
+      const hint = document.getElementById('profile-code-hint');
+      hint.style.color = '';
+      hint.textContent = '';
+      try {
+        await requestPasswordCode();
+        hint.style.color = 'var(--accent, #5b9cf6)';
+        hint.textContent = at('profile.codeSent', 'Codice inviato alla tua email.');
+      } catch (e) {
+        hint.style.color = '#f87171';
+        hint.textContent = e.message;
+      }
+    });
+
+    document.getElementById('profile-save-pwd-btn').addEventListener('click', async () => {
+      const btn = document.getElementById('profile-save-pwd-btn');
+      const err = document.getElementById('profile-pwd-error');
+      err.style.color = '';
+      err.textContent = '';
+      const mode    = modal.querySelector('.profile-mode-btn.active')?.dataset.pmode || 'current';
+      const newPwd  = document.getElementById('profile-new-pwd').value;
+      if (!newPwd || newPwd.length < 6) {
+        err.textContent = at('auth.errShortPassword', 'La password deve avere almeno 6 caratteri.');
+        return;
+      }
+      const payload = { new_password: newPwd };
+      if (mode === 'current') {
+        const cur = document.getElementById('profile-current-pwd').value;
+        if (!cur) { err.textContent = at('profile.errNoCurrent', 'Inserisci la password attuale.'); return; }
+        payload.current_password = cur;
+      } else {
+        const code = document.getElementById('profile-pwd-code').value.trim();
+        if (!code) { err.textContent = at('auth.errEmptyCode', 'Inserisci il codice.'); return; }
+        payload.code = code;
+      }
+      setAuthLoading(btn, true);
+      try {
+        await changePassword(payload);
+        err.style.color = 'var(--accent, #5b9cf6)';
+        err.textContent = at('profile.pwdUpdated', 'Password aggiornata!');
+        document.getElementById('profile-new-pwd').value = '';
+        document.getElementById('profile-current-pwd').value = '';
+        document.getElementById('profile-pwd-code').value = '';
+      } catch (e) {
+        err.style.color = '';
+        err.textContent = e.message;
+      } finally {
+        setAuthLoading(btn, false);
+      }
+    });
+
     document.getElementById('profile-logout-btn').addEventListener('click', () => {
       logout();
-      modal.classList.remove('open');
-      document.body.classList.remove('modal-open');
+      closeProfileModal();
     });
+
+    if (typeof applyTranslations === 'function') applyTranslations();
     modal.classList.add('open');
     document.body.classList.add('modal-open');
   }
@@ -567,5 +765,5 @@ const Auth = (() => {
 
   document.addEventListener('navbarLoaded', initNavAuthBtn);
 
-  return { register, verify, resend, forgot, reset, login, logout, isLoggedIn, getUser, openAuthModal, initNavAuthBtn };
+  return { register, verify, resend, forgot, reset, login, logout, isLoggedIn, getUser, displayNameOf, updateProfile, requestPasswordCode, changePassword, openAuthModal, initNavAuthBtn };
 })();

@@ -7,7 +7,33 @@
     "VTPedia": "VTPedia",
     "socials": "Socials",
     "contact": "Contatti",
-    "fanart": "Fanart"
+    "fanart": "Fanart",
+    "halloffame": "Hall of Fame"
+  },
+  "hof": {
+    "label": "Hall of Fame",
+    "title": "Hall of Fame",
+    "subtitle": "Chi ha reso Glaciopia migliore",
+    "loading": "Caricamento...",
+    "empty": "La Hall of Fame è ancora vuota. Torna presto!"
+  },
+  "profile": {
+    "tabInfo": "Informazioni",
+    "tabPassword": "Password",
+    "displayName": "Nome visualizzato",
+    "saveInfo": "Salva modifiche",
+    "saved": "Profilo aggiornato!",
+    "noChanges": "Nessuna modifica da salvare.",
+    "since": "Registrato il",
+    "logout": "Logout",
+    "modeCurrent": "Con password attuale",
+    "modeCode": "Con codice email",
+    "currentPwd": "Password attuale",
+    "sendCode": "Inviami un codice",
+    "codeSent": "Codice inviato alla tua email.",
+    "savePwd": "Aggiorna password",
+    "pwdUpdated": "Password aggiornata!",
+    "errNoCurrent": "Inserisci la password attuale."
   },
   "home": {
     "title": "Benvenuto su Glaciopia",

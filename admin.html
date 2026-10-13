@@ -72,6 +72,9 @@
             <button class="adm-nav-btn" data-section="repos">
                 <i class="fas fa-code"></i><span>Progetti</span>
             </button>
+            <button class="adm-nav-btn" data-section="halloffame">
+                <i class="fas fa-trophy"></i><span>Hall of Fame</span>
+            </button>
         </nav>
 
         <main class="adm-content">
@@ -200,6 +203,24 @@
                 </div>
 
                 <div class="adm-table-wrap" id="repo-list">
+                    <div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>
+                </div>
+            </section>
+
+            <!-- HALL OF FAME -->
+            <section class="adm-section" id="section-halloffame">
+                <div class="adm-page-header">
+                    <div>
+                        <div class="adm-page-title">Hall of Fame</div>
+                        <div class="adm-page-subtitle">Premia beta tester e chi segnala bug</div>
+                    </div>
+                    <div class="adm-toolbar">
+                        <button class="adm-btn adm-btn-primary" id="hof-add-btn">
+                            <i class="fas fa-plus"></i> Aggiungi
+                        </button>
+                    </div>
+                </div>
+                <div class="adm-table-wrap" id="hof-list">
                     <div class="adm-loading"><i class="fas fa-circle-notch fa-spin"></i></div>
                 </div>
             </section>
